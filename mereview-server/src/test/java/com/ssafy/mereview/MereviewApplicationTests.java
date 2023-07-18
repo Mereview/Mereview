@@ -1,10 +1,10 @@
-package com.ssafy.mireview;
+package com.ssafy.mereview;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MireviewApplicationTests {
+class MereviewApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,13 +1,13 @@
-package com.ssafy.mireview;
+package com.ssafy.mereview;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MireviewApplication {
+public class MereviewApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MireviewApplication.class, args);
+		SpringApplication.run(MereviewApplication.class, args);
 	}
 
 }
