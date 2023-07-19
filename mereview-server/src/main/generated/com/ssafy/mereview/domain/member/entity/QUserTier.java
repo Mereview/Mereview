@@ -31,7 +31,7 @@ public class QUserTier extends EntityPathBase<UserTier> {
 
     public final StringPath funTier = createString("funTier");
 
-    public final StringPath genreId = createString("genreId");
+    public final com.ssafy.mereview.domain.movie.entity.QGenre genre;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -62,6 +62,7 @@ public class QUserTier extends EntityPathBase<UserTier> {
 
     public QUserTier(Class<? extends UserTier> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.genre = inits.isInitialized("genre") ? new com.ssafy.mereview.domain.movie.entity.QGenre(forProperty("genre")) : null;
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 

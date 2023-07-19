@@ -20,18 +20,16 @@ public class QInterest extends EntityPathBase<Interest> {
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QInterest interest1 = new QInterest("interest1");
+    public static final QInterest interest = new QInterest("interest");
 
     public final com.ssafy.mereview.common.domain.QBaseEntity _super = new com.ssafy.mereview.common.domain.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
-    public final StringPath genre_id = createString("genre_id");
+    public final com.ssafy.mereview.domain.movie.entity.QGenre genre;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath interest = createString("interest");
 
     public final QMember member;
 
@@ -56,6 +54,7 @@ public class QInterest extends EntityPathBase<Interest> {
 
     public QInterest(Class<? extends Interest> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.genre = inits.isInitialized("genre") ? new com.ssafy.mereview.domain.movie.entity.QGenre(forProperty("genre")) : null;
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 

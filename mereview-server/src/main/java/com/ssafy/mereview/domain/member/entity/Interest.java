@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.member.entity;
 
 import com.ssafy.mereview.common.domain.BaseEntity;
+import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,15 +22,14 @@ public class Interest extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String interest;
-
-    private String genre_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
 
     @Builder
-    public Interest(Member member, String interest, String genre_id) {
+    public Interest(Member member, Genre genre) {
         this.member = member;
-        this.interest = interest;
-        this.genre_id = genre_id;
+        this.genre = genre;
     }
 
     public void setMember(Member member){
