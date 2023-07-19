@@ -4,8 +4,10 @@ import com.ssafy.mereview.common.util.JwtUtils;
 import com.ssafy.mereview.domain.member.controller.MemberController;
 import com.ssafy.mereview.domain.member.controller.dto.req.MemberLoginDto;
 import com.ssafy.mereview.domain.member.controller.dto.req.MemberRegisterDto;
+import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
-import com.ssafy.mereview.domain.member.service.UserDetailsServiceImpl;
+import com.ssafy.mereview.domain.member.service.MemberService;
+import com.ssafy.mereview.domain.member.service.impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -42,6 +44,12 @@ class MemberAuthTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private MemberQueryRepository memberQueryRepository;
+
+    @MockBean
     private MemberRepository memberRepository;
 
     @MockBean
@@ -55,7 +63,7 @@ class MemberAuthTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new MemberController(memberRepository, jwtUtils, passwordEncoder)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService, memberRepository, memberQueryRepository, jwtUtils, passwordEncoder)).build();
     }
 
 
@@ -90,7 +98,7 @@ class MemberAuthTest {
         memberLoginDto.setPassword("password123");
 
         Member savedMember = new Member("test@example.com", "encryptedPassword", "test", null);
-        when(memberRepository.findByEmail("test@example.com")).thenReturn(savedMember);
+        when(memberQueryRepository.searchByEmail("test@example.com")).thenReturn(savedMember);
         when(passwordEncoder.matches("password123", savedMember.getPassword())).thenReturn(true);
 
         // When
@@ -102,7 +110,7 @@ class MemberAuthTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // Verify
-        verify(memberRepository).findByEmail("test@example.com");
+        verify(memberQueryRepository).searchByEmail("test@example.com");
         verify(passwordEncoder).matches("password123", savedMember.getPassword());
     }
 }
