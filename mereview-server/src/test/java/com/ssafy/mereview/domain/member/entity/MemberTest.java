@@ -1,10 +1,8 @@
 package com.ssafy.mereview.domain.member.entity;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.movie.entity.Genre;
-import org.apache.catalina.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +15,7 @@ import java.util.List;
 @SpringBootTest
 @Transactional
 @Rollback(false)
-public class MemberInterestTest {
+public class MemberTest {
 
     @Autowired
     private EntityManager entityManager;
@@ -79,12 +77,34 @@ public class MemberInterestTest {
 //                .join(q.member, qm)
 //                .on(q.member.eq(qm))
 //                .where(q.genre.eq(genre)).fetch();
-
-
-
-
         entityManager.flush();
         entityManager.clear();
     }
 
+    @Test
+    public void MemberAchievementTest() {
+
+        Member member = Member.builder()
+                .email("duljji@naver.com")
+                .password("1234")
+                .build();
+        Genre genre = Genre.builder().genreId("1").genreName("코미디").build();
+        Achievement achievement = Achievement.builder()
+                .achievementName("코미디 리뷰어")
+                .build();
+
+        MemberAchievement memberAchievement = MemberAchievement.builder()
+                .member(member)
+                .genre(genre)
+                .achievement(achievement)
+                .achievementRank("브론즈")
+                .build();
+
+        entityManager.persist(member);
+        entityManager.persist(genre);
+        entityManager.persist(achievement);
+        entityManager.persist(memberAchievement);
+
+        entityManager.flush();
+    }
 }
