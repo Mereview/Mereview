@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.member.controller;
 
 import com.ssafy.mereview.common.util.JwtUtils;
+import com.ssafy.mereview.domain.member.controller.dto.req.MemberLoginDto;
 import com.ssafy.mereview.domain.member.controller.dto.req.MemberRegisterDto;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
@@ -34,14 +35,16 @@ public class MemberController {
         memberRepository.save(member);
     }
 
+    @ResponseBody
     @PostMapping("/login")
-    public String login(@RequestBody Member member) {
+    public Map<String, String> login(@RequestBody MemberLoginDto memberLoginDto) {
         // TODO: Verify username and password, and generate JWT
-        Member existingMember = memberRepository.findByEmail(member.getEmail());
-        if (existingMember != null && passwordEncoder.matches(member.getPassword(), existingMember.getPassword())) {
+        Member existingMember = memberRepository.findByEmail(memberLoginDto.getEmail());
+        if (existingMember != null && passwordEncoder.matches(memberLoginDto.getPassword(), existingMember.getPassword())) {
+            Map<String, String> token = jwtUtils.generateJwt(existingMember);
 
 
-            return jwtUtils.generateJwt(existingMember);
+            return token;
         } else {
             throw new RuntimeException("Invalid username or password");
         }
