@@ -1,8 +1,10 @@
 package com.ssafy.mereview.domain.member.entity;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.movie.entity.Genre;
+import com.ssafy.mereview.domain.movie.entity.QGenre;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -88,23 +90,30 @@ public class MemberTest {
                 .email("duljji@naver.com")
                 .password("1234")
                 .build();
-        Genre genre = Genre.builder().genreId("1").genreName("코미디").build();
-        Achievement achievement = Achievement.builder()
-                .achievementName("코미디 리뷰어")
-                .build();
-
-        MemberAchievement memberAchievement = MemberAchievement.builder()
-                .member(member)
-                .genre(genre)
-                .achievement(achievement)
-                .achievementRank("브론즈")
-                .build();
-
         entityManager.persist(member);
-        entityManager.persist(genre);
-        entityManager.persist(achievement);
-        entityManager.persist(memberAchievement);
+        Genre genre1 = Genre.builder().genreId("1").genreName("코미디").build();
+        Genre genre2 = Genre.builder().genreId("2").genreName("멜로").build();
+        Genre genre3 = Genre.builder().genreId("3").genreName("로맨스").build();
+        entityManager.persist(genre1);
+        entityManager.persist(genre2);
+        entityManager.persist(genre3);
+        QGenre qGenre = QGenre.genre;
+        List<Genre> genres = queryFactory.select(qGenre)
+                .from(qGenre)
+                .fetch();
 
-        entityManager.flush();
+        for (Genre genre : genres) {
+            MemberAchievement memberAchievement = MemberAchievement.builder()
+                    .member(member)
+                    .genre(genre)
+                    .build();
+
+            entityManager.persist(memberAchievement);
+            entityManager.flush();
+            entityManager.clear();
+        }
+
+
     }
+
 }
