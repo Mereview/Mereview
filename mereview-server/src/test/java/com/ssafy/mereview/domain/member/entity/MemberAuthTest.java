@@ -5,21 +5,17 @@ import com.ssafy.mereview.domain.member.controller.MemberController;
 import com.ssafy.mereview.domain.member.controller.dto.req.MemberLoginDto;
 import com.ssafy.mereview.domain.member.controller.dto.req.MemberRegisterDto;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
-import com.ssafy.mereview.domain.member.service.MemberService;
 import com.ssafy.mereview.domain.member.service.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -29,7 +25,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,7 +33,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureMockMvc
 @Transactional
 @Rollback(false)
-class MemberTest {
+class MemberAuthTest {
 
     @PersistenceContext
     EntityManager entityManager;
@@ -71,7 +66,7 @@ class MemberTest {
         memberRegisterDto.setEmail("test@example.com");
         memberRegisterDto.setPassword("password123");
 
-        Member savedMember = new Member("test@example.com", "encryptedPassword", "test");
+        Member savedMember = new Member("test@example.com", "encryptedPassword", "test", null);
         when(passwordEncoder.encode("password123")).thenReturn("encryptedPassword");
         when(memberRepository.save(any(Member.class))).thenReturn(savedMember);
 
@@ -94,7 +89,7 @@ class MemberTest {
         memberLoginDto.setEmail("test@example.com");
         memberLoginDto.setPassword("password123");
 
-        Member savedMember = new Member("test@example.com", "encryptedPassword", "test");
+        Member savedMember = new Member("test@example.com", "encryptedPassword", "test", null);
         when(memberRepository.findByEmail("test@example.com")).thenReturn(savedMember);
         when(passwordEncoder.matches("password123", savedMember.getPassword())).thenReturn(true);
 

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,12 +32,21 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "member")
+    private List<Interest> interests = new ArrayList<>();
+
     @Builder
-    public Member(String email, String password, String nickname){
+    public Member(String email, String password, String nickname, List<Interest> interests){
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = Role.USER;
+
+    }
+
+    public void addInterest(Interest interest){
+        this.interests.add(interest);
+        interest.setMember(this);
     }
 
 }

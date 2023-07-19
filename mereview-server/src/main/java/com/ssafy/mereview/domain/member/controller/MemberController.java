@@ -31,7 +31,7 @@ public class MemberController {
     @PostMapping("/signup")
     public void signup(@RequestBody MemberRegisterDto memberRegisterDto) {
         // TODO: Add validation and password encryption
-        Member member = new Member(memberRegisterDto.getEmail(), passwordEncoder.encode(memberRegisterDto.getPassword()), "test");
+        Member member = new Member(memberRegisterDto.getEmail(), passwordEncoder.encode(memberRegisterDto.getPassword()), "test", null);
         memberRepository.save(member);
     }
 
