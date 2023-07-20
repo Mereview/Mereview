@@ -6,4 +6,5 @@ public interface MemberQueryRepository {
     public Member searchByEmail(String email);
 
 
+
 }

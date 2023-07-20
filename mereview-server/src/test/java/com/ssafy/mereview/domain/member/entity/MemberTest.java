@@ -91,12 +91,7 @@ public class MemberTest {
                 .password("1234")
                 .build();
         entityManager.persist(member);
-        Genre genre1 = Genre.builder().genreId("1").genreName("코미디").build();
-        Genre genre2 = Genre.builder().genreId("2").genreName("멜로").build();
-        Genre genre3 = Genre.builder().genreId("3").genreName("로맨스").build();
-        entityManager.persist(genre1);
-        entityManager.persist(genre2);
-        entityManager.persist(genre3);
+
         QGenre qGenre = QGenre.genre;
         List<Genre> genres = queryFactory.select(qGenre)
                 .from(qGenre)
