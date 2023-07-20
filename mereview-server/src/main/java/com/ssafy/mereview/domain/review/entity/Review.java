@@ -29,7 +29,7 @@ public class Review extends BaseEntity {
     @Column
     private String highlight;
     @Enumerated(EnumType.STRING)
-    private Evaluation evaluation;
+    private EvaluationType evaluationType;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<Comment> reviewComments = new ArrayList<>();
@@ -44,13 +44,13 @@ public class Review extends BaseEntity {
     private Movie movie;
 
     @Builder
-    public Review(Long id, String title, String content, int hit, String highlight, Evaluation evaluation, List<Comment> reviewComments, List<KeywordWeight> keywordWeights, Member member, Movie movie) {
+    public Review(Long id, String title, String content, int hit, String highlight, EvaluationType evaluationType, List<Comment> reviewComments, List<KeywordWeight> keywordWeights, Member member, Movie movie) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.hit = hit;
         this.highlight = highlight;
-        this.evaluation = evaluation;
+        this.evaluationType = evaluationType;
         this.reviewComments = reviewComments;
         this.keywordWeights = keywordWeights;
         this.member = member;

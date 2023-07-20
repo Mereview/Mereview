@@ -1,5 +1,5 @@
 package com.ssafy.mereview.domain.review.entity;
 
-public enum Evaluation {
+public enum EvaluationType {
     LIKE, DISLIKE, BAD
 }

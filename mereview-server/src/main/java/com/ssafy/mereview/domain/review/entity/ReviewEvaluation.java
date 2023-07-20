@@ -8,34 +8,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseEntity {
+public class ReviewEvaluation extends BaseEntity {
     @Id
-    @Column(name = "comment_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_evaluation_id")
     private Long id;
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-    private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private EvaluationType evaluationType;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "review_id")
     private Review review;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "comment", orphanRemoval = true)
-    List<CommentLike> likes = new ArrayList<>();
-
     @Builder
-    public Comment(Long id, String content, Review review, Member member) {
+    public ReviewEvaluation(Long id, EvaluationType evaluationType, Review review, Member member) {
         this.id = id;
-        this.content = content;
+        this.evaluationType = evaluationType;
         this.review = review;
         this.member = member;
     }
