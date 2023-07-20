@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,9 @@ public class Review extends BaseEntity {
     private Evaluation evaluation;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<Comment> reviewComments;
+    private List<Comment> reviewComments = new ArrayList<>();
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<KeywordWeight> keywordWeights = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -41,7 +44,7 @@ public class Review extends BaseEntity {
     private Movie movie;
 
     @Builder
-    public Review(Long id, String title, String content, int hit, String highlight, Evaluation evaluation, List<Comment> reviewComments, Member member, Movie movie) {
+    public Review(Long id, String title, String content, int hit, String highlight, Evaluation evaluation, List<Comment> reviewComments, List<KeywordWeight> keywordWeights, Member member, Movie movie) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -49,6 +52,7 @@ public class Review extends BaseEntity {
         this.highlight = highlight;
         this.evaluation = evaluation;
         this.reviewComments = reviewComments;
+        this.keywordWeights = keywordWeights;
         this.member = member;
         this.movie = movie;
     }
