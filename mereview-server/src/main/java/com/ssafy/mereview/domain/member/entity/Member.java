@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.member.entity;
 
 import com.ssafy.mereview.common.domain.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,17 +41,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserTier> userTiers = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "review")
-//    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "review")
+    private List<Review> reviews = new ArrayList<>();
 
-    @Builder
-    public Member(String email, String password, String nickname, List<Interest> interests){
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.role = Role.USER;
-
-    }
 
     public void addInterest(Interest interest){
         this.interests.add(interest);
