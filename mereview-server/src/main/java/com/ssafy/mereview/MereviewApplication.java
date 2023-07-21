@@ -17,6 +17,9 @@ public class MereviewApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MereviewApplication.class, args);
+
+
+
 	}
 
 }

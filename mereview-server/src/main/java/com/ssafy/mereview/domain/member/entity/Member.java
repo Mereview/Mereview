@@ -32,11 +32,14 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Interest> interests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserTier> userTiers = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "review")
+//    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String nickname, List<Interest> interests){

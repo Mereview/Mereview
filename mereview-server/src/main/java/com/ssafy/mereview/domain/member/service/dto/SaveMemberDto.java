@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.member.controller.dto.req;
+package com.ssafy.mereview.domain.member.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,17 +6,15 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MemberLoginDto {
+public class SaveMemberDto {
 
     private String email;
 
     private String password;
 
     @Builder
-    public MemberLoginDto(String email, String password) {
+    public SaveMemberDto(String email, String password) {
         this.email = email;
         this.password = password;
     }
-
-
 }
