@@ -1,7 +1,7 @@
-package com.ssafy.mereview.domain.member.service;
+package com.ssafy.mereview.domain.member.service.impl;
 
 import com.ssafy.mereview.domain.member.entity.Member;
-import com.ssafy.mereview.domain.member.repository.MemberRepository;
+import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,14 +12,14 @@ import java.util.ArrayList;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final MemberRepository memberRepository;
-    public UserDetailsServiceImpl(MemberRepository memberRepository) {
+    private final MemberQueryRepository memberRepository;
+    public UserDetailsServiceImpl(MemberQueryRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.searchByEmail(email);
 
         if (member == null) {
             throw new UsernameNotFoundException("User not found with username: " + email);

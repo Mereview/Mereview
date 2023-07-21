@@ -1,8 +1,12 @@
 package com.ssafy.mereview.domain.member.entity;
 
+import com.querydsl.core.QueryFactory;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.movie.entity.Genre;
+import com.ssafy.mereview.domain.movie.entity.QGenre;
+import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+
+import static com.ssafy.mereview.domain.member.entity.QMember.member;
+import static com.ssafy.mereview.domain.member.entity.QMemberAchievement.memberAchievement;
+import static com.ssafy.mereview.domain.member.entity.QUserTier.userTier;
+import static com.ssafy.mereview.domain.movie.entity.QGenre.genre;
 
 @SpringBootTest
 @Transactional
@@ -22,6 +31,9 @@ public class MemberTest {
 
     @Autowired
     private JPAQueryFactory queryFactory;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Test
     public void MemberAddInterestTest() {
@@ -54,16 +66,23 @@ public class MemberTest {
     @Test
     public void MemberAndTierTest() {
 
-        Member member = new Member("duljji@naver.com", "1234", "duljji", null);
-        Genre genre = Genre.builder().genreId("1").genreName("코미디").build();
-        UserTier userTier = UserTier.builder().
-                member(member)
-                .funTier("0")
-                .usefulTier("0")
-                .funExperience(0)
-                .usefulExperience(0)
-                .genre(genre)
-                .build();
+        Member defaultMember = new Member("duljji@naver.com", "1234", "duljji", null);
+        QMember qmember = member;
+        QUserTier qUserTier = userTier;
+        QGenre qGenre = genre;
+
+
+
+        for(Genre genre : genres){
+            UserTier userTier = UserTier.builder()
+                    .member(defaultMember)
+                    .funExperience(0)
+                    .usefulExperience(0)
+                    .genre(genre)
+                    .build();
+            entityManager.persist(userTier);
+
+
         entityManager.persist(genre);
         entityManager.persist(member);
         entityManager.persist(userTier);
@@ -84,27 +103,54 @@ public class MemberTest {
     @Test
     public void MemberAchievementTest() {
 
-        Member member = Member.builder()
+        Member member2 = Member.builder()
                 .email("duljji@naver.com")
                 .password("1234")
                 .build();
-        Genre genre = Genre.builder().genreId("1").genreName("코미디").build();
-        Achievement achievement = Achievement.builder()
-                .achievementName("코미디 리뷰어")
-                .build();
+        entityManager.persist(member2);
 
-        MemberAchievement memberAchievement = MemberAchievement.builder()
-                .member(member)
-                .genre(genre)
-                .achievement(achievement)
-                .achievementRank("브론즈")
-                .build();
-
-        entityManager.persist(member);
-        entityManager.persist(genre);
-        entityManager.persist(achievement);
-        entityManager.persist(memberAchievement);
+        Genre genre1 = Genre.builder().genreId("1").genreName("코미디").build();
+        Genre genre2 = Genre.builder().genreId("2").genreName("멜로").build();
+        entityManager.persist(genre1);
+        entityManager.persist(genre2);
 
         entityManager.flush();
+        entityManager.clear();
+
+        QMemberAchievement qMemberAchievement = QMemberAchievement.memberAchievement;
+        QMember qMember = QMember.member;
+        QGenre qGenre = QGenre.genre;
+
+        List<Genre> genres = queryFactory.selectFrom(qGenre)
+                .fetch();
+
+        for (Genre genre : genres) {
+            MemberAchievement memberAchievement1 = MemberAchievement.builder()
+                    .member(member2)
+                    .genre(genre)
+                    .build();
+
+            entityManager.persist(memberAchievement1);
+        }
+
+        List<MemberAchievement> memberAchievements = queryFactory
+                .select(qMemberAchievement)
+                .from(qMemberAchievement)
+                .rightJoin(qMemberAchievement.member, qMember).fetchJoin()
+                .rightJoin(qMemberAchievement.genre, qGenre).fetchJoin()
+                .where(qMemberAchievement.genre.eq(qGenre))
+                .fetch();
+
+        for (MemberAchievement memberAchievement1 : memberAchievements) {
+            System.out.println(memberAchievement1.getMember().getEmail());
+            System.out.println("memberAchievement1.getGenre().getGenreName() = " + memberAchievement1.getGenre().getGenreName());
+            System.out.println("memberAchievement1.getArchievementRank = " + memberAchievement1.getAchievementRank());
+
+            entityManager.flush();
+            entityManager.clear();
+        }
+
+
     }
+
 }

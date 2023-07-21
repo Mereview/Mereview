@@ -5,6 +5,8 @@ import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import sun.security.x509.GeneralName;
 
 import javax.persistence.*;
@@ -28,6 +30,7 @@ public class MemberAchievement extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="achievement_id")
     private Achievement achievement;
+
 
     private String achievementRank;
 

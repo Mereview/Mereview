@@ -5,6 +5,7 @@ import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,9 +22,11 @@ public class UserTier extends BaseEntity{
     private Member member;
 
     @Column(name = "fun_tier")
+    @ColumnDefault("'Bronze'")
     private String funTier;
 
     @Column(name = "useful_tier")
+    @ColumnDefault("'Bronze'")
     private String usefulTier;
 
     @Column(name = "fun_experience")
