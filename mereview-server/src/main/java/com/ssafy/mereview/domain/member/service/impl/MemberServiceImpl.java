@@ -33,6 +33,8 @@ public class MemberServiceImpl implements MemberService {
                     .password(passwordEncoder.encode(dto.getPassword()))
                     .build();
             memberRepository.save(member);
+            memberQueryRepository.searchAllGenre();
+
             Long id = member.getId();
             return id;
         }
