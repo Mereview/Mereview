@@ -11,4 +11,6 @@ public interface MemberQueryRepository {
     public List<Genre> searchAllGenre();
 
 
+
+
 }
