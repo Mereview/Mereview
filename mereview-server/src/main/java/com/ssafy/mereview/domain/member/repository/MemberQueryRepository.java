@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.member.repository;
 
+import com.ssafy.mereview.domain.member.entity.Interest;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 
@@ -9,6 +10,8 @@ public interface MemberQueryRepository {
     public Member searchByEmail(String email);
 
     public List<Genre> searchAllGenre();
+
+    public List<Interest> searchInterestByMemberId(Long memberId);
 
 
 

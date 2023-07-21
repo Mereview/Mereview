@@ -24,9 +24,9 @@ public class Achievement extends BaseEntity {
     private List<MemberAchievement> memberAchievement = new ArrayList<>();
 
     @Builder
-    public Achievement(String achievementName) {
+    public Achievement(Long id, String achievementName, List<MemberAchievement> memberAchievement) {
+        this.id = id;
         this.achievementName = achievementName;
+        this.memberAchievement = memberAchievement;
     }
-
-
 }

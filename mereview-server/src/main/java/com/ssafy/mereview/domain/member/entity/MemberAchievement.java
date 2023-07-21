@@ -34,17 +34,13 @@ public class MemberAchievement extends BaseEntity {
 
     private String achievementRank;
 
+
     @Builder
-    public MemberAchievement(Member member, Genre genre, Achievement achievement, String achievementRank) {
+    public MemberAchievement(Long id, Member member, Genre genre, Achievement achievement, String achievementRank) {
+        this.id = id;
         this.member = member;
         this.genre = genre;
         this.achievement = achievement;
         this.achievementRank = achievementRank;
     }
-
-
-
-
-
-
 }

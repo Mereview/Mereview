@@ -39,8 +39,10 @@ public class UserTier extends BaseEntity{
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
+
     @Builder
-    public UserTier(Member member, String funTier, String usefulTier, int funExperience, int usefulExperience, Genre genre) {
+    public UserTier(Long id, Member member, String funTier, String usefulTier, int funExperience, int usefulExperience, Genre genre) {
+        this.id = id;
         this.member = member;
         this.funTier = funTier;
         this.usefulTier = usefulTier;
@@ -48,6 +50,4 @@ public class UserTier extends BaseEntity{
         this.usefulExperience = usefulExperience;
         this.genre = genre;
     }
-
-
 }
