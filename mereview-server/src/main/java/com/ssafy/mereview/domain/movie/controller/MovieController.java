@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/movie")
 public class MovieController {
-    private final
+
 
 }
