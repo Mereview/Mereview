@@ -27,15 +27,9 @@ public class Interest extends BaseEntity {
     private Genre genre;
 
     @Builder
-    public Interest(Member member, Genre genre) {
+    public Interest(Long id, Member member, Genre genre) {
+        this.id = id;
         this.member = member;
         this.genre = genre;
     }
-
-    public void setMember(Member member){
-        this.member = member;
-    }
-
-
-
 }

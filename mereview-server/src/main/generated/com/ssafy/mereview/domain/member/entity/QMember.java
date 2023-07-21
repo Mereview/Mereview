@@ -42,6 +42,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath password = createString("password");
 
+    public final ListPath<com.ssafy.mereview.domain.review.entity.Review, com.ssafy.mereview.domain.review.entity.QReview> reviews = this.<com.ssafy.mereview.domain.review.entity.Review, com.ssafy.mereview.domain.review.entity.QReview>createList("reviews", com.ssafy.mereview.domain.review.entity.Review.class, com.ssafy.mereview.domain.review.entity.QReview.class, PathInits.DIRECT2);
+
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
     public final ListPath<UserTier, QUserTier> userTiers = this.<UserTier, QUserTier>createList("userTiers", UserTier.class, QUserTier.class, PathInits.DIRECT2);

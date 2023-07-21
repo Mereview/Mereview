@@ -41,18 +41,16 @@ public class MemberTest {
                 .email("duljji@naver.com")
                 .password("1234")
                 .build();
-        Genre comedy = Genre.builder().genreId("1").genreName("코미디").build();
-        Genre melo = Genre.builder().genreId("2").genreName("멜로").build();
+        entityManager.persist(member);
+        Genre comedy = Genre.builder().genreId(1L).genreName("코미디").build();
+        Genre melo = Genre.builder().genreId(2L).genreName("멜로").build();
         entityManager.persist(comedy);
         entityManager.persist(melo);
 
-        Interest interest1 = new Interest(member, comedy);
-        Interest interest2 = new Interest(member, melo);
+        Interest interest1 = Interest.builder().member(member).genre(melo).build();
+        Interest interest2 = Interest.builder().member(member).genre(comedy).build();
         entityManager.persist(interest1);
         entityManager.persist(interest2);
-        member.addInterest(interest1);
-        member.addInterest(interest2);
-        entityManager.persist(member);
         entityManager.flush();
         entityManager.clear();
         entityManager.createQuery("select m from Member m where email = :email", Member.class)
@@ -75,7 +73,6 @@ public class MemberTest {
                 .build();
         entityManager.persist(member);
 
-        QMember qmember = member;
         QGenre qGenre = genre;
         List<Genre> genres = queryFactory.selectFrom(qGenre).fetch();
 
@@ -102,22 +99,17 @@ public class MemberTest {
 //                .where(q.genre.eq(genre)).fetch();
             entityManager.flush();
             entityManager.clear();
-        }
+
     }
 
         @Test
-        public void MemberAchievementTest () {
-
+        public void memberAchievementTest() {
             Member member2 = Member.builder()
                     .email("duljji@naver.com")
                     .password("1234")
                     .build();
-            entityManager.persist(member2);
 
-            Genre genre1 = Genre.builder().genreId("1").genreName("코미디").build();
-            Genre genre2 = Genre.builder().genreId("2").genreName("멜로").build();
-            entityManager.persist(genre1);
-            entityManager.persist(genre2);
+            entityManager.persist(member2);
 
             entityManager.flush();
             entityManager.clear();
@@ -150,12 +142,7 @@ public class MemberTest {
                 System.out.println(memberAchievement1.getMember().getEmail());
                 System.out.println("memberAchievement1.getGenre().getGenreName() = " + memberAchievement1.getGenre().getGenreName());
                 System.out.println("memberAchievement1.getArchievementRank = " + memberAchievement1.getAchievementRank());
-
-                entityManager.flush();
-                entityManager.clear();
             }
-
-
         }
 
 
