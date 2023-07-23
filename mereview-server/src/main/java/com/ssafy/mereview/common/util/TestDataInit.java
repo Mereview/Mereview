@@ -17,12 +17,10 @@ public class TestDataInit {
     public void init() {
         Genre genre1 = Genre.builder()
                 .genreName("드라마")
-                .genreId("1")
                 .isUsing(true)
                 .build();
         Genre genre2 = Genre.builder()
                 .genreName("멜로")
-                .genreId("2")
                 .isUsing(true)
                 .build();
 

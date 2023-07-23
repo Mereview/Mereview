@@ -2,8 +2,8 @@ package com.ssafy.mereview.domain.member.entity;
 
 import com.ssafy.mereview.common.util.JwtUtils;
 import com.ssafy.mereview.domain.member.controller.MemberController;
-import com.ssafy.mereview.domain.member.controller.dto.req.MemberLoginDto;
-import com.ssafy.mereview.domain.member.controller.dto.req.MemberRegisterDto;
+import com.ssafy.mereview.domain.member.controller.dto.req.MemberLoginRequest;
+import com.ssafy.mereview.domain.member.controller.dto.req.MemberRegisterRequest;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
 import com.ssafy.mereview.domain.member.service.MemberService;
@@ -65,18 +65,19 @@ class MemberAuthTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService, memberRepository, memberQueryRepository, jwtUtils, passwordEncoder)).build();
+        MemberController memberController = new MemberController(memberQueryRepository, memberRepository, memberService, jwtUtils, passwordEncoder);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
     }
 
 
     @Test
     public void signUpTest() throws Exception {
         //Given
-        MemberRegisterDto memberRegisterDto = new MemberRegisterDto();
+        MemberRegisterRequest memberRegisterDto = new MemberRegisterRequest();
         memberRegisterDto.setEmail("test@example.com");
         memberRegisterDto.setPassword("password123");
 
-        SaveMemberDto savedMember = new SaveMemberDto("test@example.com", "encryptedPassword");
+        SaveMemberDto savedMember = new SaveMemberDto("test@example.com", "encryptedPassword", null);
         when(passwordEncoder.encode("password123")).thenReturn("encryptedPassword");
         when(memberService.saveMember(any(SaveMemberDto.class))).thenReturn(1L);
 
@@ -94,11 +95,14 @@ class MemberAuthTest {
     @Test
     public void loginTest() throws Exception {
         // Given
-        MemberLoginDto memberLoginDto = new MemberLoginDto();
+        MemberLoginRequest memberLoginDto = new MemberLoginRequest();
         memberLoginDto.setEmail("test@example.com");
         memberLoginDto.setPassword("password123");
 
-        Member savedMember = new Member("test@example.com", "encryptedPassword", "test", null);
+        Member savedMember = Member.builder()
+                .email("test@example.com")
+                .password("encryptedPassword")
+                .build();
         when(memberQueryRepository.searchByEmail("test@example.com")).thenReturn(savedMember);
         when(passwordEncoder.matches("password123", savedMember.getPassword())).thenReturn(true);
 
