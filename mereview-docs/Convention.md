@@ -84,7 +84,7 @@ MR/S09P12C211-120/FEAT-MOVIE/feat:영화 Entity 개발
 | 필터 이름 | JQL |
 |:---:|:---:|
 | FE 컴포넌트 | issuetype in (Bug, Story, Epic, Task) AND component = FE |
-| BE 컴포넌트 | issuetype in (Bug, Story, Epic, Task) AND component = BE ORDER BY created DESC |
+| BE 컴포넌트 | issuetype in (Bug, Story, Epic, Task) AND component = BE |
 | 작업 이슈타입 | issuetype = Task | 
 | 스토리 이슈타입 | issuetype = Story | 
 | 나or미할당 이슈만 | issuetype in (Bug, Story, Epic, Task) AND assignee in (currentUser(), EMPTY) |
