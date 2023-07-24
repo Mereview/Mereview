@@ -1,0 +1,23 @@
+input {
+  color: black;
+}
+
+.input-line {
+  border: none;
+  border-bottom: solid black 1px;
+  padding: 10px;
+  padding-left: 3px;
+  outline: none;
+}
+.input-line::placeholder {
+  font-size: 12px;
+}
+.input-box {
+  border: solid black 1px;
+  padding: 10px;
+  padding-left: 3px;
+  border-radius: 4px;
+}
+.input-box::placeholder {
+  font-size: 12px;
+}
