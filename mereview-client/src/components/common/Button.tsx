@@ -3,14 +3,13 @@ import "./Button.css";
 
 interface ButtonProps {
   styles: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   text: string;
-  value?: string | number;
 }
 
-function Button({ styles, onClick, text, value }: ButtonProps) {
+function Button({ styles, onClick, text }: ButtonProps) {
   return (
-    <button className={styles} onClick={onClick} value={value}>
+    <button className={styles} onClick={onClick}>
       {text}
     </button>
   );
