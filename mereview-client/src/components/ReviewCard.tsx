@@ -1,5 +1,5 @@
 import React from "react";
-import "./ReviewCard.css";
+import "../styles/css/ReviewCard.css";
 
 interface ReviewCardProps {
   reviewId: number;
