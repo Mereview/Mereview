@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/css/ReviewCard.css";
+import image from "./Color.png";
 
 interface ReviewCardProps {
   reviewId: number;
@@ -50,6 +51,7 @@ const ReviewCard = (props: ReviewCardProps) => {
       <p>영화제목: {movieTitle}</p>
       <p>개봉년도: {releaseYear}</p>
       <p>영화장르: {movieGenre}</p>
+      <img src={image} />
     </div>
   );
 };
