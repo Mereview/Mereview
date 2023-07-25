@@ -1,5 +1,5 @@
 const IndexPage = (props: any) => {
-  return <div></div>;
+  return <div>IndexPage</div>;
 };
 
 export default IndexPage;
