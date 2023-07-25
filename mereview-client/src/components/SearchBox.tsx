@@ -1,21 +1,16 @@
 import React from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 import "../styles/css/SearchBox.css";
 
 const SearchBox = () => {
   return (
-    <div>
-      Hello?
-      <Row>
-        <Col>col1 ^^!</Col>
-        <div className="col">col2 ^&^</div>
-      </Row>
-      <div className="row">
-        <Col>col1 ^@^!</Col>
-        <div className="col">col2 ^&!^</div>
-      </div>
-    </div>
+    <>
+      <Form.Control
+        className="search-box"
+        type="text"
+        placeholder="제목, 장르로 검색"
+      />
+    </>
   );
 };
 

@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["../scss/Style.scss","../scss/ReviewCard.scss"],"names":[],"mappings":"AAAQ;AACA;AACA;AACA;ACDR;EACE,ODWO;;ACVP;EACE,ODqBQ;ECpBR,aDEU","file":"ReviewCard.css"}
+{"version":3,"sourceRoot":"","sources":["../scss/Style.scss","../scss/ReviewCard.scss"],"names":[],"mappings":"AAAQ;AACA;AACA;AACA;ACDR;EACE,ODqBO;;ACpBP;EACE,OD+BQ;EC9BR,aDEU","file":"ReviewCard.css"}
