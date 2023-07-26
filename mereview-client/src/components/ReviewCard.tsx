@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/css/ReviewCard.css";
 import image from "./Color.png";
+import SearchBox from "./SearchBox";
 
 interface ReviewCardProps {
   reviewId: number;
@@ -52,6 +53,7 @@ const ReviewCard = (props: ReviewCardProps) => {
       <p>개봉년도: {releaseYear}</p>
       <p>영화장르: {movieGenre}</p>
       <img src={image} />
+      <SearchBox />
     </div>
   );
 };

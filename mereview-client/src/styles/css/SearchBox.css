@@ -2,5 +2,12 @@
 @import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
 @import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
 @import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+.search-box {
+  width: 30%;
+  max-width: 400px;
+  min-width: 200px;
+  font-family: "NanumGothic";
+  font-size: 12px;
+}
 
 /*# sourceMappingURL=SearchBox.css.map */

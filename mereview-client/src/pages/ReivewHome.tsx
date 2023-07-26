@@ -1,5 +1,5 @@
 const ReivewHome = (props: any) => {
-  return <div></div>;
+  return <div>ReviewHome</div>;
 };
 
 export default ReivewHome;

@@ -1,5 +1,5 @@
 const ReviewDetail = (props: any) => {
-  return <div></div>;
+  return <div>ReviewDetail</div>;
 };
 
 export default ReviewDetail;
