@@ -3,6 +3,7 @@ import "../../styles/css/LoginForm.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import { useState } from "react";
+import { request } from "http";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -16,11 +17,36 @@ const LoginForm = () => {
   };
   const Login = (event: any) => {
     event.preventDefault();
+    const url = "http://localhost:80/api/auth/login";
     const userData = {
       email,
       password,
     };
-    console.log(userData);
+    console.log(userData)
+
+    const requestOption: RequestInit = {
+      method : "POST",
+      headers: {
+        "Content-Type" : "application/json",
+      },
+      body : JSON.stringify(userData)
+    }
+
+    fetch(url, requestOption)
+    .then((res) => {
+      if(!res.ok){
+        throw new Error("Network response was not ok");
+      }
+      return res.json();
+    })
+    .then((data) =>{
+      console.log(data);
+    })
+    .catch((err)=>{
+      console.log(err.data);
+    })
+
+    
   };
 
   return (
