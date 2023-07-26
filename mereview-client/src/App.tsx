@@ -17,7 +17,7 @@ function App() {
           <Route path="/test" Component={TestPage}></Route>
           <Route path="/review" Component={ReviewHome}></Route>
           <Route path="/review/write" Component={ReviewWrite}></Route>
-          <Route path="/review/detail" Component={ReviewDetail}></Route>
+          <Route path="/detail" Component={ReviewDetail}></Route>
           <Route path="/profile" Component={ProfilePage}></Route>
         </Routes>
       </Router>
