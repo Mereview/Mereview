@@ -16,7 +16,8 @@ const SelectProfileImage = () => {
           className="selectImg"
           onClick={selectImg}
           style={{ backgroundImage: `url(${selectedImage})` }}
-        ></div>
+        >
+        </div>
       </Row>
       <Row></Row>
     </Container>

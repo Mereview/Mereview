@@ -5,23 +5,27 @@ import SelectProfileImage from "./SelectProfileImage";
 interface InputDataTypes {
   [key: string]: null | string;
   email: null | string;
-  password1: null | string;
+  password: null | string;
   password2: null | string;
   nickname: null | string;
   birth: null | string;
   gender: null | string;
 }
 
+
+
 const SignUp = () => {
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별을 상태로 관리합니다.
   const [inputData, setInputData] = useState<InputDataTypes>({
     email: null,
-    password1: null,
+    password: null,
     password2: null,
     nickname: null,
     birth: null,
     gender: null,
   });
+
+  
   //
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
@@ -33,15 +37,52 @@ const SignUp = () => {
       [id]: value,
     }));
   };
+
+  
+
+
   const submitData = (event: any) => {
     event.preventDefault();
     for (const key in inputData) {
       if (inputData[key] === null) {
+        console.log(inputData)
         alert("모든 정보를 입력해주세요!");
         return;
       }
     }
-    // 보내는함수 작성
+
+    const requestData = {
+      email : inputData.email,
+      password : inputData.password,
+      interests : [],
+
+    }
+
+    const requestOption: RequestInit = {
+      method : "POST",
+      headers: {
+        "Content-Type" : "application/json",
+      },
+      body : JSON.stringify(requestData)
+    }
+
+    const url = "http://localhost:80/api/auth/signup"
+    //서버에 회원가입 요청 보내기
+    fetch(url, requestOption)
+    .then((res) => {
+      if(!res.ok){
+        throw new Error("URL을 잘못 입력하였습니다.");
+      }
+      return res.json();
+    })
+    .then((data) =>{
+      console.log(data);
+    })
+    .catch((err)=>{
+      console.log(err.data);
+    })
+
+
   };
   return (
     <Container>
@@ -68,13 +109,13 @@ const SignUp = () => {
 
                   <div className="form-floating mb-3 p-0 mx-auto">
                     <Input
-                      id="password1"
+                      id="password"
                       styles="input-line form-control bg-transparent text-black"
                       placeholder="Password"
                       onChange={onChange}
                       type="password"
                     />
-                    <label className="fw-bold" htmlFor="password1">
+                    <label className="fw-bold" htmlFor="password">
                       Password
                     </label>
                   </div>
@@ -86,7 +127,7 @@ const SignUp = () => {
                       onChange={onChange}
                       type="password"
                     />
-                    <label className="fw-bold" htmlFor="password1">
+                    <label className="fw-bold" htmlFor="password2">
                       Password Confirmation
                     </label>
                   </div>
@@ -97,7 +138,7 @@ const SignUp = () => {
                       placeholder="닉네임을 입력해주세요"
                       onChange={onChange}
                     />
-                    <label className="fw-bold" htmlFor="password1">
+                    <label className="fw-bold" htmlFor="password">
                       닉네임을 입력해주세요
                     </label>
                   </div>
@@ -109,7 +150,7 @@ const SignUp = () => {
                       onChange={onChange}
                       type="date"
                     />{" "}
-                    <label className="fw-bold" htmlFor="password1">
+                    <label className="fw-bold" htmlFor="password">
                       생년월일을 입력해주세요
                     </label>
                   </div>
