@@ -1,0 +1,18 @@
+@import "./Style.scss";
+.t-right {
+  text-align: right;
+}
+.c-img {
+  margin-left: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid rgb(209, 240, 122);
+}
+.i-box {
+  height: 450px;
+}
+.f-in {
+  color: $blue-10;
+}
