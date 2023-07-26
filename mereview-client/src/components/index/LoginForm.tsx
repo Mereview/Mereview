@@ -6,51 +6,51 @@ import { useState } from "react";
 import { request } from "http";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
   const onChange = (event: any) => {
-    if (event.target.id === "email") {
-      setEmail(event.target.value);
-    } else if (event.target.id === "password") {
-      setPassword(event.target.value);
-    }
+    const { id, value } = event.target;
+    setLoginData((prevInputData) => ({
+      ...prevInputData,
+      [id]: value,
+    }));
   };
   const Login = (event: any) => {
     event.preventDefault();
     const url = "http://localhost:80/api/auth/login";
     const userData = {
-      email,
-      password,
+      email: loginData.email,
+      password: loginData.password,
     };
-    console.log(userData)
+    console.log(userData);
 
     const requestOption: RequestInit = {
-      method : "POST",
+      method: "POST",
       headers: {
-        "Content-Type" : "application/json",
+        "Content-Type": "application/json",
       },
-      body : JSON.stringify(userData)
-    }
+      body: JSON.stringify(userData),
+    };
 
     fetch(url, requestOption)
-    .then((res) => {
-      if(!res.ok){
-        throw new Error("Network response was not ok");
-      }
-      return res.json();
-    })
-    .then((data) =>{
-      console.log(data);
-    })
-    .catch((err)=>{
-      console.log(err.data);
-    })
-
-    
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err.data);
+      });
   };
 
   return (
-    <Container>
+    <Container style={{ width: "40rem" }}>
       <Row>
         <form onSubmit={Login}>
           <Row>
@@ -58,13 +58,13 @@ const LoginForm = () => {
               id="email"
               placeholder="Email"
               onChange={onChange}
-              value={email}
+              value={loginData.email}
             />
             <FloatLabelInput
               id="password"
               placeholder="Password"
               onChange={onChange}
-              value={password}
+              value={loginData.password}
               type="password"
             />
           </Row>

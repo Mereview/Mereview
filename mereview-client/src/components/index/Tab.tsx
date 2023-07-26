@@ -8,32 +8,41 @@ import { useState } from "react";
 const Tab = () => {
   const [tabToggle, setTabToggle] = useState(true);
   const toggleHandler = (event: any) => {
-    if (event.target.id === "login tab") {
+    const id = event.target.id;
+    console.log(event.target.id);
+    if (id === "login Tab") {
+      setTabToggle(true);
+    } else if (id === "signup Tab") {
+      setTabToggle(false);
     }
   };
+  console.log(tabToggle);
   return (
     <Container>
-      <Row>
-        <Col className="align-item-center">
+      <Row style={{ height: "100%vh - 86px" }}>
+        <Col lg={1} className="align-item-center">
+          <div style={{ height: "400px" }}></div>
           <div>
             <button className="Tab" id="login Tab" onClick={toggleHandler}>
               LOGIN
             </button>
           </div>
           <div>
-            <button id="signup Tab">SIGN UP</button>
+            <button className="Tab" id="signup Tab" onClick={toggleHandler}>
+              SIGN UP
+            </button>
           </div>
         </Col>
-        <Col>
+
+        <Col lg={11}>
           <Row className="justify-content-center mt-5 mb-5">
-            <img style={{ width: "500px" }} src="logo2.png" alt="Logo" />
+            <img
+              style={{ width: "500px", marginBottom: "100px" }}
+              src="logo2.png"
+              alt="Logo"
+            />
           </Row>
-          <Row>
-            <LoginForm></LoginForm>
-          </Row>
-          <Row>
-            <SignUp></SignUp>
-          </Row>
+          <Row>{tabToggle ? <LoginForm /> : <SignUp />}</Row>
         </Col>
       </Row>
     </Container>
