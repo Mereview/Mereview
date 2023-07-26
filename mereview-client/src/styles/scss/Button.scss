@@ -1,10 +1,7 @@
-@import url("https://webfontworld.github.io/woowahan/BMDoHyeon.css");
-@import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
-@import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
-@import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+@import "Style";
 
 .btn-primary {
-  background-color: #7189bf;
+  background-color: $blue-5;
   color: white;
   width: 7rem;
   height: 3rem;
@@ -19,11 +16,11 @@
 }
 .btn-primary:hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
-  background-color: #2c406e;
+  background-color: $blue-9;
 }
 
 .btn-secondary {
-  background-color: #df7599;
+  background-color: $magenta-5;
   color: white;
   width: 7rem;
   height: 3rem;
@@ -40,11 +37,11 @@
 
 .btn-secondary:hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
-  background-color: #99415f;
+  background-color: $magenta-9;
 }
 
 .btn-third {
-  background-color: #ffc785;
+  background-color: $yellow-5;
   color: white;
   width: 7rem;
   height: 3rem;
@@ -61,11 +58,11 @@
 
 .btn-third:hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
-  background-color: #a27a4b;
+  background-color: $yellow-9;
 }
 
 .btn-fourth {
-  background-color: #72d6c9;
+  background-color: $mint-5;
   color: white;
   width: 7rem;
   height: 3rem;
@@ -82,5 +79,5 @@
 
 .btn-fourth:hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
-  background-color: #40857c;
+  background-color: $mint-9;
 }
