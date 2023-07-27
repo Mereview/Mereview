@@ -1,21 +1,35 @@
 import { Form, Container, Row, Col } from "react-bootstrap";
-import React, { useState, useRef } from "react";
-import "../styles/css/ReviewWrite.css";
+import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
+import Slider from "@material-ui/core/Slider/Slider";
+import React, { useState, useRef, useCallback } from "react";
+import "../styles/css/ReviewWrite.css";
 
 const ReviewWrite = () => {
   const [nickname, setNickname] = useState("닉네임");
   const [profile, setProfile] = useState("/logo2.png");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const selectedFileHandler = (event: any) => {
-    setSelectedFile(event.target.files[0].name);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [blurPoint, setBlurPoint] = useState<number>(0);
+  const blurPointHandler = (
+    event: React.ChangeEvent<{}>,
+    newValue: number | number[]
+  ) => {
+    setBlurPoint(newValue as number);
   };
-  const imgInput = useRef<HTMLInputElement>(null);
-  const onClickImgInput = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (imgInput.current) {
-      imgInput.current.click();
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
+      setSelectedImage(objectURL);
     }
-  };
+  }, []);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+    },
+    maxFiles: 1,
+  });
   return (
     <Container className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5">
       <Row className="mt-5">
@@ -38,24 +52,42 @@ const ReviewWrite = () => {
       </Row>
       <Row className="mx-4 my-4">
         <Col>
-          <div className="border rounded-2 border-5 i-box"></div>
+          <div className="border rounded-2 border-5 i-box">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                className="img-preview"
+                style={{ filter: `blur(${blurPoint / 50}px)` }}
+              />
+            ) : (
+              <img
+                src={"/defaultProfile.png"}
+                className="img-preview"
+                style={{ filter: `blur(${blurPoint / 50}px)` }}
+              />
+            )}
+          </div>
         </Col>
         <Col>
           <Row>
-            <div>
-              <input
-                type="file"
-                id="imgFile"
-                ref={imgInput}
-                style={{ display: "none" }}
-                onChange={selectedFileHandler}
-              ></input>
-              <p>{selectedFile}</p>
-              <Button onClick={onClickImgInput} text="버튼"></Button>
-            </div>
+            <Col
+              md={9}
+              className="my-auto text-center border border-5 rounded-2"
+            >
+              {/* {selectedImage} */}
+            </Col>
+            <Col md={3} className="t-right">
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <Button styles="btn-primary" text="첨부"></Button>
+              </div>
+            </Col>
           </Row>
           <Row>
-            <div>tets</div>
+            <Col className="my-auto text-center border border-5 rounded-2">
+              <p>Blur Guage : {blurPoint}</p>
+              <Slider value={blurPoint} onChange={blurPointHandler} />
+            </Col>
           </Row>
         </Col>
       </Row>
