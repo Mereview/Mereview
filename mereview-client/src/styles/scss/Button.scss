@@ -1,0 +1,83 @@
+@import "Style";
+
+.btn-primary {
+  background-color: $blue-5;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+.btn-primary:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: $blue-9;
+}
+
+.btn-secondary {
+  background-color: $magenta-5;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-secondary:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: $magenta-9;
+}
+
+.btn-third {
+  background-color: $yellow-5;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-third:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: $yellow-9;
+}
+
+.btn-fourth {
+  background-color: $mint-5;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-fourth:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: $mint-9;
+}

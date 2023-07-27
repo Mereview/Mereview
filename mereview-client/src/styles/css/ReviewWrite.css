@@ -1,0 +1,50 @@
+@charset "UTF-8";
+@import url("https://webfontworld.github.io/woowahan/BMDoHyeon.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
+@import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+.t-right {
+  text-align: right;
+}
+
+.c-img {
+  margin-left: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid rgb(209, 240, 122);
+}
+
+.i-box {
+  height: 450px;
+}
+
+.f-in {
+  color: #24304a;
+}
+
+.fixed-container {
+  max-width: 1200px; /* 원하는 최대 너비를 설정합니다 */
+  margin: 0 auto; /* 가운데 정렬을 위해 margin을 auto로 설정합니다 */
+}
+
+.fixed-row {
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-wrap: wrap; /* 내용이 컬럼 너비를 초과하면 줄바꿈 */
+}
+
+.fixed-col {
+  flex: 0 0 50%; /* 컬럼 너비를 50%로 고정합니다 */
+  overflow: hidden; /* 내용이 컬럼을 넘어가면 잘리도록 합니다 */
+  padding: 10px; /* 선택적으로 패딩을 추가할 수 있습니다 */
+}
+
+.img-preview {
+  background-color: black;
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+
+/*# sourceMappingURL=ReviewWrite.css.map */

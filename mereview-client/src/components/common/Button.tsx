@@ -1,16 +1,15 @@
 import React from "react";
-import "./Button.css";
-
+import "../../styles/css/Button.css";
 interface ButtonProps {
-  styles: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  text: string;
-  value?: string | number;
+  styles?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  btnType?: "button" | "submit" | "reset";
+  text?: string;
 }
 
-function Button({ styles, onClick, text, value }: ButtonProps) {
+function Button({ styles, onClick, text, btnType }: ButtonProps) {
   return (
-    <button className={styles} onClick={onClick} value={value}>
+    <button className={styles} onClick={onClick} type={btnType}>
       {text}
     </button>
   );

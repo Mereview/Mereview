@@ -1,0 +1,86 @@
+@charset "UTF-8";
+@import url("https://webfontworld.github.io/woowahan/BMDoHyeon.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
+@import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+.btn-primary {
+  background-color: #88a2dc;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-primary:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: #354568;
+}
+
+.btn-secondary {
+  background-color: #df7599;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-secondary:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: #6a2c41;
+}
+
+.btn-third {
+  background-color: #e2ad70;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-third:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: #6d4e2a;
+}
+
+.btn-fourth {
+  background-color: #72d6c9;
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  font-size: 1em; /* 폰트 크기를 1em으로 설정 */
+  font-weight: bold;
+  border: solid 1px white;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  margin: 6px;
+}
+
+.btn-fourth:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  background-color: #29615a;
+}
+
+/*# sourceMappingURL=Button.css.map */

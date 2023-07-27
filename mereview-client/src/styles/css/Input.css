@@ -5,6 +5,7 @@ input {
 .input-line {
   border: none;
   border-bottom: solid black 1px;
+  border-radius: 0px;
   padding: 10px;
   padding-left: 3px;
   outline: none;
@@ -13,9 +14,8 @@ input {
   font-size: 12px;
 }
 .input-box {
-  border: solid black 1px;
   padding: 10px;
-  padding-left: 3px;
+  padding-left: 5px;
   border-radius: 4px;
 }
 .input-box::placeholder {
