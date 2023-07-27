@@ -4,8 +4,11 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import { useState } from "react";
 import { request } from "http";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-slice";
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -17,6 +20,9 @@ const LoginForm = () => {
       [id]: value,
     }));
   };
+
+  ///로그인 로직
+
   const Login = (event: any) => {
     event.preventDefault();
     const url = "http://localhost:80/api/auth/login";
@@ -24,8 +30,10 @@ const LoginForm = () => {
       email: loginData.email,
       password: loginData.password,
     };
-    console.log(userData);
-
+    if (userData.email === "" || userData.password === "") {
+      alert("아이디와 비밀번호를 확인해주세요!");
+      return;
+    }
     const requestOption: RequestInit = {
       method: "POST",
       headers: {
@@ -42,7 +50,7 @@ const LoginForm = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        dispatch(userActions.login(data));
       })
       .catch((err) => {
         console.log(err.data);

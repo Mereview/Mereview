@@ -5,13 +5,22 @@ const userSlice = createSlice({
   initialState: {
     isAthenticated: false,
     token: "",
+    email: "",
+    profileURL: "",
+    gender: "",
+    birth: "",
+    interest: [],
   },
   reducers: {
-    login(state) {
+    login(state, payload) {
       state.isAthenticated = !state.isAthenticated;
+      // state.email = payload
+      // state.profileURL = payload
+      // state.gender = payload
+      // state.birth = 'a'
     },
   },
 });
 
 export default userSlice;
-export const uiActions = userSlice.actions;
+export const userActions = userSlice.actions;

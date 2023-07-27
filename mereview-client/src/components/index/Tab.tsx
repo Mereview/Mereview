@@ -4,6 +4,7 @@ import "../../styles/css/Tab.css";
 import SignUp from "./SignUp";
 import { Input, Button, FloatLabelInput } from "../common/index";
 import { useState } from "react";
+import { Modal } from "react-bootstrap";
 
 const Tab = () => {
   const [tabToggle, setTabToggle] = useState(true);
@@ -18,7 +19,7 @@ const Tab = () => {
   };
   console.log(tabToggle);
   return (
-    <Container>
+    <Container style={{ overflow: "hidden" }}>
       <Row style={{ height: "100%vh - 86px" }}>
         <Col lg={1} className="align-item-center">
           <div style={{ height: "400px" }}></div>
