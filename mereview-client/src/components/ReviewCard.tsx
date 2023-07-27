@@ -1,26 +1,13 @@
 import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { ReviewCardInterface } from "./interface/ReviewCardInterface";
 import "../styles/css/ReviewCard.css";
-import image from "./Color.png";
-import SearchBox from "./SearchBox";
 
-interface ReviewCardProps {
-  reviewId: number;
-  memberId: string;
-  nickname: string;
-  profileImagePath: string;
-  backgroundImagePath: string;
-  funnyCount: number;
-  usefulCount: number;
-  notLikeCount: number;
-  commentCount: number;
-  movieTitle: string;
-  releaseYear: number;
-  movieGenre: string;
-  onClickProfile: (event: React.MouseEvent<HTMLParagraphElement>) => void;
-  onClickTitle: (event: React.MouseEvent<HTMLParagraphElement>) => void;
-}
+type Style = {
+  [key: string]: string | number;
+};
 
-const ReviewCard = (props: ReviewCardProps) => {
+const ReviewCard = (props: ReviewCardInterface) => {
   const {
     reviewId,
     memberId,
@@ -29,32 +16,54 @@ const ReviewCard = (props: ReviewCardProps) => {
     backgroundImagePath,
     funnyCount,
     usefulCount,
-    notLikeCount,
+    dislikeCount,
     commentCount,
     movieTitle,
     releaseYear,
     movieGenre,
+    createDate,
+    recommend,
     onClickProfile,
     onClickTitle,
   } = props;
 
+  const cardStyle: Style = {
+    backgroundImage: `url(${backgroundImagePath})`,
+  };
+
+  const formattedCreateDate: Date = new Date(createDate);
+  const year: number = formattedCreateDate.getFullYear();
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  );
+  const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
+  const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
+    2,
+    "0"
+  );
+
   return (
-    <div className="card">
-      <p>리뷰아이디: {reviewId}</p>
-      <p>멤버아이디: {memberId}</p>
-      <p>별명: {nickname}</p>
-      <p onClick={onClickProfile}>프로필이미지: {profileImagePath}</p>
-      <p onClick={onClickTitle}>배경이미지: {backgroundImagePath}</p>
-      <p>재밌어요: {funnyCount}</p>
-      <p>유용해요: {usefulCount}</p>
-      <p>별로에요: {notLikeCount}</p>
-      <p>댓글수: {commentCount}</p>
-      <p>영화제목: {movieTitle}</p>
-      <p>개봉년도: {releaseYear}</p>
-      <p>영화장르: {movieGenre}</p>
-      <img src={image} />
-      <SearchBox />
-    </div>
+    <>
+      <div className="card" style={cardStyle}>
+        <div className="card-overlay">
+          <Row>
+            <Col md={"auto"} className="date">
+              {year}-{month}-{day} {hour}:{minute}
+            </Col>
+            <Col className="evaluation">
+              <span>재밌어요: {funnyCount}</span> |{" "}
+              <span>유용해요: {usefulCount}</span> |{" "}
+              <span>별로에요: {dislikeCount}</span> |{" "}
+              <span>Comment: {commentCount}</span>
+            </Col>
+          </Row>
+          <Row>한줄평</Row>
+          <Row></Row>
+        </div>
+      </div>
+    </>
   );
 };
 
