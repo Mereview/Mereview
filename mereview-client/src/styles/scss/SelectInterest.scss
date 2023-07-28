@@ -13,11 +13,20 @@
   transform: translateX(-50%);
   justify-content: center;
   padding: 0px;
-  h1 {
-    width: 100%;
-    text-align: center;
-    margin: 5px 5px;
+
+  .title {
+    display: flex;
+    justify-content: center;
+    button {
+      width: 50px;
+    }
+    h1 {
+      width: 75%;
+      text-align: center;
+      margin: 5px 5px;
+    }
   }
+
   .middle-box {
     display: flex;
     flex-wrap: wrap; /* 줄바꿈 설정 */
