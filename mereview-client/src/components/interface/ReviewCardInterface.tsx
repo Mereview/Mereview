@@ -4,13 +4,14 @@ export interface ReviewCardInterface {
   nickname: string;
   profileImagePath: string;
   backgroundImagePath: string;
+  oneLineReview: string;
   funnyCount: number;
   usefulCount: number;
   dislikeCount: number;
   commentCount: number;
   movieTitle: string;
   releaseYear: number;
-  movieGenre: string;
+  movieGenre: string[];
   createDate: number | Date;
   recommend: boolean;
   onClickProfile: (event: React.MouseEvent<HTMLParagraphElement>) => void;

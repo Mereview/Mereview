@@ -14,6 +14,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     nickname,
     profileImagePath,
     backgroundImagePath,
+    oneLineReview,
     funnyCount,
     usefulCount,
     dislikeCount,
@@ -31,6 +32,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
     backgroundImage: `url(${backgroundImagePath})`,
   };
 
+  const recommendStyle: Style = {
+    opacity:
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount),
+  };
+
   const formattedCreateDate: Date = new Date(createDate);
   const year: number = formattedCreateDate.getFullYear();
   const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
@@ -43,6 +49,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     2,
     "0"
   );
+  const genres: string = movieGenre.join(". ");
 
   return (
     <>
@@ -59,8 +66,40 @@ const ReviewCard = (props: ReviewCardInterface) => {
               <span>Comment: {commentCount}</span>
             </Col>
           </Row>
-          <Row>한줄평</Row>
-          <Row></Row>
+          <Row>
+            <Col>
+              <span className="one-line-review">{oneLineReview}</span>
+            </Col>
+          </Row>
+          <div className="additional-info">
+            <Row>
+              <Col className="profile-container">
+                <div className="profile-img">
+                  <img src={profileImagePath} alt="Profile" />
+                </div>
+                <span className="nickname">{nickname}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <span className="movie-title">{movieTitle}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <span className="year-genres">
+                  {releaseYear} | {genres}
+                </span>
+              </Col>
+            </Row>
+            <div className="recommend" style={recommendStyle}>
+              {recommend ? (
+                <img src="/ReviewCardDummy/thumbsup.png" alt="추천!!" />
+              ) : (
+                <img src="/ReviewCardDummy/thumbsdown.png" alt="비추!!" />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </>

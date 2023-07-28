@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":[],"names":[],"mappings":"","file":"ReviewList.css"}
+{"version":3,"sourceRoot":"","sources":["../scss/Style.scss","../scss/ReviewList.scss"],"names":[],"mappings":"AAAQ;AACA;AACA;AACA;ACAR;EACE;EACA;EACA;EACA;EACA","file":"ReviewList.css"}
