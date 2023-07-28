@@ -1,13 +1,21 @@
-import React from "react";
 import { Container } from "react-bootstrap";
-import { ReviewCardInterface } from "./interface/ReviewCardInterface";
+import ReviewCard from "../components/ReviewCard";
+import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 
-function ReviewList(props: ReviewCardInterface[]) {
+interface ReviewListProps {
+  reviewList: ReviewCardInterface[];
+}
+
+const ReviewList = ({ reviewList }: ReviewListProps) => {
   return (
     <>
-      <Container></Container>
+      <Container>
+        {reviewList.map((review: ReviewCardInterface, index: number) =>
+          ReviewCard(review)
+        )}
+      </Container>
     </>
   );
-}
+};
 
 export default ReviewList;

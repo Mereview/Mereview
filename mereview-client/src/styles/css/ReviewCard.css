@@ -5,9 +5,12 @@
 .card {
   display: inline-block;
   border: solid 2px #000;
-  width: 500px;
-  height: 300px;
+  width: 30%;
+  height: 0;
   padding: 10px;
+  padding-bottom: 17%;
+  min-width: 250px;
+  min-height: 142px;
   margin: 10px;
   background-size: cover;
   font-family: "BMDoHyeon";
