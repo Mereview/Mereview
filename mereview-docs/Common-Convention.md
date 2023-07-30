@@ -1,12 +1,7 @@
-# 컨벤션
-
-- **컨벤션 정리**
-- **커밋, MR, 지라 등**
-- **코딩 컨벤션 X (프론트, 백끼리 알아서 협의)**
-
----
+# 공통 컨벤션
 
 ### ✔Git Flow
+
 - **메인 브랜치**
   - master : 제품으로 출시될 수 있는 브랜치
   - dev : 다음 출시 버전을 개발하는 브랜치
@@ -19,7 +14,11 @@
 
 <br>
 
+---
+
+
 ### ✔Commit Convention
+
 - 작업분류
   
 | 작업코드 | 예시작업내용 |
@@ -45,13 +44,20 @@ git commit -m "S09P12C211-120/FEAT-MOVIE/feat:영화 Entity 개발"
 
 <br>
 
+---
+
+
 ### ✔MR(Merge Request) Convention
+
 - **MR/[이슈번호]/[branch]/[작업분류]:[작업내용]**
 ```jsx
 MR/S09P12C211-120/FEAT-MOVIE/feat:영화 Entity 개발
 ```
 
 <br>
+
+---
+
 
 ### ✔Jira Convention
 
@@ -93,5 +99,8 @@ MR/S09P12C211-120/FEAT-MOVIE/feat:영화 Entity 개발
 
 <br>
 
-### ✔참고자료
-- [Git Flow 전략](https://techblog.woowahan.com/2553/)
+
+### ✔참조문서
+
+ - [FE 컨벤션](./FE-Convention.md)
+ - [BE 컨벤션](./BE-Convention.md)
