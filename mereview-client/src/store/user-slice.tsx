@@ -6,10 +6,16 @@ const userSlice = createSlice({
     isAthenticated: false,
     token: "",
     email: "",
-    profileURL: "",
-    gender: "",
-    birth: "",
-    interest: [],
+    nickname: "",
+    signUpData: {
+      email: "",
+      password: "",
+      nickname: "",
+      profileURL: "",
+      birth: "",
+      gender: "",
+      interest: [],
+    },
   },
   reducers: {
     login(state, payload) {
@@ -19,6 +25,8 @@ const userSlice = createSlice({
       // state.gender = payload
       // state.birth = 'a'
     },
+    signUp_step1(state, payload) {},
+    signUp_step2(state, payload) {},
   },
 });
 
