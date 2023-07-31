@@ -5,11 +5,17 @@ interface ButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   btnType?: "button" | "submit" | "reset";
   text?: string;
+  disabled?: boolean;
 }
 
-function Button({ styles, onClick, text, btnType }: ButtonProps) {
+function Button({ styles, onClick, text, btnType, disabled }: ButtonProps) {
   return (
-    <button className={styles} onClick={onClick} type={btnType}>
+    <button
+      className={`${styles} ${disabled ? "disabled" : ""}`}
+      onClick={onClick}
+      type={btnType}
+      disabled={disabled}
+    >
       {text}
     </button>
   );

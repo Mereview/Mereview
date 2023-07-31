@@ -6,12 +6,13 @@ import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetail from "./pages/ReviewDetail";
 import ProfilePage from "./pages/ProfilePage";
 import NavigationBar from "./components/NavigationBar";
-
+import { useSelector } from "react-redux/es/hooks/useSelector";
 function App() {
+  const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
   return (
     <div className="App">
       <Router>
-        <NavigationBar />
+        {isAthenticated ? <NavigationBar /> : null}
         <Routes>
           <Route path="/" Component={IndexPage}></Route>
           <Route path="/test" Component={TestPage}></Route>

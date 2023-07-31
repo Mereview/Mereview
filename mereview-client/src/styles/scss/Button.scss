@@ -13,8 +13,13 @@
   align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   margin: 6px;
+
+  &:disabled {
+    background-color: $blue-2;
+    cursor: default;
+  }
 }
-.btn-primary:hover {
+.btn-primary:not(:disabled):hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   background-color: $blue-9;
 }
@@ -33,9 +38,13 @@
   align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   margin: 6px;
+  &:disabled {
+    background-color: $magenta-2;
+    cursor: default;
+  }
 }
 
-.btn-secondary:hover {
+.btn-secondary:not(:disabled):hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   background-color: $magenta-9;
 }
@@ -54,9 +63,13 @@
   align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   margin: 6px;
+  &:disabled {
+    background-color: $magenta-2;
+    cursor: default;
+  }
 }
 
-.btn-third:hover {
+.btn-third:not(:disabled):hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   background-color: $yellow-9;
 }
@@ -75,9 +88,13 @@
   align-items: center; /* 텍스트를 버튼 내부에 가운데로 정렬하기 위해 추가 */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   margin: 6px;
+  &:disabled {
+    background-color: $magenta-2;
+    cursor: default;
+  }
 }
 
-.btn-fourth:hover {
+.btn-fourth:not(:disabled):hover {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
   background-color: $mint-9;
 }

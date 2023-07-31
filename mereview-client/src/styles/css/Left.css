@@ -1,0 +1,43 @@
+@font-face {
+  font-family: "GowunDodum";
+  src: url("../fonts/GowunDodum-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GowunBatang";
+  src: url("../fonts/GowunBatang-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "BMDoHyeon";
+  src: url("../fonts/BMDOHYEON_ttf.ttf") format("truetype");
+}
+@font-face {
+  font-family: "NanumGothic";
+  src: url("../fonts/NanumGothic.ttf") format("truetype");
+}
+.ctn {
+  background-color: tomato;
+  height: 100vh;
+}
+.ctn .btn {
+  font-weight: bold;
+  font-size: 1.5em;
+  width: 100%;
+  height: 70px;
+  border-right: none;
+  background-color: tomato;
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  color: white;
+}
+.ctn .selected {
+  background-color: white !important;
+  color: black;
+}
+
+.blank {
+  height: 30vh;
+}
+
+/*# sourceMappingURL=Left.css.map */
