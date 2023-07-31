@@ -1,7 +1,7 @@
 import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
-import Slider from "@material-ui/core/Slider/Slider";
+import Slider from "@mui/material/Slider";
 import React, { useState, useRef, useCallback } from "react";
 import "../styles/css/ReviewWrite.css";
 
@@ -11,8 +11,9 @@ const ReviewWrite = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [blurPoint, setBlurPoint] = useState<number>(0);
   const blurPointHandler = (
-    event: React.ChangeEvent<{}>,
-    newValue: number | number[]
+    event: Event,
+    newValue: number | number[],
+    activeThumb: number
   ) => {
     setBlurPoint(newValue as number);
   };
@@ -85,7 +86,7 @@ const ReviewWrite = () => {
           </Row>
           <Row>
             <Col className="my-auto text-center border border-5 rounded-2">
-              <p>Blur Guage : {blurPoint}</p>
+              <p>Blur Gauge : {blurPoint}</p>
               <Slider value={blurPoint} onChange={blurPointHandler} />
             </Col>
           </Row>

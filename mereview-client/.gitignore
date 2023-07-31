@@ -24,3 +24,5 @@ yarn-error.log*
 
 # TestPage
 src/pages/TestPage.tsx
+
+.vs/
