@@ -1,0 +1,31 @@
+@import url("https://webfontworld.github.io/woowahan/BMDoHyeon.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
+@import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
+@import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+.ctn {
+  font: "GowunDodum";
+  background-color: tomato;
+  height: 100vh;
+}
+.ctn .btn {
+  font-weight: bold;
+  width: 100%;
+  height: 50px;
+  border-right: none;
+  background-color: tomato;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  color: white;
+}
+.ctn .selected {
+  background-color: white !important;
+  color: black;
+}
+
+.blank {
+  height: 30vh;
+}
+
+/*# sourceMappingURL=Left.css.map */

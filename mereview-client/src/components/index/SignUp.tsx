@@ -5,19 +5,12 @@ import ImageUploader from "../common/ImageUploader";
 import SelectInterest from "./SelectInterest";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-slice";
-interface InputDataTypes {
-  [key: string]: null | string;
-  email: null | string;
-  password: null | string;
-  password2: null | string;
-  nickname: null | string;
-  birth: null | string;
-  gender: null | string;
-}
+import { InputDataInterface, UserInterface } from "../interface/UserInterface";
 const SignUp = () => {
   const dispatch = useDispatch();
-  const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별을 상태로 관리합니다.
-  const [inputData, setInputData] = useState<InputDataTypes>({
+  // 초기 상태로서 빈 문자열 또는 null로 초기화합니다.
+  const [selectedGender, setSelectedGender] = useState<string>(""); // 선택된 성별을 상태로 관리합니다.
+  const [inputData, setInputData] = useState<InputDataInterface>({
     email: null,
     password: null,
     password2: null,
@@ -25,12 +18,13 @@ const SignUp = () => {
     birth: null,
     gender: null,
   });
-  const [valid, setValid] = useState(false);
+  const valid = useSelector((state: any) => state.user.thirdModal);
+
   //
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     if (id === "gender") {
-      setSelectedGender((prev) => value); // 바로 이렇게 바꿔도 되나...?
+      setSelectedGender(value); // 바로 이렇게 바꿔도 되나...?
     }
     setInputData((prevInputData) => ({
       ...prevInputData,
@@ -38,7 +32,7 @@ const SignUp = () => {
     }));
   };
 
-  const submitData = (event: any) => {
+  const signUp_step1 = (event: any) => {
     event.preventDefault();
     for (const key in inputData) {
       if (inputData[key] === null) {
@@ -47,8 +41,9 @@ const SignUp = () => {
         return;
       }
     }
-    setValid(true);
+    dispatch(userActions.modal_toggler());
     dispatch(userActions.signUp_step1(inputData));
+    console.log(valid);
   };
   return (
     <Container style={{ width: "40rem" }}>
@@ -57,7 +52,7 @@ const SignUp = () => {
           <ImageUploader />
         </Col>
         <Col>
-          <form onSubmit={submitData}>
+          <form onSubmit={signUp_step1}>
             <Row>
               <div className="form-floating mb-3 p-0 mx-auto">
                 <Input
