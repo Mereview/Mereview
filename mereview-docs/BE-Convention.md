@@ -17,7 +17,7 @@
   - 하나의 작업만 수행
   
 ```jsx
-public int createMember(){
+public int createMovie(){
     //...내용
 }
 ```
@@ -27,22 +27,34 @@ public int createMember(){
 - **클래스명은 파스칼케이스로 작성**
 
 ```jsx
-public class Member extends BaseEntity {
+public class Movie extends BaseEntity {
   //...내용
 }
 ```
   
 <br>
 
-- **URL, 파일명은 케밥케이스로 작성**
+- **파일명은 케밥케이스로 작성**
 
 ```jsx
-//URL
-@GetMapping("/change-password")
-
 //FILE
 test-file
 ```
+
+- **URL은 케밥케이스로 작성**
+  - url마지막에 / 생략
+  - 파일 확장자 x
+  - 행위 포함 x
+  - 명사 컨트롤 자원을 의미하는 경우 예외적으로 동사 사용
+
+```jsx
+@GetMapping("")     // 예시 작성 예정
+@PostMapping("")    //
+@PutMapping("")     //
+@DeleteMapping("")  //
+```
+
+<br>
 
 ---
 
@@ -61,12 +73,12 @@ test-file
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class Review extends BaseEntity {
+public class Movie extends BaseEntity {
 
     //...내용
 
     @Builder
-    private Review(){
+    public Movie(...){
         //...내용
     }
 }
@@ -75,18 +87,42 @@ public class Review extends BaseEntity {
 <br>
 
 - **Dto class**
-  - Getter, NoArgsConstructor 어노테이션 사용
+  - @Getter, @NoArgsConstructor 어노테이션 사용
   - Builder 패턴 사용
   - 값이 변경되는 비즈니스 로직은 Dto 클래스 안에서 수행
 
 <br>
 
 - **Request class**
-  - 유효성 검사는 controller에서 수행
   - 명명규칙 : [도메인][동작][동작위치]Request
 
 ```jsx
+//controller 에서 
+@Getter
+@NoArgsConstructor
+public class MovieCreateRequest{
+  
+  //...내용
 
+  @Builder
+  public MovieCreateRequest(...){
+    //...내용
+  }
+}
+```
+```jsx
+//service 에서
+@Getter
+@NoArgsConstructor
+public class MovieCreateServiceRequest{
+
+  //...내용
+
+  @Builder
+  public MovieCreateServiceRequest(...){
+    //...내용
+  }
+}
 ```
 
 <br>
@@ -97,10 +133,28 @@ public class Review extends BaseEntity {
   - 명명규칙 : [도메인][동작]Response
 
 ```jsx
-
+//예시 작성 예정
 ```
 
 <br>
+
+
+- **Controller class**
+  - @RestController, @RequestMapping, @RequiredArgsConstructor 어노테이션 사용
+  - 유효성 검사는 여기서 실행
+  
+```jsx
+@RestController
+@RequestMapping("/movies")
+@RequiredArgsConstructor
+public class MovieController {
+
+  //...내용
+}
+```
+
+<br>
+
 
 - **Service class**
   - @Service, @RequiredArgsConstructor 어노테이션 사용
@@ -109,17 +163,43 @@ public class Review extends BaseEntity {
   - class 객체로 사용 (interface 사용 x)
 
 ```jsx
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class MovieService{
 
+  //...내용
+}
+```
+```jsx
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class MovieQueryService{
+
+  //...내용
+}
 ```
 
 <br>
 
-- **Repository interface**
+- **Repository class, interface**
   - @Repository 어노테이션 사용
-  - QueryRepository와 Repository로 나눔
+  - Repository는 interface 사용 JpaRepository 상속
+  - QueryRepository는 class 사용 + @RequiredArgsConstructor 어노테이션 추가
 
 ```jsx
+@Repository
+public interface MovieRepository extends JpaRepository<Movie, Long>{
 
+}
+```
+```jsx
+@Repository
+@RequiredArgsConstructor
+public class MovieQueryRepository{
+  private final JPAQueryFactory queryFactory;
+}
 ```
 
 ---
