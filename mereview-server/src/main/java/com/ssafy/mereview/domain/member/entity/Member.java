@@ -53,11 +53,14 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    private int viewCount;
+
 
 
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews) {
+
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, int viewCount) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -68,5 +71,6 @@ public class Member extends BaseEntity {
         this.interests = interests;
         this.memberTiers = memberTiers;
         this.reviews = reviews;
+        this.viewCount = viewCount;
     }
 }
