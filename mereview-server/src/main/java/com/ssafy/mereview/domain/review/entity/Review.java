@@ -7,6 +7,7 @@ import com.sun.xml.bind.v2.TODO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -18,6 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 
+@ToString
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
