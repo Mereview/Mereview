@@ -2,6 +2,9 @@ package com.ssafy.mereview.domain.movie.entity;
 
 
 import com.ssafy.mereview.domain.BaseEntity;
+import com.ssafy.mereview.domain.member.entity.Interest;
+import com.ssafy.mereview.domain.member.entity.MemberAchievement;
+import com.ssafy.mereview.domain.member.entity.MemberTier;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +44,7 @@ public class Genre extends BaseEntity {
     private List<MovieGenre> movieGenres = new ArrayList<>();
 
     @OneToMany(mappedBy = "genre")
-    private List<UserTier> userTiers = new ArrayList<>();
+    private List<MemberTier> memberTiers = new ArrayList<>();
 
     @OneToMany(mappedBy = "genre")
     private List<Interest> interests = new ArrayList<>();
@@ -50,12 +53,12 @@ public class Genre extends BaseEntity {
     private List<MemberAchievement> memberAchievements = new ArrayList<>();
 
     @Builder
-    public Genre(Long id, int genreNumber, String genreName, boolean isUsing, List<UserTier> userTiers, List<Interest> interests, List<MemberAchievement> memberAchievements) {
+    public Genre(Long id, int genreNumber, String genreName, boolean isUsing, List<MemberTier> memberTiers, List<Interest> interests, List<MemberAchievement> memberAchievements) {
         this.id = id;
         this.genreNumber = genreNumber;
         this.genreName = genreName;
         this.isUsing = true;
-        this.userTiers = userTiers;
+        this.memberTiers = memberTiers;
         this.interests = interests;
         this.memberAchievements = memberAchievements;
     }
