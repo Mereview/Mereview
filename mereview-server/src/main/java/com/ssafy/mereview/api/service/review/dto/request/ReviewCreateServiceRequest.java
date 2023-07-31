@@ -1,6 +1,9 @@
 package com.ssafy.mereview.api.service.review.dto.request;
 
 import com.ssafy.mereview.common.util.file.UploadFile;
+import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.movie.entity.Genre;
+import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.EvaluationType;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
@@ -21,31 +24,38 @@ public class ReviewCreateServiceRequest {
 
     private EvaluationType type;
 
+    private Long memberId;
+
     private Long movieId;
+
+    private Long genreId;
 
     private List<KeywordCreateServiceRequest> keywordServiceRequests;
 
     private UploadFile uploadFile;
 
     @Builder
-    public ReviewCreateServiceRequest(String title, String content, String highlight, EvaluationType type, Long movieId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests, UploadFile uploadFile) {
+    public ReviewCreateServiceRequest(String title, String content, String highlight, EvaluationType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests, UploadFile uploadFile) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;
         this.type = type;
+        this.memberId = memberId;
         this.movieId = movieId;
+        this.genreId = genreId;
         this.keywordServiceRequests = keywordCreateServiceRequests;
         this.uploadFile = uploadFile;
     }
 
     public Review toEntity() {
         return Review.builder()
-                .title(this.title)
-                .content(this.content)
-                .highlight(this.highlight)
-                .type(this.type)
-//                .member(Member.builder().id(this.memberId).build())
-//                .movie(Movie.builder().id(this.movieId).build());
+                .title(title)
+                .content(content)
+                .highlight(highlight)
+                .type(type)
+                .genre(Genre.builder().id(genreId).build())
+                .member(Member.builder().id(memberId).build())
+                .movie(Movie.builder().id(movieId).build())
                 .build();
     }
 }

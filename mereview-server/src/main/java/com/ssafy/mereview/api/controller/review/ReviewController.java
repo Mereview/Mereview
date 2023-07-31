@@ -6,7 +6,6 @@ import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.sun.xml.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +27,8 @@ public class ReviewController {
     private final FileExtensionFilter fileExtFilter;
 
     @PostMapping("/review/api/v1")
-    public ApiResponse<Long> createReview(@Valid @RequestPart ReviewCreateRequest request,
-                                          @RequestPart MultipartFile file) throws IOException {
+    public ApiResponse<Long> createReview(@Valid @RequestPart(name = "request") ReviewCreateRequest request,
+                                          @RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
         log.debug("request: {}", request);
 
         UploadFile uploadFile = createUploadFile(file);

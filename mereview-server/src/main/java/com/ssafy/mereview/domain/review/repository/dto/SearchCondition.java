@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.review.repository;
+package com.ssafy.mereview.domain.review.repository.dto;
 
 import lombok.Builder;
 import lombok.Getter;

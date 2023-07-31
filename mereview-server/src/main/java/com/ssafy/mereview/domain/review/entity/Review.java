@@ -2,8 +2,8 @@ package com.ssafy.mereview.domain.review.entity;
 
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.entity.Movie;
-import com.sun.xml.bind.v2.TODO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,9 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "movie_id")
     private Movie movie;
     
-    // TODO: 장르 추가해야함
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
 
     @OneToMany(mappedBy = "review")
     private List<Comment> comments = new ArrayList<>();
@@ -66,7 +68,7 @@ public class Review extends BaseEntity {
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, List<Comment> comments, List<Attachment> attachments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Attachment> attachments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -75,6 +77,7 @@ public class Review extends BaseEntity {
         this.type = type;
         this.member = member;
         this.movie = movie;
+        this.genre = genre;
         this.comments = comments;
         this.attachments = attachments;
         this.likes = likes;
