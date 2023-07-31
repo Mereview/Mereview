@@ -6,14 +6,12 @@ import com.ssafy.mereview.api.service.review.ReviewService;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.response.PageResponse;
-import com.ssafy.mereview.common.util.SizeConstants;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,20 +48,19 @@ public class ReviewController {
     }
 
     @GetMapping("/")
-    public ApiResponse<PageResponse> searchReviews(
+    public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
             @RequestParam(defaultValue = "1") Integer pageNumber
     ) {
-        SearchCondition condition = SearchCondition.builder()
-                .title(title)
-                .content(content)
-                .build();
+        SearchCondition condition = createCondition(title, content);
 
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
+        int pages = reviewQueryService.calculatePages(condition);
+        PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pages);
 
-        return ApiResponse.ok(new PageResponse(responses, pageNumber, PAGE_SIZE, reviewQueryService.getTotalPages(condition)));
+        return ApiResponse.ok(pageResponse);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
@@ -73,5 +70,12 @@ public class ReviewController {
             uploadFile = fileStore.storeFile(file);
         }
         return uploadFile;
+    }
+
+    private static SearchCondition createCondition(String title, String content) {
+        return SearchCondition.builder()
+                .title(title)
+                .content(content)
+                .build();
     }
 }

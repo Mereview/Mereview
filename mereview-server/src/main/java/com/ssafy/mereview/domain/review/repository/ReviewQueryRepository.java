@@ -1,5 +1,7 @@
 package com.ssafy.mereview.domain.review.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.review.entity.Review;
@@ -30,7 +32,7 @@ public class ReviewQueryRepository {
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent())
                 )
-                .orderBy(review.createdTime.desc()) // TODO: 2023-07-31 orderBy 조건 설정해줘야함
+                .orderBy(sortByField(condition.getOrderBy())) // TODO: 2023-07-31 orderBy 조건 설정해줘야함
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -45,9 +47,31 @@ public class ReviewQueryRepository {
                 .join(review.member, member).fetchJoin()
                 .join(review.movie, movie).fetchJoin()
                 .where(review.id.in(ids))
-                .orderBy(review.createdTime.desc())
+                .orderBy(sortByField(condition.getOrderBy()))
                 .fetch();
 
+    }
+
+    public int getTotalPages(SearchCondition condition) {
+        return queryFactory
+                .select(review.count())
+                .from(review)
+                .join(review.member, member).fetchJoin()
+                .join(review.movie, movie).fetchJoin()
+                .where(
+                        isTitle(condition.getTitle()),
+                        isContent(condition.getContent())
+                )
+                .fetchFirst().intValue();
+    }
+
+    private OrderSpecifier<?> sortByField(String filedName) {
+        Order order = Order.DESC;
+
+        if (filedName.equals("hits")) {
+            return new OrderSpecifier<>(order, review.hits);
+        }
+        return new OrderSpecifier<>(order, review.createdTime);
     }
 
     private BooleanExpression isTitle(String title) {

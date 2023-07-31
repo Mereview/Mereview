@@ -50,7 +50,7 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
-    
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
@@ -59,16 +59,13 @@ public class Review extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
-    private List<Attachment> attachments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "review")
     private List<ReviewLike> likes = new ArrayList<>();
 
     @OneToOne(mappedBy = "review")
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Attachment> attachments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -79,7 +76,6 @@ public class Review extends BaseEntity {
         this.movie = movie;
         this.genre = genre;
         this.comments = comments;
-        this.attachments = attachments;
         this.likes = likes;
         this.backgroundImage = backgroundImage;
     }

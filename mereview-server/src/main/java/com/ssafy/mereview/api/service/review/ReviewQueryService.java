@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
+import com.ssafy.mereview.api.service.review.dto.response.BackgroundImageResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.movie.entity.MovieGenre;
 import com.ssafy.mereview.domain.review.entity.Review;
@@ -11,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.*;
 
 @RequiredArgsConstructor
@@ -24,7 +27,18 @@ public class ReviewQueryService {
 
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
         List<Review> reviews = reviewQueryRepository.searchByCondition(condition, pageable);
-        return createReviewResponses(reviews);
+        List<ReviewResponse> responses = createReviewResponses(reviews);
+
+        if (condition.getOrderBy().equals("FUN")) {
+            responses.sort(Comparator.comparingInt(ReviewResponse::getFunCount).reversed());
+        } else if (condition.getOrderBy().equals("USEFUL")) {
+            responses.sort(Comparator.comparingInt(ReviewResponse::getUsefulCount).reversed());
+        }
+        return responses;
+    }
+
+    public int calculatePages(SearchCondition condition) {
+        return ((reviewQueryRepository.getTotalPages(condition) - 1) / PAGE_SIZE) + 1;
     }
 
     private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
@@ -45,7 +59,7 @@ public class ReviewQueryService {
                         .funCount(getFunCount(review.getLikes()))
                         .usefulCount(getUsefulCount(review.getLikes()))
                         .badCount(getBadCount(review.getLikes()))
-                        .backgroundImageResponse(review.getBackgroundImage().of())
+                        .backgroundImageResponse(getBackgroundImageResponse(review))
                         .createdTime(review.getCreatedTime())
                         .build()
                 ).collect(Collectors.toList());
@@ -53,6 +67,13 @@ public class ReviewQueryService {
 
     private static List<Long> getGenreIds(Review review) {
         return review.getMovie().getMovieGenres().stream().map(MovieGenre::getId).collect(Collectors.toList());
+    }
+
+    private static BackgroundImageResponse getBackgroundImageResponse(Review review) {
+        if (review.getBackgroundImage() != null) {
+            return review.getBackgroundImage().of();
+        }
+        return BackgroundImageResponse.builder().build();
     }
 
     private int getFunCount(List<ReviewLike> likes) {
@@ -65,9 +86,5 @@ public class ReviewQueryService {
 
     private int getBadCount(List<ReviewLike> likes) {
         return (int) likes.stream().filter(like -> like.getType().equals(BAD)).count();
-    }
-
-    public int getTotalPages(SearchCondition condition) {
-        return 0;
     }
 }
