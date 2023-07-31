@@ -50,7 +50,7 @@ const LoginForm = () => {
         return res.json();
       })
       .then((data) => {
-        dispatch(userActions.login(data));
+        dispatch(userActions.login(data)); // token받고, isAthenticated true로 바꾸기
       })
       .catch((err) => {
         console.log(err.data);

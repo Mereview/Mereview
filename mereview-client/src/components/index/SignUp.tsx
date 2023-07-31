@@ -3,6 +3,8 @@ import { Input, Button, FloatLabelInput } from "../common/index";
 import { useState, useEffect } from "react";
 import ImageUploader from "../common/ImageUploader";
 import SelectInterest from "./SelectInterest";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../store/user-slice";
 interface InputDataTypes {
   [key: string]: null | string;
   email: null | string;
@@ -12,8 +14,8 @@ interface InputDataTypes {
   birth: null | string;
   gender: null | string;
 }
-
 const SignUp = () => {
+  const dispatch = useDispatch();
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별을 상태로 관리합니다.
   const [inputData, setInputData] = useState<InputDataTypes>({
     email: null,
@@ -23,7 +25,6 @@ const SignUp = () => {
     birth: null,
     gender: null,
   });
-  const [interest, setInterest] = useState([]);
   const [valid, setValid] = useState(false);
   //
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +48,7 @@ const SignUp = () => {
       }
     }
     setValid(true);
-    console.log(valid);
+    dispatch(userActions.signUp_step1(inputData));
   };
   return (
     <Container style={{ width: "40rem" }}>
