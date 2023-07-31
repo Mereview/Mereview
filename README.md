@@ -29,7 +29,5 @@
 
  - [프로젝트 기획](./mereview-docs/ProjectPlan.md)
  - [요구사항 명세](./mereview-docs/Requirement.md)
- - [컨벤션](./mereview-docs/Convention.md)
- - [와이어프레임]() - 피그마 파일 업로드 예정
- - [발표자료]() - 발표 ppt 업로드 예정
+ - [컨벤션](./mereview-docs/Common-Convention.md)
 

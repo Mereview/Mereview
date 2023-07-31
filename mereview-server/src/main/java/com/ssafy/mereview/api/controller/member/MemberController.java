@@ -4,7 +4,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
 import com.ssafy.mereview.api.service.member.MemberService;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberReqeust;
+import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceReqeust;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.Member;
@@ -35,18 +35,18 @@ public class MemberController {
 
 
     @PostMapping("/signup")
-    public Long signup(@Valid @RequestBody MemberRegisterRequest dto) throws Exception {
+    public Long signup(@Valid @RequestBody MemberRegisterRequest request) throws Exception {
         List<InterestRequest> interestRequests = new ArrayList<>();
-        for (String genreName : dto.getInterests()) {
-            InterestRequest genreRequest = InterestRequest.builder()
+        for (String genreName : request.getInterests()) {
+            InterestRequest interestRequest = InterestRequest.builder()
                     .genreName(genreName)
                     .build();
-            interestRequests.add(genreRequest);
+            interestRequests.add(interestRequest);
         }
 
-        SaveMemberReqeust saveMemberReqeust = SaveMemberReqeust.builder()
-                .email(dto.getEmail())
-                .password(dto.getPassword())
+        SaveMemberServiceReqeust saveMemberReqeust = SaveMemberServiceReqeust.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
                 .interestRequests(interestRequests)
                 .build();
         Long id = memberService.saveMember(saveMemberReqeust);

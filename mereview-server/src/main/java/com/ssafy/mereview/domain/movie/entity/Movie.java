@@ -34,6 +34,7 @@ public class Movie extends BaseEntity {
 
     private Double voteAverage;
 
+    @Lob
     private String posterImg;
 
     private String releaseDate;

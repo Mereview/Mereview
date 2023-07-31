@@ -13,11 +13,21 @@
   transform: translateX(-50%);
   justify-content: center;
   padding: 0px;
-  h1 {
-    width: 100%;
-    text-align: center;
-    margin: 5px 5px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+  .title {
+    display: flex;
+    justify-content: center;
+    button {
+      width: 50px;
+    }
+    h1 {
+      width: 75%;
+      text-align: center;
+      margin: 5px 5px;
+    }
   }
+
   .middle-box {
     display: flex;
     flex-wrap: wrap; /* 줄바꿈 설정 */
@@ -35,6 +45,12 @@
     border-radius: 12px;
     margin: 10px;
     cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+    &.selected {
+      // .selected 클래스 추가
+      border: 7px solid $magenta-5;
+    }
   }
 
   .finish {

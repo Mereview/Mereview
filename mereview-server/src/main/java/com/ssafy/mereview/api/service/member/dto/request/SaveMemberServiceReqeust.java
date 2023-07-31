@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class SaveMemberReqeust {
+public class SaveMemberServiceReqeust {
 
     private String email;
 
@@ -21,7 +21,7 @@ public class SaveMemberReqeust {
 
     @Builder
 
-    public SaveMemberReqeust(String email, String password, List<InterestRequest> interestRequests) {
+    public SaveMemberServiceReqeust(String email, String password, List<InterestRequest> interestRequests) {
         this.email = email;
         this.password = password;
         this.interestRequests = interestRequests;
