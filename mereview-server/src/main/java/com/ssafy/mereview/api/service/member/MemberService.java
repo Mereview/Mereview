@@ -1,7 +1,7 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberReqeust;
+import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceReqeust;
 
 import com.ssafy.mereview.api.service.member.dto.response.InterestResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
@@ -38,7 +38,7 @@ public class MemberService {
 
     private final AchievementQueryRepository achievementQueryRepository;
 
-    public Long saveMember(SaveMemberReqeust dto) {
+    public Long saveMember(SaveMemberServiceReqeust dto) {
 
         if (memberQueryRepository.searchByEmail(dto.getEmail()) != null) {
             return -1L;
@@ -63,7 +63,7 @@ public class MemberService {
 
     }
 
-    private void saveInterest(SaveMemberReqeust dto, Member member) {
+    private void saveInterest(SaveMemberServiceReqeust dto, Member member) {
         for (InterestRequest genreRequest : dto.getInterestRequests()) {
             Genre genre = memberQueryRepository.searchGenreByGenreName(genreRequest.getGenreName());
 
