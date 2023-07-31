@@ -46,12 +46,14 @@ test-file
 
 ---
 
+<br>
 
-### ✔클래스 컨벤션
+
+### ✔클래스, 인터페이스 컨벤션
 
 - **Entity Class**
   - BaseEntity 상속
-  - Entity, Getter, NoArgsConstructor(access = PROTECTED) 이외의 어노테이션 사용 지양
+  - @Entity, @Getter, @NoArgsConstructor(access = PROTECTED) 어노테이션 사용
   - Builder 패턴 활용
   - 값이 변경되는 비즈니스 로직은 Entity 클래스 안에서 수행
 
@@ -72,66 +74,72 @@ public class Review extends BaseEntity {
 
 <br>
 
-# 여기는 좀더 다듬어서 정리할 예정
----
+- **Dto class**
+  - Getter, NoArgsConstructor 어노테이션 사용
+  - Builder 패턴 사용
+  - 값이 변경되는 비즈니스 로직은 Dto 클래스 안에서 수행
 
-## 예외 처리
+<br>
 
-- 모든 예외에 대한 응답 처리는 ApiControllerAdvice 에서 처리한다. (try-catch-finally 구문을 사용하지 않고 그냥 예외를 발생시킬 것)
-- 예외 응답 시 ApiResonse 클래스로 반환한다. (형식은 ApiControllerAdvice, ApiResponse 참조)
+- **Request class**
+  - 유효성 검사는 controller에서 수행
+  - 명명규칙 : [도메인][동작][동작위치]Request
 
-## DTO
+```jsx
 
-- DTO 클래스에는 역시 Getter 와 NoArgsConstructor 를 사용한다.
-- Builder 패턴 사용을 권장한다. (사실 이건 기억 잘 안남)
-    - 
+```
 
-### 요청 객체
+<br>
 
-- 요청 객체는 아래와 같은 형식으로 명명하며, controller 와 service 로 구분한다.
-- [도메인명][동작]Request
-    
-    ex) ReviewCreateRequest (Controller), ReviewCreateServiceRequest (Service)
-    
-- 요청 dto 에 대한 validation 은 controller 에서 수행한다. service 에서는 수행하지 않는다.
-- Controller 요청에서 toServiceRequest, Service 요청 에서 toEntity 를 사용하여 변환작업을 수행한다. ??????? → 이부분 컨벤션 작성중 이해안감
 
-### 응답객체
+- **Response class**
+  - 모든 응답은 ApiResponse 클래스로 반환
+  - 명명규칙 : [도메인][동작]Response
 
-- Controller 에서 반환하는 모든 응답은 ApiResponse 클래스로 반환한다. (ApiResponse 참조)
-- 응답 객체는 아래와 같은 형식으로 명명하며, 응답 종류에 따라 구분한다.
-- [도메인명][구분]Response
-    
-    ex) ReviewResponse (전체조회 시), ReviewDetailResponse (상세조회 시)
-    
+```jsx
 
-## Service
+```
 
-- Service, RequiredArgsConstructor 어노테이션을 필히 작성한다. 작성하지 않는다면 개발자를 그만 두는 것을 권장한다.
-- QueryService 와 Service 로 분리한다. CQRS 패턴 적용
-    - QueryService 에는 Transactional(readOnly = true) 를 사용하고, Service 에는 그냥 Transactional 만 사용한다.
-    - 역시 클래스에 Transactional 을 작성하지 않았다면 재입대를 권장한다.
-- 인터페이스와 구현체로 나누지 않고 클래스만 작성한다.
+<br>
 
-## Repository
+- **Service class**
+  - @Service, @RequiredArgsConstructor 어노테이션 사용
+  - Service 클래스에는 @Transactional 추가
+  - QueryService 클래스에는 @Transactional(readOnly = true) 추가
+  - class 객체로 사용 (interface 사용 x)
 
-- 설명이 필요한가 싶다.
-- Repository 어노테이션을 작성한다. 안해도 상관 없지 않냐? 라는 질문을 할 것이라면 본인의 지능을 15번 정도 의심하고 하길 바란다. 진짜 모르면 봐줌.
-- Service 와 동일하게 CQRS 패턴을 적용하여 QueryRepository 와 Repository 로 구분한다.
+```jsx
+
+```
+
+<br>
+
+- **Repository interface**
+  - @Repository 어노테이션 사용
+  - QueryRepository와 Repository로 나눔
+
+```jsx
+
+```
 
 ---
 
 <br>
 
 
+###  ✔예외 처리
+
+- **모든 예외 처리는 ApiControllerAdvice 에서 처리**
+- **반환은 controller와 똑같이 ApiResponse 클래스 반환**
+
+---
+
+<br>
 
 
 ### ✔패키지 기본 구조
 ```bash
-
-Win10_64Bit_SSD 볼륨에 대한 폴더 경로의 목록입니다.
-볼륨 일련 번호는 EC13-D5F4입니다.
-C:.
+mereview:
 │  MeReviewApplication.java
 │  
 ├─api
@@ -141,21 +149,18 @@ C:.
 │  │  │  │  
 │  │  │  └─dto
 │  │  │      └─request
-│  │  │              MemberCreateRequest.java
 │  │  │              
 │  │  ├─movie
 │  │  │  │  MovieController.java
 │  │  │  │  
 │  │  │  └─dto
 │  │  │      └─request
-│  │  │              MovieCreateRequest.java
 │  │  │              
 │  │  └─review
 │  │      │  ReviewController.java
 │  │      │  
 │  │      └─dto
 │  │          └─request
-│  │                  ReviewCreateRequest.java
 │  │                  
 │  └─service
 │      ├─member
@@ -163,30 +168,24 @@ C:.
 │      │  │  
 │      │  └─dto
 │      │      ├─request
-│      │      │      MemberCreateServiceRequest.java
 │      │      │      
 │      │      └─response
-│      │              MemberResponse.java
 │      │              
 │      ├─movie
 │      │  │  MovieService.java
 │      │  │  
 │      │  └─dto
 │      │      ├─request
-│      │      │      MovieCreateServiceRequest.java
 │      │      │      
 │      │      └─response
-│      │              MovieResponse.java
 │      │              
 │      └─review
 │          │  ReviewService.java
 │          │  
 │          └─dto
 │              ├─request
-│              │      ReviewCreateServiceRequest.java
 │              │      
 │              └─response
-│                      ReviewResponse.java
 │                      
 ├─common
 │  ├─config
@@ -218,23 +217,18 @@ C:.
     │  
     ├─member
     │  ├─entity
-    │  │      Member.java
     │  │      
     │  └─repository
-    │          MemberRepository.java
     │          
     ├─movie
     │  ├─entity
-    │  │      Movie.java
     │  │      
     │  └─repository
-    │          MovieRepository.java
     │          
     └─review
         ├─entity
-        │      Review.java
         │      
         └─repository
-                ReviewRepository.java
+                
                 
 ```
