@@ -22,8 +22,8 @@ public class BackgroundImage extends BaseEntity {
     private Long id;
     @Embedded
     UploadFile uploadFile;
-    @MapsId
     @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
     private Review review;
 
     @Builder
