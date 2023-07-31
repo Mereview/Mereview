@@ -1,7 +1,8 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Input, Button, FloatLabelInput } from "../common/index";
-import { useState } from "react";
-import ProfileImageUpload from "./ProfileImageUpload";
+import { useState, useEffect } from "react";
+import ImageUploader from "../common/ImageUploader";
+import SelectInterest from "./SelectInterest";
 interface InputDataTypes {
   [key: string]: null | string;
   email: null | string;
@@ -22,6 +23,8 @@ const SignUp = () => {
     birth: null,
     gender: null,
   });
+  const [interest, setInterest] = useState([]);
+  const [valid, setValid] = useState(false);
   //
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
@@ -43,42 +46,14 @@ const SignUp = () => {
         return;
       }
     }
-
-    const requestData = {
-      email: inputData.email,
-      password: inputData.password,
-      interests: [],
-    };
-
-    const requestOption: RequestInit = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    };
-
-    const url = "http://localhost:80/api/auth/signup";
-    //서버에 회원가입 요청 보내기
-    fetch(url, requestOption)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("URL을 잘못 입력하였습니다.");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err.data);
-      });
+    setValid(true);
+    console.log(valid);
   };
   return (
-    <Container>
+    <Container style={{ width: "40rem" }}>
       <Row>
         <Col>
-          <ProfileImageUpload />
+          <ImageUploader />
         </Col>
         <Col>
           <form onSubmit={submitData}>
@@ -179,6 +154,7 @@ const SignUp = () => {
           </form>
         </Col>
       </Row>
+      {valid ? <SelectInterest /> : null}
     </Container>
   );
 };

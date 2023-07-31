@@ -1,10 +1,9 @@
 package com.ssafy.mereview.common.config;
 
-import com.ssafy.mereview.common.util.JwtUtils;
+import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.Authentication;
 
 @Configuration
 public class AppConfig {

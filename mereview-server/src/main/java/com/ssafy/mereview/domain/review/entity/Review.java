@@ -1,59 +1,81 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.common.domain.BaseEntity;
+import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Movie;
-import lombok.AccessLevel;
+import com.sun.xml.bind.v2.TODO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Entity
 public class Review extends BaseEntity {
     @Id
     @Column(name = "review_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 200)
-    private String title;
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+
     @Column(nullable = false)
-    private int hit;
-    @Column
+    private String title;
+
+    @Column(nullable = false)
+    private String content;
+
+    private int hits;
+
+    @Column(nullable = false)
     private String highlight;
+
     @Enumerated(EnumType.STRING)
-    private EvaluationType evaluationType;
+    private EvaluationType type;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<Comment> reviewComments = new ArrayList<>();
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<KeywordWeight> keywordWeights = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
+    
+    // TODO: 장르 추가해야함
+
+    @OneToMany(mappedBy = "review")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review")
+    private List<Attachment> attachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review")
+    private List<ReviewLike> likes = new ArrayList<>();
+
+    @OneToOne(mappedBy = "review")
+    private BackgroundImage backgroundImage;
 
     @Builder
-    public Review(Long id, String title, String content, int hit, String highlight, EvaluationType evaluationType, List<Comment> reviewComments, List<KeywordWeight> keywordWeights, Member member, Movie movie) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, List<Comment> comments, List<Attachment> attachments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.hit = hit;
+        this.hits = hits;
         this.highlight = highlight;
-        this.evaluationType = evaluationType;
-        this.reviewComments = reviewComments;
-        this.keywordWeights = keywordWeights;
+        this.type = type;
         this.member = member;
         this.movie = movie;
+        this.comments = comments;
+        this.attachments = attachments;
+        this.likes = likes;
+        this.backgroundImage = backgroundImage;
     }
 }

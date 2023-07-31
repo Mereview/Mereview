@@ -1,7 +1,7 @@
 package com.ssafy.mereview.common.config;
 
-import com.ssafy.mereview.common.util.JwtAuthFilter;
-import com.ssafy.mereview.domain.member.service.impl.UserDetailsServiceImpl;
+import com.ssafy.mereview.api.service.member.UserDetailsServiceImpl;
+import com.ssafy.mereview.common.util.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

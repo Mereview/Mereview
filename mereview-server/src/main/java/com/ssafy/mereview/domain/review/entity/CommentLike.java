@@ -1,34 +1,41 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentLike {
+@NoArgsConstructor(access = PROTECTED)
+@Entity
+public class CommentLike extends BaseEntity {
     @Id
     @Column(name = "comment_like_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private LikeType likeType;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @Column(nullable = false)
+    private CommentLikeType type;
+
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public CommentLike(Long id, LikeType likeType, Comment comment, Member member) {
+    private CommentLike(Long id, CommentLikeType type, Comment comment, Member member) {
         this.id = id;
-        this.likeType = likeType;
+        this.type = type;
         this.comment = comment;
         this.member = member;
     }

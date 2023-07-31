@@ -8,7 +8,7 @@
 #### 김웅서
 - GitHub : [ungseo](https://github.com/ungseo)
 #### 민정인
-- GitHub : [???](https://github.com/ungseo)
+- GitHub : [chati97](https://github.com/chati97)
 #### 유승민
 - GitHub : [byuri1356](https://github.com/byuri1356)
 #### 양진형
@@ -18,7 +18,7 @@
 #### 최영환
 - GitHub : [longBright](https://github.com/longBright)
 #### 팀 노션
-- Notion : [MeReview](https://github.com/ungseo)
+- Notion : [MeReview](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4)
   
 <br>
 

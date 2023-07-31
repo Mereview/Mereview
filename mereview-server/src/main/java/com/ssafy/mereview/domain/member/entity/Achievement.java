@@ -1,6 +1,6 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import com.ssafy.mereview.common.domain.BaseEntity;
+import com.ssafy.mereview.domain.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

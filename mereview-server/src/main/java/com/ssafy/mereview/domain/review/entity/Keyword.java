@@ -1,27 +1,45 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.common.domain.BaseEntity;
-import lombok.AccessLevel;
+import com.ssafy.mereview.domain.BaseEntity;
+import com.ssafy.mereview.domain.movie.entity.Movie;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Entity
 public class Keyword extends BaseEntity {
     @Id
     @Column(name = "keyword_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Column(name = "keyword_name", nullable = false)
-    private String keywordName;
+
+    @Column(nullable = false)
+    private String name;
+
+    private int weight;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
+    private Review review;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "movie_id")
+    private Movie movie;
 
     @Builder
-    public Keyword(Long id, String keywordName) {
+    private Keyword(Long id, String name, int weight, Review review, Movie movie) {
         this.id = id;
-        this.keywordName = keywordName;
+        this.name = name;
+        this.weight = weight;
+        this.review = review;
+        this.movie = movie;
     }
 }
