@@ -1,6 +1,3 @@
-import SlickSlider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import MovieCard from "./MovieCard";
 import { MovieCardInterface } from "./interface/MovieCardInterface";
 
@@ -56,7 +53,6 @@ const MovieList = ({ movieList }: MovieListProps) => {
   return (
     <>
       <div className="card-list-wrapper">
-        <SlickSlider {...settings}>{sliderItems}</SlickSlider>
       </div>
     </>
   );
