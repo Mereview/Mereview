@@ -1,12 +1,17 @@
 import { Button } from "../common/index";
 import "../../styles/css/SelectInterest.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
 
 const SelectInterest = () => {
+  const [loading, setLoading] = useState(true);
   const [interest, setInterest] = useState([]);
   const dispatch = useDispatch();
+  useEffect(() => {
+    setLoading(true);
+    setLoading(false);
+  }, [loading]);
   const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const genreId = event.currentTarget.id;
     const genreName = event.currentTarget.textContent || "";
@@ -29,6 +34,7 @@ const SelectInterest = () => {
     dispatch(userActions.signUp_step3(interest));
     dispatch(userActions.modal_toggler());
   };
+
   const genre: { [id: number]: string[] } = {
     "12": ["모험", "/interest/adventure"],
     "14": ["판타지", "/interest/fantasy"],
@@ -52,10 +58,18 @@ const SelectInterest = () => {
   };
   return (
     <div className="big-box">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
       <div className="title">
-        <button onClick={goBack}>👈</button>
+        <button className="cancle" onClick={goBack}>
+          👈취소
+        </button>
         <h1>어떤 장르에 관심 있으세요??</h1>
       </div>
+
       <div className="middle-box">
         {Object.keys(genre).map((id) => (
           <div

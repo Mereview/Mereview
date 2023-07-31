@@ -1,13 +1,15 @@
 import { Button, FloatLabelInput } from "../common/index";
-import "../../styles/css/LoginForm.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import { useState } from "react";
-import { request } from "http";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 
 const LoginForm = () => {
+  const [animate, setAnimate] = useState(false);
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -59,7 +61,10 @@ const LoginForm = () => {
   };
 
   return (
-    <Container style={{ width: "40rem" }}>
+    <Container
+      className={`maincpnt ${animate ? "animate" : ""}`}
+      style={{ width: "40rem" }}
+    >
       <Row>
         <form onSubmit={Login}>
           <Row>

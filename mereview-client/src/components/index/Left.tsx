@@ -4,35 +4,39 @@ import { useSelector, useDispatch } from "react-redux";
 import { uiActions } from "../../store/ui-silce";
 
 const Left = () => {
+  const style = { padding: "0px", margin: "0px" };
+
   const dispatch = useDispatch();
   const tab = useSelector((state: any) => state.ui.tabToggle);
   const tabChange = (event) => {
-    const data = event.target.class;
-    if (tab === "login") {
-    }
-    dispatch(uiActions.tabChange(tab));
+    const id = event.target.id;
+    dispatch(uiActions.tabChange(id));
   };
   return (
-    <Row className="ctn">
-      <Col>
+    <Row className="ctn" style={style}>
+      <Col style={style}>
         <div></div>
       </Col>
-      <Col md={2}>
-        <Row className="blank"></Row>
-        <Row>
+      <Col md={2} style={style}>
+        <Row className="blank" style={style}></Row>
+        <Row style={style}>
           <button
+            id="login"
+            style={style}
             className={`btn login ${tab === "login" ? "selected" : ""}`}
             onClick={tabChange}
           >
             LOGIN
           </button>
         </Row>
-        <Row>
+        <Row style={style}>
           <button
+            id="signup"
+            style={style}
             className={`btn signup ${tab === "signup" ? "selected" : ""}`}
             onClick={tabChange}
           >
-            SING UP
+            SIGN UP
           </button>
         </Row>
       </Col>

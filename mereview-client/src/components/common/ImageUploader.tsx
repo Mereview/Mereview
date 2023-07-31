@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import "../../styles/css/ProfileImageUpload.css";
+import "../../styles/css/ImageUploader.css";
 import { userActions } from "../../store/user-slice";
 import { useDispatch } from "react-redux";
 function ImageUploader() {
@@ -39,7 +39,7 @@ function ImageUploader() {
         />
       ) : (
         <img
-          src={"/defaultProfile.png"}
+          src={"/testProfile.gif"}
           alt="defaulImg"
           style={{
             width: "12rem",

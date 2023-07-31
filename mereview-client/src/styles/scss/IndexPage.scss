@@ -1,5 +1,6 @@
 @import "Style";
 .full-height-container {
+  font-family: "GowunDodum", sans-serif;
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
@@ -13,5 +14,39 @@
   .right {
     height: 100vh;
     z-index: 2; /* 오른쪽 컴포넌트를 더 위에 표시 */
+  }
+}
+
+.maincpnt {
+  opacity: 0%;
+}
+
+.maincpnt.animate {
+  opacity: 100%;
+  animation-name: slideIn;
+  animation-duration: 3s;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  10% {
+    transform: translateX(-10%);
+  }
+  15% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 90%;
+  }
+  100% {
+    opacity: 100%;
   }
 }

@@ -4,14 +4,18 @@ import Left from "../components/index/Left";
 import "../styles/css/IndexPage.css";
 
 const IndexPage = (props: any) => {
+  const style = { padding: "0px", margin: "0px" };
   return (
-    <div className="full-height-container" style={{ padding: "0px" }}>
+    <div
+      className="full-height-container"
+      style={{ padding: "0px", margin: "0px", overflow: "hidden" }}
+    >
       <Row>
-        <Col>
+        <Col md={5} style={style}>
           <Left />
         </Col>
 
-        <Col className="right" md={7}>
+        <Col className="right" md={7} style={style}>
           <Right />
         </Col>
       </Row>

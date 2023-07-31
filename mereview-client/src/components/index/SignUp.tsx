@@ -1,12 +1,16 @@
 import { Container, Row, Col } from "react-bootstrap";
-import { Input, Button, FloatLabelInput } from "../common/index";
+import { Input, Button } from "../common/index";
 import { useState, useEffect } from "react";
 import ImageUploader from "../common/ImageUploader";
 import SelectInterest from "./SelectInterest";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-slice";
-import { InputDataInterface, UserInterface } from "../interface/UserInterface";
+import { InputDataInterface } from "../interface/UserInterface";
 const SignUp = () => {
+  const [animate, setAnimate] = useState(false);
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
   const dispatch = useDispatch();
   // 초기 상태로서 빈 문자열 또는 null로 초기화합니다.
   const [selectedGender, setSelectedGender] = useState<string>(""); // 선택된 성별을 상태로 관리합니다.
@@ -46,7 +50,10 @@ const SignUp = () => {
     console.log(valid);
   };
   return (
-    <Container style={{ width: "40rem" }}>
+    <Container
+      className={`maincpnt ${animate ? "animate" : ""}`}
+      style={{ width: "40rem" }}
+    >
       <Row>
         <Col>
           <ImageUploader />
@@ -145,6 +152,7 @@ const SignUp = () => {
                 styles="btn-primary"
                 text="NEXT"
                 btnType="submit"
+                disabled={valid ? true : false}
               ></Button>
             </Row>
           </form>
