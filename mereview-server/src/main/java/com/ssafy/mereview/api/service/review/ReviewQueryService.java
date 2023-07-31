@@ -8,10 +8,12 @@ import com.ssafy.mereview.domain.review.entity.ReviewLike;
 import com.ssafy.mereview.domain.review.repository.ReviewQueryRepository;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -27,6 +30,7 @@ public class ReviewQueryService {
 
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
         List<Review> reviews = reviewQueryRepository.searchByCondition(condition, pageable);
+        log.debug("reviews: {}", reviews);
         List<ReviewResponse> responses = createReviewResponses(reviews);
 
         if (condition.getOrderBy().equals("FUN")) {
@@ -55,7 +59,7 @@ public class ReviewQueryService {
                         .hits(review.getHits())
                         .highlight(review.getHighlight())
                         .evaluationType(review.getType())
-                        .commentCount(review.getComments().size())
+                        .commentCount(getCommentCount(review))
                         .funCount(getFunCount(review.getLikes()))
                         .usefulCount(getUsefulCount(review.getLikes()))
                         .badCount(getBadCount(review.getLikes()))
@@ -66,7 +70,17 @@ public class ReviewQueryService {
     }
 
     private static List<Long> getGenreIds(Review review) {
-        return review.getMovie().getMovieGenres().stream().map(MovieGenre::getId).collect(Collectors.toList());
+        if (review.getMovie() != null && review.getMovie().getMovieGenres() != null) {
+            return review.getMovie().getMovieGenres().stream().map(MovieGenre::getId).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    private static int getCommentCount(Review review) {
+        if (review.getComments() != null) {
+            return review.getComments().size();
+        }
+        return 0;
     }
 
     private static BackgroundImageResponse getBackgroundImageResponse(Review review) {
@@ -77,14 +91,23 @@ public class ReviewQueryService {
     }
 
     private int getFunCount(List<ReviewLike> likes) {
-        return (int) likes.stream().filter(like -> like.getType().equals(FUN)).count();
+        if (likes != null) {
+            return (int) likes.stream().filter(like -> like.getType().equals(FUN)).count();
+        }
+        return 0;
     }
 
     private int getUsefulCount(List<ReviewLike> likes) {
-        return (int) likes.stream().filter(like -> like.getType().equals(USEFUL)).count();
+        if (likes != null) {
+            return (int) likes.stream().filter(like -> like.getType().equals(USEFUL)).count();
+        }
+        return 0;
     }
 
     private int getBadCount(List<ReviewLike> likes) {
-        return (int) likes.stream().filter(like -> like.getType().equals(BAD)).count();
+        if (likes != null) {
+            return (int) likes.stream().filter(like -> like.getType().equals(BAD)).count();
+        }
+        return 0;
     }
 }
