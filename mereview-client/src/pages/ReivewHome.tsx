@@ -2,7 +2,9 @@ import { Container } from "react-bootstrap";
 import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewList from "../components/ReviewList";
-//import { IconName } from "react-icons/bs";
+import MovieList from "../components/MovieList";
+
+//import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
 const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
   console.log("Profile Clicked");
@@ -12,8 +14,13 @@ const handleClickTitle = (event: React.MouseEvent<HTMLParagraphElement>) => {
   console.log("Title Clicked");
 };
 
-//https://react-icons.github.io/react-icons/icons?name=bs
+const handleClickPoster = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  console.log("Poster Clicked");
+};
 
+
+
+//https://react-icons.github.io/react-icons/icons?name=bs
 const someReview = {
   reviewId: 12113,
   memberId: "user123",

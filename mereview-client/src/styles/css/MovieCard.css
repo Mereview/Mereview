@@ -2,12 +2,5 @@
 @import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
 @import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
 @import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
-.card-list-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-right: 30px;
-  margin-left: 30px;
-}
 
-/*# sourceMappingURL=ReviewList.css.map */
+/*# sourceMappingURL=MovieCard.css.map */
