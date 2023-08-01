@@ -2,8 +2,10 @@ package com.ssafy.mereview.api.controller.review;
 
 import com.ssafy.mereview.api.controller.review.dto.request.CommentCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.ReviewEvaluationCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
 import com.ssafy.mereview.api.service.review.CommentService;
+import com.ssafy.mereview.api.service.review.ReviewEvaluationService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
@@ -35,6 +37,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewQueryService reviewQueryService;
     private final CommentService commentService;
+    private final ReviewEvaluationService reviewEvaluationService;
 
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
@@ -109,6 +112,18 @@ public class ReviewController {
     @DeleteMapping("/comments/{commentId}")
     public ApiResponse<Long> deleteReviewComment(@PathVariable Long commentId) {
         Long deleteId = commentService.delete(commentId);
+        return ApiResponse.ok(deleteId);
+    }
+
+    @PostMapping("/evaluations")
+    public ApiResponse<Long> createReviewEvaluation(@Valid @RequestBody ReviewEvaluationCreateRequest request) {
+        Long saveId = reviewEvaluationService.createReviewEvaluation(request.toServiceRequest());
+        return ApiResponse.ok(saveId);
+    }
+
+    @DeleteMapping("/evaluations/{evaluationId}")
+    public ApiResponse<Long> deleteReviewEvaluation(@PathVariable Long evaluationId) {
+        Long deleteId = reviewEvaluationService.delete(evaluationId);
         return ApiResponse.ok(deleteId);
     }
 

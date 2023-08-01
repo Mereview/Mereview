@@ -11,8 +11,8 @@ import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieGenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.entity.ReviewLike;
-import com.ssafy.mereview.domain.review.repository.ReviewLikeRepository;
+import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
+import com.ssafy.mereview.domain.review.repository.ReviewEvaluationRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +26,8 @@ import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
-import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.FUN;
-import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.USEFUL;
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -57,7 +57,7 @@ class ReviewQueryServiceTest {
     private MovieGenreRepository movieGenreRepository;
 
     @Autowired
-    private ReviewLikeRepository reviewLikeRepository;
+    private ReviewEvaluationRepository reviewEvaluationRepository;
 
 //    @After
 //    void tearDown() {
@@ -166,12 +166,12 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByFunCount() {
         // given
-        ReviewLike reviewLikeFun = ReviewLike.builder()
+        ReviewEvaluation reviewEvaluationFun = ReviewEvaluation.builder()
                 .type(FUN)
                 .review(Review.builder().id(1L).build())
                 .member(Member.builder().id(1L).build())
                 .build();
-        reviewLikeRepository.save(reviewLikeFun);
+        reviewEvaluationRepository.save(reviewEvaluationFun);
 
         SearchCondition condition = new SearchCondition("", "", "FUN", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
@@ -198,12 +198,12 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByUsefulCount() {
         // given
-        ReviewLike reviewLikeUseful = ReviewLike.builder()
+        ReviewEvaluation reviewEvaluationUseful = ReviewEvaluation.builder()
                 .type(USEFUL)
                 .review(Review.builder().id(3L).build())
                 .member(Member.builder().id(1L).build())
                 .build();
-        reviewLikeRepository.save(reviewLikeUseful);
+        reviewEvaluationRepository.save(reviewEvaluationUseful);
         SearchCondition condition = new SearchCondition("", "", "USEFUL", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
