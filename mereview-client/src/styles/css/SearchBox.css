@@ -15,11 +15,32 @@
   src: url("../fonts/NanumGothic.ttf") format("truetype");
 }
 .search-box {
-  width: 30%;
-  max-width: 400px;
+  max-width: 300px;
   min-width: 200px;
+  margin-left: 20px;
   font-family: "NanumGothic";
   font-size: 12px;
+}
+
+.sort-buttons {
+  margin-top: 5px;
+  margin-left: 25px;
+}
+.sort-buttons .selected {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  color: #000;
+}
+.sort-buttons button {
+  font-family: "BMDoHyeon";
+  color: #7a7a7a;
+  border: none;
+  background-color: transparent;
+}
+.sort-buttons button .sort-icon svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
 }
 
 /*# sourceMappingURL=SearchBox.css.map */

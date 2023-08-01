@@ -1,10 +1,1 @@
-{
-  "version": 3,
-  "sourceRoot": "",
-  "sources": [
-    "../scss/Style.scss"
-  ],
-  "names": [],
-  "mappings": "AAKA;EACE;EACA;;AAGF;EACE;EACA;;AAEF;EACE;EACA;;AAEF;EACE;EACA",
-  "file": "MovieCard.css"
-}
+{"version":3,"sourceRoot":"","sources":["../scss/Style.scss","../scss/MovieCard.scss"],"names":[],"mappings":"AAKA;EACE;EACA;;AAGF;EACE;EACA;;AAEF;EACE;EACA;;AAEF;EACE;EACA;;AClBF;EACE;EACA,aDFU;ECGV,WDkBe;ECjBf;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;;AAIJ;EACE;EACA;EACA;;AAGF;EACE,aD5BU;EC6BV,WDFW;ECGX,OD8CK","file":"MovieCard.css"}

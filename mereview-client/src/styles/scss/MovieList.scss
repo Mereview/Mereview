@@ -1,10 +1,29 @@
 // MovieList
 @import "Style";
 
+.sub-title {
+  font-family: $BMDoHyeon;
+  font-size: $font-size-lg;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
 .card-list-wrapper {
-  display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin-right: 30px;
-  margin-left: 30px;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  margin-left: 10px;
+
+  .slide-button {
+    width: 30px;
+    height: 30px;
+    background-color: $gray-1;
+    border-radius: 2%;
+    font-size: $font-size-md;
+  }
 }
