@@ -1,22 +1,25 @@
 package com.ssafy.mereview.api.service.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.response.InterestResponse;
-import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
-import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
-import com.ssafy.mereview.api.service.member.dto.response.MemberTierResponse;
+import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
+import com.ssafy.mereview.domain.movie.repository.GenreRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +27,8 @@ import java.util.NoSuchElementException;
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtUtils jwtUtils;
 
     private final MemberRepository memberRepository;
 
@@ -35,144 +40,70 @@ public class MemberService {
 
     private final MemberTierRepository memberTierRepository;
 
-    private final AchievementQueryRepository achievementQueryRepository;
+    private final GenreRepository genreRepository;
 
-    public Long saveMember(SaveMemberServiceRequest dto) {
+    public Long createMember(SaveMemberServiceRequest dto) {
 
-        if (memberQueryRepository.searchByEmail(dto.getEmail()) != null) {
-            return -1L;
-        } else {
-            Member member = Member.builder()
-                    .email(dto.getEmail())
-                    .password(passwordEncoder.encode(dto.getPassword()))
-                    .build();
-            System.out.println("member = " + member.getEmail());
-            Member savedMember = memberRepository.save(member);
-
-
-            saveInterest(dto, member);
-
-            //회원 가입 시 Tier, Achievement 초기화
-            saveTierAndAchievement(member);
-
-            return savedMember.getId();
-
+        Member existingMember = memberQueryRepository.searchByEmail(dto.getEmail());
+        if (existingMember != null) {
+            throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
 
-
-    }
-
-    private void saveInterest(SaveMemberServiceRequest dto, Member member) {
-        for (InterestRequest genreRequest : dto.getInterestRequests()) {
-            Genre genre = memberQueryRepository.searchGenreByGenreName(genreRequest.getGenreName());
-
-            Interest interest = Interest.builder()
-                    .member(member)
-                    .genre(genre)
-                    .build();
-
-            memberInterestRepository.save(interest);
-        }
-    }
-
-
-    private void saveTierAndAchievement(Member member) {
-        List<Genre> genres = memberQueryRepository.searchAllGenre();
-        List<MemberTier> memberTierLIst = new ArrayList<>();
-        List<MemberAchievement> memberAchievementList = new ArrayList<>();
-
-        for (Genre genre : genres) {
-            makeMemberTier(member, memberTierLIst, genre);
-            makeAchievement(member, memberAchievementList, genre);
-
-        }
-
-        memberTierRepository.saveAll(memberTierLIst);
-        memberAchievementRepository.saveAll(memberAchievementList);
-
-    }
-
-    private void makeAchievement(Member member, List<MemberAchievement> memberAchievementList, Genre genre) {
-        List<Achievement> achievementList = achievementQueryRepository.searchAllAchievement();
-
-        for (Achievement achievement : achievementList) {
-            MemberAchievement memberAchievement = MemberAchievement.builder()
-                    .member(member)
-                    .genre(genre)
-                    .achievement(achievement)
-                    .build();
-            memberAchievementList.add(memberAchievement);
-
-        }
-
-
-    }
-
-    private void makeMemberTier(Member member, List<MemberTier> memberTierLIst, Genre genre) {
-        MemberTier memberTier = MemberTier.builder()
-                .member(member)
-                .genre(genre)
+        Member member = Member.builder()
+                .email(dto.getEmail())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
+        log.debug("member = " + member.getEmail());
 
-        memberTierLIst.add(memberTier);
+        Member savedMember = memberRepository.save(member);
+        log.debug("savedMember = " + savedMember.getEmail());
+
+        //회원 관심사 초기화
+        createInterest(dto, member);
+
+        //회원 티어 초기화
+        createTier(member);
+        createAchievement(member);
+
+        return savedMember.getId();
+
     }
 
-    public MemberResponse getLoginInfo(Long id){
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        return member.of();
+    public MemberLoginResponse login(MemberLoginRequest request) {
+        Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
+        if (searchMember == null) {
+            throw new NoSuchElementException("존재하지 않는 회원입니다.");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {
+            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+        }
+
+        return getMemberLoginResponse(searchMember);
+
     }
 
+    private MemberLoginResponse getMemberLoginResponse(Member searchMember) {
+        Map<String, String> token = jwtUtils.generateJwt(searchMember);
 
+        return MemberLoginResponse.builder()
+                .memberResponse(searchMemberInfo(searchMember.getId()))
+                .token(token)
+                .build();
+    }
 
-    public MemberResponse getMemberInfo(Long id) {
+    public MemberResponse searchMemberInfo(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
+        List<InterestResponse> interestResponses = searchInterestResponse(id);
 
-        List<Interest> interests = memberQueryRepository.searchInterestByMemberId(id);
-        List<InterestResponse> interestResponseList = new ArrayList<>();
-        for (Interest interest : interests) {
-            InterestResponse interestResponse = InterestResponse.builder()
-                    .genreName(interest.getGenre().getGenreName())
-                    .build();
-            interestResponseList.add(interestResponse);
-        }
+        List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
-        List<MemberTier> memberTiers = memberQueryRepository.searchUserTierByMemberId(id);
-        List<MemberTierResponse> memberTierResponseList = new ArrayList<>();
-        for (MemberTier memberTier : memberTiers) {
-            MemberTierResponse memberTierResponse = MemberTierResponse.builder()
-                    .genreName(memberTier.getGenre().getGenreName())
-                    .usefulTier(memberTier.getUsefulTier())
-                    .funTier(memberTier.getFunTier())
-                    .usefulExperience(memberTier.getUsefulExperience())
-                    .funExperience(memberTier.getFunExperience())
-                    .build();
-            memberTierResponseList.add(memberTierResponse);
-        }
+        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
 
-        List<MemberAchievement> memberAchievements = memberQueryRepository.searchMemberAchievementByMemberId(id);
-        System.out.println("memberAchievements = " + memberAchievements);
-        List<MemberAchievementResponse> memberAchievementResponseList = new ArrayList<>();
-        for (MemberAchievement memberAchievement : memberAchievements) {
-            MemberAchievementResponse memberAchievementResponse = MemberAchievementResponse.builder()
-                    .genreName(memberAchievement.getGenre().getGenreName())
-                    .achievementName(memberAchievement.getAchievement().getAchievementName())
-                    .achievementRank(memberAchievement.getAchievementRank())
-                    .build();
+        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
 
-            memberAchievementResponseList.add(memberAchievementResponse);
-        }
-
-        MemberResponse memberResponse = MemberResponse.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .interests(interestResponseList)
-                .achievements(memberAchievementResponseList)
-                .tiers(memberTierResponseList)
-                .build();
-
-        return memberResponse;
     }
+
 
     public void follow(Long targetId, Long currentUserId) {
         //팔로우 할 유저
@@ -183,19 +114,86 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Following not found!"));
 
         //팔로워가 현재 유저인 타겟(내가 팔로우하는 타겟)이 존재할 경우
-        if(currentMember.getFollowing().contains(target)) {
+        if (currentMember.getFollowing().contains(target)) {
             currentMember.getFollowing().remove(target);
             target.getFollowers().remove(currentMember);
-            memberRepository.save(currentMember);
-            memberRepository.save(target);
             return;
         }
         currentMember.getFollowing().add(target);
         target.getFollowers().add(currentMember);
+    }
 
-        memberRepository.save(currentMember);
-        memberRepository.save(target);
 
+    //***************private method*****************//
+
+    private void createInterest(SaveMemberServiceRequest dto, Member member) {
+        List<Interest> interests = new ArrayList<>();
+
+        dto.getInterestRequests().stream().map(interestRequest ->
+                        genreRepository.findById(interestRequest.getGenreId()).orElseThrow(NoSuchElementException::new))
+                .map(genre -> Interest.builder()
+                        .member(member)
+                        .genre(genre)
+                        .build()).forEach(interests::add);
+
+        log.debug("interests = " + interests.size());
+
+        memberInterestRepository.saveAll(interests);
+    }
+
+    private void createTier(Member member) {
+        List<Genre> genres = memberQueryRepository.searchAllGenre();
+
+        List<MemberTier> memberTiers = new ArrayList<>();
+        genres.forEach(genre -> memberTiers.add(MemberTier.builder()
+                .member(member)
+                .genre(genre)
+                .build()));
+        log.debug("memberTiers = " + memberTiers.size());
+
+        memberTierRepository.saveAll(memberTiers);
+    }
+
+    private void createAchievement(Member member) {
+        List<Genre> genres = memberQueryRepository.searchAllGenre();
+
+        List<MemberAchievement> memberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
+                .member(member)
+                .genre(genre)
+                .build()).collect(Collectors.toList());
+        log.debug("memberAchievements = " + memberAchievements.size());
+
+        memberAchievementRepository.saveAll(memberAchievements);
+    }
+
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses) {
+        return MemberResponse.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .interests(interestResponses)
+                .achievements(memberAchievementResponses)
+                .tiers(memberTierResponses)
+                .build();
+    }
+
+    private List<MemberAchievementResponse> searchMemberAchievementReponse(Long id) {
+        List<MemberAchievement> memberAchievements = memberQueryRepository.searchMemberAchievementByMemberId(id);
+
+        return memberAchievements.stream().map(MemberAchievement::of).collect(Collectors.toList());
+    }
+
+    private List<MemberTierResponse> searchMemberTierResponse(Long id) {
+        List<MemberTier> memberTiers = memberQueryRepository.searchUserTierByMemberId(id);
+        return memberTiers.stream()
+                .map(MemberTier::of)
+                .collect(Collectors.toList());
+    }
+
+    private List<InterestResponse> searchInterestResponse(Long id) {
+        List<Interest> interests = memberQueryRepository.searchInterestByMemberId(id);
+        return interests.stream()
+                .map(Interest::of)
+                .collect(Collectors.toList());
     }
 
 
