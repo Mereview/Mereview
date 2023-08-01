@@ -4,7 +4,7 @@ import {
   UserInterface,
 } from "../components/interface/UserInterface";
 const initialState: UserInterface = {
-  isAthenticated: false,
+  isAthenticated: true,
   thirdModal: false,
   token: "",
   email: "",
@@ -25,11 +25,17 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login(state, payload) {
-      state.isAthenticated = !state.isAthenticated;
+      state.isAthenticated = true;
       // state.email = payload
       // state.profileURL = payload
       // state.gender = payload
       // state.birth = 'a'
+    },
+    logout(state) {
+      state.isAthenticated = false;
+      state.token = "";
+      state.email = "";
+      state.nickname = "";
     },
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;

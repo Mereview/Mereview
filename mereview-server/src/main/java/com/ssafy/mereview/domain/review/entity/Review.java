@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Genre;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -50,7 +52,7 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
-    
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
@@ -59,7 +61,7 @@ public class Review extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
-    private List<Attachment> attachments = new ArrayList<>();
+    private List<Keyword> keywords = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
     private List<ReviewLike> likes = new ArrayList<>();
@@ -68,7 +70,7 @@ public class Review extends BaseEntity {
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Attachment> attachments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Keyword> keywords, List<ReviewLike> likes, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -79,8 +81,21 @@ public class Review extends BaseEntity {
         this.movie = movie;
         this.genre = genre;
         this.comments = comments;
-        this.attachments = attachments;
+        this.keywords = keywords;
         this.likes = likes;
         this.backgroundImage = backgroundImage;
+    }
+
+    public void update(ReviewUpdateServiceRequest request, List<Keyword> keywords, BackgroundImage backgroundImage) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.highlight = request.getHighlight();
+        this.type = request.getType();
+        this.keywords = keywords;
+        this.backgroundImage = backgroundImage;
+    }
+
+    public void increaseHits() {
+        this.hits++;
     }
 }

@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.response.KeywordResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import lombok.Builder;
@@ -41,5 +42,13 @@ public class Keyword extends BaseEntity {
         this.weight = weight;
         this.review = review;
         this.movie = movie;
+    }
+
+    public KeywordResponse of() {
+        return KeywordResponse.builder()
+                .keywordId(id)
+                .keywordName(name)
+                .keywordWeight(weight)
+                .build();
     }
 }

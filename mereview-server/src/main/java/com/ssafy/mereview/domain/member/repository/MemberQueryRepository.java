@@ -5,9 +5,11 @@ import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.entity.MemberAchievement;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
 import com.ssafy.mereview.domain.movie.entity.Genre;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface MemberQueryRepository {
     public Member searchByEmail(String email);
 
