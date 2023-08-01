@@ -157,6 +157,7 @@ public class MovieDetailResponse{
 public ApiResponse<PageResponse<List<MovieResponse>>> searchMovies(){
   // movie, page, api 세개의 response객체를 사용
 }
+```
 
 <br>
 
