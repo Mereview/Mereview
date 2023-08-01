@@ -1,0 +1,26 @@
+.navbar {
+  padding: 0px;
+
+  /* 수직, 수평 가운데 정렬을 위해 flex 컨테이너로 설정합니다. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 내부 Link 컴포넌트에 적용할 스타일입니다. */
+  .nav-link {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.profile {
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  margin: 2px;
+  padding: 0px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
