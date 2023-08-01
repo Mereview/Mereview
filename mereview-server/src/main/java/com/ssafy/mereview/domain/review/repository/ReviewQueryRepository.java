@@ -4,7 +4,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +31,8 @@ public class ReviewQueryRepository {
                 .from(review)
                 .where(
                         isTitle(condition.getTitle()),
-                        isContent(condition.getContent())
+                        isContent(condition.getContent()),
+                        isTerm(condition.getTerm())
                 )
                 .orderBy(sortByField(condition.getOrderBy()))
                 .offset(pageable.getOffset())
@@ -61,7 +62,8 @@ public class ReviewQueryRepository {
                 .join(review.movie, movie).fetchJoin()
                 .where(
                         isTitle(condition.getTitle()),
-                        isContent(condition.getContent())
+                        isContent(condition.getContent()),
+                        isTerm(condition.getTerm())
                 )
                 .fetchFirst().intValue();
     }
@@ -77,6 +79,28 @@ public class ReviewQueryRepository {
                 ).fetchOne();
     }
 
+    private BooleanExpression isTitle(String title) {
+        return hasText(title) ? review.title.like("%" + title + "%") : null;
+    }
+
+    private BooleanExpression isContent(String content) {
+        return hasText(content) ? review.content.like("%" + content + "%") : null;
+    }
+
+    private BooleanExpression isTerm(String term) {
+        if (hasText(term)) {
+            LocalDateTime today = LocalDateTime.now();
+            if (term.equals("weekly")) {
+                return review.createdTime.between(today.minusDays(7), today);
+            } else if (term.equals("semiannual")) {
+                return review.createdTime.between(today.minusMonths(6), today);
+            } else if (term.equals("yearly")) {
+                return review.createdTime.between(today.minusYears(1), today);
+            }
+        }
+        return null;
+    }
+
     private OrderSpecifier<?> sortByField(String filedName) {
         Order order = Order.DESC;
 
@@ -84,13 +108,5 @@ public class ReviewQueryRepository {
             return new OrderSpecifier<>(order, review.hits);
         }
         return new OrderSpecifier<>(order, review.createdTime);
-    }
-
-    private BooleanExpression isTitle(String title) {
-        return hasText(title) ? review.title.like("%" + title + "%") : null;
-    }
-
-    private BooleanExpression isContent(String content) {
-        return hasText(content) ? review.content.like("%" + content + "%") : null;
     }
 }

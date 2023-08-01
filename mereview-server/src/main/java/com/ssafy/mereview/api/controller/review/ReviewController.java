@@ -56,9 +56,10 @@ public class ReviewController {
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
+            @RequestParam(defaultValue = "") String term,
             @RequestParam(defaultValue = "1") Integer pageNumber
     ) {
-        SearchCondition condition = createCondition(title, content);
+        SearchCondition condition = createCondition(title, content, term);
 
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
@@ -120,10 +121,11 @@ public class ReviewController {
         return uploadFile;
     }
 
-    private static SearchCondition createCondition(String title, String content) {
+    private static SearchCondition createCondition(String title, String content, String term) {
         return SearchCondition.builder()
                 .title(title)
                 .content(content)
+                .term(term)
                 .build();
     }
 }

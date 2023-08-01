@@ -10,10 +10,8 @@ import com.ssafy.mereview.domain.movie.entity.MovieGenre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieGenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
-import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.entity.ReviewLike;
-import com.ssafy.mereview.domain.review.entity.ReviewLikeType;
 import com.ssafy.mereview.domain.review.repository.ReviewLikeRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
@@ -22,7 +20,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -83,7 +80,7 @@ class ReviewQueryServiceTest {
         Long genreId = createGenre();
         createMovieGenre();
         createReviews(memberId, movieId, genreId);
-        SearchCondition condition = new SearchCondition("", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -105,7 +102,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByTitle() {
         // given
-        SearchCondition condition = new SearchCondition("테스트", "", "");
+        SearchCondition condition = new SearchCondition("테스트", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -126,7 +123,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByContent() {
         // given
-        SearchCondition condition = new SearchCondition("", "테스트", "");
+        SearchCondition condition = new SearchCondition("", "테스트", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -147,7 +144,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByHits() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "hits");
+        SearchCondition condition = new SearchCondition("", "", "hits", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -176,7 +173,7 @@ class ReviewQueryServiceTest {
                 .build();
         reviewLikeRepository.save(reviewLikeFun);
 
-        SearchCondition condition = new SearchCondition("", "", "FUN");
+        SearchCondition condition = new SearchCondition("", "", "FUN", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -207,7 +204,7 @@ class ReviewQueryServiceTest {
                 .member(Member.builder().id(1L).build())
                 .build();
         reviewLikeRepository.save(reviewLikeUseful);
-        SearchCondition condition = new SearchCondition("", "", "USEFUL");
+        SearchCondition condition = new SearchCondition("", "", "USEFUL", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -229,7 +226,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchEmptyReviews() {
         // given
-        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "");
+        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
