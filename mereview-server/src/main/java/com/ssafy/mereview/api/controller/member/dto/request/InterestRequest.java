@@ -8,10 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InterestRequest {
 
+    private String genreId;
+
     private String genreName;
 
     @Builder
-    public InterestRequest(String genreName) {
+    public InterestRequest(String genreId, String genreName) {
+        this.genreId = genreId;
         this.genreName = genreName;
     }
 }

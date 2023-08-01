@@ -1,8 +1,7 @@
-package com.ssafy.mereview.domain.member.repository.impl;
+package com.ssafy.mereview.domain.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.member.entity.*;
-import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,7 @@
-package com.ssafy.mereview.domain.member.repository.impl;
+package com.ssafy.mereview.domain.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.member.entity.Achievement;
-import com.ssafy.mereview.domain.member.repository.AchievementQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

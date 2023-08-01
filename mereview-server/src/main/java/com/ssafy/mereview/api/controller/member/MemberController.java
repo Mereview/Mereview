@@ -1,31 +1,26 @@
 package com.ssafy.mereview.api.controller.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
 import com.ssafy.mereview.api.service.member.MemberService;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceReqeust;
+import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
-import com.ssafy.mereview.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberQueryRepository memberQueryRepository;
 
-    private final MemberRepository memberRepository;
 
     private final MemberService memberService;
 
@@ -34,22 +29,12 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     public Long signup(@Valid @RequestBody MemberRegisterRequest request) throws Exception {
-        List<InterestRequest> interestRequests = new ArrayList<>();
-        for (String genreName : request.getInterests()) {
-            InterestRequest interestRequest = InterestRequest.builder()
-                    .genreName(genreName)
-                    .build();
-            interestRequests.add(interestRequest);
-        }
 
-        SaveMemberServiceReqeust saveMemberReqeust = SaveMemberServiceReqeust.builder()
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .interestRequests(interestRequests)
-                .build();
-        Long id = memberService.saveMember(saveMemberReqeust);
+
+        SaveMemberServiceRequest saveMemberServiceRequest = request.toServiceDto();
+        Long id = memberService.saveMember(saveMemberServiceRequest);
         if (id == -1) {
             throw new Exception("중복되는 회원이 존재합니다.");
         }
@@ -62,23 +47,30 @@ public class MemberController {
 
     @ResponseBody
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody MemberLoginRequest memberLoginDto) {
+    public MemberResponse login(@RequestBody MemberLoginRequest memberLoginDto) {
         // TODO: Verify username and password, and generate JWT
         Member existingMember = memberQueryRepository.searchByEmail(memberLoginDto.getEmail());
         if (existingMember != null && passwordEncoder.matches(memberLoginDto.getPassword(), existingMember.getPassword())) {
             Map<String, String> token = jwtUtils.generateJwt(existingMember);
-
-            return token;
+            MemberResponse memberResponse = memberService.getLoginInfo(existingMember.getId());
+            memberResponse.setToken(token);
+            return memberResponse;
         } else {
             throw new RuntimeException("Invalid username or password");
         }
     }
 
     @ResponseBody
-    @GetMapping("/info/{id}")
+    @GetMapping("/{id}")
     public MemberResponse getMemberInfo(@PathVariable Long id) {
         System.out.println("id = " + id);
-        MemberResponse response = memberService.getMemberInfo(id);
-        return response;
+        MemberResponse memberResponse = memberService.getMemberInfo(id);
+        return memberResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/follow/{targetId}")
+    public void follow(@PathVariable Long targetId) {
+        memberService.follow(targetId, 1L);
     }
 }
