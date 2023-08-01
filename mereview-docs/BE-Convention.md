@@ -129,12 +129,34 @@ public class MovieCreateServiceRequest{
 
 
 - **Response class**
+  - 명명규칙 : [도메인][조건]Response
+  - 페이지는 PageResponse 사용
   - 모든 응답은 ApiResponse 클래스로 반환
-  - 명명규칙 : [도메인][동작]Response
 
 ```jsx
-//예시 작성 예정
+//전체조회
+@Getter
+@NoArgsConstructor
+public class MovieResponse{
+
+  //...내용
+}
 ```
+```jsx
+//상세조회
+@Getter
+@NoArgsConstructor
+public class MovieDetailResponse{
+
+  //...내용
+}
+```
+```jsx
+//반환 예시
+@GetMapping("/")
+public ApiResponse<PageResponse<List<MovieResponse>>> searchMovies(){
+  // movie, page, api 세개의 response객체를 사용
+}
 
 <br>
 
@@ -211,6 +233,7 @@ public class MovieQueryRepository{
 
 - **모든 예외 처리는 ApiControllerAdvice 에서 처리**
 - **반환은 controller와 똑같이 ApiResponse 클래스 반환**
+- **에러 종류에따라 어떤 응답번호 부여할지 컨벤션 정해야함**
 
 ---
 
