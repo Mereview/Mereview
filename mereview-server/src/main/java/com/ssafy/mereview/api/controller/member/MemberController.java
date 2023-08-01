@@ -1,76 +1,73 @@
 package com.ssafy.mereview.api.controller.member;
 
+import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
+import com.ssafy.mereview.api.service.member.EmailService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
-import com.ssafy.mereview.common.util.jwt.JwtUtils;
-import com.ssafy.mereview.domain.member.entity.Member;
-import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
+import com.ssafy.mereview.common.response.ApiResponse;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
-    private final MemberQueryRepository memberQueryRepository;
 
 
     private final MemberService memberService;
 
-    private final JwtUtils jwtUtils;
-
-    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
 
     @PostMapping("/sign-up")
-    public Long signup(@Valid @RequestBody MemberRegisterRequest request) throws Exception {
-
-
+    public ApiResponse<Long> signup(@Valid @RequestBody MemberRegisterRequest request) throws Exception {
+        log.debug("MemberRegisterRequest : {}", request);
         SaveMemberServiceRequest saveMemberServiceRequest = request.toServiceDto();
-        Long id = memberService.saveMember(saveMemberServiceRequest);
-        if (id == -1) {
-            throw new Exception("중복되는 회원이 존재합니다.");
+
+        Long memberId = memberService.createMember(saveMemberServiceRequest);
+        if (memberId == -1) {
+            throw new DuplicateRequestException("중복되는 회원이 존재합니다.");
         }
 
-
-        return id;
-
-
+        return ApiResponse.ok(memberId);
     }
 
-    @ResponseBody
+    @PostMapping("/check-email")
+    public ApiResponse<String> emailCheck(@RequestBody EmailCheckRequest request) throws MessagingException, UnsupportedEncodingException {
+        emailService.sendEmail(request.getEmail());
+
+        return ApiResponse.ok("이메일이 발송되었습니다.");
+    }
+
     @PostMapping("/login")
-    public MemberResponse login(@RequestBody MemberLoginRequest memberLoginDto) {
-        // TODO: Verify username and password, and generate JWT
-        Member existingMember = memberQueryRepository.searchByEmail(memberLoginDto.getEmail());
-        if (existingMember != null && passwordEncoder.matches(memberLoginDto.getPassword(), existingMember.getPassword())) {
-            Map<String, String> token = jwtUtils.generateJwt(existingMember);
-            MemberResponse memberResponse = memberService.getLoginInfo(existingMember.getId());
-            memberResponse.setToken(token);
-            return memberResponse;
-        } else {
-            throw new RuntimeException("Invalid username or password");
-        }
+    public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
+        log.debug("MemberLoginRequest : {}", request);
+        MemberLoginResponse memberLoginResponse = memberService.login(request);
+        return ApiResponse.ok(memberLoginResponse);
+
     }
 
-    @ResponseBody
     @GetMapping("/{id}")
-    public MemberResponse getMemberInfo(@PathVariable Long id) {
-        System.out.println("id = " + id);
-        MemberResponse memberResponse = memberService.getMemberInfo(id);
-        return memberResponse;
+    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable Long id) {
+        log.debug("MemberController.getMemberInfo : {}", id);
+        MemberResponse memberResponse = memberService.searchMemberInfo(id);
+        return ApiResponse.ok(memberResponse);
     }
 
-    @ResponseBody
     @PostMapping("/follow/{targetId}")
-    public void follow(@PathVariable Long targetId) {
-        memberService.follow(targetId, 1L);
+    public void follow(@PathVariable Long targetId, @RequestBody Long currentUserId) {
+        log.debug("MemberController.follow : {}", targetId);
+        memberService.follow(targetId, currentUserId);
     }
 }
