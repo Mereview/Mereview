@@ -52,11 +52,28 @@ public class ReviewQueryService {
         return createReviewDetailResponse(review);
     }
 
-    private static List<Long> createGenreIds(Review review) {
-        if (review.getMovie() != null && review.getMovie().getMovieGenres() != null) {
-            return review.getMovie().getMovieGenres().stream().map(MovieGenre::getId).collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+    private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
+        return reviews.stream()
+                .map(review -> ReviewResponse.builder()
+                        .reviewId(review.getId())
+                        .memberId(review.getMember().getId())
+                        .nickname(review.getMember().getNickname())
+                        .movieId(review.getMovie().getId())
+                        .movieTitle(review.getMovie().getTitle())
+                        .genreResponse(review.getGenre().of())
+                        .movieReleaseDate(review.getMovie().getReleaseDate())
+                        .reviewTitle(review.getTitle())
+                        .hits(review.getHits())
+                        .highlight(review.getHighlight())
+                        .evaluationType(review.getType())
+                        .commentCount(getCommentCount(review))
+                        .funCount(getFunCount(review.getLikes()))
+                        .usefulCount(getUsefulCount(review.getLikes()))
+                        .badCount(getBadCount(review.getLikes()))
+                        .backgroundImageResponse(getBackgroundImageResponse(review))
+                        .createdTime(review.getCreatedTime())
+                        .build()
+                ).collect(Collectors.toList());
     }
 
     private static int getCommentCount(Review review) {
@@ -113,30 +130,6 @@ public class ReviewQueryService {
                 .nickname(review.getMember().getNickname())
                 .memberTiers(review.getMember().getMemberTiers().stream().map(MemberTier::of).collect(Collectors.toList()))
                 .build();
-    }
-
-    private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
-        return reviews.stream()
-                .map(review -> ReviewResponse.builder()
-                        .reviewId(review.getId())
-                        .memberId(review.getMember().getId())
-                        .nickname(review.getMember().getNickname())
-                        .movieId(review.getMovie().getId())
-                        .movieTitle(review.getMovie().getTitle())
-                        .genreIds(createGenreIds(review))
-                        .movieReleaseDate(review.getMovie().getReleaseDate())
-                        .reviewTitle(review.getTitle())
-                        .hits(review.getHits())
-                        .highlight(review.getHighlight())
-                        .evaluationType(review.getType())
-                        .commentCount(getCommentCount(review))
-                        .funCount(getFunCount(review.getLikes()))
-                        .usefulCount(getUsefulCount(review.getLikes()))
-                        .badCount(getBadCount(review.getLikes()))
-                        .backgroundImageResponse(getBackgroundImageResponse(review))
-                        .createdTime(review.getCreatedTime())
-                        .build()
-                ).collect(Collectors.toList());
     }
 
     private static List<KeywordResponse> createKeywords(Review review) {
