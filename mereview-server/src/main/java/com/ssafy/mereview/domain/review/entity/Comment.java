@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.controller.review.CommentUpdateServiceRequest;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
@@ -43,5 +44,9 @@ public class Comment extends BaseEntity {
         this.review = review;
         this.member = member;
         this.likes = likes;
+    }
+
+    public void update(CommentUpdateServiceRequest request) {
+        this.content = request.getContent();
     }
 }

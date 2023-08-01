@@ -94,9 +94,15 @@ public class ReviewController {
     }
 
     @PostMapping("/comments")
-    public ApiResponse<Long> createReviewComment(@RequestBody CommentCreateRequest request) {
+    public ApiResponse<Long> createReviewComment(@Valid @RequestBody CommentCreateRequest request) {
         Long saveId = commentService.save(request.toServiceRequest());
         return ApiResponse.ok(saveId);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public ApiResponse<Long> updateReviewComment(@PathVariable Long commentId, @Valid @RequestBody CommentUpdateRequest request) {
+        Long updateId = commentService.update(commentId, request.toServiceRequest());
+        return ApiResponse.ok(updateId);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
