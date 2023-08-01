@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Genre;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -81,6 +83,15 @@ public class Review extends BaseEntity {
         this.comments = comments;
         this.keywords = keywords;
         this.likes = likes;
+        this.backgroundImage = backgroundImage;
+    }
+
+    public void update(ReviewUpdateServiceRequest request, List<Keyword> keywords, BackgroundImage backgroundImage) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.highlight = request.getHighlight();
+        this.type = request.getType();
+        this.keywords = keywords;
         this.backgroundImage = backgroundImage;
     }
 }

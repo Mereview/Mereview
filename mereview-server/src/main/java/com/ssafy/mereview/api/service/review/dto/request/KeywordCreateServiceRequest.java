@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review.dto.request;
 
+import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
@@ -25,7 +26,7 @@ public class KeywordCreateServiceRequest {
                 .name(name)
                 .weight(weight)
                 .review(Review.builder().id(reviewId).build())
-//                .movie(Movie.builder().id(movieId).build())
+                .movie(Movie.builder().id(movieId).build())
                 .build();
     }
 }

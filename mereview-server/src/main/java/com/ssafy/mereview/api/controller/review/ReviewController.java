@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.controller.review;
 
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
@@ -68,6 +69,19 @@ public class ReviewController {
     public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId) {
         ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
         return ApiResponse.ok(response);
+    }
+
+    @PutMapping("/{reviewId}")
+    public ApiResponse<Long> updateReview(@PathVariable Long reviewId,
+                                          @Valid @RequestPart ReviewUpdateRequest request,
+                                          @RequestPart(required = false) MultipartFile file) throws IOException {
+        log.debug("request: {}", request);
+
+        UploadFile uploadFile = createUploadFile(file);
+        log.debug("uploadFile: {}", uploadFile);
+
+        Long updateId = reviewService.update(reviewId, request.toServiceRequest(uploadFile));
+        return ApiResponse.ok(updateId);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
