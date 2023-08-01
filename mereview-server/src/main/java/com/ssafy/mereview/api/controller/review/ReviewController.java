@@ -1,8 +1,12 @@
 package com.ssafy.mereview.api.controller.review;
 
+import com.ssafy.mereview.api.controller.review.dto.request.CommentCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
+import com.ssafy.mereview.api.service.review.CommentService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.response.PageResponse;
@@ -30,6 +34,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final ReviewQueryService reviewQueryService;
+    private final CommentService commentService;
 
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
@@ -47,7 +52,7 @@ public class ReviewController {
         return ApiResponse.ok(saveId);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
@@ -61,6 +66,49 @@ public class ReviewController {
         PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pages);
 
         return ApiResponse.ok(pageResponse);
+    }
+
+    @GetMapping("/{reviewId}")
+    public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId) {
+        ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+        return ApiResponse.ok(response);
+    }
+
+    @PutMapping("/{reviewId}")
+    public ApiResponse<Long> updateReview(@PathVariable Long reviewId,
+                                          @Valid @RequestPart ReviewUpdateRequest request,
+                                          @RequestPart(required = false) MultipartFile file) throws IOException {
+        log.debug("request: {}", request);
+
+        UploadFile uploadFile = createUploadFile(file);
+        log.debug("uploadFile: {}", uploadFile);
+
+        Long updateId = reviewService.update(reviewId, request.toServiceRequest(uploadFile));
+        return ApiResponse.ok(updateId);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ApiResponse<Long> deleteReview(@PathVariable Long reviewId) {
+        Long deleteId = reviewService.delete(reviewId);
+        return ApiResponse.ok(deleteId);
+    }
+
+    @PostMapping("/comments")
+    public ApiResponse<Long> createReviewComment(@Valid @RequestBody CommentCreateRequest request) {
+        Long saveId = commentService.save(request.toServiceRequest());
+        return ApiResponse.ok(saveId);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public ApiResponse<Long> updateReviewComment(@PathVariable Long commentId, @Valid @RequestBody CommentUpdateRequest request) {
+        Long updateId = commentService.update(commentId, request.toServiceRequest());
+        return ApiResponse.ok(updateId);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ApiResponse<Long> deleteReviewComment(@PathVariable Long commentId) {
+        Long deleteId = commentService.delete(commentId);
+        return ApiResponse.ok(deleteId);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {

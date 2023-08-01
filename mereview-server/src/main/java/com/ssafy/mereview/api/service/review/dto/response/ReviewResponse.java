@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.domain.review.entity.EvaluationType;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @ToString
@@ -20,7 +20,7 @@ public class ReviewResponse {
     // TODO: 2023-07-31 회원 프로필 이미지 추가 예정
     private Long movieId;
     private String movieTitle;
-    private List<Long> genreIds = new ArrayList<>();
+    private GenreResponse genreResponse;
     private String movieReleaseDate;
     private String reviewTitle;
     private int hits;
@@ -34,13 +34,13 @@ public class ReviewResponse {
     private LocalDateTime createdTime;
 
     @Builder
-    public ReviewResponse(Long reviewId, Long memberId, String nickname, Long movieId, String movieTitle, List<Long> genreIds, String movieReleaseDate, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime) {
+    public ReviewResponse(Long reviewId, Long memberId, String nickname, Long movieId, String movieTitle, GenreResponse genreResponse, String movieReleaseDate, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime) {
         this.reviewId = reviewId;
         this.memberId = memberId;
         this.nickname = nickname;
         this.movieId = movieId;
         this.movieTitle = movieTitle;
-        this.genreIds = genreIds;
+        this.genreResponse = genreResponse;
         this.movieReleaseDate = movieReleaseDate;
         this.reviewTitle = reviewTitle;
         this.hits = hits;

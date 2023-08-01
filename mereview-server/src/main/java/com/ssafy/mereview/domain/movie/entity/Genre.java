@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.movie.entity;
 
 
+import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Interest;
 import com.ssafy.mereview.domain.member.entity.MemberAchievement;
@@ -63,5 +64,12 @@ public class Genre extends BaseEntity {
         this.memberAchievements = memberAchievements;
     }
 
-
+    public GenreResponse of() {
+        return GenreResponse.builder()
+                .genreId(id)
+                .genreNumber(genreNumber)
+                .genreName(genreName)
+                .isUsing(isUsing)
+                .build();
+    }
 }

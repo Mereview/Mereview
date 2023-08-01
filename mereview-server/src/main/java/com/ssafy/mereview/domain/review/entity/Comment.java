@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.controller.review.CommentUpdateServiceRequest;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
@@ -34,14 +35,18 @@ public class Comment extends BaseEntity {
     Member member;
 
     @OneToMany(mappedBy = "comment")
-    private List<CommentLike> lieks = new ArrayList<>();
+    private List<CommentLike> likes = new ArrayList<>();
 
     @Builder
-    private Comment(Long id, String content, Review review, Member member, List<CommentLike> lieks) {
+    private Comment(Long id, String content, Review review, Member member, List<CommentLike> likes) {
         this.id = id;
         this.content = content;
         this.review = review;
         this.member = member;
-        this.lieks = lieks;
+        this.likes = likes;
+    }
+
+    public void update(CommentUpdateServiceRequest request) {
+        this.content = request.getContent();
     }
 }

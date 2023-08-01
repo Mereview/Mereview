@@ -17,21 +17,13 @@ import java.util.List;
 public class ReviewCreateServiceRequest {
 
     private String title;
-
     private String content;
-
     private String highlight;
-
     private EvaluationType type;
-
     private Long memberId;
-
     private Long movieId;
-
     private Long genreId;
-
     private List<KeywordCreateServiceRequest> keywordServiceRequests;
-
     private UploadFile uploadFile;
 
     @Builder
