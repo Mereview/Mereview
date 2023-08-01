@@ -1,15 +1,18 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import "../../styles/css/ProfileImageUpload.css";
+import "../../styles/css/ImageUploader.css";
+import { userActions } from "../../store/user-slice";
+import { useDispatch } from "react-redux";
 function ImageUploader() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
+  const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
 
     if (file) {
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
+      dispatch(userActions.signUp_step2(objectURL));
     }
   }, []);
 
@@ -36,7 +39,7 @@ function ImageUploader() {
         />
       ) : (
         <img
-          src={"/defaultProfile.png"}
+          src={"/testProfile.gif"}
           alt="defaulImg"
           style={{
             width: "12rem",

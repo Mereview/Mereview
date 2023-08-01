@@ -1,0 +1,25 @@
+@font-face {
+  font-family: "GowunDodum";
+  src: url("../fonts/GowunDodum-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GowunBatang";
+  src: url("../fonts/GowunBatang-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "BMDoHyeon";
+  src: url("../fonts/BMDOHYEON_ttf.ttf") format("truetype");
+}
+@font-face {
+  font-family: "NanumGothic";
+  src: url("../fonts/NanumGothic.ttf") format("truetype");
+}
+.card-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+/*# sourceMappingURL=MovieList.css.map */
