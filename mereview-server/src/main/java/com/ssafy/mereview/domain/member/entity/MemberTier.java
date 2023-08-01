@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.member.entity;
 
 
+import com.ssafy.mereview.api.service.member.dto.response.MemberTierResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
@@ -55,4 +56,15 @@ public class MemberTier extends BaseEntity {
         this.usefulExperience = usefulExperience;
         this.genre = genre;
     }
+
+    public MemberTierResponse of(){
+        return MemberTierResponse.builder()
+                .funTier(funTier)
+                .usefulTier(usefulTier)
+                .funExperience(funExperience)
+                .usefulExperience(usefulExperience)
+                .genreName(genre.getGenreName())
+                .build();
+    }
 }
+
