@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
+import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
@@ -9,6 +10,7 @@ import com.ssafy.mereview.domain.movie.entity.MovieGenre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieGenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
+import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.entity.ReviewLike;
 import com.ssafy.mereview.domain.review.entity.ReviewLikeType;
@@ -23,13 +25,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
 import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.USEFUL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * 본 테스트코드는 참고하지 말 것
@@ -70,7 +72,7 @@ class ReviewQueryServiceTest {
 //        movieRepository.deleteAllInBatch();
 //    }
 
-//    @Transactional
+    //    @Transactional
     @DisplayName("검색 조건 없이 모든 리뷰를 조회한다.")
     @Order(1)
     @Test
@@ -89,7 +91,7 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(3)
-                .extracting("reviewId","memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
                 .containsExactly(
                         tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1"),
                         tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
@@ -190,7 +192,7 @@ class ReviewQueryServiceTest {
                         tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1", 1),
                         tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0),
                         tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
-                        );
+                );
 
     }
 
@@ -236,6 +238,31 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(0);
 
+    }
+
+    @DisplayName("존재하는 리뷰를 리뷰의 id 값으로 조회한다.")
+    @Test
+    void searchExistingReviewById() {
+        // given
+        Long reviewId = 1L;
+
+        // when
+        ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+
+        // then
+        assertThat(response.getReviewId()).isEqualTo(reviewId);
+    }
+
+    @DisplayName("존재하지 않는 리뷰를 리뷰의 id 값으로 조회한다.")
+    @Test
+    void searchNotExistingReviewById() {
+        // given
+        Long reviewId = 4L;
+
+        // when // then
+        assertThatThrownBy(() -> reviewQueryService.searchById(reviewId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 리뷰입니다.");
     }
 
     private Long createMember() {

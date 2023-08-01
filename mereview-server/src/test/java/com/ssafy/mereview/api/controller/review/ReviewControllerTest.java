@@ -6,6 +6,7 @@ import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.service.member.UserDetailsServiceImpl;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
@@ -101,6 +102,7 @@ class ReviewControllerTest {
         List<ReviewResponse> responses = List.of(response1, response2, response3);
         SearchCondition searchCondition = new SearchCondition("", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+
         // stubbing 작업
         BDDMockito.given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
                 .willReturn(responses);
@@ -128,6 +130,7 @@ class ReviewControllerTest {
         List<ReviewResponse> responses = List.of(response1, response2, response3);
         SearchCondition searchCondition = new SearchCondition("", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+
         // stubbing 작업
         BDDMockito.given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
                 .willReturn(responses);
@@ -143,6 +146,36 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").isNotEmpty());
+    }
+
+    @DisplayName("리뷰의 id 값으로 리뷰를 조회한다.")
+    @Test
+    void searchReviewById() throws Exception {
+        // given
+        Long reviewId = 1L;
+        ReviewDetailResponse response = createReviewDetailResponse(1L, 1L, 1L);
+
+        // stubbing 작업
+        BDDMockito.given(reviewQueryService.searchById(reviewId))
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/reviews/1")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    private ReviewDetailResponse createReviewDetailResponse(Long reviewId, Long memberId, Long movieId) {
+        return ReviewDetailResponse.builder()
+                .reviewId(reviewId)
+                .memberId(memberId)
+                .movieId(movieId)
+                .build();
     }
 
     private static ReviewResponse createReviewResponse(Long reviewId, Long memberId, Long movieId) {

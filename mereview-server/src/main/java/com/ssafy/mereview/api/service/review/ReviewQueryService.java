@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -49,6 +50,9 @@ public class ReviewQueryService {
 
     public ReviewDetailResponse searchById(Long reviewId) {
         Review review = reviewQueryRepository.searchById(reviewId);
+        if (review == null) {
+            throw new NoSuchElementException("존재하지 않는 리뷰입니다.");
+        }
         return createReviewDetailResponse(review);
     }
 
@@ -117,7 +121,7 @@ public class ReviewQueryService {
                 .reviewTitle(review.getTitle())
                 .reviewContent(review.getContent())
                 .hits(review.getHits())
-                .backgroundImage(review.getBackgroundImage().of())
+                .backgroundImage(getBackgroundImageResponse(review))
                 .reviewHighlight(review.getHighlight())
                 .reviewCreatedTime(review.getCreatedTime())
                 .keywords(createKeywords(review))
