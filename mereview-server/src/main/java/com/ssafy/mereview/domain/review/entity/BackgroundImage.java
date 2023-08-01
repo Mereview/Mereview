@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.response.BackgroundImageResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
 import lombok.Builder;
@@ -31,5 +32,13 @@ public class BackgroundImage extends BaseEntity {
         this.id = id;
         this.uploadFile = uploadFile;
         this.review = review;
+    }
+
+    public BackgroundImageResponse of() {
+        return BackgroundImageResponse.builder()
+                .id(id)
+                .fileName(uploadFile.getUploadFileName())
+                .createdTime(getCreatedTime())
+                .build();
     }
 }

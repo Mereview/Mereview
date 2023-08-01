@@ -8,9 +8,12 @@ public class SearchCondition {
     private String title;
     private String content;
 
+    private String orderBy;
+
     @Builder
-    public SearchCondition(String title, String content) {
+    public SearchCondition(String title, String content, String orderBy) {
         this.title = title;
         this.content = content;
+        this.orderBy = orderBy;
     }
 }
