@@ -1,12 +1,36 @@
 @import "Style";
 
 .search-box {
-  width: 30%;
-  max-width: 400px;
+  max-width: 300px;
   min-width: 200px;
+  margin-left: 20px;
   font-family: $NanumGothic;
   font-size: $font-size-xs;
 }
 
-.form-control {
+.sort-buttons {
+  margin-top: 5px;
+  margin-left: 25px;
+
+  .selected {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: $black;
+  }
+
+  button {
+    font-family: $BMDoHyeon;
+    color: $gray-7;
+    border: none;
+    background-color: transparent;
+
+    .sort-icon {
+      $icon-size: 20px;
+      svg {
+        width: $icon-size;
+        height: $icon-size;
+        margin-right: 2px;
+      }
+    }
+  }
 }

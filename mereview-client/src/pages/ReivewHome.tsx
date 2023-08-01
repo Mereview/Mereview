@@ -5,6 +5,8 @@ import { ReviewCardInterface } from "../components/interface/ReviewCardInterface
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
 import MovieList from "../components/MovieList";
+import { SearchBoxInterface } from "../components/interface/SearchBoxInterface";
+import SearchBox from "../components/SearchBox";
 
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
@@ -62,7 +64,7 @@ const getBoxOfficeMovieNames = async () => {
   }
 };
 
-const genres = {
+const genres: Record<string, string> = {
   "28": "액션",
   "12": "모험",
   "16": "애니메이션",
@@ -97,7 +99,7 @@ const searchMovieOnTmdb = async (movieNames: string[]) => {
       const data = tmdbResponse.data.results[0];
       if (typeof data === "undefined") {
         const movie: MovieCardInterface = {
-          movieId: movieName,
+          movieId: null,
           posterImagePath:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019",
           movieTitle: movieName,
@@ -125,6 +127,7 @@ const searchMovieOnTmdb = async (movieNames: string[]) => {
 
       boxOffices.push(movie);
     }
+    console.log(boxOffices);
 
     return boxOffices;
   } catch (error) {
@@ -132,9 +135,9 @@ const searchMovieOnTmdb = async (movieNames: string[]) => {
     return [];
   }
 };
-
 /* 박스오피스 데이터 생성 끝*/
 
+/* 리뷰 더미 데이터 */
 //https://react-icons.github.io/react-icons/icons?name=bs
 const someReview = {
   reviewId: 12113,
@@ -215,9 +218,13 @@ const a = {
   onClickTitle: handleClickTitle,
 };
 const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
+/* 리뷰 더미 데이터 끝 */
 
 const ReviewHome = () => {
   const [movieList, setMovieList] = useState<MovieCardInterface[]>([]);
+  const [sortBy, setSortBy] = useState<string>("date");
+  const [dateDescend, setDateDescend] = useState<boolean>(true);
+  const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -228,9 +235,28 @@ const ReviewHome = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // reload review list
+    console.log("Reload!!", sortBy, dateDescend, recommendDescend);
+  }, [sortBy, dateDescend, recommendDescend]);
+
+  const searchBoxProps: SearchBoxInterface = {
+    sortBy: sortBy,
+    setSortBy: setSortBy,
+    dateDescend: dateDescend,
+    setDateDescend: setDateDescend,
+    recommendDescend: recommendDescend,
+    setRecommendDescend: setRecommendDescend,
+  };
+
+  // SearchBox => Enter키 연결, 아이콘 추가
+  // SearchBox,
   return (
     <>
       <MovieList movieList={movieList} />
+      <hr />
+      <SearchBox searchBoxProps={searchBoxProps} />
+
       <ReviewList reviewList={reviewList} />
     </>
   );
