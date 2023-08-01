@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.mereview.api.controller.review.dto.request.KeywordCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.service.member.UserDetailsServiceImpl;
+import com.ssafy.mereview.api.service.review.CommentService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
@@ -65,6 +66,9 @@ class ReviewControllerTest {
     private ReviewQueryService reviewQueryService;
 
     @MockBean
+    private CommentService commentService;
+
+    @MockBean
     private JwtAuthFilter jwtAuthFilter;
 
     @DisplayName("새로운 리뷰를 작성한다.")
@@ -80,7 +84,7 @@ class ReviewControllerTest {
         // when // then
         String jsonRequest = objectMapper.writeValueAsString(request);
         mockMvc.perform(
-                        multipart("/review/api/v1")
+                        multipart("/reviews")
                                 .file(file)
                                 .file(createRequestPart(jsonRequest))
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -91,6 +95,32 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.code").value("200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
+                .andReturn();
+    }
+
+    @DisplayName("새로운 리뷰를 작성할 때 키워드는 필수다.")
+    @Test
+    void createReviewWithoutKeywords() throws Exception {
+        // given
+        List<KeywordCreateRequest> keywordRequests = List.of();
+
+        MockMultipartFile file = createMockMultiFile("test.png");
+
+        ReviewCreateRequest request = crateReviewRequest(keywordRequests);
+
+        // when // then
+        String jsonRequest = objectMapper.writeValueAsString(request);
+        mockMvc.perform(
+                        multipart("/reviews")
+                                .file(file)
+                                .file(createRequestPart(jsonRequest))
+                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andReturn();
     }
 

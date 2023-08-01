@@ -94,4 +94,8 @@ public class Review extends BaseEntity {
         this.keywords = keywords;
         this.backgroundImage = backgroundImage;
     }
+
+    public void increaseHits() {
+        this.hits++;
+    }
 }

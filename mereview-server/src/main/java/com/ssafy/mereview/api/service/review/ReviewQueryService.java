@@ -53,6 +53,7 @@ public class ReviewQueryService {
         if (review == null) {
             throw new NoSuchElementException("존재하지 않는 리뷰입니다.");
         }
+        review.increaseHits();
         return createReviewDetailResponse(review);
     }
 

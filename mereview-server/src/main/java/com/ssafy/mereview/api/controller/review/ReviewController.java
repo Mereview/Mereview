@@ -1,7 +1,9 @@
 package com.ssafy.mereview.api.controller.review;
 
+import com.ssafy.mereview.api.controller.review.dto.request.CommentCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
+import com.ssafy.mereview.api.service.review.CommentService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
@@ -32,6 +34,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final ReviewQueryService reviewQueryService;
+    private final CommentService commentService;
 
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
@@ -88,6 +91,12 @@ public class ReviewController {
     public ApiResponse<Long> deleteReview(@PathVariable Long reviewId) {
         Long deleteId = reviewService.delete(reviewId);
         return ApiResponse.ok(deleteId);
+    }
+
+    @PostMapping("/comments")
+    public ApiResponse<Long> createReviewComment(@RequestBody CommentCreateRequest request) {
+        Long saveId = commentService.save(request.toServiceRequest());
+        return ApiResponse.ok(saveId);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
