@@ -105,6 +105,12 @@ public class ReviewController {
         return ApiResponse.ok(updateId);
     }
 
+    @DeleteMapping("/comments/{commentId}")
+    public ApiResponse<Long> deleteReviewComment(@PathVariable Long commentId) {
+        Long deleteId = commentService.delete(commentId);
+        return ApiResponse.ok(deleteId);
+    }
+
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
         UploadFile uploadFile = null;
         if (file != null && !file.isEmpty()) {

@@ -24,6 +24,15 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NoSuchElementException::new);
         comment.update(request);
-        return commentId;
+        Long updateId = comment.getId();
+        return updateId;
+    }
+
+    public Long delete(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(NoSuchElementException::new);
+        Long deleteId = comment.getId();
+        commentRepository.delete(comment);
+        return deleteId;
     }
 }
