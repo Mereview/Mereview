@@ -3,6 +3,7 @@ package com.ssafy.mereview.api.controller.review;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.response.PageResponse;
@@ -61,6 +62,12 @@ public class ReviewController {
         PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pages);
 
         return ApiResponse.ok(pageResponse);
+    }
+
+    @GetMapping("/{reviewId}")
+    public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId) {
+        ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+        return ApiResponse.ok(response);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {

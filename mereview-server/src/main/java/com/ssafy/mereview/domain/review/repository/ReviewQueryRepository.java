@@ -4,6 +4,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class ReviewQueryRepository {
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent())
                 )
-                .orderBy(sortByField(condition.getOrderBy())) // TODO: 2023-07-31 orderBy 조건 설정해줘야함
+                .orderBy(sortByField(condition.getOrderBy()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -63,6 +64,17 @@ public class ReviewQueryRepository {
                         isContent(condition.getContent())
                 )
                 .fetchFirst().intValue();
+    }
+
+    public Review searchById(Long reviewId) {
+        return queryFactory
+                .select(review)
+                .from(review)
+                .join(review.member, member).fetchJoin()
+                .join(review.movie, movie).fetchJoin()
+                .where(
+                        review.id.eq(reviewId)
+                ).fetchOne();
     }
 
     private OrderSpecifier<?> sortByField(String filedName) {

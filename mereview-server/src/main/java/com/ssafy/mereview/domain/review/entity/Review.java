@@ -59,13 +59,16 @@ public class Review extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
+    private List<Keyword> keywords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review")
     private List<ReviewLike> likes = new ArrayList<>();
 
     @OneToOne(mappedBy = "review")
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<ReviewLike> likes, BackgroundImage backgroundImage) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Keyword> keywords, List<ReviewLike> likes, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -76,6 +79,7 @@ public class Review extends BaseEntity {
         this.movie = movie;
         this.genre = genre;
         this.comments = comments;
+        this.keywords = keywords;
         this.likes = likes;
         this.backgroundImage = backgroundImage;
     }
