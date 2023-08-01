@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.controller.member.dto.request;
 
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
+import com.ssafy.mereview.common.util.file.UploadFile;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class MemberRegisterRequest {
+
+    Long id;
+
     @NotBlank(message = "이메일은 필수 입력 항목입니다.")
     @Email(message = "유효한 이메일 형식이어야 합니다.")
     String email;
@@ -29,17 +33,18 @@ public class MemberRegisterRequest {
     List<InterestRequest> interests = new ArrayList<>();
 
 
-    @Builder
     public MemberRegisterRequest(String email, String password, List<InterestRequest> interests) {
         this.email = email;
         this.password = password;
         this.interests = interests;
     }
 
-    public SaveMemberServiceRequest toServiceDto() {
-        return SaveMemberServiceRequest.builder()
-                .email(this.email)
-                .password(this.password)
+    @Builder
+    public MemberCreateServiceRequest toServiceRequest(UploadFile uploadFile) {
+        return MemberCreateServiceRequest.builder()
+                .email(email)
+                .password(password)
+                .uploadFile(uploadFile)
                 .interestRequests(createInterestRequests())
                 .build();
     }
