@@ -24,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 public class MemberController {
 
-
     private final MemberService memberService;
 
     private final EmailService emailService;
@@ -55,7 +54,6 @@ public class MemberController {
         log.debug("MemberLoginRequest : {}", request);
         MemberLoginResponse memberLoginResponse = memberService.login(request);
         return ApiResponse.ok(memberLoginResponse);
-
     }
 
     @GetMapping("/{id}")

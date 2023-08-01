@@ -21,7 +21,6 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private String authNum;
 
-
     public void createCode() {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
