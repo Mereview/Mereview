@@ -1,8 +1,7 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceReqeust;
-
+import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.InterestResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
@@ -10,8 +9,8 @@ import com.ssafy.mereview.api.service.member.dto.response.MemberTierResponse;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@NoArgsConstructor(force = true)
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -38,7 +37,7 @@ public class MemberService {
 
     private final AchievementQueryRepository achievementQueryRepository;
 
-    public Long saveMember(SaveMemberServiceReqeust dto) {
+    public Long saveMember(SaveMemberServiceRequest dto) {
 
         if (memberQueryRepository.searchByEmail(dto.getEmail()) != null) {
             return -1L;
@@ -63,7 +62,7 @@ public class MemberService {
 
     }
 
-    private void saveInterest(SaveMemberServiceReqeust dto, Member member) {
+    private void saveInterest(SaveMemberServiceRequest dto, Member member) {
         for (InterestRequest genreRequest : dto.getInterestRequests()) {
             Genre genre = memberQueryRepository.searchGenreByGenreName(genreRequest.getGenreName());
 
@@ -118,6 +117,11 @@ public class MemberService {
         memberTierLIst.add(memberTier);
     }
 
+    public MemberResponse getLoginInfo(Long id){
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return member.of();
+    }
+
 
 
     public MemberResponse getMemberInfo(Long id) {
@@ -168,6 +172,30 @@ public class MemberService {
                 .build();
 
         return memberResponse;
+    }
+
+    public void follow(Long targetId, Long currentUserId) {
+        //팔로우 할 유저
+        Member target = memberRepository.findById(targetId)
+                .orElseThrow(() -> new IllegalArgumentException("Follower not found!"));
+
+        Member currentMember = memberRepository.findById(currentUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Following not found!"));
+
+        //팔로워가 현재 유저인 타겟(내가 팔로우하는 타겟)이 존재할 경우
+        if(currentMember.getFollowing().contains(target)) {
+            currentMember.getFollowing().remove(target);
+            target.getFollowers().remove(currentMember);
+            memberRepository.save(currentMember);
+            memberRepository.save(target);
+            return;
+        }
+        currentMember.getFollowing().add(target);
+        target.getFollowers().add(currentMember);
+
+        memberRepository.save(currentMember);
+        memberRepository.save(target);
+
     }
 
 
