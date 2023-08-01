@@ -1,23 +1,22 @@
 package com.ssafy.mereview.api.controller.member;
 
+import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
+import com.ssafy.mereview.api.service.member.EmailService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
-import com.ssafy.mereview.common.util.jwt.JwtUtils;
-import com.ssafy.mereview.domain.member.entity.Member;
-import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/members")
@@ -28,6 +27,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final EmailService emailService;
 
 
     @PostMapping("/sign-up")
@@ -41,6 +41,13 @@ public class MemberController {
         }
 
         return ApiResponse.ok(memberId);
+    }
+
+    @PostMapping("/check-email")
+    public ApiResponse<String> emailCheck(@RequestBody EmailCheckRequest request) throws MessagingException, UnsupportedEncodingException {
+        emailService.sendEmail(request.getEmail());
+
+        return ApiResponse.ok("이메일이 발송되었습니다.");
     }
 
     @PostMapping("/login")
