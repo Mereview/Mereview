@@ -1,18 +1,22 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
+import com.ssafy.mereview.domain.review.entity.BackgroundImage;
+import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
@@ -37,28 +42,34 @@ public class MemberService {
 
     private final MemberInterestRepository memberInterestRepository;
 
+    private final ProfileImageRepository profileImageRepository;
+
     private final MemberTierRepository memberTierRepository;
 
     private final GenreRepository genreRepository;
 
-    public Long createMember(SaveMemberServiceRequest dto) {
+    public Long createMember(MemberCreateServiceRequest request) {
 
-        Member existingMember = memberQueryRepository.searchByEmail(dto.getEmail());
+        Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
         if (existingMember != null) {
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
 
         Member member = Member.builder()
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+
                 .build();
         log.debug("member = " + member.getEmail());
 
         Member savedMember = memberRepository.save(member);
         log.debug("savedMember = " + savedMember.getEmail());
 
+        profileImageRepository.save(createProfileImage(request, savedMember.getId()));
+
+
         //회원 관심사 초기화
-        createInterest(dto, member);
+        createInterest(request, member);
 
         //회원 티어 초기화
         createTier(member);
@@ -125,7 +136,7 @@ public class MemberService {
 
     //***************private method*****************//
 
-    private void createInterest(SaveMemberServiceRequest dto, Member member) {
+    private void createInterest(MemberCreateServiceRequest dto, Member member) {
         List<Interest> interests = new ArrayList<>();
 
         dto.getInterestRequests().stream().map(interestRequest ->
@@ -193,5 +204,12 @@ public class MemberService {
         return interests.stream()
                 .map(Interest::of)
                 .collect(Collectors.toList());
+    }
+
+    private ProfileImage createProfileImage(MemberCreateServiceRequest request, Long saveId) {
+        return ProfileImage.builder()
+                .member(Member.builder().id(saveId).build())
+                .uploadFile(request.getUploadFile())
+                .build();
     }
 }

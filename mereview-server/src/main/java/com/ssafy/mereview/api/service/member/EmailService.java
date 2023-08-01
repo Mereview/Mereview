@@ -11,6 +11,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -19,10 +21,30 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private String authNum;
+    private Map<String, String> emailMap = new HashMap<>();
 
 
-    public void createCode() {
+
+    //실제 메일 전송
+    public String sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
+
+        //메일전송에 필요한 정보 설정
+        MimeMessage emailForm = createEmailForm(toEmail);
+        //실제 메일 전송
+        mailSender.send(emailForm);
+
+        return emailMap.getOrDefault(toEmail, null); //인증 코드 반환
+    }
+
+    public boolean checkEmail(String email, String code) {
+        if(emailMap.getOrDefault(email, null) != null && emailMap.get(email).equals(code)) {
+            emailMap.remove(email);
+            return true;
+        }
+        return false;
+    }
+
+    private void createCode(String email) {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
 
@@ -41,13 +63,13 @@ public class EmailService {
                     break;
             }
         }
-        authNum = key.toString();
+        emailMap.put(email, key.toString());
     }
 
     //메일 양식 작성
-    public MimeMessage createEmailForm(String email) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage createEmailForm(String email) throws MessagingException, UnsupportedEncodingException {
 
-        createCode(); // 인증 코드 생성
+        createCode(email); // 인증 코드 생성
         String senderEmail = "youremail@example.com"; // Replace with your email address (sender)
         String senderName = "Your Name"; // Replace with your name (sender)
 
@@ -62,7 +84,7 @@ public class EmailService {
                 + "<h2>안녕하세요!!</h2>"
                 + "<p>Mereview 사이트에 회원가입을 해주셔서 감사합니다!</p>"
                 + "<p>인증코드입니다.:</p>"
-                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + authNum + "</h3>"
+                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + emailMap.get(email) + "</h3>"
                 + "<p>Please use this code to verify your account.</p>"
                 + "<p>Best regards,<br/>Your Website Team</p>"
                 + "</body></html>";
@@ -71,18 +93,5 @@ public class EmailService {
 
         return message;
     }
-
-    //실제 메일 전송
-    public String sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
-
-        //메일전송에 필요한 정보 설정
-        MimeMessage emailForm = createEmailForm(toEmail);
-        //실제 메일 전송
-        mailSender.send(emailForm);
-
-        return authNum; //인증 코드 반환
-    }
-
-
 }
 

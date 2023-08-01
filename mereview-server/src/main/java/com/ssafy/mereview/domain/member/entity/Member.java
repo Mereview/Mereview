@@ -54,6 +54,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member")
+    private ProfileImage profileImage;
+
     private int viewCount;
 
     @ManyToMany
@@ -68,8 +71,7 @@ public class Member extends BaseEntity {
     private List<Member> following = new ArrayList<>();
 
     @Builder
-
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, int viewCount, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, int viewCount, List<Member> followers, List<Member> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -80,6 +82,7 @@ public class Member extends BaseEntity {
         this.interests = interests;
         this.memberTiers = memberTiers;
         this.reviews = reviews;
+        this.profileImage = profileImage;
         this.viewCount = viewCount;
         this.followers = followers;
         this.following = following;
