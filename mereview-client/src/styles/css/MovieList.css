@@ -14,12 +14,30 @@
   font-family: "NanumGothic";
   src: url("../fonts/NanumGothic.ttf") format("truetype");
 }
+.sub-title {
+  font-family: "BMDoHyeon";
+  font-size: 18.08px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
 .card-list-wrapper {
-  display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin-right: 30px;
-  margin-left: 30px;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  margin-left: 10px;
+}
+.controls .slide-button {
+  width: 30px;
+  height: 30px;
+  background-color: #f5f5f5;
+  border-radius: 2%;
+  font-size: 16px;
 }
 
 /*# sourceMappingURL=MovieList.css.map */

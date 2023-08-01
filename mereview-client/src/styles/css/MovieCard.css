@@ -20,6 +20,8 @@
   font-size: 16px;
   width: 250px;
   margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .movie-card .poster-image {
   height: 380px;

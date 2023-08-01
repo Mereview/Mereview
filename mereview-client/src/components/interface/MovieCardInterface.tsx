@@ -1,8 +1,8 @@
 export interface MovieCardInterface {
-  movieId: string;
+  movieId: string | null;
   posterImagePath: string;
   movieTitle: string;
-  releaseYear: number;
+  releaseYear: number | null;
   movieGenre: string[];
   onClickPoster: (event: React.MouseEvent<HTMLParagraphElement>) => void;
 }
