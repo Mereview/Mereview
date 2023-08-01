@@ -52,6 +52,13 @@ public class ReviewService {
         return reviewId;
     }
 
+    public Long delete(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(NoSuchElementException::new);
+        reviewRepository.delete(review);
+        return reviewId;
+    }
+
     private List<Keyword> createKeywords(Long saveId, List<KeywordCreateServiceRequest> keywordServiceRequests) {
         return keywordServiceRequests.stream()
                 .map(request -> request.toEntity(saveId))

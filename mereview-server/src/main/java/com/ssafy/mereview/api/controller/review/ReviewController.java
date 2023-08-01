@@ -84,6 +84,12 @@ public class ReviewController {
         return ApiResponse.ok(updateId);
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ApiResponse<Long> deleteReview(@PathVariable Long reviewId) {
+        Long deleteId = reviewService.delete(reviewId);
+        return ApiResponse.ok(deleteId);
+    }
+
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
         UploadFile uploadFile = null;
         if (file != null && !file.isEmpty()) {
