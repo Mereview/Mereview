@@ -1,13 +1,8 @@
 package com.ssafy.mereview.api.controller.review;
 
-import com.ssafy.mereview.api.controller.review.dto.request.CommentCreateRequest;
-import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
-import com.ssafy.mereview.api.controller.review.dto.request.ReviewEvaluationCreateRequest;
-import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
-import com.ssafy.mereview.api.service.review.CommentService;
-import com.ssafy.mereview.api.service.review.ReviewEvaluationService;
-import com.ssafy.mereview.api.service.review.ReviewQueryService;
-import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.controller.review.dto.CommentLikeRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.*;
+import com.ssafy.mereview.api.service.review.*;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
@@ -38,6 +33,7 @@ public class ReviewController {
     private final ReviewQueryService reviewQueryService;
     private final CommentService commentService;
     private final ReviewEvaluationService reviewEvaluationService;
+    private final CommentLikeService commentLikeService;
 
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
@@ -124,6 +120,18 @@ public class ReviewController {
     @DeleteMapping("/evaluations/{evaluationId}")
     public ApiResponse<Long> deleteReviewEvaluation(@PathVariable Long evaluationId) {
         Long deleteId = reviewEvaluationService.delete(evaluationId);
+        return ApiResponse.ok(deleteId);
+    }
+
+    @PostMapping("/comments/likes")
+    public ApiResponse<Long> createCommentLike(@Valid @RequestBody CommentLikeRequest request) {
+        Long saveId = commentLikeService.createCommentLike(request.toServiceRequest());
+        return ApiResponse.ok(saveId);
+    }
+
+    @DeleteMapping("/comments/likes/{likeId}")
+    public ApiResponse<Long> deleteCommentLike(@PathVariable Long likeId) {
+        Long deleteId = commentLikeService.delete(likeId);
         return ApiResponse.ok(deleteId);
     }
 
