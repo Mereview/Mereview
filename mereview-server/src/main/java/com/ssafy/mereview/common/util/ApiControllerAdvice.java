@@ -21,6 +21,4 @@ public class ApiControllerAdvice {
                 e.getMessage(),
                 null);
     }
-
-
 }
