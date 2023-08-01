@@ -23,3 +23,4 @@ public class MemberTierResponse {
         this.genreName = genreName;
     }
 }
+

@@ -86,10 +86,12 @@ public class Member extends BaseEntity {
     }
 
     public MemberResponse of() {
-        return MemberResponse.builder()
+        return
+        MemberResponse.builder()
                 .id(id)
                 .nickname(nickname)
                 .email(email)
                 .build();
     }
+
 }

@@ -1,6 +1,8 @@
 package com.ssafy.mereview.domain.member.entity;
 
 
+import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
+import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
@@ -41,5 +43,15 @@ public class MemberAchievement extends BaseEntity {
         this.genre = genre;
         this.achievement = achievement;
         this.achievementRank = achievementRank;
+    }
+
+    public MemberAchievementResponse of(){
+        return
+        MemberAchievementResponse.builder()
+                .genreName(genre.getGenreName())
+                .achievementName(achievement.getAchievementName())
+                .achievementRank(achievementRank)
+                .build();
+
     }
 }
