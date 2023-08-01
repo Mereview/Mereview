@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.tuple;
  * 새로 작성할 예정
  */
 @Slf4j
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 class ReviewQueryServiceTest {
     @Autowired
@@ -59,16 +60,17 @@ class ReviewQueryServiceTest {
     @Autowired
     private ReviewLikeRepository reviewLikeRepository;
 
-    @AfterEach
-    void tearDown() {
-        reviewLikeRepository.deleteAllInBatch();
-        reviewRepository.deleteAllInBatch();
-        movieGenreRepository.deleteAllInBatch();
-        genreRepository.deleteAllInBatch();
-        memberRepository.deleteAllInBatch();
-        movieRepository.deleteAllInBatch();
-    }
+//    @After
+//    void tearDown() {
+//        reviewLikeRepository.deleteAllInBatch();
+//        reviewRepository.deleteAllInBatch();
+//        movieGenreRepository.deleteAllInBatch();
+//        genreRepository.deleteAllInBatch();
+//        memberRepository.deleteAllInBatch();
+//        movieRepository.deleteAllInBatch();
+//    }
 
+//    @Transactional
     @DisplayName("검색 조건 없이 모든 리뷰를 조회한다.")
     @Order(1)
     @Test
@@ -76,9 +78,9 @@ class ReviewQueryServiceTest {
         // given
         Long memberId = createMember();
         Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        createReviews(memberId, movieId);
+        Long genreId = createGenre();
+        createMovieGenre();
+        createReviews(memberId, movieId, genreId);
         SearchCondition condition = new SearchCondition("", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
@@ -87,11 +89,11 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(3)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
+                .extracting("reviewId","memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "그냥 제목1", 0, "그냥 한줄평1"),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
+                        tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1"),
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
                 );
 
     }
@@ -101,11 +103,6 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByTitle() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        createReviews(memberId, movieId);
         SearchCondition condition = new SearchCondition("테스트", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
@@ -114,10 +111,10 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(2)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
                 );
 
     }
@@ -127,11 +124,6 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByContent() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        createReviews(memberId, movieId);
         SearchCondition condition = new SearchCondition("", "테스트", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
@@ -140,10 +132,10 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(2)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1")
                 );
 
     }
@@ -153,11 +145,6 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByHits() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        createReviews(memberId, movieId);
         SearchCondition condition = new SearchCondition("", "", "hits");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
@@ -166,11 +153,11 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(3)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1"),
-                        tuple(memberId, movieId, "영화제목", "그냥 제목1", 0, "그냥 한줄평1")
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1"),
+                        tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1")
                 );
 
     }
@@ -180,15 +167,10 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByFunCount() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        Long reviewId = createReviews(memberId, movieId);
         ReviewLike reviewLikeFun = ReviewLike.builder()
                 .type(FUN)
-                .review(Review.builder().id(reviewId).build())
-                .member(Member.builder().id(memberId).build())
+                .review(Review.builder().id(1L).build())
+                .member(Member.builder().id(1L).build())
                 .build();
         reviewLikeRepository.save(reviewLikeFun);
 
@@ -203,12 +185,12 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(3)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight", "funCount")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight", "funCount")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "그냥 제목1", 0, "그냥 한줄평1", 1),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0)
-                );
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1", 1),
+                        tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0),
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
+                        );
 
     }
 
@@ -217,15 +199,10 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByUsefulCount() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        Long reviewId = createReviews(memberId, movieId);
         ReviewLike reviewLikeUseful = ReviewLike.builder()
                 .type(USEFUL)
-                .review(Review.builder().id(reviewId).build())
-                .member(Member.builder().id(memberId).build())
+                .review(Review.builder().id(3L).build())
+                .member(Member.builder().id(1L).build())
                 .build();
         reviewLikeRepository.save(reviewLikeUseful);
         SearchCondition condition = new SearchCondition("", "", "USEFUL");
@@ -236,11 +213,11 @@ class ReviewQueryServiceTest {
 
         // then
         assertThat(responses).hasSize(3)
-                .extracting("memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight", "usefulCount")
+                .extracting("reviewId", "memberId", "movieId", "movieTitle", "reviewTitle", "hits", "highlight", "usefulCount")
                 .containsExactly(
-                        tuple(memberId, movieId, "영화제목", "그냥 제목1", 0, "그냥 한줄평1", 1),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
-                        tuple(memberId, movieId, "영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0)
+                        tuple(3L, 1L, 1L, "영화제목", "그냥 제목1", 0, "그냥 한줄평1", 1),
+                        tuple(2L, 1L, 1L, "영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
+                        tuple(1L, 1L, 1L, "영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0)
                 );
 
     }
@@ -250,11 +227,6 @@ class ReviewQueryServiceTest {
     @Test
     void searchEmptyReviews() {
         // given
-        Long memberId = createMember();
-        Long movieId = createMovie();
-//        createGenre();
-//        createMovieGenre();
-        createReviews(memberId, movieId);
         SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
@@ -298,15 +270,15 @@ class ReviewQueryServiceTest {
         return movieGenreRepository.save(movieGenre).getId();
     }
 
-    private Long createReviews(Long memberId, Long movieId) {
-        Review review1 = createReview("테스트 제목1", "테스트 내용1", "테스트 한줄평1", 0, memberId, movieId);
-        Review review2 = createReview("테스트 제목2", "테스트 내용2", "테스트 한줄평2", 20, memberId, movieId);
-        Review review3 = createReview("그냥 제목1", "그냥 내용1", "그냥 한줄평1", 0, memberId, movieId);
+    private void createReviews(Long memberId, Long movieId, Long genreId) {
+        Review review1 = createReview("테스트 제목1", "테스트 내용1", "테스트 한줄평1", 0, memberId, movieId, genreId);
+        Review review2 = createReview("테스트 제목2", "테스트 내용2", "테스트 한줄평2", 20, memberId, movieId, genreId);
+        Review review3 = createReview("그냥 제목1", "그냥 내용1", "그냥 한줄평1", 0, memberId, movieId, genreId);
         List<Review> reviews = List.of(review1, review2, review3);
-        return reviewRepository.saveAll(reviews).get(2).getId();
+        reviewRepository.saveAll(reviews);
     }
 
-    private static Review createReview(String title, String content, String highlight, int hits, Long memberId, Long movieId) {
+    private static Review createReview(String title, String content, String highlight, int hits, Long memberId, Long movieId, Long genreId) {
         return Review.builder()
                 .title(title)
                 .content(content)
@@ -315,7 +287,7 @@ class ReviewQueryServiceTest {
                 .hits(hits)
                 .member(Member.builder().id(memberId).build())
                 .movie(Movie.builder().id(movieId).build())
-//                .genre(Genre.builder().id(genreId).build())
+                .genre(Genre.builder().id(genreId).build())
                 .build();
     }
 }

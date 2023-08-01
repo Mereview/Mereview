@@ -48,7 +48,7 @@ public class ReviewController {
         return ApiResponse.ok(saveId);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
