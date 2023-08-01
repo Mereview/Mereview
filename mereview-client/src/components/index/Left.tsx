@@ -7,9 +7,11 @@ const Left = () => {
   const style = { padding: "0px", margin: "0px" };
 
   const dispatch = useDispatch();
-  const tab = useSelector((state: any) => state.ui.tabToggle);
-  const tabChange = (event) => {
-    const id = event.target.id;
+  const tab = useSelector(
+    (state: { ui: { tabToggle: string } }) => state.ui.tabToggle
+  );
+  const tabChange = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const id = event.currentTarget.id;
     dispatch(uiActions.tabChange(id));
   };
   return (

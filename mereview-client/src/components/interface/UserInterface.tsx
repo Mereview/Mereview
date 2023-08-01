@@ -17,5 +17,9 @@ export interface InputDataInterface {
 }
 export interface SignUpInterface extends InputDataInterface {
   profileURL: string | null;
-  interest: number[];
+  interest: [
+    {
+      [genreId: string]: [genreName: string];
+    }
+  ];
 }
