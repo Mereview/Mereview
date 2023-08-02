@@ -3,19 +3,16 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback } from "react";
 import "../styles/css/ReviewWrite.css";
-import { Slider } from "@mui/material";
 import KeywordSlider from "../components/common/KeywordSlider";
-import { Input } from "../components/common";
-import { Provider } from "react-redux";
 const ReviewWrite = () => {
-  const [nickname, setNickname] = useState("닉네임");
-  const [profile, setProfile] = useState("/logo2.png");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [imgName, setImgName] = useState<string | null>(null);
-  const [reviewName, setReviewName] = useState<string | null>(null);
-  const [movieName, setMovieName] = useState<string | null>(null);
-  const [oneSentance, setOneSentance] = useState<string | null>(null);
-
+  const nickname = "닉네임";
+  const profile = "/logo2.png";
+  const [selectedImage, setSelectedImage] = useState<string | null>("");
+  const [imgName, setImgName] = useState<string | null>("");
+  const [reviewName, setReviewName] = useState<string | null>("");
+  const [movieName, setMovieName] = useState<string | null>("");
+  const [oneSentance, setOneSentance] = useState<string | null>("");
+  const [feedback, setFeedback] = useState<number | null>(0);
   const childRef1 = useRef(null);
   const childRef2 = useRef(null);
   const childRef3 = useRef(null);
@@ -51,13 +48,13 @@ const ReviewWrite = () => {
       setImgName(file.name);
     }
   }, []);
-  const reviewNameHandler = (e) => {
+  const reviewNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setReviewName(e.target.value);
   };
-  const movieNameHandler = (e) => {
+  const movieNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMovieName(e.target.value);
   };
-  const oneSentanceNameHandler = (e) => {
+  const oneSentanceNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOneSentance(e.target.value);
   };
   const { getRootProps, getInputProps } = useDropzone({
@@ -67,6 +64,10 @@ const ReviewWrite = () => {
     },
     maxFiles: 1,
   });
+  const feedbackHandler = (e) => {
+    console.log(e.target.value);
+    setFeedback(e.target.Value);
+  };
   return (
     <Container
       className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
@@ -82,6 +83,7 @@ const ReviewWrite = () => {
             className="border rounded-2 text-lg"
             size="lg"
             onChange={reviewNameHandler}
+            defaultValue={reviewName}
           ></Form.Control>
         </Col>
         <Col className="t-right" lg={4}>
@@ -102,6 +104,7 @@ const ReviewWrite = () => {
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
             onChange={movieNameHandler}
+            defaultValue={movieName}
           ></Form.Control>
         </Col>
       </Row>
@@ -111,6 +114,7 @@ const ReviewWrite = () => {
             placeholder="한줄평을 입력하세요"
             className="border rounded-2 text-lg"
             onChange={oneSentanceNameHandler}
+            defaultValue={oneSentance}
           ></Form.Control>
         </Col>
         <Col sm={2} />
@@ -118,6 +122,7 @@ const ReviewWrite = () => {
           <Form.Control
             className="text-center border border-5 rounded-2"
             value={imgName}
+            defaultValue={""}
           ></Form.Control>
         </Col>
         <Col sm={1}>
@@ -148,12 +153,40 @@ const ReviewWrite = () => {
         </Col>
       </Row>
       <Row lg={12} className="mt-3 align-items-center">
-        <Col lg={9} />
-        <Col lg={1}>버튼</Col>
-        <Col className="t-right me-4">
+        <Col lg={8} />
+        <Col lg={2}>
+          <button
+            className="bg-danger"
+            style={{
+              backgroundImage: "url(/thumbDown.png)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              height: "35px",
+              width: "35px",
+            }}
+            onClick={feedbackHandler}
+            value={-1}
+          ></button>
+          <button
+            className="bg-primary"
+            style={{
+              backgroundImage: "url(/thumbUp.png)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              height: "35px",
+              width: "35px",
+            }}
+            onClick={feedbackHandler}
+            value={1}
+          ></button>
+        </Col>
+        <Col>
           <Button
             styles="btn-primary"
-            onClick={handleBtnClick}
+            // onClick={handleBtnClick}
+            onClick={() => {
+              console.log(feedback);
+            }}
             text="확인"
           ></Button>
         </Col>
