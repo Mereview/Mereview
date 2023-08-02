@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.controller.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
 import com.ssafy.mereview.api.service.member.EmailService;
@@ -34,8 +35,8 @@ public class MemberController {
     private final EmailService emailService;
 
     private final FileStore fileStore;
-    private final FileExtensionFilter fileExtFilter;
 
+    private final FileExtensionFilter fileExtFilter;
 
     @PostMapping("/sign-up")
     public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
@@ -54,8 +55,6 @@ public class MemberController {
         return ApiResponse.ok(memberId);
     }
 
-
-
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
         log.debug("MemberLoginRequest : {}", request);
@@ -64,16 +63,17 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable Long id) {
-        log.debug("MemberController.getMemberInfo : {}", id);
-        MemberResponse memberResponse = memberService.searchMemberInfo(id);
+    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        MemberResponse memberResponse = memberService.searchMemberInfo(memberId);
+        memberService.updateViewCount(memberId);
         return ApiResponse.ok(memberResponse);
     }
 
-    @PostMapping("/follow/{targetId}")
-    public void follow(@PathVariable Long targetId, @RequestBody Long currentUserId) {
-        log.debug("MemberController.follow : {}", targetId);
-        memberService.follow(targetId, currentUserId);
+    @PostMapping("/follow")
+    public void follow(@RequestBody FollowRequest followRequest) {
+        log.debug("MemberController.follow : {}", followRequest);
+        memberService.follow(followRequest.getTargetId(), followRequest.getMemberId());
     }
 
 
@@ -85,5 +85,4 @@ public class MemberController {
         }
         return uploadFile;
     }
-
 }

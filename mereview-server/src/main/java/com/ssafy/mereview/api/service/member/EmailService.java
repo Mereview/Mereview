@@ -1,8 +1,9 @@
 package com.ssafy.mereview.api.service.member;
 
+import com.ssafy.mereview.api.service.member.dto.request.EmailCheckCode;
+import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,49 +22,63 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private Map<String, String> emailMap = new HashMap<>();
 
+    private final JwtUtils jwtUtils;
+    private Map<String, EmailCheckCode> emailCheckCodeMap = new HashMap<>();
 
 
     //실제 메일 전송
-    public String sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
 
         //메일전송에 필요한 정보 설정
         MimeMessage emailForm = createEmailForm(toEmail);
         //실제 메일 전송
         mailSender.send(emailForm);
-
-        return emailMap.getOrDefault(toEmail, null); //인증 코드 반환
     }
 
-    public boolean checkEmail(String email, String code) {
-        if(emailMap.getOrDefault(email, null) != null && emailMap.get(email).equals(code)) {
-            emailMap.remove(email);
-            return true;
+    public boolean checkEmail(String email, String verificationCode) {
+        EmailCheckCode checkCode = emailCheckCodeMap.getOrDefault(email, null);
+
+        if(checkCode == null){
+            throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
         }
-        return false;
+
+        if(JwtUtils.isTokenExpired(checkCode.getJwtToken())){
+            throw new IllegalArgumentException("인증 시간이 만료되었습니다.");
+        }
+
+        if (!email.equals(jwtUtils.getUsernameFromJwt(checkCode.getJwtToken())) || !checkCode.getVerificationCode().equals(verificationCode)) {
+            return false;
+        }
+        emailCheckCodeMap.remove(email);
+        return true;
     }
 
     private void createCode(String email) {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
 
-        for(int i=0;i<8;i++) {
+        for (int i = 0; i < 8; i++) {
             int index = random.nextInt(3);
 
             switch (index) {
-                case 0 :
-                    key.append((char) ((int)random.nextInt(26) + 97));
+                case 0:
+                    key.append((char) ((int) random.nextInt(26) + 97));
                     break;
                 case 1:
-                    key.append((char) ((int)random.nextInt(26) + 65));
+                    key.append((char) ((int) random.nextInt(26) + 65));
                     break;
                 case 2:
                     key.append(random.nextInt(9));
                     break;
             }
         }
-        emailMap.put(email, key.toString());
+        EmailCheckCode emailCheckcode = EmailCheckCode.builder()
+                .jwtToken(jwtUtils.generateEmailToken(email))
+                .verificationCode(key.toString())
+                .build();
+
+        emailCheckCodeMap.put(email, emailCheckcode);
     }
 
     //메일 양식 작성
@@ -84,7 +99,7 @@ public class EmailService {
                 + "<h2>안녕하세요!!</h2>"
                 + "<p>Mereview 사이트에 회원가입을 해주셔서 감사합니다!</p>"
                 + "<p>인증코드입니다.:</p>"
-                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + emailMap.get(email) + "</h3>"
+                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + emailCheckCodeMap.get(email).getVerificationCode() + "</h3>"
                 + "<p>Please use this code to verify your account.</p>"
                 + "<p>Best regards,<br/>Your Website Team</p>"
                 + "</body></html>";
