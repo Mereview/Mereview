@@ -1,7 +1,6 @@
 import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
-import Slider from "@mui/material/Slider";
 import React, { useState, useRef, useCallback } from "react";
 import "../styles/css/ReviewWrite.css";
 import Slide from "../components/common/Slide";
