@@ -2,10 +2,9 @@ package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
-import com.ssafy.mereview.domain.movie.entity.MovieGenre;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.entity.ReviewLike;
+import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
 import com.ssafy.mereview.domain.review.repository.ReviewQueryRepository;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.*;
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 import static java.util.Comparator.comparingInt;
 
 @Slf4j
@@ -72,9 +70,9 @@ public class ReviewQueryService {
                         .highlight(review.getHighlight())
                         .evaluationType(review.getType())
                         .commentCount(getCommentCount(review))
-                        .funCount(getFunCount(review.getLikes()))
-                        .usefulCount(getUsefulCount(review.getLikes()))
-                        .badCount(getBadCount(review.getLikes()))
+                        .funCount(getFunCount(review.getEvaluations()))
+                        .usefulCount(getUsefulCount(review.getEvaluations()))
+                        .badCount(getBadCount(review.getEvaluations()))
                         .backgroundImageResponse(getBackgroundImageResponse(review))
                         .createdTime(review.getCreatedTime())
                         .build()
@@ -95,21 +93,21 @@ public class ReviewQueryService {
         return BackgroundImageResponse.builder().build();
     }
 
-    private int getFunCount(List<ReviewLike> likes) {
+    private int getFunCount(List<ReviewEvaluation> likes) {
         if (likes != null) {
             return (int) likes.stream().filter(like -> like.getType().equals(FUN)).count();
         }
         return 0;
     }
 
-    private int getUsefulCount(List<ReviewLike> likes) {
+    private int getUsefulCount(List<ReviewEvaluation> likes) {
         if (likes != null) {
             return (int) likes.stream().filter(like -> like.getType().equals(USEFUL)).count();
         }
         return 0;
     }
 
-    private int getBadCount(List<ReviewLike> likes) {
+    private int getBadCount(List<ReviewEvaluation> likes) {
         if (likes != null) {
             return (int) likes.stream().filter(like -> like.getType().equals(BAD)).count();
         }
@@ -126,7 +124,7 @@ public class ReviewQueryService {
                 .reviewHighlight(review.getHighlight())
                 .reviewCreatedTime(review.getCreatedTime())
                 .keywords(createKeywords(review))
-                .reviewLikes(createReviewLikes(review))
+                .reviewEvaluations(createReviewLikes(review))
                 .movieId(review.getMovie().getId())
                 .movieTitle(review.getMovie().getTitle())
                 .genreResponse(review.getGenre().of())
@@ -141,7 +139,7 @@ public class ReviewQueryService {
         return review.getKeywords().stream().map(Keyword::of).collect(Collectors.toList());
     }
 
-    private static List<ReviewLikeResponse> createReviewLikes(Review review) {
-        return review.getLikes().stream().map(ReviewLike::of).collect(Collectors.toList());
+    private static List<ReviewEvaluationResponse> createReviewLikes(Review review) {
+        return review.getEvaluations().stream().map(ReviewEvaluation::of).collect(Collectors.toList());
     }
 }

@@ -10,11 +10,9 @@ import com.ssafy.mereview.domain.movie.entity.MovieGenre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieGenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
-import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.entity.ReviewLike;
-import com.ssafy.mereview.domain.review.entity.ReviewLikeType;
-import com.ssafy.mereview.domain.review.repository.ReviewLikeRepository;
+import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
+import com.ssafy.mereview.domain.review.repository.ReviewEvaluationRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +20,14 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
-import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.FUN;
-import static com.ssafy.mereview.domain.review.entity.ReviewLikeType.USEFUL;
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -60,7 +57,7 @@ class ReviewQueryServiceTest {
     private MovieGenreRepository movieGenreRepository;
 
     @Autowired
-    private ReviewLikeRepository reviewLikeRepository;
+    private ReviewEvaluationRepository reviewEvaluationRepository;
 
 //    @After
 //    void tearDown() {
@@ -83,7 +80,7 @@ class ReviewQueryServiceTest {
         Long genreId = createGenre();
         createMovieGenre();
         createReviews(memberId, movieId, genreId);
-        SearchCondition condition = new SearchCondition("", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -105,7 +102,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByTitle() {
         // given
-        SearchCondition condition = new SearchCondition("테스트", "", "");
+        SearchCondition condition = new SearchCondition("테스트", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -126,7 +123,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByContent() {
         // given
-        SearchCondition condition = new SearchCondition("", "테스트", "");
+        SearchCondition condition = new SearchCondition("", "테스트", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -147,7 +144,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByHits() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "hits");
+        SearchCondition condition = new SearchCondition("", "", "hits", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -169,14 +166,14 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByFunCount() {
         // given
-        ReviewLike reviewLikeFun = ReviewLike.builder()
+        ReviewEvaluation reviewEvaluationFun = ReviewEvaluation.builder()
                 .type(FUN)
                 .review(Review.builder().id(1L).build())
                 .member(Member.builder().id(1L).build())
                 .build();
-        reviewLikeRepository.save(reviewLikeFun);
+        reviewEvaluationRepository.save(reviewEvaluationFun);
 
-        SearchCondition condition = new SearchCondition("", "", "FUN");
+        SearchCondition condition = new SearchCondition("", "", "FUN", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -201,13 +198,13 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByUsefulCount() {
         // given
-        ReviewLike reviewLikeUseful = ReviewLike.builder()
+        ReviewEvaluation reviewEvaluationUseful = ReviewEvaluation.builder()
                 .type(USEFUL)
                 .review(Review.builder().id(3L).build())
                 .member(Member.builder().id(1L).build())
                 .build();
-        reviewLikeRepository.save(reviewLikeUseful);
-        SearchCondition condition = new SearchCondition("", "", "USEFUL");
+        reviewEvaluationRepository.save(reviewEvaluationUseful);
+        SearchCondition condition = new SearchCondition("", "", "USEFUL", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -229,7 +226,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchEmptyReviews() {
         // given
-        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "");
+        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when

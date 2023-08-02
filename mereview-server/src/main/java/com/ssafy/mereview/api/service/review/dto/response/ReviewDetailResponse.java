@@ -21,7 +21,7 @@ public class ReviewDetailResponse {
     private String reviewHighlight;
     private LocalDateTime reviewCreatedTime;
     private List<KeywordResponse> keywords;
-    private List<ReviewLikeResponse> reviewLikes;
+    private List<ReviewEvaluationResponse> reviewEvaluations;
     private Long movieId;
     private String movieTitle;
     // TODO: 2023-08-01 ids 로 할지 genreResponses 로 할지 결정
@@ -34,7 +34,7 @@ public class ReviewDetailResponse {
     // 댓글
 
     @Builder
-    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, List<ReviewLikeResponse> reviewLikes, Long movieId, String movieTitle, GenreResponse genreResponse, String movieReleaseDate, Long memberId, String nickname, List<MemberTierResponse> memberTiers) {
+    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, List<ReviewEvaluationResponse> reviewEvaluations, Long movieId, String movieTitle, GenreResponse genreResponse, String movieReleaseDate, Long memberId, String nickname, List<MemberTierResponse> memberTiers) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
@@ -43,7 +43,7 @@ public class ReviewDetailResponse {
         this.reviewHighlight = reviewHighlight;
         this.reviewCreatedTime = reviewCreatedTime;
         this.keywords = keywords;
-        this.reviewLikes = reviewLikes;
+        this.reviewEvaluations = reviewEvaluations;
         this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.genreResponse = genreResponse;
