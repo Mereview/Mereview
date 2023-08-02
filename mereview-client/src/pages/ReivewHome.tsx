@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
@@ -19,8 +18,10 @@ const handleClickTitle = (event: React.MouseEvent<HTMLParagraphElement>) => {
 };
 
 /* BoxOffice 데이터 생성 시작 */
-const handleClickPoster = (event: React.MouseEvent<HTMLParagraphElement>) => {
-  console.log("Poster Clicked");
+const handleMovieCardClick = (
+  event: React.MouseEvent<HTMLParagraphElement>
+) => {
+  console.log("Movie Card Clicked");
 };
 
 const koficKey: string = "f22f6d4bc63521504a75ef52103c4101"; // 나중에 따로 빼기?
@@ -105,7 +106,7 @@ const searchMovieOnTmdb = async (movieNames: string[]) => {
           movieTitle: movieName,
           releaseYear: null,
           movieGenre: [],
-          onClickPoster: handleClickPoster,
+          movieCardClickHandler: handleMovieCardClick,
         };
         boxOffices.push(movie);
         continue;
@@ -122,12 +123,11 @@ const searchMovieOnTmdb = async (movieNames: string[]) => {
         movieTitle: data.title,
         releaseYear: data.release_date.substring(0, 4),
         movieGenre: genre,
-        onClickPoster: handleClickPoster,
+        movieCardClickHandler: handleMovieCardClick,
       };
 
       boxOffices.push(movie);
     }
-    console.log(boxOffices);
 
     return boxOffices;
   } catch (error) {
@@ -222,9 +222,13 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 
 const ReviewHome = () => {
   const [movieList, setMovieList] = useState<MovieCardInterface[]>([]);
+  // 검색조건, 검색어, 정렬조건 통합하기
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
+  const [searchParam, setSearchParam] = useState<string>("");
+  const [searchCriteria, setSearchCriteria] = useState<string>("제목");
+  const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -237,8 +241,20 @@ const ReviewHome = () => {
 
   useEffect(() => {
     // reload review list
-    console.log("Reload!!", sortBy, dateDescend, recommendDescend);
-  }, [sortBy, dateDescend, recommendDescend]);
+    // 검색조건이 있다면 조건 유지
+    // 검색어 공백일땐 reload X
+    console.log(
+      `Reload!! ${sortBy} ${
+        sortBy === "date"
+          ? dateDescend
+            ? "DESC"
+            : "ASC"
+          : recommendDescend
+          ? "DESC"
+          : "ASC"
+      }, 관심사만: ${onlyInterest}`
+    );
+  }, [sortBy, dateDescend, recommendDescend, onlyInterest]);
 
   const searchBoxProps: SearchBoxInterface = {
     sortBy: sortBy,
@@ -247,6 +263,18 @@ const ReviewHome = () => {
     setDateDescend: setDateDescend,
     recommendDescend: recommendDescend,
     setRecommendDescend: setRecommendDescend,
+    searchParam: searchParam,
+    setSearchParam: setSearchParam,
+    searchCriteria: searchCriteria,
+    setSearchCriteria: setSearchCriteria,
+    onlyInterest: onlyInterest,
+    setOnlyInterest: setOnlyInterest,
+  };
+
+  const searchSubmit = () => {
+    // Review 검색, reviewList 초기화
+    // 정렬 기준 초기화 (최신순 내림차순 관심장르 false)
+    console.log(`search!! criteria: ${searchCriteria}, param: ${searchParam}`);
   };
 
   // SearchBox => Enter키 연결, 아이콘 추가
@@ -255,7 +283,7 @@ const ReviewHome = () => {
     <>
       <MovieList movieList={movieList} />
       <hr />
-      <SearchBox searchBoxProps={searchBoxProps} />
+      <SearchBox searchBoxProps={searchBoxProps} searchSubmit={searchSubmit} />
 
       <ReviewList reviewList={reviewList} />
     </>
