@@ -40,6 +40,8 @@ public class MemberService {
 
     private final MemberAchievementRepository memberAchievementRepository;
 
+    private final MemberVisitCountRepository memberVisitCountRepository;
+
     private final MemberInterestRepository memberInterestRepository;
 
     private final ProfileImageRepository profileImageRepository;
@@ -58,7 +60,6 @@ public class MemberService {
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-
                 .build();
         log.debug("member = " + member.getEmail());
 
@@ -67,6 +68,8 @@ public class MemberService {
 
         profileImageRepository.save(createProfileImage(request, savedMember.getId()));
 
+        //방문자 수 초기화
+        createVisitCount(member);
 
         //회원 관심사 초기화
         createInterest(request, member);
@@ -77,6 +80,14 @@ public class MemberService {
 
         return savedMember.getId();
 
+    }
+
+    private void createVisitCount(Member member) {
+        MemberVisitCount memberVisitCount = MemberVisitCount.builder()
+                .member(member)
+                .build();
+
+        memberVisitCountRepository.save(memberVisitCount);
     }
 
     public MemberLoginResponse login(MemberLoginRequest request) {
@@ -102,7 +113,7 @@ public class MemberService {
     }
 
     public MemberResponse searchMemberInfo(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         List<InterestResponse> interestResponses = searchInterestResponse(id);
 
@@ -115,7 +126,8 @@ public class MemberService {
 
     public void updateViewCount(Long id){
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
-
+        log.debug("조회수 : {}",member.getMemberVisit());
+        member.getMemberVisit().updateVisitCount();
     }
 
 

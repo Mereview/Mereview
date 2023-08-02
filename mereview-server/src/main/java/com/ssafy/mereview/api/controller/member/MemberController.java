@@ -62,9 +62,10 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable Long id) {
-        log.debug("MemberController.getMemberInfo : {}", id);
-        MemberResponse memberResponse = memberService.searchMemberInfo(id);
+    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        MemberResponse memberResponse = memberService.searchMemberInfo(memberId);
+        memberService.updateViewCount(memberId);
         return ApiResponse.ok(memberResponse);
     }
 
