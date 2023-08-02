@@ -12,6 +12,8 @@ const ReviewWrite = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imgName, setImgName] = useState<string | null>(null);
   const [reviewName, setReviewName] = useState<string | null>(null);
+  const [movieName, setMovieName] = useState<string | null>(null);
+  const [oneSentance, setOneSentance] = useState<string | null>(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -22,6 +24,12 @@ const ReviewWrite = () => {
   }, []);
   const reviewNameHandler = (e) => {
     setReviewName(e.target.value);
+  };
+  const movieNameHandler = (e) => {
+    setMovieName(e.target.value);
+  };
+  const oneSentanceNameHandler = (e) => {
+    setOneSentance(e.target.value);
   };
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -38,118 +46,102 @@ const ReviewWrite = () => {
         margin: "auto",
       }}
     >
-      <Row className="mt-5 mx-4">
-        <Col md={6}>
-          <Input
+      <Row className="mt-3 mx-4">
+        <Col lg={8}>
+          {/* <Input
             id="reviewName"
             placeholder="리뷰 제목을 입력하세요"
             styles="input-box"
             onChange={reviewNameHandler}
             type="text"
-          ></Input>
-          {/* <Form.Control
-            placeholder="영화 제목을 입력하세요"
+          ></Input> */}
+          <Form.Control
+            placeholder="리뷰 제목을 입력하세요"
             className="border rounded-2 text-lg"
             size="lg"
-          ></Form.Control> */}
+            onChange={reviewNameHandler}
+          ></Form.Control>
         </Col>
-        <Col className="t-right me-4">
+        <Col className="t-right" lg={4}>
           <p className="fs-4">
-            {nickname}
-            <img src={profile} height="30px" className="c-img"></img>
+            <label htmlFor="profile">{nickname}</label>
+            <img
+              src={profile}
+              height="30px"
+              className="c-img"
+              id="profile"
+            ></img>
           </p>
         </Col>
       </Row>
-      <Row className="mx-4">
+      <Row className="mx-4 align-items-center">
         <Col md={6}>
-          <Input
+          {/* <Input
             id="reviewName"
             placeholder="영화 제목을 입력하세요"
             styles="input-box"
             onChange={reviewNameHandler}
             type="text"
-          ></Input>
-          {/* <Form.Control
+          ></Input> */}
+          <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-          ></Form.Control> */}
-        </Col>
-        <Col md={2} />
-        <Col md={2}>
-          <Col
-            className="text-center border border-5 rounded-2"
-            style={{ overflow: "hidden", height: "100%" }}
-          >
-            {imgName}
-          </Col>
-        </Col>
-        <Col md={1}>
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            <Button styles="btn-primary" text="첨부"></Button>
-          </div>
+            onChange={movieNameHandler}
+          ></Form.Control>
         </Col>
       </Row>
-      <Row className="mx-4 my-4">
-        <Col>
-          <Input
+      <Row className="mx-4 my-4 align-items-center">
+        <Col sm={6}>
+          {/* <Input
             id="reviewName"
             placeholder="한줄평을 입력하세요"
             styles="input-box"
             onChange={reviewNameHandler}
             type="text"
-          ></Input>
-          {/* <Form.Control
-            placeholder="영화 제목을 입력하세요"
+          ></Input> */}
+          <Form.Control
+            placeholder="한줄평을 입력하세요"
             className="border rounded-2 text-lg"
-            size="sm"
-          ></Form.Control> */}
+            onChange={oneSentanceNameHandler}
+          ></Form.Control>
         </Col>
-
+        <Col sm={2} />
+        <Col sm={2}>
+          <Form.Control
+            className="text-center border border-5 rounded-2"
+            value={imgName}
+          ></Form.Control>
+        </Col>
+        <Col sm={1}>
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            <Button styles="btn-primary" text="첨부"></Button>
+          </div>
+        </Col>
         <Col />
       </Row>
-      <Row className="mx-4 my-4">
+      <Row className="mx-4">
         <Col md={6}>
-          <textarea
+          <textarea style={{ resize: "none" }}></textarea>
+          {/* <textarea
             className="border rounded-2 border-5 i-box form-control"
-            style={{ resize: "none", height: "100%" }}
-          >
-            {/* {selectedImage ? (
-              <img src={selectedImage} className="img-preview" />
-            ) : (
-              <img src={"/defaultProfile.png"} className="img-preview" />
-            )} */}
-          </textarea>
+            style={{ resize: "none" }}
+          ></textarea> */}
         </Col>
-        <Col md={2} />
-        <Col>
-          <Row>
-            {/* <Col
-              md={6}
-              className="my-auto text-center border border-5 rounded-2"
-            ></Col>
-            <Col md={3} className="t-right">
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                <Button styles="btn-primary" text="첨부"></Button>
-              </div>
-            </Col> */}
-          </Row>
-          <Row>
-            <Col
-              className="my-auto text-center border border-5 rounded-2"
-              style={{ backgroundColor: "white" }}
-            >
-              <p>키워드</p>
-              <Slide />
-              <Slide />
-              <Slide />
-              <Slide />
-              <Slide />
-            </Col>
-          </Row>
-        </Col>
+        {/* <Col md={2} /> */}
+        {/* <Col
+          className="my-auto text-center border border-5 rounded-2"
+          style={{ backgroundColor: "white" }}
+        >
+          <p>키워드</p>
+          <Slide />
+          <Slide />
+          <Slide />
+          <Slide />
+          <Slide />
+        </Col> */}
       </Row>
+      <Row lg={12}>test</Row>
     </Container>
   );
 };

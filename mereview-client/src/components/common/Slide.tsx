@@ -1,7 +1,7 @@
 import Slider from "@mui/material/Slider";
 import React from "react";
 import { useState } from "react";
-
+import Input from "./Input";
 const Slide = () => {
   const [gauge, setGauge] = useState(0);
   const gaugeHandler = (
@@ -12,8 +12,8 @@ const Slide = () => {
     setGauge(newValue as number);
   };
   return (
-    <div style={{ display: "inline-block" }}>
-      <input></input>
+    <div>
+      <Input styles="input-line"></Input>
       <Slider value={gauge} onChange={gaugeHandler} />
     </div>
   );
