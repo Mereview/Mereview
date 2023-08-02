@@ -37,8 +37,6 @@ public class MemberVisitCount {
         this.lastVisitDate = LocalDateTime.now();
     }
 
-
-
     public void updateVisitCount() {
         this.todayVisitCount++;
         this.totalVisitCount++;

@@ -3,20 +3,16 @@ package com.ssafy.mereview.api.service.member;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
-import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
-import com.ssafy.mereview.domain.review.entity.BackgroundImage;
-import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +23,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
@@ -82,13 +77,7 @@ public class MemberService {
 
     }
 
-    private void createVisitCount(Member member) {
-        MemberVisitCount memberVisitCount = MemberVisitCount.builder()
-                .member(member)
-                .build();
 
-        memberVisitCountRepository.save(memberVisitCount);
-    }
 
     public MemberLoginResponse login(MemberLoginRequest request) {
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
@@ -143,14 +132,25 @@ public class MemberService {
         if (currentMember.getFollowing().contains(target)) {
             currentMember.getFollowing().remove(target);
             target.getFollowers().remove(currentMember);
-            return;
         }
+        else {
         currentMember.getFollowing().add(target);
         target.getFollowers().add(currentMember);
+        }
+        memberRepository.save(currentMember);
+        memberRepository.save(target);
     }
 
 
     //***************private method*****************//
+
+    private void createVisitCount(Member member) {
+        MemberVisitCount memberVisitCount = MemberVisitCount.builder()
+                .member(member)
+                .build();
+
+        memberVisitCountRepository.save(memberVisitCount);
+    }
 
     private void createInterest(MemberCreateServiceRequest dto, Member member) {
         List<Interest> interests = new ArrayList<>();

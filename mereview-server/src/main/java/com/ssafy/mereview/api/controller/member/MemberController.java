@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.controller.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
 import com.ssafy.mereview.api.service.member.EmailService;
@@ -69,10 +70,10 @@ public class MemberController {
         return ApiResponse.ok(memberResponse);
     }
 
-    @PostMapping("/follow/{targetId}")
-    public void follow(@PathVariable Long targetId, @RequestBody Long currentUserId) {
-        log.debug("MemberController.follow : {}", targetId);
-        memberService.follow(targetId, currentUserId);
+    @PostMapping("/follow")
+    public void follow(@RequestBody FollowRequest followRequest) {
+        log.debug("MemberController.follow : {}", followRequest);
+        memberService.follow(followRequest.getTargetId(), followRequest.getMemberId());
     }
 
 
