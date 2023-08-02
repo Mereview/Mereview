@@ -3,12 +3,11 @@ package com.ssafy.mereview.api.controller.review;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.mereview.api.controller.review.dto.request.KeywordCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
-import com.ssafy.mereview.api.service.member.UserDetailsServiceImpl;
-import com.ssafy.mereview.api.service.review.CommentService;
-import com.ssafy.mereview.api.service.review.ReviewQueryService;
-import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.service.review.*;
+import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
+import com.ssafy.mereview.common.config.SecurityConfig;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.jwt.JwtAuthFilter;
@@ -16,13 +15,17 @@ import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -31,17 +34,21 @@ import java.util.List;
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = ReviewController.class)
+@WebMvcTest(controllers = ReviewController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+                classes = {SecurityConfig.class, JwtAuthFilter.class}))
 class ReviewControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -51,27 +58,24 @@ class ReviewControllerTest {
 
     @MockBean
     private ReviewService reviewService;
-
-    @MockBean
-    private FileStore fileStore;
-
-    @MockBean
-    private FileExtensionFilter fileExtensionFilter;
-
-    @MockBean
-    private UserDetailsServiceImpl userDetailsService;
-
     @MockBean
     private ReviewQueryService reviewQueryService;
 
     @MockBean
     private CommentService commentService;
+    @MockBean
+    private ReviewEvaluationService reviewEvaluationService;
+    @MockBean
+    private CommentLikeService commentLikeService;
 
     @MockBean
-    private JwtAuthFilter jwtAuthFilter;
+    private FileStore fileStore;
+    @MockBean
+    private FileExtensionFilter fileExtFilter;
 
     @DisplayName("새로운 리뷰를 작성한다.")
     @Test
+    @WithMockUser
     void createReview() throws Exception {
         // given
         List<KeywordCreateRequest> keywordRequests = createKeywordRequests();
@@ -136,7 +140,7 @@ class ReviewControllerTest {
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
-        BDDMockito.given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
+        given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
                 .willReturn(responses);
 
         // when // then
@@ -164,7 +168,7 @@ class ReviewControllerTest {
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
-        BDDMockito.given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
+        given(reviewQueryService.searchByCondition(searchCondition, pageRequest))
                 .willReturn(responses);
 
         // when // then
@@ -188,7 +192,7 @@ class ReviewControllerTest {
         ReviewDetailResponse response = createReviewDetailResponse(1L, 1L, 1L);
 
         // stubbing 작업
-        BDDMockito.given(reviewQueryService.searchById(reviewId))
+        given(reviewQueryService.searchById(reviewId))
                 .willReturn(response);
 
         // when // then

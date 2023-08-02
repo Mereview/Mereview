@@ -5,6 +5,7 @@ import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)

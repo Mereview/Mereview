@@ -56,20 +56,20 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Keyword> keywords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEvaluation> evaluations = new ArrayList<>();
 
-    @OneToOne(mappedBy = "review")
+    @OneToOne(mappedBy = "review", fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Keyword> keywords, List<ReviewEvaluation> evaluations, BackgroundImage backgroundImage) {
+    public Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -79,10 +79,6 @@ public class Review extends BaseEntity {
         this.member = member;
         this.movie = movie;
         this.genre = genre;
-        this.comments = comments;
-        this.keywords = keywords;
-        this.evaluations = evaluations;
-        this.backgroundImage = backgroundImage;
     }
 
     public void update(ReviewUpdateServiceRequest request, List<Keyword> keywords, BackgroundImage backgroundImage) {

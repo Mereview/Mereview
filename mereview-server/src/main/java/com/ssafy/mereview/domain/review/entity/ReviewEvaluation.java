@@ -6,6 +6,7 @@ import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+@ToString
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
@@ -26,9 +28,11 @@ public class ReviewEvaluation extends BaseEntity {
     ReviewEvaluationType type;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
     private Review review;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder

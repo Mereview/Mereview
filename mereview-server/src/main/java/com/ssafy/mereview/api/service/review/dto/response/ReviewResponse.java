@@ -8,20 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @ToString
 @Getter
 @NoArgsConstructor
 public class ReviewResponse {
     private Long reviewId;
-    private Long memberId;
-    private String nickname;
-    // TODO: 2023-07-31 회원 프로필 이미지 추가 예정
-    private Long movieId;
-    private String movieTitle;
-    private GenreResponse genreResponse;
-    private String movieReleaseDate;
     private String reviewTitle;
     private int hits;
     private String highlight;
@@ -32,16 +24,17 @@ public class ReviewResponse {
     private int badCount;
     private BackgroundImageResponse backgroundImageResponse;
     private LocalDateTime createdTime;
+    private Long memberId;
+    private String nickname;
+    // TODO: 2023-07-31 회원 프로필 이미지 추가 예정
+    private Long movieId;
+    private String movieTitle;
+    private String movieReleaseDate;
+    private GenreResponse genreResponse;
 
     @Builder
-    public ReviewResponse(Long reviewId, Long memberId, String nickname, Long movieId, String movieTitle, GenreResponse genreResponse, String movieReleaseDate, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime) {
+    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
         this.reviewId = reviewId;
-        this.memberId = memberId;
-        this.nickname = nickname;
-        this.movieId = movieId;
-        this.movieTitle = movieTitle;
-        this.genreResponse = genreResponse;
-        this.movieReleaseDate = movieReleaseDate;
         this.reviewTitle = reviewTitle;
         this.hits = hits;
         this.highlight = highlight;
@@ -52,5 +45,11 @@ public class ReviewResponse {
         this.badCount = badCount;
         this.backgroundImageResponse = backgroundImageResponse;
         this.createdTime = createdTime;
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.movieId = movieId;
+        this.movieTitle = movieTitle;
+        this.movieReleaseDate = movieReleaseDate;
+        this.genreResponse = genreResponse;
     }
 }

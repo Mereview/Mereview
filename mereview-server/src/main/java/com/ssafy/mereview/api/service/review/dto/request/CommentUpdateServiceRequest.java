@@ -1,4 +1,4 @@
-package com.ssafy.mereview.api.controller.review.dto.request;
+package com.ssafy.mereview.api.service.review.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

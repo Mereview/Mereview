@@ -1,6 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
-import com.ssafy.mereview.api.service.review.dto.CommentLikeServiceRequest;
+import com.ssafy.mereview.api.service.review.dto.request.CommentLikeServiceRequest;
 import com.ssafy.mereview.domain.review.entity.CommentLike;
 import com.ssafy.mereview.domain.review.repository.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;

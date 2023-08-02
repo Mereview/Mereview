@@ -104,8 +104,10 @@ public class ReviewQueryRepository {
     private OrderSpecifier<?> sortByField(String filedName) {
         Order order = Order.DESC;
 
-        if (filedName.equals("hits")) {
-            return new OrderSpecifier<>(order, review.hits);
+        if (hasText(filedName)) {
+            if (filedName.equals("hits")) {
+                return new OrderSpecifier<>(order, review.hits);
+            }
         }
         return new OrderSpecifier<>(order, review.createdTime);
     }
