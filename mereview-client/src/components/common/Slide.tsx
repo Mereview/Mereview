@@ -1,12 +1,13 @@
-import Slider from "@material-ui/core/Slider/Slider";
+import Slider from "@mui/material/Slider";
 import React from "react";
 import { useState } from "react";
 
 const Slide = () => {
   const [gauge, setGauge] = useState(0);
   const gaugeHandler = (
-    event: React.ChangeEvent<{}>,
-    newValue: number | number[]
+    event: Event,
+    newValue: number | number[],
+    activeThumb: number
   ) => {
     setGauge(newValue as number);
   };
