@@ -12,6 +12,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +59,11 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member")
     private ProfileImage profileImage;
 
-    private int viewCount;
+    private int totalViewCount;
+
+    private int todayViewCount;
+
+    private LocalDateTime lastViewDate;
 
     @ManyToMany
     @JoinTable(
@@ -71,7 +77,7 @@ public class Member extends BaseEntity {
     private List<Member> following = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, int viewCount, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, int totalViewCount, int todayViewCount, LocalDateTime lastViewDate, List<Member> followers, List<Member> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -83,7 +89,9 @@ public class Member extends BaseEntity {
         this.memberTiers = memberTiers;
         this.reviews = reviews;
         this.profileImage = profileImage;
-        this.viewCount = viewCount;
+        this.totalViewCount = totalViewCount;
+        this.todayViewCount = todayViewCount;
+        this.lastViewDate = lastViewDate;
         this.followers = followers;
         this.following = following;
     }
@@ -96,5 +104,4 @@ public class Member extends BaseEntity {
                 .email(email)
                 .build();
     }
-
 }

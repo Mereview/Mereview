@@ -111,6 +111,10 @@ public class MemberService {
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
 
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
+    }
+
+    public void updateViewCount(Long id){
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
     }
 

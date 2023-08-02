@@ -34,8 +34,8 @@ public class MemberController {
     private final EmailService emailService;
 
     private final FileStore fileStore;
-    private final FileExtensionFilter fileExtFilter;
 
+    private final FileExtensionFilter fileExtFilter;
 
     @PostMapping("/sign-up")
     public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
@@ -53,8 +53,6 @@ public class MemberController {
         }
         return ApiResponse.ok(memberId);
     }
-
-
 
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
@@ -85,5 +83,4 @@ public class MemberController {
         }
         return uploadFile;
     }
-
 }
