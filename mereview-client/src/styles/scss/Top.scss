@@ -1,0 +1,46 @@
+@import "Style";
+
+.total {
+  color: white;
+  height: 40vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  .row {
+    width: 100%;
+  }
+}
+.leftInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  h1 {
+    font-family: $GowunDodum;
+    font-weight: bold;
+    font-size: 56px;
+  }
+  .userInfo {
+    display: flex;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 9999px;
+      margin-right: 5px;
+    }
+    p {
+      margin: auto;
+      .nickname {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.rightInfo {
+  display: flex;
+  justify-content: end;
+}

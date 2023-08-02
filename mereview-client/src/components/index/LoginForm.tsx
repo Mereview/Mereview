@@ -63,7 +63,7 @@ const LoginForm = () => {
   return (
     <Container
       className={`maincpnt ${animate ? "animate" : ""}`}
-      style={{ width: "40rem" }}
+      style={{ width: "40rem", marginTop: "150px" }}
     >
       <Row>
         <form onSubmit={login}>

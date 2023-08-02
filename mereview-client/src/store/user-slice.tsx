@@ -12,11 +12,10 @@ const initialState: UserInterface = {
   signUpData: {
     email: "",
     password: "",
-    password2: "",
     nickname: "",
-    birth: "",
+    birth_date: "",
     gender: "",
-    profileURL: "",
+    file: "",
     interest: [{}],
   },
 };
@@ -44,14 +43,13 @@ const userSlice = createSlice({
       // 정보입력
       state.signUpData.email = action.payload.email;
       state.signUpData.password = action.payload.password;
-      state.signUpData.password2 = action.payload.password2;
       state.signUpData.nickname = action.payload.nickname;
-      state.signUpData.birth = action.payload.birth;
+      state.signUpData.birth_date = action.payload.birth_date;
       state.signUpData.gender = action.payload.gender;
     },
     signUp_step2(state, action) {
       // 사진선택
-      state.signUpData.profileURL = action.payload;
+      state.signUpData.file = action.payload;
     },
     signUp_step3(state, action) {
       // 관심사 선택
