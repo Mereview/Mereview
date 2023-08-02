@@ -1,12 +1,12 @@
 import { Button, FloatLabelInput } from "../common/index";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 
 const LoginForm = () => {
-  const [animate, setAnimate] = useState(false);
+  const [animate, setAnimate] = useState<boolean>(false);
   useEffect(() => {
     setAnimate(true);
   }, []);
@@ -15,7 +15,7 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  const onChange = (event: any) => {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     setLoginData((prevInputData) => ({
       ...prevInputData,
@@ -25,7 +25,7 @@ const LoginForm = () => {
 
   ///로그인 로직
 
-  const Login = (event: any) => {
+  const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const url = "http://localhost:80/api/auth/login";
     const userData = {
@@ -66,7 +66,7 @@ const LoginForm = () => {
       style={{ width: "40rem" }}
     >
       <Row>
-        <form onSubmit={Login}>
+        <form onSubmit={login}>
           <Row>
             <FloatLabelInput
               id="email"
@@ -87,7 +87,7 @@ const LoginForm = () => {
           </Row>
 
           <Row className="justify-content-end">
-            <Button styles="btn-primary" text="LOGIN" btnType="submit"></Button>
+            <Button styles="btn-primary" text="LOGIN" btnType="submit" />
           </Row>
         </form>
       </Row>

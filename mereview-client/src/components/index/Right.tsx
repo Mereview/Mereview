@@ -10,7 +10,7 @@ const Right = () => {
   return (
     <Container style={style}>
       <Row className="justify-content-center mt-5 mb-5" style={style}>
-        <img style={{ width: "500px" }} src="logo2.png" alt="Logo" />
+        <img style={{ width: "50%" }} src="logo2.png" alt="Logo" />
       </Row>
       <Row style={style}>{tab === "login" ? <LoginForm /> : <SignUp />}</Row>
     </Container>

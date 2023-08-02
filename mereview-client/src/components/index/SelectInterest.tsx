@@ -3,20 +3,26 @@ import "../../styles/css/SelectInterest.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
-
+import { SignUpInterface } from "../interface/UserInterface";
+interface GenreInfo {
+  [id: string]: [string, string];
+}
+interface InterestInterface {
+  genreId: string;
+  genreName: string;
+}
 const SelectInterest = () => {
-  const [loading, setLoading] = useState(true);
-  const [interest, setInterest] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [interest, setInterest] = useState<InterestInterface[]>([]);
   const dispatch = useDispatch();
   useEffect(() => {
-    setLoading(true);
     setLoading(false);
   }, [loading]);
   const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const genreId = event.currentTarget.id;
     const genreName = event.currentTarget.textContent || "";
 
-    setInterest((prevInterest) => {
+    setInterest((prevInterest: InterestInterface[]) => {
       const isGenreExist = prevInterest.some(
         (item) => item.genreId === genreId
       );
@@ -35,7 +41,7 @@ const SelectInterest = () => {
     dispatch(userActions.modal_toggler());
   };
 
-  const genre: { [id: number]: string[] } = {
+  const genre: GenreInfo = {
     "12": ["모험", "/interest/adventure"],
     "14": ["판타지", "/interest/fantasy"],
     "16": ["애니메이션", "/interest/animation"], ///

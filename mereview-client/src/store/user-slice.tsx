@@ -17,7 +17,7 @@ const initialState: UserInterface = {
     birth: "",
     gender: "",
     profileURL: "",
-    interest: [],
+    interest: [{}],
   },
 };
 const userSlice = createSlice({
