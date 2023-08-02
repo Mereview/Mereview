@@ -1,6 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.api.controller.review.CommentUpdateServiceRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.CommentUpdateServiceRequest;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;

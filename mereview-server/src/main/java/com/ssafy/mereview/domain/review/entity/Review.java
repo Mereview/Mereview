@@ -14,7 +14,6 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -64,13 +63,13 @@ public class Review extends BaseEntity {
     private List<Keyword> keywords = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
-    private List<ReviewLike> likes = new ArrayList<>();
+    private List<ReviewEvaluation> evaluations = new ArrayList<>();
 
     @OneToOne(mappedBy = "review")
     private BackgroundImage backgroundImage;
 
     @Builder
-    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Keyword> keywords, List<ReviewLike> likes, BackgroundImage backgroundImage) {
+    private Review(Long id, String title, String content, int hits, String highlight, EvaluationType type, Member member, Movie movie, Genre genre, List<Comment> comments, List<Keyword> keywords, List<ReviewEvaluation> evaluations, BackgroundImage backgroundImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -82,7 +81,7 @@ public class Review extends BaseEntity {
         this.genre = genre;
         this.comments = comments;
         this.keywords = keywords;
-        this.likes = likes;
+        this.evaluations = evaluations;
         this.backgroundImage = backgroundImage;
     }
 
