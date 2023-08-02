@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.response.ReviewLikeResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
@@ -36,5 +37,12 @@ public class ReviewLike extends BaseEntity {
         this.type = type;
         this.review = review;
         this.member = member;
+    }
+
+    public ReviewLikeResponse of() {
+        return ReviewLikeResponse.builder()
+                .reviewLikeId(id)
+                .reviewLikeType(type)
+                .build();
     }
 }

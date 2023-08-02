@@ -1,25 +1,25 @@
 import { Container, Row, Col } from "react-bootstrap";
-import Tab from "../components/index/Tab";
+import Right from "../components/index/Right";
+import Left from "../components/index/Left";
 import "../styles/css/IndexPage.css";
+
 const IndexPage = (props: any) => {
+  const style = { padding: "0px", margin: "0px" };
   return (
-    <Container
-      fluid
+    <div
       className="full-height-container"
-      style={{ padding: "0px" }}
+      style={{ padding: "0px", margin: "0px", overflow: "hidden" }}
     >
       <Row>
-        <Col md={5}>
-          <div style={{ backgroundColor: "tomato" }}>
-            <img src="/test.jpg" alt="intro" />
-          </div>
+        <Col md={5} style={style}>
+          <Left />
         </Col>
 
-        <Col md={7}>
-          <Tab />
+        <Col className="right" md={7} style={style}>
+          <Right />
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 

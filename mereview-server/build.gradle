@@ -8,7 +8,7 @@ group = 'com.ssafy'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '1.8'
+	sourceCompatibility = '11'
 }
 
 configurations {
@@ -44,10 +44,16 @@ dependencies {
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// db
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2:1.4.199'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	//spring-email
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.3'
+	implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.15'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

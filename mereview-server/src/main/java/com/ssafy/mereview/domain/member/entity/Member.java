@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.member.entity;
 
+import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
@@ -53,14 +54,24 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member")
+    private ProfileImage profileImage;
+
     private int viewCount;
 
+    @ManyToMany
+    @JoinTable(
+            name = "member_followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    private List<Member> followers = new ArrayList<>();
 
-
+    @ManyToMany(mappedBy = "followers")
+    private List<Member> following = new ArrayList<>();
 
     @Builder
-
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, int viewCount) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, int viewCount, List<Member> followers, List<Member> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -71,6 +82,19 @@ public class Member extends BaseEntity {
         this.interests = interests;
         this.memberTiers = memberTiers;
         this.reviews = reviews;
+        this.profileImage = profileImage;
         this.viewCount = viewCount;
+        this.followers = followers;
+        this.following = following;
     }
+
+    public MemberResponse of() {
+        return
+        MemberResponse.builder()
+                .id(id)
+                .nickname(nickname)
+                .email(email)
+                .build();
+    }
+
 }

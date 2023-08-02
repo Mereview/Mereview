@@ -4,10 +4,15 @@ const uiSlice = createSlice({
   name: "ui",
   initialState: {
     isModal: false,
+    tabToggle: "login",
   },
   reducers: {
-    toggle(state) {
-      state.isModal = !state.isModal;
+    tabChange(state, action) {
+      if (state.tabToggle === "login" && action.payload === "signup") {
+        state.tabToggle = "signup";
+      } else if (state.tabToggle === "signup" && action.payload === "login") {
+        state.tabToggle = "login";
+      }
     },
   },
 });

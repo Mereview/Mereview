@@ -1,84 +1,89 @@
 package com.ssafy.mereview.api.controller.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
+import com.ssafy.mereview.api.service.member.EmailService;
 import com.ssafy.mereview.api.service.member.MemberService;
-import com.ssafy.mereview.api.service.member.dto.request.SaveMemberReqeust;
+import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
-import com.ssafy.mereview.common.util.jwt.JwtUtils;
-import com.ssafy.mereview.domain.member.entity.Member;
-import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
-import com.ssafy.mereview.domain.member.repository.MemberRepository;
+import com.ssafy.mereview.common.response.ApiResponse;
+import com.ssafy.mereview.common.util.file.FileExtensionFilter;
+import com.ssafy.mereview.common.util.file.FileStore;
+import com.ssafy.mereview.common.util.file.UploadFile;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
-    private final MemberQueryRepository memberQueryRepository;
-
-    private final MemberRepository memberRepository;
 
     private final MemberService memberService;
 
-    private final JwtUtils jwtUtils;
+    private final EmailService emailService;
 
-    private final PasswordEncoder passwordEncoder;
+    private final FileStore fileStore;
+    private final FileExtensionFilter fileExtFilter;
 
 
-    @PostMapping("/signup")
-    public Long signup(@Valid @RequestBody MemberRegisterRequest dto) throws Exception {
-        List<InterestRequest> interestRequests = new ArrayList<>();
-        for (String genreName : dto.getInterests()) {
-            InterestRequest genreRequest = InterestRequest.builder()
-                    .genreName(genreName)
-                    .build();
-            interestRequests.add(genreRequest);
+    @PostMapping("/sign-up")
+    public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
+                                    @RequestPart(name = "file", required = false) MultipartFile file) throws Exception {
+
+        UploadFile uploadFile = createUploadFile(file);
+        log.debug("uploadFile: {}", uploadFile);
+
+        MemberCreateServiceRequest saveMemberServiceRequest = request.toServiceRequest(uploadFile);
+        log.debug("MemberRegisterRequest : {}", request);
+
+        Long memberId = memberService.createMember(saveMemberServiceRequest);
+        if (memberId == -1) {
+            throw new DuplicateRequestException("중복되는 회원이 존재합니다.");
         }
-
-        SaveMemberReqeust saveMemberReqeust = SaveMemberReqeust.builder()
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .interestRequests(interestRequests)
-                .build();
-        Long id = memberService.saveMember(saveMemberReqeust);
-        if (id == -1) {
-            throw new Exception("중복되는 회원이 존재합니다.");
-        }
-
-
-        return id;
-
-
+        return ApiResponse.ok(memberId);
     }
 
-    @ResponseBody
+
+
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody MemberLoginRequest memberLoginDto) {
-        // TODO: Verify username and password, and generate JWT
-        Member existingMember = memberQueryRepository.searchByEmail(memberLoginDto.getEmail());
-        if (existingMember != null && passwordEncoder.matches(memberLoginDto.getPassword(), existingMember.getPassword())) {
-            Map<String, String> token = jwtUtils.generateJwt(existingMember);
+    public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
+        log.debug("MemberLoginRequest : {}", request);
+        MemberLoginResponse memberLoginResponse = memberService.login(request);
+        return ApiResponse.ok(memberLoginResponse);
+    }
 
-            return token;
-        } else {
-            throw new RuntimeException("Invalid username or password");
+    @GetMapping("/{id}")
+    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable Long id) {
+        log.debug("MemberController.getMemberInfo : {}", id);
+        MemberResponse memberResponse = memberService.searchMemberInfo(id);
+        return ApiResponse.ok(memberResponse);
+    }
+
+    @PostMapping("/follow/{targetId}")
+    public void follow(@PathVariable Long targetId, @RequestBody Long currentUserId) {
+        log.debug("MemberController.follow : {}", targetId);
+        memberService.follow(targetId, currentUserId);
+    }
+
+
+    private UploadFile createUploadFile(MultipartFile file) throws IOException {
+        UploadFile uploadFile = null;
+        if (file != null && !file.isEmpty()) {
+            fileExtFilter.imageFilter(file);
+            uploadFile = fileStore.storeFile(file);
         }
+        return uploadFile;
     }
 
-    @ResponseBody
-    @GetMapping("/info/{id}")
-    public MemberResponse getMemberInfo(@PathVariable Long id) {
-        System.out.println("id = " + id);
-        MemberResponse response = memberService.getMemberInfo(id);
-        return response;
-    }
 }

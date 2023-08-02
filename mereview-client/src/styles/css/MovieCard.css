@@ -1,6 +1,48 @@
-@import url("https://webfontworld.github.io/woowahan/BMDoHyeon.css");
-@import url("https://webfontworld.github.io/yangheeryu/GowunBatang.css");
-@import url("https://webfontworld.github.io/yangheeryu/GowunDodum.css");
-@import url("https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap");
+@font-face {
+  font-family: "GowunDodum";
+  src: url("../fonts/GowunDodum-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GowunBatang";
+  src: url("../fonts/GowunBatang-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "BMDoHyeon";
+  src: url("../fonts/BMDOHYEON_ttf.ttf") format("truetype");
+}
+@font-face {
+  font-family: "NanumGothic";
+  src: url("../fonts/NanumGothic.ttf") format("truetype");
+}
+.movie-card {
+  display: inline-block;
+  font-family: "BMDoHyeon";
+  font-size: 16px;
+  width: 250px;
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.movie-card .poster-image {
+  height: 380px;
+  border-radius: 1%;
+  overflow: hidden;
+  display: inline-block;
+}
+.movie-card .poster-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.movie-card .movie-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.movie-card .year-genres {
+  font-family: "NanumGothic";
+  font-size: 14.08px;
+  color: #666666;
+}
 
 /*# sourceMappingURL=MovieCard.css.map */
