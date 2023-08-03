@@ -12,6 +12,8 @@ const uiSlice = createSlice({
         state.tabToggle = "signup";
       } else if (state.tabToggle === "signup" && action.payload === "login") {
         state.tabToggle = "login";
+      } else if (action.payload === "signUpCompleted") {
+        state.tabToggle = "login";
       }
     },
   },

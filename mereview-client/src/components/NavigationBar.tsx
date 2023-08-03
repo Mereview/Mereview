@@ -19,7 +19,7 @@ const NavigationBar = () => {
     <div>
       <Navbar bg="dark" expand="lg">
         {/* 로고 */}
-        <Navbar.Brand href="/" className="ms-4">
+        <Navbar.Brand href="/review" className="ms-4">
           <img src={"/logo1.png"} height="60"></img>
         </Navbar.Brand>
 

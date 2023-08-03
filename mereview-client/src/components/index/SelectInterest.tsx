@@ -3,6 +3,7 @@ import "../../styles/css/SelectInterest.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
+import { uiActions } from "../../store/ui-silce";
 import { SignUpInterface } from "../interface/UserInterface";
 import { postSignUp } from "../../api/user";
 import axios from "axios";
@@ -13,7 +14,13 @@ interface InterestInterface {
   genreId: string;
   genreName: string;
 }
-const SelectInterest = () => {
+
+interface SelectInterestProps {
+  step1: string[];
+  step2: FormData;
+}
+
+const SelectInterest = ({ step1, step2 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [interest, setInterest] = useState<InterestInterface[]>([]);
   const dispatch = useDispatch();
@@ -34,16 +41,22 @@ const SelectInterest = () => {
         return [...prevInterest, { genreId, genreName }];
       }
     });
-    dispatch(userActions.signUp_step3(interest));
   };
   const goBack = () => {
     dispatch(userActions.modal_toggler());
   };
-  const data = useSelector((state: any) => state.user.signUpData);
-
+  const data = {
+    ...step1,
+    file: step2,
+    interest: interest,
+  };
   const signUp_step3 = () => {
+    console.log(data);
+
     postSignUp(data);
+
     dispatch(userActions.modal_toggler());
+    dispatch(uiActions.tabChange("signUpCompleted"));
   };
   const genre: GenreInfo = {
     "12": ["모험", "/interest/adventure"],
