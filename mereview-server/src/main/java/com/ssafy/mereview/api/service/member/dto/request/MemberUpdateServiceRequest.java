@@ -1,8 +1,6 @@
 package com.ssafy.mereview.api.service.member.dto.request;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
-import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberUpdateServiceRequest {
 
-    Long id;
-
     private String nickname;
 
     private String gender;
@@ -25,8 +21,7 @@ public class MemberUpdateServiceRequest {
     private List<InterestRequest> interestRequests = new ArrayList<>();
 
     @Builder
-    public MemberUpdateServiceRequest(Long id, String nickname, String gender, String birthDate, List<InterestRequest> interestRequests) {
-        this.id = id;
+    public MemberUpdateServiceRequest(String nickname, String gender, String birthDate, List<InterestRequest> interestRequests) {
         this.nickname = nickname;
         this.gender = gender;
         this.birthDate = birthDate;

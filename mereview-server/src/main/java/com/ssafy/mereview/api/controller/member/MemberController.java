@@ -65,10 +65,10 @@ public class MemberController {
         return ApiResponse.ok(memberResponse);
     }
 
-    @PostMapping("/update")
-    public ApiResponse<Long> updateMemberInfo(@RequestBody MemberUpdateRequest request) {
+    @PutMapping("/{id}")
+    public ApiResponse<Long> updateMemberInfo(@PathVariable Long id,@RequestBody MemberUpdateRequest request) {
         log.debug("MemberController.updateMemberInfo : {}", request);
-        Long memberId = memberService.updateMember(request.toMemberCreateServiceRequest());
+        Long memberId = memberService.updateMember(id, request.toMemberCreateServiceRequest());
         return ApiResponse.ok(memberId);
     }
 

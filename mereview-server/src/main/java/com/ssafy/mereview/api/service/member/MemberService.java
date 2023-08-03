@@ -80,15 +80,16 @@ public class MemberService {
         return savedMember.getId();
     }
 
-    public Long updateMember(MemberUpdateServiceRequest request) {
-        Member member = memberRepository.findById(request.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         log.debug("member = " + member.getEmail());
 
         List<InterestRequest> interestRequests = request.getInterestRequests();
         log.debug("interestRequests = " + interestRequests);
 
-        member.update(request, createInterests(interestRequests, member));;
+        member.update(request, createInterests(interestRequests, member));
         log.debug("member = " + member.getEmail());
+
         return member.getId();
     }
 
