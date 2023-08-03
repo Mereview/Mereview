@@ -1,6 +1,8 @@
 package com.ssafy.mereview.domain.member.entity;
 
+import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
+import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
@@ -45,10 +47,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member")
     private List<Interest> interests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member")
     private List<MemberTier> memberTiers = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
@@ -96,5 +98,24 @@ public class Member extends BaseEntity {
                 .nickname(nickname)
                 .email(email)
                 .build();
+    }
+
+    //update member
+    public void update(MemberUpdateServiceRequest request, List<Interest> interests){
+        this.nickname = request.getNickname();
+        this.gender = request.getGender();
+        this.birthDate = request.getBirthDate();
+        this.interests = interests;
+    }
+    //update profile image
+    public void updateProfileImage(UploadFile uploadFile){
+        if(this.profileImage == null){
+            this.profileImage = ProfileImage.builder()
+                    .uploadFile(uploadFile)
+                    .member(this)
+                    .build();
+        }else{
+            this.profileImage.update(uploadFile);
+        }
     }
 }
