@@ -40,16 +40,20 @@ public class MemberQueryService {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        return searchMemberLoginResponse(searchMember);
+        return createMemberLoginResponse(searchMember);
     }
 
-    private MemberLoginResponse searchMemberLoginResponse(Member searchMember) {
+    private MemberLoginResponse createMemberLoginResponse(Member searchMember) {
         log.debug("searchMember : {}", searchMember);
 
         Map<String, String> token = jwtUtils.generateJwt(searchMember);
         return MemberLoginResponse.builder()
-                .memberResponse(searchMemberInfo(searchMember.getId()))
-                .token(token)
+                .id(searchMember.getId())
+                .email(searchMember.getEmail())
+                .nickname(searchMember.getNickname())
+                .profileImage(createProfileImageResponse(searchMember.getProfileImage()))
+                .accessToken(token.get("accessToken"))
+                .refreshToken(token.get("refreshToken"))
                 .build();
     }
 
