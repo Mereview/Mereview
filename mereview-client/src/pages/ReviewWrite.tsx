@@ -8,7 +8,7 @@ const ReviewWrite = () => {
   const nickname = "닉네임";
   const profile = "/logo2.png";
   const [selectedImage, setSelectedImage] = useState<string | null>("");
-  const [imgName, setImgName] = useState<string | null>("");
+  const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
   const [movieName, setMovieName] = useState<string | null>("");
   const [oneSentance, setOneSentance] = useState<string | null>("");
@@ -122,7 +122,7 @@ const ReviewWrite = () => {
           <Form.Control
             className="text-center border border-5 rounded-2"
             value={imgName}
-            defaultValue={""}
+            readOnly
           ></Form.Control>
         </Col>
         <Col sm={1}>
