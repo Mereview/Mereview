@@ -13,20 +13,23 @@ public class InterestRequest {
 
     private Long genreId;
 
+    private int genreNumber;
+
     private String genreName;
 
     private boolean isUsing;
 
     @Builder
-    public InterestRequest(Long genreId, String genreName, boolean isUsing) {
+    public InterestRequest(Long genreId, int genreNumber, String genreName, boolean isUsing) {
         this.genreId = genreId;
+        this.genreNumber = genreNumber;
         this.genreName = genreName;
         this.isUsing = isUsing;
     }
-    public Interest toEntity(Long memberId){
+    public Interest toEntity(Long memberId, Long genreId){
         return Interest.builder()
                 .member(Member.builder().id(memberId).build())
-                .genre(Genre.builder().id(genreId).genreName(genreName).build())
+                .genre(Genre.builder().id(genreId).build())
                 .build();
 
     }

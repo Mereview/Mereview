@@ -8,10 +8,11 @@ import com.ssafy.mereview.domain.movie.entity.Genre;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberQueryRepository {
-    Member searchById(Long memberId);
+    public Optional<Member> searchById(Long memberId);
 
     public Member searchByEmail(String email);
 

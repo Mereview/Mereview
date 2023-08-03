@@ -58,16 +58,13 @@ public class MemberQueryService {
     }
 
     public MemberResponse searchMemberInfo(Long id) {
-        Member member = memberQueryRepository.searchById(id);
+        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         List<InterestResponse> interestResponses = searchInterestResponse(id);
 
         List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
-
-        log.debug("Member Profile Image : {}", member.getProfileImage());
-
 
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
     }

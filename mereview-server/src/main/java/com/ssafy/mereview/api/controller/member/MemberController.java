@@ -80,7 +80,7 @@ public class MemberController {
                                                 @RequestPart(name = "memberId") Long memberId) throws IOException {
         log.debug("MemberController.updateProfilePic : {}", memberId);
         UploadFile uploadFile = createUploadFile(file);
-        memberService.updatePorfileImage(memberId, uploadFile);
+        memberService.updateProfileImage(memberId, uploadFile);
         return ApiResponse.ok("프로필 사진 업데이트 성공");
     }
 

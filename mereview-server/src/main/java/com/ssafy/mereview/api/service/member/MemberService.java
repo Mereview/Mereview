@@ -1,10 +1,8 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
@@ -14,7 +12,6 @@ import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -90,7 +86,6 @@ public class MemberService {
         log.debug("interestRequests = " + interestRequests);
 
         member.update(request, createInterests(interestRequests, member));
-        log.debug("member = " + member.getEmail());
 
         return member.getId();
     }
@@ -120,7 +115,7 @@ public class MemberService {
         }
     }
 
-    public void updatePorfileImage(Long memberId, UploadFile uploadFile) {
+    public void updateProfileImage(Long memberId, UploadFile uploadFile) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
         member.updateProfileImage(uploadFile);
     }
@@ -166,7 +161,7 @@ public class MemberService {
 
     private void createAchievement(Member member) {
         // TODO: 2023-08-03 장르 레포지토리로 바꾸기
-        List<Genre> genres = memberQueryRepository.searchAllGenre();
+        List<Genre> genres = genreRepository.findAll();
 
         List<MemberAchievement> memberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
                 .member(member)
