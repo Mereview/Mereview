@@ -65,6 +65,7 @@ const getBoxOfficeMovieNames = async () => {
   }
 };
 
+// Use API later
 const genres: Record<string, string> = {
   "28": "액션",
   "12": "모험",
