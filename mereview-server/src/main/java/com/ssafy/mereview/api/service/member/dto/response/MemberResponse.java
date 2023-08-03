@@ -1,20 +1,16 @@
 package com.ssafy.mereview.api.service.member.dto.response;
 
 
+import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.member.entity.Role;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
 @NoArgsConstructor
-@ToString
 public class MemberResponse {
-
 
     private Long id;
     private String email;
@@ -25,11 +21,13 @@ public class MemberResponse {
     private List<InterestResponse> interests;
     private List<MemberTierResponse> tiers;
     private List<MemberAchievementResponse> achievements;
+    private List<ReviewResponse> reviews;
+    private ProfileImageResponse profileImage;
 
     private Map<String, String> token;
 
     @Builder
-    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, Map<String, String> token) {
+    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, ProfileImageResponse profileImage, Map<String, String> token) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
@@ -39,6 +37,8 @@ public class MemberResponse {
         this.interests = interests;
         this.tiers = tiers;
         this.achievements = achievements;
+        this.reviews = reviews;
+        this.profileImage = profileImage;
         this.token = token;
     }
 }

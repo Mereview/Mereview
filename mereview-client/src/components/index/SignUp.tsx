@@ -18,7 +18,7 @@ const SignUp = () => {
     password: null,
     password2: null,
     nickname: null,
-    birth_date: null,
+    birthDate: null,
     gender: null,
   });
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
@@ -60,10 +60,13 @@ const SignUp = () => {
   };
   const emailCheckHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id;
-    if (id === "step1") {
+    if (id === "step1" && inputData.email) {
       // axios 로 사용자에게 메일보내는 로직
       setChecking(true);
-    } else if (id === "step2") {
+    } else {
+      alert("메일을 정확하게 입력해주세요.");
+    }
+    if (id === "step2") {
       // 인증메일 핀과 일치하는지 검토하는 로직
       setCheckEmail(true);
       setChecking(false);
@@ -174,12 +177,12 @@ const SignUp = () => {
               </div>
               <div className="form-floating mb-3 p-0 mx-auto">
                 <Input
-                  id="birth_date"
+                  id="birthDate"
                   styles="input-line form-control bg-transparent text-black"
                   placeholder="생년월일을 입력해주세요."
                   onChange={onChange}
                   type="date"
-                />{" "}
+                />
                 <label className="fw-bold" htmlFor="password">
                   생년월일을 입력해주세요
                 </label>
@@ -193,8 +196,8 @@ const SignUp = () => {
                 <input
                   id="male"
                   type="radio"
-                  value="male"
-                  checked={selectedGender === "male"}
+                  value="MALE"
+                  checked={selectedGender === "MALE"}
                   onChange={onChange}
                 />
                 남자
@@ -203,8 +206,8 @@ const SignUp = () => {
                 <input
                   id="female"
                   type="radio"
-                  value="female"
-                  checked={selectedGender === "female"}
+                  value="FEMALE"
+                  checked={selectedGender === "FEMALE"}
                   onChange={onChange}
                 />
                 여자

@@ -1,10 +1,9 @@
 package com.ssafy.mereview.api.controller.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
-import com.ssafy.mereview.api.service.member.EmailService;
+import com.ssafy.mereview.api.controller.member.dto.request.MemberUpdateRequest;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
@@ -19,10 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/members")
@@ -31,8 +28,6 @@ import java.io.UnsupportedEncodingException;
 public class MemberController {
 
     private final MemberService memberService;
-
-    private final EmailService emailService;
 
     private final FileStore fileStore;
 
@@ -45,7 +40,7 @@ public class MemberController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        MemberCreateServiceRequest saveMemberServiceRequest = request.toServiceRequest(uploadFile);
+        MemberCreateServiceRequest saveMemberServiceRequest = request.toMemberCreateServiceRequest(uploadFile);
         log.debug("MemberRegisterRequest : {}", request);
 
         Long memberId = memberService.createMember(saveMemberServiceRequest);
@@ -70,12 +65,27 @@ public class MemberController {
         return ApiResponse.ok(memberResponse);
     }
 
+    @PutMapping("/{id}")
+    public ApiResponse<Long> updateMemberInfo(@PathVariable Long id,@RequestBody MemberUpdateRequest request) {
+        log.debug("MemberController.updateMemberInfo : {}", request);
+        Long memberId = memberService.updateMember(id, request.toMemberCreateServiceRequest());
+        return ApiResponse.ok(memberId);
+    }
+
+    @PostMapping("/profile-image")
+    public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
+                                                @RequestPart(name = "memberId") Long memberId) throws IOException {
+        log.debug("MemberController.updateProfilePic : {}", memberId);
+        UploadFile uploadFile = createUploadFile(file);
+        memberService.updatePorfileImage(memberId, uploadFile);
+        return ApiResponse.ok("프로필 사진 업데이트 성공");
+    }
+
     @PostMapping("/follow")
     public void follow(@RequestBody FollowRequest followRequest) {
         log.debug("MemberController.follow : {}", followRequest);
-        memberService.follow(followRequest.getTargetId(), followRequest.getMemberId());
+        memberService.createFollow(followRequest.getTargetId(), followRequest.getMemberId());
     }
-
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
         UploadFile uploadFile = null;

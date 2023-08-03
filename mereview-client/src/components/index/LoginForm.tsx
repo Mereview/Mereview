@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
-
+import { login } from "../../api/user";
 const LoginForm = () => {
   const [animate, setAnimate] = useState<boolean>(false);
   useEffect(() => {
@@ -25,9 +25,8 @@ const LoginForm = () => {
 
   ///로그인 로직
 
-  const login = (event: React.FormEvent<HTMLFormElement>) => {
+  const loginHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const url = "http://localhost:80/api/auth/login";
     const userData = {
       email: loginData.email,
       password: loginData.password,
@@ -36,28 +35,7 @@ const LoginForm = () => {
       alert("아이디와 비밀번호를 확인해주세요!");
       return;
     }
-    const requestOption: RequestInit = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    };
-
-    fetch(url, requestOption)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        dispatch(userActions.login(data)); // token받고, isAthenticated true로 바꾸기
-      })
-      .catch((err) => {
-        console.log(err.data);
-      });
+    login(userData);
   };
 
   return (
@@ -66,7 +44,7 @@ const LoginForm = () => {
       style={{ width: "40rem", marginTop: "150px" }}
     >
       <Row>
-        <form onSubmit={login}>
+        <form onSubmit={loginHandler}>
           <Row>
             <FloatLabelInput
               id="email"

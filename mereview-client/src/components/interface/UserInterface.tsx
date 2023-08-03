@@ -12,7 +12,7 @@ export interface InputDataInterface {
   password: null | string;
   password2?: null | string;
   nickname: null | string;
-  birth_date: null | string;
+  birthDate: null | string;
   gender: null | string;
 }
 export interface SignUpInterface extends InputDataInterface {

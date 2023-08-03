@@ -1,10 +1,8 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import ch.qos.logback.core.boolex.EvaluationException;
-import com.ssafy.mereview.api.service.review.dto.response.BackgroundImageResponse;
+import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
-import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +21,7 @@ public class ProfileImage extends BaseEntity {
     @Embedded
     UploadFile uploadFile;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     Member member;
 
@@ -33,4 +31,19 @@ public class ProfileImage extends BaseEntity {
         this.uploadFile = uploadFile;
         this.member = member;
     }
+
+    public void update(UploadFile uploadFile){
+        this.uploadFile = uploadFile;
+
+    }
+    public ProfileImageResponse of() {
+        return ProfileImageResponse.builder()
+                .id(id)
+                .fileName(uploadFile.getUploadFileName())
+                .createdTime(getCreatedTime())
+                .build();
+    }
+
+
+
 }

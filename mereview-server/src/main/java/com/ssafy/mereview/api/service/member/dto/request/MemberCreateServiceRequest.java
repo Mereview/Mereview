@@ -19,23 +19,40 @@ public class MemberCreateServiceRequest {
 
     private String password;
 
+    private String nickname;
+
+    private String gender;
+
     private List<InterestRequest> interestRequests = new ArrayList<>();
 
+    private String birthDate;
+
+    List<InterestRequest> interests = new ArrayList<>();
+
+    private UploadFile profileImage;
     private UploadFile uploadFile;
 
 
     @Builder
-    public MemberCreateServiceRequest(Long id, String email, String password, List<InterestRequest> interestRequests, UploadFile uploadFile) {
+    public MemberCreateServiceRequest(String email, String password, String nickname, String gender, List<InterestRequest> interestRequests, String birthDate, List<InterestRequest> interests, UploadFile profileImage, UploadFile uploadFile) {
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
+        this.gender = gender;
         this.interestRequests = interestRequests;
+        this.birthDate = birthDate;
+        this.interests = interests;
+        this.profileImage = profileImage;
         this.uploadFile = uploadFile;
     }
 
-    public Member toEntity(){
+    public Member toEntity(String password){
         return Member.builder()
                 .email(email)
                 .password(password)
+                .gender(gender)
+                .birthDate(birthDate)
+                .nickname(nickname)
                 .build();
     }
 }

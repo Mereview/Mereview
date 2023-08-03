@@ -1,8 +1,12 @@
 package com.ssafy.mereview.api.service.member;
 
+import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.api.service.review.ReviewQueryService;
+import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
@@ -13,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
@@ -45,17 +51,16 @@ public class MemberService {
 
     private final GenreRepository genreRepository;
 
-    public Long createMember(MemberCreateServiceRequest request) {
+    private final ReviewQueryService reviewQueryService;
 
+    public Long createMember(MemberCreateServiceRequest request) {
         Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
         if (existingMember != null) {
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
+        log.debug("request check = {}" + request);
 
-        Member member = Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+        Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
         log.debug("member = " + member.getEmail());
 
         Member savedMember = memberRepository.save(member);
@@ -67,17 +72,27 @@ public class MemberService {
         createVisitCount(member);
 
         //회원 관심사 초기화
-        createInterest(request, member);
+        createInterests(request.getInterestRequests(), member);
 
         //회원 티어 초기화
         createTier(member);
         createAchievement(member);
 
         return savedMember.getId();
-
     }
 
+    public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        log.debug("member = " + member.getEmail());
 
+        List<InterestRequest> interestRequests = request.getInterestRequests();
+        log.debug("interestRequests = " + interestRequests);
+
+        member.update(request, createInterests(interestRequests, member));
+        log.debug("member = " + member.getEmail());
+
+        return member.getId();
+    }
 
     public MemberLoginResponse login(MemberLoginRequest request) {
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
@@ -88,17 +103,7 @@ public class MemberService {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        return getMemberLoginResponse(searchMember);
-
-    }
-
-    private MemberLoginResponse getMemberLoginResponse(Member searchMember) {
-        Map<String, String> token = jwtUtils.generateJwt(searchMember);
-
-        return MemberLoginResponse.builder()
-                .memberResponse(searchMemberInfo(searchMember.getId()))
-                .token(token)
-                .build();
+        return searchMemberLoginResponse(searchMember);
     }
 
     public MemberResponse searchMemberInfo(Long id) {
@@ -110,6 +115,9 @@ public class MemberService {
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
 
+        log.debug("Member Profile Image : {}", member.getProfileImage());
+
+
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
     }
 
@@ -119,8 +127,7 @@ public class MemberService {
         member.getMemberVisit().updateVisitCount();
     }
 
-
-    public void follow(Long targetId, Long currentUserId) {
+    public void createFollow(Long targetId, Long currentUserId) {
         //팔로우 할 유저
         Member target = memberRepository.findById(targetId)
                 .orElseThrow(() -> new IllegalArgumentException("Follower not found!"));
@@ -130,32 +137,40 @@ public class MemberService {
 
         //팔로워가 현재 유저인 타겟(내가 팔로우하는 타겟)이 존재할 경우
         if (currentMember.getFollowing().contains(target)) {
-            currentMember.getFollowing().remove(target);
-            target.getFollowers().remove(currentMember);
+            unfollow(target, currentMember);
         }
         else {
-        currentMember.getFollowing().add(target);
-        target.getFollowers().add(currentMember);
+            follow(target, currentMember);
         }
-        memberRepository.save(currentMember);
-        memberRepository.save(target);
     }
 
-
+    public void updatePorfileImage(Long memberId, UploadFile uploadFile) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+        member.updateProfileImage(uploadFile);
+    }
     //***************private method*****************//
 
     private void createVisitCount(Member member) {
         MemberVisitCount memberVisitCount = MemberVisitCount.builder()
                 .member(member)
                 .build();
-
         memberVisitCountRepository.save(memberVisitCount);
     }
 
-    private void createInterest(MemberCreateServiceRequest dto, Member member) {
-        List<Interest> interests = new ArrayList<>();
+    private MemberLoginResponse searchMemberLoginResponse(Member searchMember) {
+        Map<String, String> token = jwtUtils.generateJwt(searchMember);
 
-        dto.getInterestRequests().stream().map(interestRequest ->
+        return MemberLoginResponse.builder()
+                .memberResponse(searchMemberInfo(searchMember.getId()))
+                .token(token)
+                .build();
+    }
+
+    private List<Interest> createInterests(List<InterestRequest> requests, Member member) {
+        List<Interest> interests = new ArrayList<>();
+        //TODO:genre 없을 경우 exception 터뜨려야함
+
+        requests.stream().map(interestRequest ->
                         genreRepository.findById(interestRequest.getGenreId()).orElseThrow(NoSuchElementException::new))
                 .map(genre -> Interest.builder()
                         .member(member)
@@ -165,6 +180,7 @@ public class MemberService {
         log.debug("interests = " + interests.size());
 
         memberInterestRepository.saveAll(interests);
+        return interests;
     }
 
     private void createTier(Member member) {
@@ -199,6 +215,7 @@ public class MemberService {
                 .interests(interestResponses)
                 .achievements(memberAchievementResponses)
                 .tiers(memberTierResponses)
+                .profileImage(member.getProfileImage().of())
                 .build();
     }
 
@@ -227,5 +244,15 @@ public class MemberService {
                 .member(Member.builder().id(saveId).build())
                 .uploadFile(request.getUploadFile())
                 .build();
+    }
+
+    private void follow(Member target, Member currentMember) {
+        currentMember.getFollowing().add(target);
+        target.getFollowers().add(currentMember);
+    }
+
+    private void unfollow(Member target, Member currentMember) {
+        currentMember.getFollowing().remove(target);
+        target.getFollowers().remove(currentMember);
     }
 }
