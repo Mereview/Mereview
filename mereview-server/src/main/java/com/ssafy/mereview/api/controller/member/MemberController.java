@@ -40,7 +40,7 @@ public class MemberController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        MemberCreateServiceRequest saveMemberServiceRequest = request.toMemberCreateServiceRequest();
+        MemberCreateServiceRequest saveMemberServiceRequest = request.toMemberCreateServiceRequest(uploadFile);
         log.debug("MemberRegisterRequest : {}", request);
 
         Long memberId = memberService.createMember(saveMemberServiceRequest);
@@ -77,7 +77,7 @@ public class MemberController {
                                                 @RequestPart(name = "memberId") Long memberId) throws IOException {
         log.debug("MemberController.updateProfilePic : {}", memberId);
         UploadFile uploadFile = createUploadFile(file);
-        memberService.updateProfilePic(memberId, uploadFile);
+        memberService.updatePorfileImage(memberId, uploadFile);
         return ApiResponse.ok("프로필 사진 업데이트 성공");
     }
 
