@@ -1,7 +1,7 @@
 import Slider from "@mui/material/Slider";
 import React from "react";
 import { useState, forwardRef, useImperativeHandle } from "react";
-import Input from "./Input";
+import Input from "../common/Input";
 import { Row, Col } from "react-bootstrap";
 import { Connect } from "react-redux";
 

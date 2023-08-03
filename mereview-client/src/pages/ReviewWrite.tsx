@@ -3,7 +3,8 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback } from "react";
 import "../styles/css/ReviewWrite.css";
-import KeywordSlider from "../components/common/KeywordSlider";
+import KeywordSlider from "../components/reviewWrite/KeywordSlider";
+import TextEditor from "../components/reviewWrite/TextEditor";
 const ReviewWrite = () => {
   const nickname = "닉네임";
   const profile = "/logo2.png";
@@ -13,6 +14,8 @@ const ReviewWrite = () => {
   const [movieName, setMovieName] = useState<string | null>("");
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [feedback, setFeedback] = useState<number | null>(0);
+  const [badBtn, setBadBtn] = useState<boolean | null>(false);
+  const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
   const childRef1 = useRef(null);
   const childRef2 = useRef(null);
   const childRef3 = useRef(null);
@@ -65,7 +68,14 @@ const ReviewWrite = () => {
     maxFiles: 1,
   });
   const feedbackHandler = (e) => {
-    console.log(e.target.value);
+    if (e.target.id === "badBtn") {
+      setBadBtn(true);
+      setGoodBtn(false);
+    } else {
+      setBadBtn(false);
+      setGoodBtn(true);
+    }
+    // console.log(goodBtn + " " + badBtn);
     setFeedback(e.target.Value);
   };
   return (
@@ -135,10 +145,10 @@ const ReviewWrite = () => {
       </Row>
       <Row className="mx-4">
         <Col md={6}>
-          <textarea
-            className="border rounded-2 border-5 i-box form-control"
-            style={{ resize: "none" }}
-          ></textarea>
+          <TextEditor
+          // className="border rounded-2 border-5 i-box form-control"
+          // style={{ resize: "none" }}
+          ></TextEditor>
         </Col>
         <Col md={2} />
         <Col
@@ -156,25 +166,23 @@ const ReviewWrite = () => {
         <Col lg={8} />
         <Col lg={2}>
           <button
-            className="bg-danger"
+            id="badBtn"
+            className="bg-danger feed-btn mx-1 my-1"
             style={{
               backgroundImage: "url(/thumbDown.png)",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              height: "35px",
-              width: "35px",
+              boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+              transform: badBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
             value={-1}
           ></button>
           <button
-            className="bg-primary"
+            id="goodBtn"
+            className="bg-primary feed-btn mx-1 my-1"
             style={{
               backgroundImage: "url(/thumbUp.png)",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              height: "35px",
-              width: "35px",
+              boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+              transform: goodBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
             value={1}
@@ -183,11 +191,11 @@ const ReviewWrite = () => {
         <Col>
           <Button
             styles="btn-primary"
-            // onClick={handleBtnClick}
-            onClick={() => {
-              console.log(feedback);
-            }}
-            text="확인"
+            onClick={handleBtnClick}
+            // onClick={() => {
+            //   console.log(goodBtn + " " + badBtn);
+            // }}
+            text="등록"
           ></Button>
         </Col>
       </Row>
