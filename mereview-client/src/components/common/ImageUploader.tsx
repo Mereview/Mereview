@@ -12,7 +12,7 @@ function ImageUploader() {
     if (file) {
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
-      dispatch(userActions.signUp_step2(objectURL));
+      dispatch(userActions.signUp_step2(file));
     }
     console.log(file);
   }, []);

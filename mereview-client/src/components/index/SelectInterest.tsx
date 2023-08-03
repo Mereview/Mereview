@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
 import { SignUpInterface } from "../interface/UserInterface";
 import { postSignUp } from "../../api/user";
+import axios from "axios";
 interface GenreInfo {
   [id: string]: [string, string];
 }
@@ -33,6 +34,7 @@ const SelectInterest = () => {
         return [...prevInterest, { genreId, genreName }];
       }
     });
+    dispatch(userActions.signUp_step3(interest));
   };
   const goBack = () => {
     dispatch(userActions.modal_toggler());
@@ -40,7 +42,6 @@ const SelectInterest = () => {
   const data = useSelector((state: any) => state.user.signUpData);
 
   const signUp_step3 = () => {
-    dispatch(userActions.signUp_step3(interest));
     postSignUp(data);
     dispatch(userActions.modal_toggler());
   };

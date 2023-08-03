@@ -9,6 +9,10 @@ export interface SearchBoxInterface {
   setSearchParam: React.Dispatch<React.SetStateAction<string>>;
   searchCriteria: string;
   setSearchCriteria: React.Dispatch<React.SetStateAction<string>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onlyInterest: boolean;
   setOnlyInterest: React.Dispatch<React.SetStateAction<boolean>>;
+  emptySearchParam: boolean;
+  setEmptySearchParam: React.Dispatch<React.SetStateAction<boolean>>;
 }
