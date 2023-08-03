@@ -228,7 +228,9 @@ const ReviewHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [searchParam, setSearchParam] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
+  const [searchTerm, setSearchTerm] = useState<string>("all");
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
+  const [emptySearchParam, setEmptySearchParam] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -252,9 +254,11 @@ const ReviewHome = () => {
           : recommendDescend
           ? "DESC"
           : "ASC"
+      }, 조회기간: ${
+        searchTerm === "" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
-  }, [sortBy, dateDescend, recommendDescend, onlyInterest]);
+  }, [sortBy, dateDescend, recommendDescend, searchTerm, onlyInterest]);
 
   const searchBoxProps: SearchBoxInterface = {
     sortBy: sortBy,
@@ -267,14 +271,24 @@ const ReviewHome = () => {
     setSearchParam: setSearchParam,
     searchCriteria: searchCriteria,
     setSearchCriteria: setSearchCriteria,
+    searchTerm: searchTerm,
+    setSearchTerm: setSearchTerm,
     onlyInterest: onlyInterest,
     setOnlyInterest: setOnlyInterest,
+    emptySearchParam: emptySearchParam,
+    setEmptySearchParam: setEmptySearchParam,
   };
 
   const searchSubmit = () => {
     // Review 검색, reviewList 초기화
     // 정렬 기준 초기화 (최신순 내림차순 관심장르 false)
-    console.log(`search!! criteria: ${searchCriteria}, param: ${searchParam}`);
+    if (searchParam === "") {
+      setEmptySearchParam(true);
+    } else {
+      console.log(
+        `search!! criteria: ${searchCriteria}, param: ${searchParam}`
+      );
+    }
   };
 
   // SearchBox => Enter키 연결, 아이콘 추가
