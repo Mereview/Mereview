@@ -72,7 +72,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
             movieTitle={movie.movieTitle}
             releaseYear={movie.releaseYear}
             movieGenre={movie.movieGenre}
-            onClickPoster={movie.onClickPoster}
+            movieCardClickHandler={movie.movieCardClickHandler}
           />
         ))}
       </div>
