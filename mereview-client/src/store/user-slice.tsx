@@ -4,7 +4,7 @@ import {
   UserInterface,
 } from "../components/interface/UserInterface";
 const initialState: UserInterface = {
-  isAthenticated: true,
+  isAthenticated: false,
   thirdModal: false,
   token: "",
   email: "",
@@ -23,18 +23,21 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login(state, payload) {
+    authorization(state, action) {
+      console.log(action.payload);
       state.isAthenticated = true;
-      // state.email = payload
-      // state.profileURL = payload
-      // state.gender = payload
-      // state.birth = 'a'
+      state.token = action.payload.accessToken;
+      state.email = action.payload.email;
+      state.nickname = action.payload.nickname;
+      localStorage.setItem("token", action.payload.accessToken);
+      console.log("로그인성공");
     },
     logout(state) {
       state.isAthenticated = false;
       state.token = "";
       state.email = "";
       state.nickname = "";
+      localStorage.removeItem("token");
     },
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;

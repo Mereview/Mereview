@@ -1,18 +1,24 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Input, Button } from "../common/index";
-import { useState, useEffect } from "react";
-import ImageUploader from "../common/ImageUploader";
+import { useEffect } from "react";
 import SelectInterest from "./SelectInterest";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { InputDataInterface } from "../interface/UserInterface";
-import { postSignUp } from "../../api/user";
 import "../../styles/css/SignUp.css";
+import "../../styles/css/ImageUploader.css";
+import { useDropzone } from "react-dropzone";
+import { useCallback, useState } from "react";
+
 const SignUp = () => {
+  const formData = new FormData();
+
   const [animate, setAnimate] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>("");
   const [checkEmail, setCheckEmail] = useState(false);
   const [checking, setChecking] = useState(false); // 선택된 성별을 상태로 관리합니다.
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [fileData, setFileData] = useState<FormData | null>(null);
   const [inputData, setInputData] = useState<InputDataInterface>({
     email: null,
     password: null,
@@ -24,7 +30,7 @@ const SignUp = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   useEffect(() => {
     setAnimate(true);
-  }, []);
+  }, [fileData]);
   const dispatch = useDispatch();
   // 초기 상태로서 빈 문자열 또는 null로 초기화합니다.
   const valid = useSelector((state: any) => state.user.thirdModal);
@@ -58,6 +64,8 @@ const SignUp = () => {
     dispatch(userActions.modal_toggler());
     dispatch(userActions.signUp_step1(inputData));
   };
+
+  //이메일 인증 핸들러
   const emailCheckHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id;
     if (id === "step1" && inputData.email) {
@@ -72,6 +80,26 @@ const SignUp = () => {
       setChecking(false);
     }
   };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
+      setSelectedImage(objectURL);
+      formData.append("file", file);
+    }
+  }, []);
+  console.log(fileData);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+    },
+    maxFiles: 1,
+  });
+
   return (
     <Container
       className={`maincpnt ${animate ? "animate" : ""}`}
@@ -79,7 +107,36 @@ const SignUp = () => {
     >
       <Row>
         <Col>
-          <ImageUploader />
+          <div className="fileUpload ">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                style={{
+                  width: "12rem",
+                  height: "12rem",
+                  borderRadius: "9999px",
+                  border: "1px solid black",
+                }}
+              />
+            ) : (
+              <img
+                src={"/testProfile.gif"}
+                alt="defaulImg"
+                style={{
+                  width: "12rem",
+                  height: "12rem",
+                  borderRadius: "9999px",
+                  border: "1px solid black",
+                  backgroundColor: "gray",
+                }}
+              />
+            )}
+            <div className="inputBox" {...getRootProps()}>
+              <input {...getInputProps()} />
+              <p>여기에 이미지를 끌어다 놓거나 클릭하여 이미지를 선택하세요.</p>
+            </div>
+          </div>
         </Col>
         <Col>
           <form onSubmit={signUp_step1}>
@@ -225,7 +282,7 @@ const SignUp = () => {
           </form>
         </Col>
       </Row>
-      {valid ? <SelectInterest /> : null}
+      {valid ? <SelectInterest step1={inputData} step2={fileData} /> : null}
     </Container>
   );
 };

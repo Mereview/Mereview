@@ -4,13 +4,16 @@ import Row from "react-bootstrap/Row";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
-import { login } from "../../api/user";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const LoginForm = () => {
   const [animate, setAnimate] = useState<boolean>(false);
   useEffect(() => {
     setAnimate(true);
   }, []);
   const dispatch = useDispatch();
+  const history = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -35,7 +38,19 @@ const LoginForm = () => {
       alert("아이디와 비밀번호를 확인해주세요!");
       return;
     }
-    login(userData);
+    const loginURL = "http://localhost:8080/members/login";
+    axios
+      .post(loginURL, userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.data.data)
+      .then((data) => {
+        dispatch(userActions.authorization(data));
+        history("/review");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
