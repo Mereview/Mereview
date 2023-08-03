@@ -33,4 +33,11 @@ public class ProfileImage extends BaseEntity {
         this.uploadFile = uploadFile;
         this.member = member;
     }
+
+    public void update(UploadFile uploadFile){
+        this.uploadFile = uploadFile;
+
+    }
+
+
 }
