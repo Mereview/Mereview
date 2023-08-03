@@ -10,14 +10,14 @@ const MovieCard = (props: MovieCardInterface) => {
     movieTitle,
     releaseYear,
     movieGenre,
-    onClickPoster,
+    movieCardClickHandler,
   } = props;
 
   const genres: string = movieGenre.join(". ");
 
   return (
     <>
-      <div className="movie-card">
+      <div className="movie-card" onClick={movieCardClickHandler}>
         <div className="poster-image">
           <img src={posterImagePath} alt={movieTitle} />
         </div>

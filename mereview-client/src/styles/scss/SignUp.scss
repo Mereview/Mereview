@@ -1,0 +1,17 @@
+@import "Style";
+
+.email {
+  position: relative;
+  padding: 0px;
+  .code {
+    position: absolute;
+    padding: 0px;
+    bottom: 100%;
+    width: 320px;
+  }
+  .identify {
+    position: absolute;
+    top: 18%;
+    right: 0;
+  }
+}

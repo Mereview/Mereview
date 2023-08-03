@@ -8,6 +8,11 @@
   margin-top: 10px;
   margin-left: 5px;
   margin-right: 5px;
+  margin-bottom: 10px;
+
+  &:hover {
+    box-shadow: 5px 5px;
+  }
 
   .poster-image {
     height: 380px;

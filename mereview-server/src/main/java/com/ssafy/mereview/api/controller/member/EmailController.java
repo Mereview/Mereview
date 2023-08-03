@@ -35,7 +35,6 @@ public class EmailController {
         if(!checkEmail){
             throw new IllegalArgumentException("잘못된 코드를 입력하였습니다.");
         }
-
         return ApiResponse.ok("이메일 인증이 완료되었습니다.");
     }
 }

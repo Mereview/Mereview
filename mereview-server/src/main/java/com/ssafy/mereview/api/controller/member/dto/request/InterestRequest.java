@@ -17,7 +17,6 @@ public class InterestRequest {
 
     private boolean isUsing;
 
-
     @Builder
     public InterestRequest(Long genreId, String genreName, boolean isUsing) {
         this.genreId = genreId;

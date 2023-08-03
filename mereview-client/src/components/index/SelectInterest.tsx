@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
 import { SignUpInterface } from "../interface/UserInterface";
+import { postSignUp } from "../../api/user";
 interface GenreInfo {
   [id: string]: [string, string];
 }
@@ -36,11 +37,13 @@ const SelectInterest = () => {
   const goBack = () => {
     dispatch(userActions.modal_toggler());
   };
+  const data = useSelector((state: any) => state.user.signUpData);
+
   const signUp_step3 = () => {
     dispatch(userActions.signUp_step3(interest));
+    postSignUp(data);
     dispatch(userActions.modal_toggler());
   };
-
   const genre: GenreInfo = {
     "12": ["모험", "/interest/adventure"],
     "14": ["판타지", "/interest/fantasy"],

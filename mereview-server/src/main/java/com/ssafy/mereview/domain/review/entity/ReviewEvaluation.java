@@ -1,6 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.api.service.review.dto.response.ReviewLikeResponse;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewEvaluationResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
@@ -16,14 +16,14 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class ReviewLike extends BaseEntity {
+public class ReviewEvaluation extends BaseEntity {
     @Id
-    @Column(name = "review_like_id")
+    @Column(name = "review_evaluation_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    ReviewLikeType type;
+    ReviewEvaluationType type;
 
     @ManyToOne(fetch = LAZY)
     private Review review;
@@ -32,17 +32,17 @@ public class ReviewLike extends BaseEntity {
     private Member member;
 
     @Builder
-    private ReviewLike(Long id, ReviewLikeType type, Review review, Member member) {
+    private ReviewEvaluation(Long id, ReviewEvaluationType type, Review review, Member member) {
         this.id = id;
         this.type = type;
         this.review = review;
         this.member = member;
     }
 
-    public ReviewLikeResponse of() {
-        return ReviewLikeResponse.builder()
-                .reviewLikeId(id)
-                .reviewLikeType(type)
+    public ReviewEvaluationResponse of() {
+        return ReviewEvaluationResponse.builder()
+                .reviewEvaluationId(id)
+                .reviewEvaluationType(type)
                 .build();
     }
 }
