@@ -1,6 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
-import com.ssafy.mereview.api.service.review.dto.request.ReviewEvaluationCreateServiceRequest;
+import com.ssafy.mereview.api.service.review.dto.request.ReviewEvaluationServiceRequest;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
 import com.ssafy.mereview.domain.review.repository.ReviewEvaluationRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class ReviewEvaluationService {
 
     private final ReviewEvaluationRepository reviewEvaluationRepository;
 
-    public Long createReviewEvaluation(ReviewEvaluationCreateServiceRequest request) {
+    public Long createReviewEvaluation(ReviewEvaluationServiceRequest request) {
         return reviewEvaluationRepository.save(request.toEntity()).getId();
     }
 

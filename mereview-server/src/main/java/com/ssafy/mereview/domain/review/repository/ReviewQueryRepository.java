@@ -2,9 +2,13 @@ package com.ssafy.mereview.domain.review.repository;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.review.entity.Review;
+import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +22,7 @@ import java.util.List;
 import static com.ssafy.mereview.domain.member.entity.QMember.member;
 import static com.ssafy.mereview.domain.movie.entity.QMovie.movie;
 import static com.ssafy.mereview.domain.review.entity.QReview.review;
+import static com.ssafy.mereview.domain.review.entity.QReviewEvaluation.reviewEvaluation;
 import static org.springframework.util.StringUtils.hasText;
 
 @RequiredArgsConstructor
@@ -53,6 +58,17 @@ public class ReviewQueryRepository {
                 .fetch();
 
     }
+
+//    // 사용 여부 미정 메소드
+//    private int getReviewEvaluationCount(NumberPath<Long> reviewId, ReviewEvaluationType type) {
+//        return queryFactory
+//                .select(reviewEvaluation.count())
+//                .from(reviewEvaluation)
+//                .where(
+//                        reviewEvaluation.review.id.eq(reviewId),
+//                        reviewEvaluation.type.eq(type)
+//                ).fetchFirst().intValue();
+//    }
 
     public int getTotalPages(SearchCondition condition) {
         return queryFactory
@@ -104,8 +120,10 @@ public class ReviewQueryRepository {
     private OrderSpecifier<?> sortByField(String filedName) {
         Order order = Order.DESC;
 
-        if (filedName.equals("hits")) {
-            return new OrderSpecifier<>(order, review.hits);
+        if (hasText(filedName)) {
+            if (filedName.equals("hits")) {
+                return new OrderSpecifier<>(order, review.hits);
+            }
         }
         return new OrderSpecifier<>(order, review.createdTime);
     }

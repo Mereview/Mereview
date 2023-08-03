@@ -1,6 +1,6 @@
 package com.ssafy.mereview.api.controller.review;
 
-import com.ssafy.mereview.api.controller.review.dto.CommentLikeRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.CommentLikeRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.*;
 import com.ssafy.mereview.api.service.review.*;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
@@ -55,15 +55,16 @@ public class ReviewController {
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
+            @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String term,
             @RequestParam(defaultValue = "1") Integer pageNumber
     ) {
-        SearchCondition condition = createCondition(title, content, term);
+        SearchCondition condition = createCondition(title, content, term, orderBy);
 
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
-        int pages = reviewQueryService.calculatePages(condition);
-        PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pages);
+        int pageCount = reviewQueryService.calculatePageCount(condition);
+        PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pageCount);
 
         return ApiResponse.ok(pageResponse);
     }
@@ -100,7 +101,8 @@ public class ReviewController {
     }
 
     @PutMapping("/comments/{commentId}")
-    public ApiResponse<Long> updateReviewComment(@PathVariable Long commentId, @Valid @RequestBody CommentUpdateRequest request) {
+    public ApiResponse<Long> updateReviewComment(@PathVariable Long commentId,
+                                                 @Valid @RequestBody CommentUpdateRequest request) {
         Long updateId = commentService.update(commentId, request.toServiceRequest());
         return ApiResponse.ok(updateId);
     }
@@ -112,7 +114,7 @@ public class ReviewController {
     }
 
     @PostMapping("/evaluations")
-    public ApiResponse<Long> createReviewEvaluation(@Valid @RequestBody ReviewEvaluationCreateRequest request) {
+    public ApiResponse<Long> createReviewEvaluation(@Valid @RequestBody ReviewEvaluationRequest request) {
         Long saveId = reviewEvaluationService.createReviewEvaluation(request.toServiceRequest());
         return ApiResponse.ok(saveId);
     }
@@ -144,11 +146,12 @@ public class ReviewController {
         return uploadFile;
     }
 
-    private static SearchCondition createCondition(String title, String content, String term) {
+    private static SearchCondition createCondition(String title, String content, String term, String orderBy) {
         return SearchCondition.builder()
                 .title(title)
                 .content(content)
                 .term(term)
+                .orderBy(orderBy)
                 .build();
     }
 }

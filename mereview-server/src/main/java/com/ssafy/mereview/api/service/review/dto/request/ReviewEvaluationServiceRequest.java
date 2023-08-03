@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ReviewEvaluationCreateServiceRequest {
+public class ReviewEvaluationServiceRequest {
 
     private Long reviewId;
     private Long memberId;
     private ReviewEvaluationType type;
 
     @Builder
-    public ReviewEvaluationCreateServiceRequest(Long reviewId, Long memberId, ReviewEvaluationType type) {
+    public ReviewEvaluationServiceRequest(Long reviewId, Long memberId, ReviewEvaluationType type) {
         this.reviewId = reviewId;
         this.memberId = memberId;
         this.type = type;

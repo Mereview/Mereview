@@ -6,6 +6,7 @@ import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -26,9 +27,11 @@ public class ReviewEvaluation extends BaseEntity {
     ReviewEvaluationType type;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
     private Review review;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
