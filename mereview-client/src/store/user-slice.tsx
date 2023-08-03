@@ -13,7 +13,7 @@ const initialState: UserInterface = {
     email: "",
     password: "",
     nickname: "",
-    birth_date: "",
+    birthDate: "",
     gender: "",
     file: "",
     interest: [{}],
@@ -44,7 +44,7 @@ const userSlice = createSlice({
       state.signUpData.email = action.payload.email;
       state.signUpData.password = action.payload.password;
       state.signUpData.nickname = action.payload.nickname;
-      state.signUpData.birth_date = action.payload.birth_date;
+      state.signUpData.birthDate = action.payload.birthDate;
       state.signUpData.gender = action.payload.gender;
     },
     signUp_step2(state, action) {
