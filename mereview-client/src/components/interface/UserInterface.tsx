@@ -10,13 +10,13 @@ export interface UserInterface {
 export interface InputDataInterface {
   email: null | string;
   password: null | string;
-  password2: null | string;
+  password2?: null | string;
   nickname: null | string;
-  birth: null | string;
+  birth_date: null | string;
   gender: null | string;
 }
 export interface SignUpInterface extends InputDataInterface {
-  profileURL: string | null;
+  file: string | null;
   interest: [
     {
       [genreId: string]: [genreName: string];

@@ -5,17 +5,20 @@ import ImageUploader from "../common/ImageUploader";
 import SelectInterest from "./SelectInterest";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-slice";
-import { InputDataInterface, UserInterface } from "../interface/UserInterface";
-import RootState from "../../store/store";
+import { InputDataInterface } from "../interface/UserInterface";
+import { postSignUp } from "../../api/user";
+import "../../styles/css/SignUp.css";
 const SignUp = () => {
   const [animate, setAnimate] = useState(false);
-  const [selectedGender, setSelectedGender] = useState<string>(""); // 선택된 성별을 상태로 관리합니다.
+  const [selectedGender, setSelectedGender] = useState<string>("");
+  const [checkEmail, setCheckEmail] = useState(false);
+  const [checking, setChecking] = useState(false); // 선택된 성별을 상태로 관리합니다.
   const [inputData, setInputData] = useState<InputDataInterface>({
     email: null,
     password: null,
     password2: null,
     nickname: null,
-    birth: null,
+    birth_date: null,
     gender: null,
   });
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
@@ -55,10 +58,21 @@ const SignUp = () => {
     dispatch(userActions.modal_toggler());
     dispatch(userActions.signUp_step1(inputData));
   };
+  const emailCheckHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const id = event.currentTarget.id;
+    if (id === "step1") {
+      // axios 로 사용자에게 메일보내는 로직
+      setChecking(true);
+    } else if (id === "step2") {
+      // 인증메일 핀과 일치하는지 검토하는 로직
+      setCheckEmail(true);
+      setChecking(false);
+    }
+  };
   return (
     <Container
       className={`maincpnt ${animate ? "animate" : ""}`}
-      style={{ width: "40rem" }}
+      style={{ width: "40rem", marginRight: "280px", marginTop: "80px" }}
     >
       <Row>
         <Col>
@@ -67,18 +81,56 @@ const SignUp = () => {
         <Col>
           <form onSubmit={signUp_step1}>
             <Row>
-              <div className="form-floating mb-3 p-0 mx-auto">
-                <Input
-                  id="email"
-                  styles="input-line form-control bg-transparent text-black"
-                  placeholder="Email"
-                  onChange={onChange}
-                />
-                <label className="fw-bold" htmlFor="email">
-                  Email
-                </label>
+              <div className="email">
+                {checking && (
+                  <div className="code">
+                    <div className="form-floating mb-3 p-0 mx-auto">
+                      <Input
+                        id="code"
+                        styles="input-line form-control bg-transparent text-black"
+                        placeholder="Code"
+                        onChange={onChange}
+                      />
+                      <label className="fw-bold" htmlFor="email">
+                        Code
+                      </label>
+                    </div>
+                    <button
+                      id="step2"
+                      className="identify"
+                      type="button"
+                      onClick={emailCheckHandler}
+                    >
+                      확인하기
+                    </button>
+                  </div>
+                )}
+                <div className="form-floating mb-3 p-0 mx-auto">
+                  <Input
+                    id="email"
+                    styles="input-line form-control bg-transparent text-black"
+                    placeholder="Email"
+                    onChange={onChange}
+                    disabled={checkEmail}
+                  />
+                  <label className="fw-bold" htmlFor="email">
+                    Email
+                  </label>
+                </div>
+                {checkEmail ? (
+                  <img className="identify" src="/check.png" alt="" />
+                ) : (
+                  <button
+                    id="step1"
+                    className="identify"
+                    type="button"
+                    onClick={emailCheckHandler}
+                    disabled={checking}
+                  >
+                    메일인증
+                  </button>
+                )}
               </div>
-
               <div className="form-floating mb-3 p-0 mx-auto">
                 <Input
                   id="password"
@@ -122,7 +174,7 @@ const SignUp = () => {
               </div>
               <div className="form-floating mb-3 p-0 mx-auto">
                 <Input
-                  id="birth"
+                  id="birth_date"
                   styles="input-line form-control bg-transparent text-black"
                   placeholder="생년월일을 입력해주세요."
                   onChange={onChange}

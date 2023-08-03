@@ -1,14 +1,55 @@
 @import "Style";
 
-.search-box {
-  max-width: 300px;
-  min-width: 200px;
-  margin-left: 20px;
-  font-family: $NanumGothic;
-  font-size: $font-size-xs;
+.search-form {
+  $form-size: 34.25px;
+
+  .search-container {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .criteria-select {
+      font-family: $NanumGothic;
+      width: 95px;
+      border-radius: 0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    .search-keyword {
+      height: $form-size;
+
+      .MuiInputBase-root {
+        height: $form-size;
+        border-radius: 0;
+      }
+
+      .MuiInputBase-root.MuiInputBase-input {
+        font-family: $NanumGothic;
+      }
+    }
+
+    .search-button {
+      width: $form-size;
+      height: $form-size;
+      background-color: $gray-1;
+      border: 1px solid $gray-5;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+
+      &:hover {
+        background-color: $gray-3;
+      }
+
+      .search-icon {
+        margin-bottom: 3px;
+      }
+    }
+  }
 }
 
-.sort-buttons {
+.sort-container {
   margin-top: 5px;
   margin-left: 25px;
 
@@ -31,6 +72,16 @@
         height: $icon-size;
         margin-right: 2px;
       }
+    }
+  }
+
+  .only-interest-switch {
+    margin-left: 10px;
+
+    .MuiTypography-root {
+      font-family: $BMDoHyeon;
+      font-size: $font-size-sm;
+      margin-top: 2px;
     }
   }
 }

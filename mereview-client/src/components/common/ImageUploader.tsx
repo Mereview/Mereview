@@ -14,6 +14,7 @@ function ImageUploader() {
       setSelectedImage(objectURL);
       dispatch(userActions.signUp_step2(objectURL));
     }
+    console.log(file);
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -25,7 +26,7 @@ function ImageUploader() {
   });
 
   return (
-    <div className="fileUpload d-flex align-items-center">
+    <div className="fileUpload ">
       {selectedImage ? (
         <img
           src={selectedImage}
