@@ -80,7 +80,7 @@ public class MemberService {
 
     public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        log.debug("member = " + member.getEmail());
+        log.debug("update request : {}", request);
 
         List<InterestRequest> interestRequests = request.getInterestRequests();
         log.debug("interestRequests = " + interestRequests);

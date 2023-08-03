@@ -103,7 +103,7 @@ public class Member extends BaseEntity {
 
     //update member
     public void update(MemberUpdateServiceRequest request, List<Interest> interests){
-        this.nickname = request.getNickname().equals("") ? request.getNickname() : this.nickname;
+        this.nickname = request.getNickname().equals("") ? this.nickname : request.getNickname();
         this.interests = interests;
     }
 
