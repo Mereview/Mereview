@@ -4,6 +4,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberUpdateRequest;
+import com.ssafy.mereview.api.service.member.MemberQueryService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
@@ -29,6 +30,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final MemberQueryService memberQueryService;
+
     private final FileStore fileStore;
 
     private final FileExtensionFilter fileExtFilter;
@@ -53,14 +56,14 @@ public class MemberController {
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
         log.debug("MemberLoginRequest : {}", request);
-        MemberLoginResponse memberLoginResponse = memberService.login(request);
+        MemberLoginResponse memberLoginResponse = memberQueryService.login(request);
         return ApiResponse.ok(memberLoginResponse);
     }
 
     @GetMapping("/{id}")
     public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId) {
         log.debug("MemberController.getMemberInfo : {}", memberId);
-        MemberResponse memberResponse = memberService.searchMemberInfo(memberId);
+        MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
         memberService.updateViewCount(memberId);
         return ApiResponse.ok(memberResponse);
     }

@@ -21,6 +21,15 @@ import static com.ssafy.mereview.domain.movie.entity.QGenre.genre;
 public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Member searchById(Long memberId) {
+        return queryFactory
+                .selectFrom(member)
+                .where(
+                        member.id.eq(memberId)
+                ).fetchOne();
+    }
     @Override
     public Member searchByEmail(String email) {
         return queryFactory

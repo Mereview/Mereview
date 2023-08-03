@@ -11,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface MemberQueryRepository {
+    Member searchById(Long memberId);
+
     public Member searchByEmail(String email);
 
     public List<Genre> searchAllGenre();
