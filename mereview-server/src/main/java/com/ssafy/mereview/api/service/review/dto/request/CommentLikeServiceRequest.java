@@ -1,4 +1,4 @@
-package com.ssafy.mereview.api.service.review.dto;
+package com.ssafy.mereview.api.service.review.dto.request;
 
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.review.entity.Comment;

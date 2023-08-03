@@ -1,6 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
-import com.ssafy.mereview.api.controller.review.dto.request.CommentUpdateServiceRequest;
+import com.ssafy.mereview.api.service.review.dto.request.CommentUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.CommentCreateServiceRequest;
 import com.ssafy.mereview.domain.review.entity.Comment;
 import com.ssafy.mereview.domain.review.repository.CommentRepository;
