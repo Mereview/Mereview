@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.member.entity;
 
+import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
@@ -102,11 +103,12 @@ public class Member extends BaseEntity {
 
     //update member
     public void update(MemberUpdateServiceRequest request, List<Interest> interests){
-        this.nickname = request.getNickname();
-        this.gender = request.getGender();
-        this.birthDate = request.getBirthDate();
+        this.nickname = request.getNickname().equals("") ? request.getNickname() : this.nickname;
         this.interests = interests;
     }
+
+
+
     //update profile image
     public void updateProfileImage(UploadFile uploadFile){
         if(this.profileImage == null){

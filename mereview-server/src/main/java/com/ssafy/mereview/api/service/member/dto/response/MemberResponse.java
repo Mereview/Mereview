@@ -24,7 +24,6 @@ public class MemberResponse {
     private List<ReviewResponse> reviews;
     private ProfileImageResponse profileImage;
 
-    private Map<String, String> token;
 
     @Builder
     public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, ProfileImageResponse profileImage, Map<String, String> token) {
@@ -39,6 +38,5 @@ public class MemberResponse {
         this.achievements = achievements;
         this.reviews = reviews;
         this.profileImage = profileImage;
-        this.token = token;
     }
 }

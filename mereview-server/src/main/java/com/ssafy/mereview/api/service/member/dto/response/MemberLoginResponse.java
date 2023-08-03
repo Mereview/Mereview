@@ -9,13 +9,27 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 public class MemberLoginResponse {
-    MemberResponse memberResponse;
+    private Long id;
 
-    Map<String, String> token;
+    private String email;
 
+    private ProfileImageResponse profileImage;
+
+    private String nickname;
+
+    private String role;
+
+    private String accessToken;
+
+    private String refreshToken;
     @Builder
-    public MemberLoginResponse(MemberResponse memberResponse, Map<String, String> token) {
-        this.memberResponse = memberResponse;
-        this.token = token;
+    public MemberLoginResponse(Long id, String email, ProfileImageResponse profileImage, String nickname, String role, String accessToken, String refreshToken) {
+        this.id = id;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.nickname = nickname;
+        this.role = role;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }
