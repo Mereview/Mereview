@@ -21,27 +21,34 @@ const ReviewWrite = () => {
   const childRef3 = useRef(null);
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
+  const contentRef = useRef(null);
   const handleBtnClick = () => {
     if (childRef1.current) {
       const valueFromChild1 = childRef1.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild1);
+      // console.log("Value from Child: ", valueFromChild1);
     }
     if (childRef2.current) {
       const valueFromChild2 = childRef2.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild2);
+      // console.log("Value from Child: ", valueFromChild2);
     }
     if (childRef3.current) {
       const valueFromChild3 = childRef3.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild3);
+      // console.log("Value from Child: ", valueFromChild3);
     }
     if (childRef4.current) {
       const valueFromChild4 = childRef4.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild4);
+      // console.log("Value from Child: ", valueFromChild4);
     }
     if (childRef5.current) {
       const valueFromChild5 = childRef5.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild5);
+      // console.log("Value from Child: ", valueFromChild5);
     }
+    if (contentRef.current) {
+      const valueFromContent = contentRef.current.getContent();
+      console.log(valueFromContent);
+      const images = new FormData();
+    }
+    // console.log(selectedImage);
   };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -146,8 +153,9 @@ const ReviewWrite = () => {
       <Row className="mx-4">
         <Col md={6}>
           <TextEditor
-          // className="border rounded-2 border-5 i-box form-control"
-          // style={{ resize: "none" }}
+            ref={contentRef}
+            // className="border rounded-2 border-5 i-box form-control"
+            // style={{ resize: "none" }}
           ></TextEditor>
         </Col>
         <Col md={2} />

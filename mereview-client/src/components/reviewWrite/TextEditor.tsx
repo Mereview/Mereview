@@ -1,51 +1,62 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+} from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const TextEditor = () => {
-  const [text, setText] = useState<string>(null);
-  const textHandler = (e) => {
-    setText(e.target.value);
+const TextEditor = forwardRef((props, ref) => {
+  const [content, setContent] = useState<string>(null);
+  const toolbarOptions = [["image"]];
+  const formats = ["image"];
+  const quillRef = useRef(null);
+  // const imageHandler = (file) => {
+  //   const input = document.createElement("input");
+  //   input.setAttribute("type", "file");
+  //   input.setAttribute("accept", "image/*");
+  //   input.click();
+  //   input.addEventListener("change", async () => {
+  //     const file = input.files[0];
+  //     const formData = new FormData();
+  //     formData.append("image", file);
+  //     const fileName = file.name;
+  //     console.log(formData.get("image"));
+  //     return formData.get("image").slice;
+  //   });
+  // };
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: toolbarOptions,
+        // handlers: {
+        //   image: imageHandler,
+        // },
+      },
+    };
+  }, []);
+  const getContent = () => {
+    return content;
   };
-  const CustomToolbar = () => (
-    <div id="toolbar">
-      <button className="ql-link"></button>
-      <button className="ql-image"></button>
-    </div>
-  );
-  const modules = {
-    toolbar: {
-      container: "#toolbar",
-    },
+  useImperativeHandle(ref, () => ({
+    getContent,
+  }));
+  const contentHandler = (value) => {
+    setContent(value);
   };
-
-  const formats = [
-    "header",
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "list",
-    "bullet",
-    "align",
-    "color",
-    "background",
-    "image",
-  ];
   return (
-    <div>
-      <div className="text-editor">
-        <CustomToolbar />
-        <ReactQuill
-          modules={modules}
-          formats={formats}
-          value={text}
-          onChange={textHandler}
-        />
-      </div>
-    </div>
+    <ReactQuill
+      ref={quillRef}
+      style={{ height: "100%", borderRadius: "5px", border: "black solid" }}
+      theme="snow"
+      value={content}
+      onChange={contentHandler}
+      modules={modules}
+      formats={formats}
+    />
   );
-};
+});
 
 export default TextEditor;
