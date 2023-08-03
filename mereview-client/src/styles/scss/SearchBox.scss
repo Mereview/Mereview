@@ -34,12 +34,17 @@
       width: $form-size;
       height: $form-size;
       background-color: $gray-1;
-      border: 1px solid $gray-5;
+      border: 1px solid $gray-4;
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
 
       &:hover {
         background-color: $gray-3;
+        border: 1px solid $black;
+      }
+
+      &:active {
+        border: 2px solid $blue-6;
       }
 
       .search-icon {
@@ -52,6 +57,7 @@
 .sort-container {
   margin-top: 5px;
   margin-left: 25px;
+  display: flex;
 
   .selected {
     text-decoration: underline;
@@ -73,6 +79,10 @@
         margin-right: 2px;
       }
     }
+  }
+
+  .term-select {
+    margin-left: 10px;
   }
 
   .only-interest-switch {

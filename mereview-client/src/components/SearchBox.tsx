@@ -5,12 +5,14 @@ import {
   SelectChangeEvent,
   TextField,
   FormControlLabel,
+  InputLabel,
+  NativeSelect,
   Switch,
 } from "@mui/material";
 import { BsSearch, BsSortDown, BsSortUpAlt } from "react-icons/bs";
 import { SearchBoxInterface } from "./interface/SearchBoxInterface";
 import "../styles/css/SearchBox.css";
-import { ChangeEvent } from "react";
+import { useEffect, useRef, ChangeEvent } from "react";
 
 const SearchBox = ({
   searchBoxProps,
@@ -30,9 +32,20 @@ const SearchBox = ({
     setSearchParam,
     searchCriteria,
     setSearchCriteria,
+    searchTerm,
+    setSearchTerm,
     onlyInterest,
     setOnlyInterest,
+    emptySearchParam,
+    setEmptySearchParam,
   } = searchBoxProps;
+  const paramRef = useRef(null);
+
+  useEffect(() => {
+    if (emptySearchParam) {
+      paramRef.current.focus();
+    }
+  }, [emptySearchParam]);
 
   const handleCriteria = (event: SelectChangeEvent) => {
     setSearchCriteria(event.target.value as string);
@@ -56,6 +69,10 @@ const SearchBox = ({
     setSearchParam(event.target.value as string);
   };
 
+  const handleSearchTerm = (event: SelectChangeEvent) => {
+    setSearchTerm(event.target.value as string);
+  };
+
   // const handleSortByRandom = () => {
   //   setSortBy("random");
   // }
@@ -76,9 +93,11 @@ const SearchBox = ({
             <MenuItem value="작성자">작성자</MenuItem>
           </Select>
           <TextField
+            inputRef={paramRef}
             id="search-keyword"
             className="search-keyword"
             onChange={handleSearchParam}
+            error={emptySearchParam && searchParam === ""}
           />
           <button
             type="submit"
@@ -108,6 +127,19 @@ const SearchBox = ({
           </span>
           추천순
         </button>
+        <span className="term-select">
+          <Select
+            id="term-select"
+            value={searchTerm}
+            onChange={handleSearchTerm}
+            sx={{ height: "34.25px" }}
+          >
+            <MenuItem value={"all"}>전체 기간</MenuItem>
+            <MenuItem value={1}>1개월</MenuItem>
+            <MenuItem value={6}>6개월</MenuItem>
+            <MenuItem value={12}>1년</MenuItem>
+          </Select>
+        </span>
         {/* <button onClick={() => handleSortByRandom()}>무작위</button> */}
         <FormControlLabel
           className="only-interest-switch"
