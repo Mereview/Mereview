@@ -50,6 +50,9 @@ public class MemberRegisterRequest {
         return MemberCreateServiceRequest.builder()
                 .email(email)
                 .password(password)
+                .nickname(nickname)
+                .gender(gender)
+                .birthDate(birthDate)
                 .uploadFile(profileImage)
                 .interestRequests(createInterestRequests())
                 .build();

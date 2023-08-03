@@ -60,10 +60,7 @@ public class MemberService {
         }
         log.debug("request check = {}" + request);
 
-        Member member = Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+        Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
         log.debug("member = " + member.getEmail());
 
         Member savedMember = memberRepository.save(member);
