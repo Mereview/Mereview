@@ -20,7 +20,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 
-@ToString
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity

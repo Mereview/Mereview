@@ -14,7 +14,6 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)

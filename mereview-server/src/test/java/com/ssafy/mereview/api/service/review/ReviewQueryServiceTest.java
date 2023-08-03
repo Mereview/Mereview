@@ -20,9 +20,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,13 +30,8 @@ import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;
 
-/**
- * 본 테스트코드는 참고하지 말 것
- * 새로 작성할 예정
- */
 @Slf4j
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-@Transactional
 @SpringBootTest
 class ReviewQueryServiceTest {
     @Autowired
@@ -170,7 +162,6 @@ class ReviewQueryServiceTest {
 
     @DisplayName("5. 모든 리뷰를 재밌어요 순으로 조회한다.")
     @Test
-    @Commit
     void searchReviewsOrderByFunCount() {
         // given
         SearchCondition condition = new SearchCondition("", "", "FUN", "");
@@ -187,9 +178,9 @@ class ReviewQueryServiceTest {
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight", "funCount")
                 .containsExactly(
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 1),
-                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
-                        tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0)
-                );
+                        tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0),
+                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
+                        );
 
     }
 

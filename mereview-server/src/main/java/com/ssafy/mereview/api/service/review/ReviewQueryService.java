@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
+import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingInt;
 
 @Slf4j
@@ -33,13 +34,10 @@ public class ReviewQueryService {
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
         List<Review> reviews = reviewQueryRepository.searchByCondition(condition, pageable);
         log.debug("reviews: {}", reviews);
-        List<ReviewResponse> responses = createReviewResponses(reviews);
 
-        if (condition.getOrderBy().equals("FUN")) {
-            responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
-        } else if (condition.getOrderBy().equals("USEFUL")) {
-            responses.sort(comparingInt(ReviewResponse::getUsefulCount).reversed());
-        }
+        List<ReviewResponse> responses = createReviewResponses(reviews);
+        sortByReviewEvaluationTypeCount(responses, condition.getOrderBy());
+
         return responses;
 
     }
@@ -104,6 +102,14 @@ public class ReviewQueryService {
         return (int) evaluations.stream().filter(evaluation -> evaluation.getType().equals(BAD)).count();
     }
 
+    private static void sortByReviewEvaluationTypeCount(List<ReviewResponse> responses, String orderBy) {
+        if (orderBy.equals("FUN")) {
+            responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
+        } else if (orderBy.equals("USEFUL")) {
+            responses.sort(comparingInt(ReviewResponse::getUsefulCount).reversed());
+        }
+    }
+
     private static ReviewDetailResponse createReviewDetailResponse(Review review) {
         return ReviewDetailResponse.builder()
                 .reviewId(review.getId())
@@ -114,7 +120,7 @@ public class ReviewQueryService {
                 .reviewHighlight(review.getHighlight())
                 .reviewCreatedTime(review.getCreatedTime())
                 .keywords(createKeywords(review.getKeywords()))
-                .reviewEvaluations(createReviewEvaluations(review.getEvaluations()))
+                .reviewEvaluations(createReviewEvaluations(review.getEvaluations()))    // 평가들 개수를 보낼지
                 .movieId(review.getMovie().getId())
                 .movieTitle(review.getMovie().getTitle())
                 .genreResponse(review.getGenre().of())
