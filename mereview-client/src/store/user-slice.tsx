@@ -29,6 +29,7 @@ const userSlice = createSlice({
       state.token = action.payload.accessToken;
       state.email = action.payload.email;
       state.nickname = action.payload.nickname;
+      localStorage.setItem("id", action.payload.id);
       localStorage.setItem("token", action.payload.accessToken);
       console.log("로그인성공");
     },
@@ -50,10 +51,7 @@ const userSlice = createSlice({
       state.signUpData.birthDate = action.payload.birthDate;
       state.signUpData.gender = action.payload.gender;
     },
-    signUp_step2(state, action) {
-      // 사진선택
-      state.signUpData.file = action.payload;
-    },
+
     signUp_step3(state, action) {
       // 관심사 선택
       state.signUpData.interest = action.payload;
@@ -61,6 +59,9 @@ const userSlice = createSlice({
       // const data = state.signUpData;
 
       // fetch 이용해서 백에 DATA POST
+    },
+    authToggler(state) {
+      state.isAthenticated = true;
     },
   },
 });

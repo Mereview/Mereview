@@ -3,6 +3,7 @@ import "../../styles/css/SelectInterest.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
+import { uiActions } from "../../store/ui-silce";
 import { SignUpInterface } from "../interface/UserInterface";
 import { postSignUp } from "../../api/user";
 import axios from "axios";
@@ -49,10 +50,13 @@ const SelectInterest = ({ step1, step2 }) => {
     file: step2,
     interest: interest,
   };
-  console.log(data);
   const signUp_step3 = () => {
+    console.log(data);
+
     postSignUp(data);
+
     dispatch(userActions.modal_toggler());
+    dispatch(uiActions.tabChange("signUpCompleted"));
   };
   const genre: GenreInfo = {
     "12": ["모험", "/interest/adventure"],

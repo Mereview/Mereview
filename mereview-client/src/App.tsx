@@ -5,9 +5,22 @@ import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavigationBar from "./components/NavigationBar";
-import { useSelector } from "react-redux/es/hooks/useSelector";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import "./styles/css/App.css";
+import axios from "axios";
+import { userActions } from "./store/user-slice";
 function App() {
+  const dispatch = useDispatch();
+  const getUserInfo = () => {
+    const id = localStorage.getItem("id");
+    if (id) {
+      dispatch(userActions.authToggler());
+      const getUserInfoURL = `http://localhost:8080/members/${id}`;
+      axios.get(getUserInfoURL).then((res) => console.log("성공"));
+    }
+  };
+  useEffect(getUserInfo, []);
   const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
   return (
     <div className="App">

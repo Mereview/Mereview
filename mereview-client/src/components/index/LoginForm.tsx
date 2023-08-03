@@ -13,7 +13,7 @@ const LoginForm = () => {
     setAnimate(true);
   }, []);
   const dispatch = useDispatch();
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -48,7 +48,7 @@ const LoginForm = () => {
       .then((res) => res.data.data)
       .then((data) => {
         dispatch(userActions.authorization(data));
-        history("/review");
+        navigate("/review");
       })
       .catch((err) => console.log(err));
   };

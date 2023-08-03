@@ -62,7 +62,6 @@ const SignUp = () => {
       return;
     }
     dispatch(userActions.modal_toggler());
-    dispatch(userActions.signUp_step1(inputData));
   };
 
   //이메일 인증 핸들러
@@ -83,14 +82,14 @@ const SignUp = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-
     if (file) {
+      console.log(file);
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
       formData.append("file", file);
+      setFileData(formData);
     }
   }, []);
-  console.log(fileData);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
