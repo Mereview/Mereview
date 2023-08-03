@@ -2,13 +2,10 @@ package com.ssafy.mereview.api.controller.member.dto.request;
 
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.member.entity.*;
-import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,29 +31,26 @@ public class MemberRegisterRequest {
 
     private String birthDate;
 
-    private ProfileImage profileImage;
-
     List<InterestRequest> interests = new ArrayList<>();
 
-    private UploadFile uploadFile;
+    private UploadFile profileImage;
 
     @Builder
-    public MemberRegisterRequest(String email, String password, String nickname, String gender, String birthDate, ProfileImage profileImage, List<InterestRequest> interests, UploadFile uploadFile) {
+    public MemberRegisterRequest(String email, String password, String nickname, String gender, String birthDate, List<InterestRequest> interests, UploadFile profileImage) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.profileImage = profileImage;
         this.interests = interests;
-        this.uploadFile = uploadFile;
+        this.profileImage = profileImage;
     }
 
-    public MemberCreateServiceRequest toMemberCreateServiceRequest() {
+    public MemberCreateServiceRequest toMemberCreateServiceRequest(UploadFile profileImage) {
         return MemberCreateServiceRequest.builder()
                 .email(email)
                 .password(password)
-                .uploadFile(uploadFile)
+                .uploadFile(profileImage)
                 .interestRequests(createInterestRequests())
                 .build();
     }

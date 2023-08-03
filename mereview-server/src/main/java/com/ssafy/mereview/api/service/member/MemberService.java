@@ -5,6 +5,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
@@ -50,11 +51,14 @@ public class MemberService {
 
     private final GenreRepository genreRepository;
 
+    private final ReviewQueryService reviewQueryService;
+
     public Long createMember(MemberCreateServiceRequest request) {
         Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
         if (existingMember != null) {
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
+        log.debug("request check = {}" + request);
 
         Member member = Member.builder()
                 .email(request.getEmail())
@@ -114,6 +118,9 @@ public class MemberService {
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
 
+        log.debug("Member Profile Image : {}", member.getProfileImage());
+
+
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
     }
 
@@ -140,7 +147,7 @@ public class MemberService {
         }
     }
 
-    public void updateProfilePic(Long memberId, UploadFile uploadFile) {
+    public void updatePorfileImage(Long memberId, UploadFile uploadFile) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
         member.updateProfileImage(uploadFile);
     }
@@ -211,6 +218,7 @@ public class MemberService {
                 .interests(interestResponses)
                 .achievements(memberAchievementResponses)
                 .tiers(memberTierResponses)
+                .profileImage(member.getProfileImage().of())
                 .build();
     }
 
