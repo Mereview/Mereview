@@ -72,7 +72,7 @@ public class MemberController {
         return ApiResponse.ok(memberId);
     }
 
-    @PostMapping("/update-pic")
+    @PostMapping("/profile-image")
     public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
                                                 @RequestPart(name = "memberId") Long memberId) throws IOException {
         log.debug("MemberController.updateProfilePic : {}", memberId);
