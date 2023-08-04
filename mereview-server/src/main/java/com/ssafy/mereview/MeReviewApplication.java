@@ -13,6 +13,7 @@ public class MeReviewApplication {
 	public void started() {
 		// timezone UTC 셋팅
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
 	}
 
 	public static void main(String[] args) {

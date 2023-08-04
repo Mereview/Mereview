@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
@@ -48,7 +47,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Interest> interests = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
@@ -98,16 +97,15 @@ public class Member extends BaseEntity {
                 .id(id)
                 .nickname(nickname)
                 .email(email)
+                .gender(gender)
+                .birthDate(birthDate)
                 .build();
     }
 
     //update member
-    public void update(MemberUpdateServiceRequest request, List<Interest> interests){
-        this.nickname = request.getNickname().equals("") ? this.nickname : request.getNickname();
-        this.interests = interests;
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
     }
-
-
 
     //update profile image
     public void updateProfileImage(UploadFile uploadFile){
@@ -119,5 +117,9 @@ public class Member extends BaseEntity {
         }else{
             this.profileImage.update(uploadFile);
         }
+    }
+
+    public void update(List<Interest> interests) {
+        this.interests = interests;
     }
 }
