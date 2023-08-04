@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Join;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -70,6 +71,18 @@ public class MemberController {
         log.debug("MemberLoginRequest : {}", request);
         MemberLoginResponse memberLoginResponse = memberQueryService.login(request);
         return ApiResponse.ok(memberLoginResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "회원 탈퇴", response = Join.class)
+    public ApiResponse<Long> deleteMember(@PathVariable Long id, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        token = token.substring("Bearer ".length()).trim();
+
+        //jwt 토큰으로 현재 접속한 유저인지 확인 후 삭제
+        memberService.deleteMember(id, token);
+
+        return ApiResponse.ok(id);
     }
 
     @GetMapping("/{id}")

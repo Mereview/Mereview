@@ -92,6 +92,28 @@ public class MemberService {
         return member.getId();
     }
 
+
+    public void deleteMember(Long id, String token) {
+        // jwt 토큰으로 현재 로그인한 유저인지 확인 후 회원탈퇴 진행
+        Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        if(member.isDeleted()){
+            throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
+        }
+
+        String memberInToken = jwtUtils.getUsernameFromJwt(token);
+
+        log.debug("memberInToken = {}", memberInToken);
+        log.debug("member.getEmail() = {}", member.getEmail());
+
+        // 현재 로그인한 유저가 맞는지 확인
+        if(member.getEmail().equals(memberInToken)){
+            member.delete();
+        } else {
+            throw new IllegalArgumentException("현재 로그인한 유저가 아닙니다.");
+        }
+    }
+
     public void updateViewCount(Long id){
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         log.debug("조회수 : {}",member.getMemberVisit());
@@ -214,4 +236,5 @@ public class MemberService {
         currentMember.getFollowing().remove(target);
         target.getFollowers().remove(currentMember);
     }
+
 }

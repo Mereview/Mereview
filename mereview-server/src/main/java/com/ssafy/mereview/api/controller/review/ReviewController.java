@@ -35,7 +35,6 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final ReviewQueryService reviewQueryService;
-
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
 
