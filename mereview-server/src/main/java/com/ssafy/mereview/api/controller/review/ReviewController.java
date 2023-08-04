@@ -26,7 +26,7 @@ import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 @RestController
 public class ReviewController {
 
@@ -36,7 +36,7 @@ public class ReviewController {
     private final FileStore fileStore;
     private final FileExtensionFilter fileExtFilter;
 
-    @PostMapping()
+    @PostMapping
     public ApiResponse<Long> createReview(@Valid @RequestPart(name = "request") ReviewCreateRequest request,
                                           @RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
         log.debug("request: {}", request);
@@ -49,7 +49,7 @@ public class ReviewController {
         return ApiResponse.ok(saveId);
     }
 
-    @GetMapping("")
+    @GetMapping
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
