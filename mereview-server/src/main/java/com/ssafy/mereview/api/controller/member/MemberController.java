@@ -27,7 +27,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
 @Api(tags = {"회원 관련 API"})
