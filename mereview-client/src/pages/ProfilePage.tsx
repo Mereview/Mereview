@@ -15,11 +15,23 @@ import "../styles/css/ProfilePage.css";
 /* 유저 더미 데이터 생성 시작 */
 const userInfo: ProfileInfoInterface = {
   memberId: "id123123",
-  nickname: "닉네임",
+  nickname: "닉네임123",
   profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
   age: 29,
-  gender: "male",
+  gender: 1,
+  introduction: "자기소개입니다. ^^",
+  reviewCount: 4,
+  commentCount: 5,
+  followerCount: 3,
+  followingCount: 5,
   joinDate: new Date("2022-06-03 07:23:53"),
+};
+
+const defaultProfileImage = "/defaultProfile.png";
+
+const genderMapping = {
+  1: "남",
+  2: "여",
 };
 /* 유저 더미 데이터 생성 끝 */
 
@@ -208,22 +220,66 @@ const ProfilePage = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
+  const formattedCreateDate: Date = new Date(userInfo.joinDate);
+  const year: number = formattedCreateDate.getFullYear();
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  );
+  const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
+
+  const joinDateText = `${year}-${month}-${day}`;
+
   return (
     <>
-      <div>
-        <div className="profile-image-chart-container">
-          <div className="profile-image-container">
-            <img src={userInfo.profileImagePath} alt="프로필 이미지" />
+      <div className="profile-image-chart-container">
+        <div className="profile-image-container">
+          <img
+            src={userInfo.profileImagePath || defaultProfileImage}
+            alt="프로필 이미지"
+            style={{ width: "450px" }}
+          />
+          <div className="follow-info">
+            팔로잉: {userInfo.followerCount} | 팔로워 :{" "}
+            {userInfo.followingCount}
+            <span> 팔로우 버튼^^</span>
           </div>
-          <div className="profile-chart-scroll-div">
-            <div className="profile-chart-container">
-              <ExperienceBar userExpData={userExpData} />
-            </div>
+        </div>
+        <div className="profile-chart-scroll-div">
+          <div className="profile-chart-container">
+            <ExperienceBar userExpData={userExpData} />
           </div>
         </div>
       </div>
-      <div className="user-info">정보</div>
-      <AchievedBadge />
+      <div className="profile-info-badge-container">
+        <div className="user-info">
+          <Row>
+            <Col className="nickname">{userInfo.nickname}</Col>
+            <Col className="age-gender">
+              {userInfo.age && userInfo.age + " "}
+              {genderMapping[userInfo.gender] || null}
+            </Col>
+          </Row>
+          <hr style={{ marginTop: "1px", marginBottom: "10px" }} />
+          <Row>
+            <Col className="introduction">{userInfo.introduction}</Col>
+          </Row>
+          <div className="post-counter-join-date-container">
+            <Row>
+              <Col className="post-counter">
+                작성 리뷰: {userInfo.reviewCount} / 작성 댓글:{" "}
+                {userInfo.commentCount}
+              </Col>
+            </Row>
+            <Row>
+              <Col className="join-date">가입일: {joinDateText}</Col>
+            </Row>
+          </div>
+        </div>
+        <div className="profile-badge-container">
+          <AchievedBadge />
+        </div>
+      </div>
       <hr />
       <div>
         <Col className="sub-title">작성한 리뷰</Col>
