@@ -228,6 +228,7 @@ class ReviewQueryServiceTest {
 
         // when
         ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+        log.debug("response: {}", response);
 
         // then
         assertThat(response).isNotNull();
@@ -244,6 +245,10 @@ class ReviewQueryServiceTest {
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 리뷰입니다.");
     }
+
+    /**
+     *  private methods
+     */
 
     private Member createMember() {
         Member member = Member.builder()

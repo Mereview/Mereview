@@ -1,8 +1,11 @@
 package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.member.dto.response.MemberTierResponse;
+import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
+import com.ssafy.mereview.domain.member.entity.ProfileImage;
+import com.ssafy.mereview.domain.review.entity.Comment;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
@@ -21,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
-import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingInt;
 
 @Slf4j
@@ -36,7 +38,8 @@ public class ReviewQueryService {
         log.debug("reviews: {}", reviews);
 
         List<ReviewResponse> responses = createReviewResponses(reviews);
-        sortByReviewEvaluationTypeCount(responses, condition.getOrderBy());
+        sortByReviewEvaluationTypeAmounts(responses, condition.getOrderBy());
+        log.debug("responses: {}", responses);
 
         return responses;
 
@@ -55,6 +58,10 @@ public class ReviewQueryService {
         return createReviewDetailResponse(review);
     }
 
+    /**
+     *  private methods
+     */
+
     private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
         return reviews.stream()
                 .map(review -> ReviewResponse.builder()
@@ -63,7 +70,7 @@ public class ReviewQueryService {
                         .hits(review.getHits())
                         .highlight(review.getHighlight())
                         .evaluationType(review.getType())
-                        .commentCount(getCommentCount(review))
+                        .commentCount(review.getComments().size())
                         .funCount(getFunCount(review.getEvaluations()))
                         .usefulCount(getUsefulCount(review.getEvaluations()))
                         .badCount(getBadCount(review.getEvaluations()))
@@ -79,8 +86,30 @@ public class ReviewQueryService {
                 ).collect(Collectors.toList());
     }
 
-    private static int getCommentCount(Review review) {
-        return review.getComments().size();
+    private ReviewDetailResponse createReviewDetailResponse(Review review) {
+        return ReviewDetailResponse.builder()
+                .reviewId(review.getId())
+                .reviewTitle(review.getTitle())
+                .reviewContent(review.getContent())
+                .hits(review.getHits())
+                .backgroundImage(getBackgroundImageResponse(review))
+                .reviewHighlight(review.getHighlight())
+                .reviewCreatedTime(review.getCreatedTime())
+                .keywords(getKeywordResponses(review.getKeywords()))
+                .evaluated(false)   // TODO: 2023-08-03 평가여부 확인 메소드 구현 필요
+                .funCount(getFunCount(review.getEvaluations()))
+                .usefulCount(getUsefulCount(review.getEvaluations()))
+                .badCount(getBadCount(review.getEvaluations()))
+                .movieId(review.getMovie().getId())
+                .movieTitle(review.getMovie().getTitle())
+                .genre(review.getGenre().of())
+                .movieReleaseDate(review.getMovie().getReleaseDate())
+                .memberId(review.getMember().getId())
+                .nickname(review.getMember().getNickname())
+                .memberTiers(getMemberTierResponses(review.getMember().getMemberTiers()))
+                .profileImage(getProfileImageResponse(review.getMember().getProfileImage()))
+                .comments(getCommentResponses(review.getComments()))
+                .build();
     }
 
     private static BackgroundImageResponse getBackgroundImageResponse(Review review) {
@@ -102,7 +131,7 @@ public class ReviewQueryService {
         return (int) evaluations.stream().filter(evaluation -> evaluation.getType().equals(BAD)).count();
     }
 
-    private static void sortByReviewEvaluationTypeCount(List<ReviewResponse> responses, String orderBy) {
+    private static void sortByReviewEvaluationTypeAmounts(List<ReviewResponse> responses, String orderBy) {
         if (orderBy.equals("FUN")) {
             responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
         } else if (orderBy.equals("USEFUL")) {
@@ -110,39 +139,25 @@ public class ReviewQueryService {
         }
     }
 
-    private static ReviewDetailResponse createReviewDetailResponse(Review review) {
-        return ReviewDetailResponse.builder()
-                .reviewId(review.getId())
-                .reviewTitle(review.getTitle())
-                .reviewContent(review.getContent())
-                .hits(review.getHits())
-                .backgroundImage(getBackgroundImageResponse(review))
-                .reviewHighlight(review.getHighlight())
-                .reviewCreatedTime(review.getCreatedTime())
-                .keywords(createKeywords(review.getKeywords()))
-                .reviewEvaluations(createReviewEvaluations(review.getEvaluations()))    // 평가들 개수를 보낼지
-                .movieId(review.getMovie().getId())
-                .movieTitle(review.getMovie().getTitle())
-                .genreResponse(review.getGenre().of())
-                .movieReleaseDate(review.getMovie().getReleaseDate())
-                .memberId(review.getMember().getId())
-                .nickname(review.getMember().getNickname())
-                .memberTiers(createMemberTiers(review.getMember().getMemberTiers()))
-                .build();
-    }
-
-    private static List<KeywordResponse> createKeywords(List<Keyword> keywords) {
+    private static List<KeywordResponse> getKeywordResponses(List<Keyword> keywords) {
         return keywords.stream().map(Keyword::of).collect(Collectors.toList());
     }
 
-    private static List<ReviewEvaluationResponse> createReviewEvaluations(List<ReviewEvaluation> evaluations) {
-        return evaluations.stream().map(ReviewEvaluation::of).collect(Collectors.toList());
-    }
-
-    private static List<MemberTierResponse> createMemberTiers(List<MemberTier> memberTiers) {
+    private static List<MemberTierResponse> getMemberTierResponses(List<MemberTier> memberTiers) {
         if (memberTiers == null) {
             return new ArrayList<>();
         }
         return memberTiers.stream().map(MemberTier::of).collect(Collectors.toList());
+    }
+
+    private static ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {
+        if (profileImage == null) {
+            return null;
+        }
+        return profileImage.of();
+    }
+
+    private static List<CommentResponse> getCommentResponses(List<Comment> comments) {
+        return comments.stream().map(Comment::of).collect(Collectors.toList());
     }
 }

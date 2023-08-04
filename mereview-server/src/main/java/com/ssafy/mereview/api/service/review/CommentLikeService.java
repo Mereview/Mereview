@@ -16,7 +16,7 @@ public class CommentLikeService {
 
     private final CommentLikeRepository commentLikeRepository;
 
-    public Long createCommentLike(CommentLikeServiceRequest request) {
+    public Long create(CommentLikeServiceRequest request) {
         return commentLikeRepository.save(request.toEntity()).getId();
     }
 
