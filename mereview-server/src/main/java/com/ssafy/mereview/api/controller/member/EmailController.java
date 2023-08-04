@@ -3,6 +3,7 @@ package com.ssafy.mereview.api.controller.member;
 import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.service.member.EmailService;
 import com.ssafy.mereview.common.response.ApiResponse;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/email")
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = {"이메일 체크 API"})
 public class EmailController {
 
     private final EmailService emailService;

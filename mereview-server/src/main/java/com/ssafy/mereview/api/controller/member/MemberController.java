@@ -15,11 +15,14 @@ import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.sun.jdi.request.DuplicateRequestException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.Join;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -27,6 +30,7 @@ import java.io.IOException;
 @RequestMapping("/members")
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = {"회원 관련 API"})
 public class MemberController {
 
     private final MemberService memberService;
@@ -40,6 +44,7 @@ public class MemberController {
     private final GenreSaveService genreSaveService;
 
     @PostMapping("/sign-up")
+    @ApiOperation(value = "회원가입", response = Join.class)
     public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
                                     @RequestPart(name = "file", required = false) MultipartFile file) throws Exception {
 
@@ -60,7 +65,6 @@ public class MemberController {
 
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
-        genreSaveService.saveDumpGenres();
 
         log.debug("MemberLoginRequest : {}", request);
         MemberLoginResponse memberLoginResponse = memberQueryService.login(request);
