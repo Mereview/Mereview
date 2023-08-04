@@ -12,6 +12,8 @@ import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,7 @@ import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
 @RestController
+@Api(tags = {"리뷰 관련 API"})
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -37,6 +40,7 @@ public class ReviewController {
     private final FileExtensionFilter fileExtFilter;
 
     @PostMapping
+    @ApiOperation(value = "리뷰 생성")
     public ApiResponse<Long> createReview(@Valid @RequestPart(name = "request") ReviewCreateRequest request,
                                           @RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
         log.debug("request: {}", request);
@@ -50,6 +54,7 @@ public class ReviewController {
     }
 
     @GetMapping
+    @ApiOperation(value = "리뷰 검색")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
@@ -68,12 +73,14 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
+    @ApiOperation(value = "리뷰 상세 검색")
     public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId) {
         ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
         return ApiResponse.ok(response);
     }
 
     @PutMapping("/{reviewId}")
+    @ApiOperation(value = "리뷰 수정")
     public ApiResponse<Long> updateReview(@PathVariable Long reviewId,
                                           @Valid @RequestPart ReviewUpdateRequest request,
                                           @RequestPart(required = false) MultipartFile file) throws IOException {
@@ -87,6 +94,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
+    @ApiOperation(value = "리뷰 삭제")
     public ApiResponse<Long> deleteReview(@PathVariable Long reviewId) {
         Long deleteId = reviewService.delete(reviewId);
         return ApiResponse.ok(deleteId);

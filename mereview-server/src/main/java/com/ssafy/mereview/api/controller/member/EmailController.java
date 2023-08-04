@@ -15,7 +15,7 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("/api/email")
 @RequiredArgsConstructor
 @Slf4j
 @Api(tags = {"이메일 체크 API"})

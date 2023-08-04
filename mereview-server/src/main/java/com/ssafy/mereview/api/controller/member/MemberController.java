@@ -27,7 +27,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
 @Api(tags = {"회원 관련 API"})
@@ -64,6 +64,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
+    @ApiOperation(value = "로그인", response = Join.class)
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
 
         log.debug("MemberLoginRequest : {}", request);
@@ -72,6 +73,7 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "회원 정보 조회", response = Join.class)
     public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId) {
         log.debug("MemberController.getMemberInfo : {}", memberId);
         MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
@@ -80,6 +82,7 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
+    @ApiOperation(value = "회원 정보 수정", response = Join.class)
     public ApiResponse<Long> updateMemberInfo(@PathVariable Long id,@RequestBody MemberUpdateRequest request) {
         log.debug("MemberController.updateMemberInfo : {}", request);
         Long memberId = memberService.updateMember(id, request.toMemberCreateServiceRequest());
@@ -87,6 +90,7 @@ public class MemberController {
     }
 
     @PutMapping("/profile-image")
+    @ApiOperation(value = "프로필 사진 업데이트", response = Join.class)
     public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
                                                 @RequestPart(name = "memberId") Long memberId) throws IOException {
         log.debug("MemberController.updateProfilePic : {}", memberId);
@@ -97,6 +101,7 @@ public class MemberController {
     }
 
     @PostMapping("/follow")
+    @ApiOperation(value = "팔로우", response = Join.class)
     public void follow(@RequestBody FollowRequest followRequest) {
         log.debug("MemberController.follow : {}", followRequest);
         memberService.createFollow(followRequest.getTargetId(), followRequest.getMemberId());
