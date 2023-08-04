@@ -11,7 +11,7 @@ interface ReviewListProps {
 const ReviewList = ({ reviewList }: ReviewListProps) => {
   return (
     <>
-      <div className="card-list-wrapper">
+      <div className="review-card-list-wrapper">
         {reviewList.map((review: ReviewCardInterface, index: number) => (
           <ReviewCard
             key={review.reviewId}
