@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.movie.dto.response;
 
+import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,14 @@ public class GenreResponse {
         this.genreNumber = genreNumber;
         this.genreName = genreName;
         this.isUsing = isUsing;
+    }
+
+    public static GenreResponse of(Genre genre) {
+        return GenreResponse.builder()
+                .genreId(genre.getId())
+                .genreNumber(genre.getGenreNumber())
+                .genreName(builder().genreName)
+                .isUsing(genre.isUsing())
+                .build();
     }
 }

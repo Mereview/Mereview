@@ -34,11 +34,4 @@ public class BackgroundImage extends BaseEntity {
         this.review = review;
     }
 
-    public BackgroundImageResponse of() {
-        return BackgroundImageResponse.builder()
-                .id(id)
-                .fileName(uploadFile.getUploadFileName())
-                .createdTime(getCreatedTime())
-                .build();
-    }
 }

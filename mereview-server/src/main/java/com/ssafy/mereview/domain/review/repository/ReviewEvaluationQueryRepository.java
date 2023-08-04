@@ -42,4 +42,16 @@ public class ReviewEvaluationQueryRepository {
                         tuple -> Objects.requireNonNull(tuple.get(reviewEvaluation.count())).intValue()
                 ));
     }
+
+    public int getCountByReviewIdAndType(Long reviewId, ReviewEvaluationType type) {
+        return queryFactory
+                .select(reviewEvaluation.count())
+                .from(reviewEvaluation)
+                .where(
+                        reviewEvaluation.review.id.eq(reviewId),
+                        reviewEvaluation.type.eq(type)
+                )
+                .groupBy(reviewEvaluation.type)
+                .fetchFirst().intValue();
+    }
 }

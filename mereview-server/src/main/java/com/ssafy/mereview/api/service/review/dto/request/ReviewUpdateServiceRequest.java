@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReviewUpdateServiceRequest {
 
+    private Long reviewId;
     private String title;
     private String content;
     private String highlight;
@@ -20,7 +21,8 @@ public class ReviewUpdateServiceRequest {
     private UploadFile uploadFile;
 
     @Builder
-    public ReviewUpdateServiceRequest(String title, String content, String highlight, EvaluationType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, UploadFile uploadFile) {
+    public ReviewUpdateServiceRequest(Long reviewId, String title, String content, String highlight, EvaluationType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, UploadFile uploadFile) {
+        this.reviewId = reviewId;
         this.title = title;
         this.content = content;
         this.highlight = highlight;
