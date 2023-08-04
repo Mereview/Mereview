@@ -1,11 +1,15 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.domain.review.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+
+import static com.ssafy.mereview.domain.review.entity.CommentLikeType.DISLIKE;
+import static com.ssafy.mereview.domain.review.entity.CommentLikeType.LIKE;
 
 @ToString
 @Getter
@@ -31,5 +35,15 @@ public class CommentResponse {
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
         this.createdTime = createdTime;
+    }
+
+    public static CommentResponse of(Comment comment) {
+        return CommentResponse.builder()
+                .commentId(comment.getId())
+                .content(comment.getContent())
+                .likeCount((int) comment.getLikes().stream().filter(commentLike -> commentLike.getType().equals(LIKE)).count())
+                .dislikeCount((int) comment.getLikes().stream().filter(commentLike -> commentLike.getType().equals(DISLIKE)).count())
+                .createdTime(comment.getCreatedTime())
+                .build();
     }
 }

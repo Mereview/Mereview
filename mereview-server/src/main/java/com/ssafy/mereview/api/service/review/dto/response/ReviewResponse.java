@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.domain.review.entity.EvaluationType;
 import lombok.Builder;
@@ -26,14 +27,14 @@ public class ReviewResponse {
     private LocalDateTime createdTime;
     private Long memberId;
     private String nickname;
-    // TODO: 2023-07-31 회원 프로필 이미지 추가 예정
+    private ProfileImageResponse profileImage;
     private Long movieId;
     private String movieTitle;
     private String movieReleaseDate;
     private GenreResponse genreResponse;
 
     @Builder
-    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
+    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, ProfileImageResponse profileImage, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.hits = hits;
@@ -47,6 +48,7 @@ public class ReviewResponse {
         this.createdTime = createdTime;
         this.memberId = memberId;
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.movieReleaseDate = movieReleaseDate;

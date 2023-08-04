@@ -1,6 +1,8 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
+import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Genre;
@@ -14,6 +16,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -64,7 +67,7 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEvaluation> evaluations = new ArrayList<>();
 
-    @OneToOne(mappedBy = "review", fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private BackgroundImage backgroundImage;
 
     @Builder
@@ -80,16 +83,35 @@ public class Review extends BaseEntity {
         this.genre = genre;
     }
 
-    public void update(ReviewUpdateServiceRequest request, List<Keyword> keywords, BackgroundImage backgroundImage) {
+    // Business Logic
+
+    public void update(ReviewUpdateServiceRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.highlight = request.getHighlight();
         this.type = request.getType();
-        this.keywords = keywords;
-        this.backgroundImage = backgroundImage;
+        this.keywords = createUpdateKeywords(request.getKeywordServiceRequests());
+        this.backgroundImage = createUpdateBackgroundImage(request.getUploadFile());
     }
 
     public void increaseHits() {
         this.hits++;
+    }
+
+    private List<Keyword> createUpdateKeywords(List<KeywordUpdateServiceRequest> requests) {
+        return requests.stream()
+                .map(keyword -> Keyword.builder()
+                        .name(keyword.getName())
+                        .weight(keyword.getWeight())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    private BackgroundImage createUpdateBackgroundImage(UploadFile uploadFile) {
+        return BackgroundImage.builder()
+                .review(Review.builder().id(id).build())
+                .uploadFile(uploadFile)
+                .build();
     }
 }
