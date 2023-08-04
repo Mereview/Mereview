@@ -64,9 +64,9 @@ public class MemberService {
 
         profileImageRepository.save(createProfileImage(request, savedMember.getId()));
 
-        //방문자 수 초기화
+        // 방문자 수 초기화
         createVisitCount(member);
-        //회원 관심사 초기화
+        // 회원 관심사 초기화
 
         createInterests(request.getInterestRequests(), member);
 
