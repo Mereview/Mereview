@@ -9,6 +9,7 @@ import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
+import com.ssafy.mereview.api.service.movie.GenreSaveService;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
@@ -36,6 +37,8 @@ public class MemberController {
 
     private final FileExtensionFilter fileExtFilter;
 
+    private final GenreSaveService genreSaveService;
+
     @PostMapping("/sign-up")
     public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
                                     @RequestPart(name = "file", required = false) MultipartFile file) throws Exception {
@@ -43,8 +46,10 @@ public class MemberController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        MemberCreateServiceRequest saveMemberServiceRequest = request.toMemberCreateServiceRequest(uploadFile);
+        MemberCreateServiceRequest saveMemberServiceRequest = request.toServiceRequest(uploadFile);
         log.debug("MemberRegisterRequest : {}", request);
+        log.debug("MemberCreateServiceRequest : {}", saveMemberServiceRequest);
+
 
         Long memberId = memberService.createMember(saveMemberServiceRequest);
         if (memberId == -1) {
@@ -55,6 +60,8 @@ public class MemberController {
 
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(@RequestBody @Valid MemberLoginRequest request) {
+        genreSaveService.saveDumpGenres();
+
         log.debug("MemberLoginRequest : {}", request);
         MemberLoginResponse memberLoginResponse = memberQueryService.login(request);
         return ApiResponse.ok(memberLoginResponse);
@@ -79,6 +86,7 @@ public class MemberController {
     public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
                                                 @RequestPart(name = "memberId") Long memberId) throws IOException {
         log.debug("MemberController.updateProfilePic : {}", memberId);
+
         UploadFile uploadFile = createUploadFile(file);
         memberService.updateProfileImage(memberId, uploadFile);
         return ApiResponse.ok("프로필 사진 업데이트 성공");
