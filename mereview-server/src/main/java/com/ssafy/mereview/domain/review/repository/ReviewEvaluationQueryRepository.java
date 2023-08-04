@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class ReviewEvaluationQueryRepository {
                 .stream()
                 .collect(Collectors.toMap(
                         tuple -> tuple.get(reviewEvaluation.type),
-                        tuple -> tuple.get(reviewEvaluation.count()).intValue()
+                        tuple -> Objects.requireNonNull(tuple.get(reviewEvaluation.count())).intValue()
                 ));
     }
 }

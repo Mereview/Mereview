@@ -5,6 +5,7 @@ import com.ssafy.mereview.api.controller.review.dto.request.CommentLikeRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.CommentUpdateRequest;
 import com.ssafy.mereview.api.service.review.CommentLikeService;
 import com.ssafy.mereview.api.service.review.CommentService;
+import com.ssafy.mereview.api.service.review.dto.response.CommentLikeResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +42,9 @@ public class CommentController {
     }
 
     @PostMapping("/comments/likes")
-    public ApiResponse<Long> createCommentLike(@Valid @RequestBody CommentLikeRequest request) {
-        Long saveId = commentLikeService.create(request.toServiceRequest());
-        return ApiResponse.ok(saveId);
+    public ApiResponse<CommentLikeResponse> updateCommentLike(@Valid @RequestBody CommentLikeRequest request) {
+        CommentLikeResponse response = commentLikeService.updateCommentLike(request.toServiceRequest());
+        return ApiResponse.ok(response);
     }
 
-    @DeleteMapping("/comments/likes/{likeId}")
-    public ApiResponse<Long> deleteCommentLike(@PathVariable Long likeId) {
-        Long deleteId = commentLikeService.delete(likeId);
-        return ApiResponse.ok(deleteId);
-    }
 }
