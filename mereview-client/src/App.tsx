@@ -12,11 +12,12 @@ import axios from "axios";
 import { userActions } from "./store/user-slice";
 function App() {
   const dispatch = useDispatch();
+
   const getUserInfo = () => {
     const id = localStorage.getItem("id");
     if (id) {
       dispatch(userActions.authToggler());
-      const getUserInfoURL = `http://localhost:8080/members/${id}`;
+      const getUserInfoURL = `http://localhost:8080/api/members/${id}`;
       axios.get(getUserInfoURL).then((res) => console.log("성공"));
     }
   };

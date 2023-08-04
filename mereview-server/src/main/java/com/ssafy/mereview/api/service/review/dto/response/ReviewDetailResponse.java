@@ -1,14 +1,18 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
 import com.ssafy.mereview.api.service.member.dto.response.MemberTierResponse;
+import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Getter
 @NoArgsConstructor
 public class ReviewDetailResponse {
@@ -21,20 +25,22 @@ public class ReviewDetailResponse {
     private String reviewHighlight;
     private LocalDateTime reviewCreatedTime;
     private List<KeywordResponse> keywords;
-    private List<ReviewEvaluationResponse> reviewEvaluations;
+    private boolean evaluated;
+    private int funCount;
+    private int usefulCount;
+    private int badCount;
     private Long movieId;
     private String movieTitle;
-    // TODO: 2023-08-01 ids 로 할지 genreResponses 로 할지 결정
-    private GenreResponse genreResponse;
+    private GenreResponse genre;
     private String movieReleaseDate;
     private Long memberId;
     private String nickname;
-    // 프로필
+    private ProfileImageResponse profileImage;
     private List<MemberTierResponse> memberTiers;
-    // 댓글
+    private List<CommentResponse> comments = new ArrayList<>();
 
     @Builder
-    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, List<ReviewEvaluationResponse> reviewEvaluations, Long movieId, String movieTitle, GenreResponse genreResponse, String movieReleaseDate, Long memberId, String nickname, List<MemberTierResponse> memberTiers) {
+    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, boolean evaluated, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
@@ -43,13 +49,18 @@ public class ReviewDetailResponse {
         this.reviewHighlight = reviewHighlight;
         this.reviewCreatedTime = reviewCreatedTime;
         this.keywords = keywords;
-        this.reviewEvaluations = reviewEvaluations;
+        this.evaluated = evaluated;
+        this.funCount = funCount;
+        this.usefulCount = usefulCount;
+        this.badCount = badCount;
         this.movieId = movieId;
         this.movieTitle = movieTitle;
-        this.genreResponse = genreResponse;
+        this.genre = genre;
         this.movieReleaseDate = movieReleaseDate;
         this.memberId = memberId;
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.memberTiers = memberTiers;
+        this.comments = comments;
     }
 }

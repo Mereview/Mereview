@@ -24,7 +24,9 @@ const Top = ({ review, movie }: TopProps) => {
           </div>
         </Col>
         <Col className="rightInfo">
-          <img src="/ddabong.png" alt="따봉" />
+          <div>
+            <img src="/ddabong.png" alt="따봉" />
+          </div>
         </Col>
       </Row>
     </Container>

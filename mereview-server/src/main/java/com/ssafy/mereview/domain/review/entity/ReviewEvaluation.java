@@ -1,12 +1,10 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.api.service.review.dto.response.ReviewEvaluationResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -40,12 +38,5 @@ public class ReviewEvaluation extends BaseEntity {
         this.type = type;
         this.review = review;
         this.member = member;
-    }
-
-    public ReviewEvaluationResponse of() {
-        return ReviewEvaluationResponse.builder()
-                .reviewEvaluationId(id)
-                .reviewEvaluationType(type)
-                .build();
     }
 }

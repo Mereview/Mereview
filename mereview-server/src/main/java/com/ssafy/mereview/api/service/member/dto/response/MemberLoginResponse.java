@@ -32,4 +32,6 @@ public class MemberLoginResponse {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
+
 }

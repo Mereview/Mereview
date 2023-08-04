@@ -38,7 +38,7 @@ const LoginForm = () => {
       alert("아이디와 비밀번호를 확인해주세요!");
       return;
     }
-    const loginURL = "http://localhost:8080/members/login";
+    const loginURL = "http://localhost:8080/api/members/login";
     axios
       .post(loginURL, userData, {
         headers: {

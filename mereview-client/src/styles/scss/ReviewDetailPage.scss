@@ -1,29 +1,14 @@
 /* ReviewDetailPage.css */
 
-.review-detail-container {
-  height: 100%;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+.section {
+  height: calc(200vh - 74px);
+  scroll-snap-align: start;
+  padding: 20px;
+  border: 1px solid #ddd;
+  padding: 0px;
   background-size: cover;
-  background-position: center;
 }
-
-.review-detail-container::-webkit-scrollbar {
+.section::-webkit-scrollbar {
   width: 0px; /* Chrome, Safari, Opera */
   display: none; /* Chrome, Safari, Opera */
-}
-
-.review-detail-container .section {
-  height: 100vh;
-  scroll-snap-align: start;
-  padding: 20px;
-  border: 1px solid #ddd;
-  background-color: rgba(255, 255, 255, 0) fff;
-}
-.review-detail-container .section1 {
-  height: calc(100vh - 74px);
-  scroll-snap-align: start;
-  padding: 20px;
-  border: 1px solid #ddd;
-  background-color: #ffffff00;
 }

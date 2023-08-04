@@ -33,7 +33,7 @@ public class MemberQueryService {
 
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
 
-        if (searchMember == null) {
+        if (searchMember == null || searchMember.isDeleted()) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
         if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {
@@ -64,7 +64,7 @@ public class MemberQueryService {
 
         List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
-        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
+        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
     }
@@ -73,6 +73,9 @@ public class MemberQueryService {
         return MemberResponse.builder()
                 .id(member.getId())
                 .email(member.getEmail())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .birthDate(member.getBirthDate())
                 .interests(interestResponses)
                 .achievements(memberAchievementResponses)
                 .tiers(memberTierResponses)
@@ -82,10 +85,10 @@ public class MemberQueryService {
 
     private ProfileImageResponse createProfileImageResponse(ProfileImage profileImage) {
         log.debug("ProfileImage : {}", profileImage);
-        return profileImage.getUploadFile() == null ? ProfileImageResponse.builder().build() : profileImage.of();
+        return profileImage.getUploadFile() == null ? ProfileImageResponse.of(profileImage) : null;
     }
 
-    private List<MemberAchievementResponse> searchMemberAchievementReponse(Long id) {
+    private List<MemberAchievementResponse> searchMemberAchievementResponse(Long id) {
         List<MemberAchievement> memberAchievements = memberQueryRepository.searchMemberAchievementByMemberId(id);
 
         return memberAchievements.stream().map(MemberAchievement::of).collect(Collectors.toList());
@@ -94,7 +97,7 @@ public class MemberQueryService {
     private List<MemberTierResponse> searchMemberTierResponse(Long id) {
         List<MemberTier> memberTiers = memberQueryRepository.searchUserTierByMemberId(id);
         return memberTiers.stream()
-                .map(MemberTier::of)
+                .map(MemberTierResponse::of)
                 .collect(Collectors.toList());
     }
 

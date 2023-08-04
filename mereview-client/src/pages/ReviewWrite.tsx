@@ -5,43 +5,81 @@ import React, { useState, useRef, useCallback } from "react";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
+import { useSelector } from "react-redux";
+import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
+import axios from "axios";
+import writeReview from "../api/review";
+
 const ReviewWrite = () => {
-  const nickname = "닉네임";
+  // const userid = useSelector((state: any) => state.user.id);
+  // const userid = "test";
+  // const nickname = useSelector((state: any) => state.user.email);
+  const userid = "test";
+  const nickname = "test";
+  const movieList = ["test1", "test2", "test3"];
   const profile = "/logo2.png";
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
   const [movieName, setMovieName] = useState<string | null>("");
+  const [autoCompleteData, setAutoCompleteData] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [feedback, setFeedback] = useState<number | null>(0);
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
+  const [inputData, setInputData] = useState<ReviewDataInterface>({
+    title: null,
+    content: "test",
+    highlight: null,
+    type: "LIKE",
+    memberId: 1,
+    movieId: 1,
+    genreId: 0,
+    keywordRequests: null,
+  });
   const childRef1 = useRef(null);
   const childRef2 = useRef(null);
   const childRef3 = useRef(null);
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
-  const handleBtnClick = () => {
-    if (childRef1.current) {
-      const valueFromChild1 = childRef1.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild1);
-    }
-    if (childRef2.current) {
-      const valueFromChild2 = childRef2.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild2);
-    }
-    if (childRef3.current) {
-      const valueFromChild3 = childRef3.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild3);
-    }
-    if (childRef4.current) {
-      const valueFromChild4 = childRef4.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild4);
-    }
-    if (childRef5.current) {
-      const valueFromChild5 = childRef5.current.getKeyInfo();
-      console.log("Value from Child: ", valueFromChild5);
-    }
+  const contentRef = useRef(null);
+
+  const handleBtnClick = (event) => {
+    event.preventDefault();
+    const keywordList = [];
+    keywordList.push(childRef1.current.getKeyInfo());
+    keywordList.push(childRef2.current.getKeyInfo());
+    keywordList.push(childRef3.current.getKeyInfo());
+    keywordList.push(childRef4.current.getKeyInfo());
+    keywordList.push(childRef5.current.getKeyInfo());
+
+    setInputData((prevInputData) => ({
+      ...prevInputData,
+      keywordRequests: keywordList,
+    }));
+    console.log(inputData);
+
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(inputData)], { type: "application/json" })
+    );
+
+    axios
+      .post("http://localhost:8080/api/reviews", formData)
+      .then(() => {
+        console.log("success");
+      })
+      .catch(() => {
+        console.log("fail");
+      });
+  };
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let { id, value } = event.target;
+    setInputData((prevInputData) => ({
+      ...prevInputData,
+      [id]: value,
+    }));
   };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -51,15 +89,7 @@ const ReviewWrite = () => {
       setImgName(file.name);
     }
   }, []);
-  const reviewNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setReviewName(e.target.value);
-  };
-  const movieNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMovieName(e.target.value);
-  };
-  const oneSentanceNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOneSentance(e.target.value);
-  };
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
@@ -75,12 +105,13 @@ const ReviewWrite = () => {
       setBadBtn(false);
       setGoodBtn(true);
     }
-    // console.log(goodBtn + " " + badBtn);
     setFeedback(e.target.Value);
   };
   return (
-    <Container
+    <Form
       className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
+      id="reviewForm"
+      onSubmit={handleBtnClick}
       style={{
         backgroundImage: `url(${selectedImage})`,
         margin: "auto",
@@ -92,7 +123,8 @@ const ReviewWrite = () => {
             placeholder="리뷰 제목을 입력하세요"
             className="border rounded-2 text-lg"
             size="lg"
-            onChange={reviewNameHandler}
+            id="title"
+            onChange={onChangeHandler}
             defaultValue={reviewName}
           ></Form.Control>
         </Col>
@@ -113,9 +145,19 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-            onChange={movieNameHandler}
+            onChange={onChangeHandler}
+            id="movie"
             defaultValue={movieName}
+            list="autoList"
           ></Form.Control>
+          <datalist id="autoList">
+            autoCompleteData.length != 0 ?
+            {autoCompleteData.map((item) => (
+              <option key={item} value={item} />
+            ))}{" "}
+            :
+            <option value={"데이터 없음"} />
+          </datalist>
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
@@ -123,7 +165,8 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="한줄평을 입력하세요"
             className="border rounded-2 text-lg"
-            onChange={oneSentanceNameHandler}
+            id="highlight"
+            onChange={onChangeHandler}
             defaultValue={oneSentance}
           ></Form.Control>
         </Col>
@@ -138,17 +181,14 @@ const ReviewWrite = () => {
         <Col sm={1}>
           <div {...getRootProps()}>
             <input {...getInputProps()} />
-            <Button styles="btn-fourth" text="첨부"></Button>
+            <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
           </div>
         </Col>
         <Col />
       </Row>
       <Row className="mx-4">
         <Col md={6}>
-          <TextEditor
-          // className="border rounded-2 border-5 i-box form-control"
-          // style={{ resize: "none" }}
-          ></TextEditor>
+          <TextEditor ref={contentRef}></TextEditor>
         </Col>
         <Col md={2} />
         <Col
@@ -191,15 +231,13 @@ const ReviewWrite = () => {
         <Col>
           <Button
             styles="btn-primary"
-            onClick={handleBtnClick}
-            // onClick={() => {
-            //   console.log(goodBtn + " " + badBtn);
-            // }}
+            btnType="submit"
             text="등록"
+            // onClick={handleBtnClick}
           ></Button>
         </Col>
       </Row>
-    </Container>
+    </Form>
   );
 };
 
