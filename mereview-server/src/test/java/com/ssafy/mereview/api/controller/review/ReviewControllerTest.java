@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.mereview.api.controller.review.dto.request.KeywordCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.service.review.*;
-import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.config.SecurityConfig;
@@ -14,8 +13,6 @@ import com.ssafy.mereview.common.util.jwt.JwtAuthFilter;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,7 +32,6 @@ import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
@@ -189,10 +185,11 @@ class ReviewControllerTest {
     void searchReviewById() throws Exception {
         // given
         Long reviewId = 1L;
+        Long memberId = 1L;
         ReviewDetailResponse response = createReviewDetailResponse(1L, 1L, 1L);
 
         // stubbing 작업
-        given(reviewQueryService.searchById(reviewId))
+        given(reviewQueryService.searchById(reviewId, memberId))
                 .willReturn(response);
 
         // when // then

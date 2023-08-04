@@ -47,8 +47,9 @@ public class ReviewController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        Long saveId = reviewService.createReview(request.toServiceRequest(uploadFile));
+        Long saveId = reviewService.create(request.toServiceRequest(uploadFile));
         log.debug("saveId: {}", saveId);
+
         return ApiResponse.ok(saveId);
     }
 
@@ -73,8 +74,9 @@ public class ReviewController {
 
     @GetMapping("/{reviewId}")
     @ApiOperation(value = "리뷰 상세 검색")
-    public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId) {
-        ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+    public ApiResponse<ReviewDetailResponse> searchReview(@PathVariable Long reviewId,
+                                                          @RequestParam Long loginMemberId) {
+        ReviewDetailResponse response = reviewQueryService.searchById(reviewId, loginMemberId);
         return ApiResponse.ok(response);
     }
 
@@ -88,7 +90,7 @@ public class ReviewController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        Long updateId = reviewService.update(reviewId, request.toServiceRequest(uploadFile));
+        Long updateId = reviewService.update(request.toServiceRequest(reviewId, uploadFile));
         return ApiResponse.ok(updateId);
     }
 

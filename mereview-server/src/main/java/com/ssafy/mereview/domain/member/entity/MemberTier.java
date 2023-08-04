@@ -57,14 +57,5 @@ public class MemberTier extends BaseEntity {
         this.genre = genre;
     }
 
-    public MemberTierResponse of(){
-        return MemberTierResponse.builder()
-                .funTier(funTier)
-                .usefulTier(usefulTier)
-                .funExperience(funExperience)
-                .usefulExperience(usefulExperience)
-                .genreName(genre.getGenreName())
-                .build();
-    }
 }
 

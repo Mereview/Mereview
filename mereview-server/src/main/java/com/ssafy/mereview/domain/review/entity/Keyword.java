@@ -44,11 +44,4 @@ public class Keyword extends BaseEntity {
         this.movie = movie;
     }
 
-    public KeywordResponse of() {
-        return KeywordResponse.builder()
-                .keywordId(id)
-                .keywordName(name)
-                .keywordWeight(weight)
-                .build();
-    }
 }

@@ -64,7 +64,7 @@ public class MemberQueryService {
 
         List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
-        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementReponse(id);
+        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
     }
@@ -85,10 +85,10 @@ public class MemberQueryService {
 
     private ProfileImageResponse createProfileImageResponse(ProfileImage profileImage) {
         log.debug("ProfileImage : {}", profileImage);
-        return profileImage.getUploadFile() == null ? ProfileImageResponse.builder().build() : profileImage.of();
+        return profileImage.getUploadFile() == null ? ProfileImageResponse.of(profileImage) : null;
     }
 
-    private List<MemberAchievementResponse> searchMemberAchievementReponse(Long id) {
+    private List<MemberAchievementResponse> searchMemberAchievementResponse(Long id) {
         List<MemberAchievement> memberAchievements = memberQueryRepository.searchMemberAchievementByMemberId(id);
 
         return memberAchievements.stream().map(MemberAchievement::of).collect(Collectors.toList());
@@ -97,7 +97,7 @@ public class MemberQueryService {
     private List<MemberTierResponse> searchMemberTierResponse(Long id) {
         List<MemberTier> memberTiers = memberQueryRepository.searchUserTierByMemberId(id);
         return memberTiers.stream()
-                .map(MemberTier::of)
+                .map(MemberTierResponse::of)
                 .collect(Collectors.toList());
     }
 

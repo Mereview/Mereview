@@ -78,7 +78,7 @@ const SignUp = () => {
     const id = event.currentTarget.id;
     if (id === "step1" && inputData.email.includes("@")) {
       // axios 로 사용자에게 메일보내는 로직
-      const SEND_EMAIL_URL = "http://springboot:8080/email/send";
+      const SEND_EMAIL_URL = "http://localhost:8080/api/email/send";
       const data = { email: inputData.email };
       setChecking(true);
       alert(
@@ -94,7 +94,7 @@ const SignUp = () => {
           alert("메일 전송에 실패했습니다!");
         });
     } else if (id === "step2") {
-      const CHECK_EMAIL_URL = "http://springboot:8080/email/check";
+      const CHECK_EMAIL_URL = "http://localhost:8080/api/email/check";
       const data = {
         email: inputData.email,
         verificationCode: verificationCode,

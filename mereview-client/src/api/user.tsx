@@ -11,9 +11,10 @@ export const postSignUp = (data) => {
     "request",
     new Blob([JSON.stringify(data)], { type: "application/json" })
   );
+  console.log(formData.get("request"));
   axios
     .post(
-      "http://springboot:8080/members/sign-up", // baseURL은 여기서 URL로 수정
+      "http://localhost:8080/api/members/sign-up", // baseURL은 여기서 URL로 수정
       formData,
       {
         headers: {

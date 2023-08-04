@@ -53,13 +53,4 @@ public class Comment extends BaseEntity {
         this.content = request.getContent();
     }
 
-    public CommentResponse of() {
-        return CommentResponse.builder()
-                .commentId(id)
-                .content(content)
-                .likeCount((int) likes.stream().filter(commentLike -> commentLike.getType().equals(LIKE)).count())
-                .dislikeCount((int) likes.stream().filter(commentLike -> commentLike.getType().equals(DISLIKE)).count())
-                .createdTime(getCreatedTime())
-                .build();
-    }
 }
