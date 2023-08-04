@@ -1,0 +1,95 @@
+@import "Style";
+
+.detail {
+  border-radius: 50px;
+  border: solid black 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 90%;
+  min-height: 140vh;
+
+  margin: auto;
+  padding: 5%;
+  .first-line {
+    display: flex;
+    h1 {
+      color: white;
+      width: 75%;
+      height: auto;
+      font-size: 56px;
+    }
+    .emotionbox {
+      padding-top: 50px;
+      width: 25%;
+      img {
+        width: 60px;
+      }
+      span {
+        color: white;
+        font-size: 20px;
+      }
+    }
+  }
+  .content {
+    p {
+      color: white;
+      font-family: $GowunDodum;
+      font-size: $font-size-h3;
+    }
+  }
+  .ratingbuttons {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    #useful {
+      background-image: url("/public/funny.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+    #funny {
+      background-image: url("/public/funny.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+    #dislike {
+      background-image: url("/public/funny.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+  }
+  hr {
+    border: 10px white solid;
+    width: 95%;
+    margin: auto;
+    margin: 20px;
+  }
+  .comment {
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 8fr 4fr;
+    gap: 50px;
+    .left {
+      column-width: 8;
+    }
+    .input {
+      height: 100px;
+      button {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+      }
+      input {
+        width: 80%;
+        height: 100px;
+        margin-right: 15px;
+        border-radius: 12px;
+      }
+    }
+  }
+}
