@@ -1,26 +1,16 @@
 import {
-  FormControl,
   Select,
   MenuItem,
   SelectChangeEvent,
-  TextField,
   FormControlLabel,
-  InputLabel,
-  NativeSelect,
   Switch,
 } from "@mui/material";
-import { BsSearch, BsSortDown, BsSortUpAlt } from "react-icons/bs";
-import { SearchBoxInterface } from "./interface/SearchBoxInterface";
-import "../styles/css/SearchBox.css";
-import { useEffect, useRef, ChangeEvent } from "react";
+import { BsSortDown, BsSortUpAlt } from "react-icons/bs";
+import { ReviewSortInterface } from "./interface/ReviewSortInterface";
+import "../styles/css/ReviewSort.css";
+import { ChangeEvent } from "react";
 
-const SearchBox = ({
-  searchBoxProps,
-  searchSubmit,
-}: {
-  searchBoxProps: SearchBoxInterface;
-  searchSubmit: () => void;
-}) => {
+const ReviewSort = ({ sortProps }: { sortProps: ReviewSortInterface }) => {
   const {
     sortBy,
     setSortBy,
@@ -28,28 +18,11 @@ const SearchBox = ({
     setDateDescend,
     recommendDescend,
     setRecommendDescend,
-    searchParam,
-    setSearchParam,
-    searchCriteria,
-    setSearchCriteria,
     searchTerm,
     setSearchTerm,
     onlyInterest,
     setOnlyInterest,
-    emptySearchParam,
-    setEmptySearchParam,
-  } = searchBoxProps;
-  const paramRef = useRef(null);
-
-  useEffect(() => {
-    if (emptySearchParam) {
-      paramRef.current.focus();
-    }
-  }, [emptySearchParam]);
-
-  const handleCriteria = (event: SelectChangeEvent) => {
-    setSearchCriteria(event.target.value as string);
-  };
+  } = sortProps;
 
   const handleSortByDate = () => {
     if (sortBy === "date") setDateDescend(!dateDescend);
@@ -65,10 +38,6 @@ const SearchBox = ({
     setOnlyInterest(event.target.checked as boolean);
   };
 
-  const handleSearchParam = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchParam(event.target.value as string);
-  };
-
   const handleSearchTerm = (event: SelectChangeEvent) => {
     setSearchTerm(event.target.value as string);
   };
@@ -79,35 +48,6 @@ const SearchBox = ({
 
   return (
     <>
-      <FormControl className="search-form">
-        <div className="search-container">
-          <Select
-            id="criteria-select"
-            className="criteria-select"
-            value={searchCriteria}
-            onChange={handleCriteria}
-            sx={{ height: "34.25px" }}
-          >
-            <MenuItem value="제목">제목</MenuItem>
-            <MenuItem value="장르">장르</MenuItem>
-            <MenuItem value="작성자">작성자</MenuItem>
-          </Select>
-          <TextField
-            inputRef={paramRef}
-            id="search-keyword"
-            className="search-keyword"
-            onChange={handleSearchParam}
-            error={emptySearchParam && searchParam === ""}
-          />
-          <button
-            type="submit"
-            className="search-button"
-            onClick={searchSubmit}
-          >
-            <BsSearch className="search-icon" />
-          </button>
-        </div>
-      </FormControl>
       <div className="sort-container">
         <button
           className={sortBy === "date" ? "selected" : ""}
@@ -154,4 +94,4 @@ const SearchBox = ({
   );
 };
 
-export default SearchBox;
+export default ReviewSort;

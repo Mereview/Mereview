@@ -1,4 +1,3 @@
-// 나중에 UserInterface에 합치기
 export interface ProfileInfoInterface {
   memberId: string;
   nickname: string;
