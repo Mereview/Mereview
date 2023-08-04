@@ -63,7 +63,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
       <div>
         <Col className="sub-title">박스 오피스 순위</Col>
       </div>
-      <div className="card-list-wrapper">
+      <div className="movie-card-list-wrapper">
         {visibleMovies.map((movie: MovieCardInterface) => (
           <MovieCard
             key={movie.movieId}
