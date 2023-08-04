@@ -42,8 +42,9 @@ public class ReviewUpdateRequest {
         this.keywordRequests = keywordRequests;
     }
 
-    public ReviewUpdateServiceRequest toServiceRequest(UploadFile uploadFile) {
+    public ReviewUpdateServiceRequest toServiceRequest(Long reviewId, UploadFile uploadFile) {
         return ReviewUpdateServiceRequest.builder()
+                .reviewId(reviewId)
                 .title(title)
                 .content(content)
                 .highlight(highlight)

@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.domain.review.entity.Keyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,13 @@ public class KeywordResponse {
         this.keywordId = keywordId;
         this.keywordName = keywordName;
         this.keywordWeight = keywordWeight;
+    }
+
+    public static KeywordResponse of(Keyword keyword) {
+        return KeywordResponse.builder()
+                .keywordId(keyword.getId())
+                .keywordName(keyword.getName())
+                .keywordWeight(keyword.getWeight())
+                .build();
     }
 }
