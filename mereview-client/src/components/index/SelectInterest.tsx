@@ -104,7 +104,7 @@ const SelectInterest = ({ step1, step2 }) => {
             style={{ backgroundImage: `url(${genre[id][1]}.png)` }}
             onClick={onClick}
           >
-            {genre[id][0]}
+            <span id="title">{genre[id][0]}</span>
           </div>
         ))}
       </div>

@@ -12,6 +12,7 @@ import axios from "axios";
 import { userActions } from "./store/user-slice";
 function App() {
   const dispatch = useDispatch();
+
   const getUserInfo = () => {
     const id = localStorage.getItem("id");
     if (id) {
