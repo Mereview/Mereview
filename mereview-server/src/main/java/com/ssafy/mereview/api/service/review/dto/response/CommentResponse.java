@@ -3,9 +3,11 @@ package com.ssafy.mereview.api.service.review.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+@ToString
 @Getter
 @NoArgsConstructor
 public class CommentResponse {
