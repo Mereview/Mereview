@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/reviews/evaluations")
+@RequestMapping("/api/reviews/evaluations")
 @RestController
 public class EvaluationController {
     private final ReviewEvaluationService reviewEvaluationService;
