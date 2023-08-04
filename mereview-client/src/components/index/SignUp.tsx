@@ -9,6 +9,7 @@ import "../../styles/css/SignUp.css";
 import "../../styles/css/ImageUploader.css";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useState } from "react";
+import axios from "axios";
 
 const SignUp = () => {
   const formData = new FormData();
@@ -19,6 +20,7 @@ const SignUp = () => {
   const [checking, setChecking] = useState(false); // 선택된 성별을 상태로 관리합니다.
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileData, setFileData] = useState<FormData | null>(null);
+  const [verificationCode, setVerificationCode] = useState<string | null>("");
   const [inputData, setInputData] = useState<InputDataInterface>({
     email: null,
     password: null,
@@ -53,6 +55,9 @@ const SignUp = () => {
       [id]: value,
     }));
   };
+  const codeChangeHnadler = (event) => {
+    setVerificationCode(event.target.value);
+  };
   const signUp_step1 = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const isValid = Object.values(inputData).every((value) => value !== null);
@@ -61,25 +66,58 @@ const SignUp = () => {
       alert("정보를 정확하게 입력해주세요!");
       return;
     }
+    if (!checkEmail) {
+      alert("메일 인증을 완료해주세요!");
+      return;
+    }
     dispatch(userActions.modal_toggler());
   };
 
   //이메일 인증 핸들러
   const emailCheckHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id;
-    if (id === "step1" && inputData.email) {
+    if (id === "step1" && inputData.email.includes("@")) {
       // axios 로 사용자에게 메일보내는 로직
+      const SEND_EMAIL_URL = "http://localhost:8080/email/send";
+      const data = { email: inputData.email };
       setChecking(true);
+      alert(
+        `${inputData.email} 로 메일을 보냈습니다. 인증번호를 확인해주세요!`
+      );
+      axios
+        .post(SEND_EMAIL_URL, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .catch((err) => {
+          alert("메일 전송에 실패했습니다!");
+        });
+    } else if (id === "step2") {
+      const CHECK_EMAIL_URL = "http://localhost:8080/email/check";
+      const data = {
+        email: inputData.email,
+        verificationCode: verificationCode,
+      };
+
+      axios
+        .post(CHECK_EMAIL_URL, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          setCheckEmail(true);
+          setChecking(false);
+          alert("이메일 인증에 성공했습니다!");
+        })
+        .catch((err) => alert("인증번호를 확인해주세요!"));
     } else {
-      alert("메일을 정확하게 입력해주세요.");
-    }
-    if (id === "step2") {
-      // 인증메일 핀과 일치하는지 검토하는 로직
-      setCheckEmail(true);
-      setChecking(false);
+      alert("메일을 정확히 입력해주세요!");
     }
   };
 
+  // 이미지업로드 함수부분
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -148,7 +186,8 @@ const SignUp = () => {
                         id="code"
                         styles="input-line form-control bg-transparent text-black"
                         placeholder="Code"
-                        onChange={onChange}
+                        onChange={codeChangeHnadler}
+                        value={verificationCode}
                       />
                       <label className="fw-bold" htmlFor="email">
                         Code
@@ -199,7 +238,7 @@ const SignUp = () => {
                   type="password"
                 />
                 <label className="fw-bold" htmlFor="password">
-                  Password
+                  Password: 대/소/특수문자 포함 9자 이상
                 </label>
               </div>
               <div className="form-floating mb-3 p-0 mx-auto">
