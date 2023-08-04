@@ -33,7 +33,7 @@ public class MemberQueryService {
 
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
 
-        if (searchMember == null) {
+        if (searchMember == null || searchMember.isDeleted()) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
         if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {

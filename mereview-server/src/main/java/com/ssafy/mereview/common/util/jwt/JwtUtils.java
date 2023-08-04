@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 public class JwtUtils {
     private static String secret;
+
     private int accessExpirationMs;
 
     private int refreshTokenExpirationMs;
