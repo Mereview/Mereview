@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import ExperienceBar from "../components/ExperienceBar";
-import AchievedBadge from "../components/AchievedBadge";
+import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
 import {
   Experience,
   ProfileInfoInterface,
+  AchievedBadge,
 } from "../components/interface/ProfilePageInterface";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
@@ -13,6 +14,24 @@ import { ReviewSortInterface } from "../components/interface/ReviewSortInterface
 import "../styles/css/ProfilePage.css";
 
 /* 유저 더미 데이터 생성 시작 */
+const dummyBadges: AchievedBadge[] = [
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0001",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0002",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0003",
+  },
+];
+
 const userInfo: ProfileInfoInterface = {
   memberId: "id123123",
   nickname: "닉네임123",
@@ -24,7 +43,11 @@ const userInfo: ProfileInfoInterface = {
   commentCount: 5,
   followerCount: 3,
   followingCount: 5,
+  highestTier: "gold",
+  badges: dummyBadges,
   joinDate: new Date("2022-06-03 07:23:53"),
+  todayVisitor: 2,
+  totalVisitor: 34,
 };
 
 const defaultProfileImage = "/defaultProfile.png";
@@ -240,9 +263,9 @@ const ProfilePage = () => {
             style={{ width: "450px" }}
           />
           <div className="follow-info">
-            팔로잉: {userInfo.followerCount} | 팔로워 :{" "}
-            {userInfo.followingCount}
-            <span> 팔로우 버튼^^</span>
+            <span>팔로잉: {userInfo.followerCount}</span>
+            <span>팔로워: {userInfo.followingCount}</span>
+            <span>팔로우 버튼^^</span>
           </div>
         </div>
         <div className="profile-chart-scroll-div">
@@ -272,12 +295,16 @@ const ProfilePage = () => {
               </Col>
             </Row>
             <Row>
+              <Col className="visitors">
+                방문자) 오늘: {userInfo.todayVisitor} / 전체:{" "}
+                {userInfo.totalVisitor}
+              </Col>
               <Col className="join-date">가입일: {joinDateText}</Col>
             </Row>
           </div>
         </div>
         <div className="profile-badge-container">
-          <AchievedBadge />
+          <BadgeList badgeListProps={userInfo.badges} />
         </div>
       </div>
       <hr />
