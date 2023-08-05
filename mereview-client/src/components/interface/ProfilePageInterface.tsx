@@ -15,6 +15,7 @@ export interface ProfileInfoInterface {
   commentCount: number; // 댓글 작성 수
   followerCount: number;
   followingCount: number;
+  followed: boolean;
   highestTier: "bronze" | "silver" | "gold" | "platinum" | "diamond" | null;
   badges: AchievedBadge[];
   joinDate: number | Date;

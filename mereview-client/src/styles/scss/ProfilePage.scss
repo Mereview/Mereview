@@ -36,6 +36,10 @@ $profile-image-size: 450px;
       padding-right: 20px;
       display: flex;
       justify-content: space-between;
+
+      .follow {
+        cursor: pointer;
+      }
     }
   }
 
@@ -114,5 +118,6 @@ $profile-image-size: 450px;
     border: 1px solid $black;
     border-radius: 5px;
     height: $profile-image-size - 100px;
+    overflow: auto;
   }
 }

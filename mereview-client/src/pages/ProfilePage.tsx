@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
 import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
@@ -26,9 +27,74 @@ const dummyBadges: AchievedBadge[] = [
     achievementId: "0002",
   },
   {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0012",
+  },
+  {
     genre: "범죄",
     rank: "silver",
-    achievementId: "0003",
+    achievementId: "0043",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0041",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0231",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0072",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0053",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0081",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0542",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0063",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0992",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0113",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0211",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0312",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0653",
   },
 ];
 
@@ -43,6 +109,7 @@ const userInfo: ProfileInfoInterface = {
   commentCount: 5,
   followerCount: 3,
   followingCount: 5,
+  followed: false,
   highestTier: "gold",
   badges: dummyBadges,
   joinDate: new Date("2022-06-03 07:23:53"),
@@ -203,13 +270,19 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
 const ProfilePage = () => {
+  generateData();
+
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [followed, setFollowed] = useState<boolean>(false);
 
-  generateData();
+  useEffect(() => {
+    // 유저 정보 불러오기
+    // 유저정보 기다리기 https://stackoverflow.com/questions/71368340/how-to-wait-for-setstate-in-useeffect-until-render
+  }, []);
 
   useEffect(() => {
     // reload review list
@@ -225,10 +298,10 @@ const ProfilePage = () => {
           ? "DESC"
           : "ASC"
       }, 조회기간: ${
-        searchTerm === "" ? "전체기간" : searchTerm + "개월"
+        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
-  }, [sortBy, dateDescend, recommendDescend, onlyInterest]);
+  }, [sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
 
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
@@ -241,6 +314,16 @@ const ProfilePage = () => {
     setSearchTerm: setSearchTerm,
     onlyInterest: onlyInterest,
     setOnlyInterest: setOnlyInterest,
+  };
+
+  const follow = () => {
+    if (followed) {
+      console.log("unfollow!");
+    } else {
+      console.log("follow!");
+    }
+
+    setFollowed(!followed);
   };
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
@@ -265,7 +348,9 @@ const ProfilePage = () => {
           <div className="follow-info">
             <span>팔로잉: {userInfo.followerCount}</span>
             <span>팔로워: {userInfo.followingCount}</span>
-            <span>팔로우 버튼^^</span>
+            <span className="follow" onClick={follow}>
+              팔로우 {followed ? <BsHeartFill /> : <BsHeart />}
+            </span>
           </div>
         </div>
         <div className="profile-chart-scroll-div">

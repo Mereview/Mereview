@@ -38,7 +38,7 @@ const BadgeList = ({ badgeListProps }: BadgeListInterface) => {
     <>
       <div>
         {badgeListProps.map((badge) => (
-          <BadgeComponent badgeInfo={badge} />
+          <BadgeComponent key={badge.achievementId} badgeInfo={badge} />
         ))}
       </div>
     </>
