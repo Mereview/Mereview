@@ -6,6 +6,8 @@ import {
   Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { BarControllerDatasetOptions } from "chart.js";
+import "../styles/css/ExperienceBar.css";
 
 // Use API later
 const genres: Record<string, string> = {
@@ -62,13 +64,13 @@ const ExperienceBar = (experienceProps: { userExpData: Experience[] }) => {
     else return 0;
   });
 
-  const labels: string[] = [];
+  const labels: string[][] = [];
   const typeLables: string[] = [];
   const expData: number[] = [];
   const backgroundColor: string[] = [];
   const borderColor: string[] = [];
   for (const data of userData) {
-    labels.push(genres[data.genre] + " - " + data.typeName);
+    labels.push([genres[data.genre], data.typeName]);
     expData.push(data.exp);
     let selectedTierScore: number = 0;
     for (const tierScore of tierScores) {
@@ -90,13 +92,17 @@ const ExperienceBar = (experienceProps: { userExpData: Experience[] }) => {
         backgroundColor: backgroundColor,
         borderColor: borderColor,
         borderWidth: 1,
+        categoryPercentage: 1,
+        barPercentage: 0.33,
       },
     ],
   };
 
   return (
     <>
-      <Bar data={chartData} />
+      <div className="experience-bar-container">
+        <Bar data={chartData} width={4000} height={500} />
+      </div>
     </>
   );
 };
