@@ -1,3 +1,9 @@
+export interface AchievedBadge {
+  genre: string;
+  rank: "bronze" | "silver" | "gold" | null;
+  achievementId: string;
+}
+
 export interface ProfileInfoInterface {
   memberId: string;
   nickname: string;
@@ -9,9 +15,12 @@ export interface ProfileInfoInterface {
   commentCount: number; // 댓글 작성 수
   followerCount: number;
   followingCount: number;
+  followed: boolean;
+  highestTier: "bronze" | "silver" | "gold" | "platinum" | "diamond" | null;
+  badges: AchievedBadge[];
   joinDate: number | Date;
-  // todayVisitor: number; // 오늘 방문자 수
-  // totalVisitor: number; // 총 방문자 수
+  todayVisitor: number; // 오늘 방문자 수
+  totalVisitor: number; // 총 방문자 수
 }
 
 export interface Experience {

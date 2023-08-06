@@ -260,7 +260,7 @@ const ReviewHome = () => {
           ? "DESC"
           : "ASC"
       }, 조회기간: ${
-        searchTerm === "" ? "전체기간" : searchTerm + "개월"
+        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
   }, [sortBy, dateDescend, recommendDescend, searchTerm, onlyInterest]);
