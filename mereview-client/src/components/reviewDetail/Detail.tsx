@@ -39,6 +39,41 @@ const Detail = ({ review, movie }: TODProps) => {
       writer: "작성자5",
       comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
     },
+    {
+      id: 6,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 7,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 8,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 9,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 10,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 11,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
+    {
+      id: 12,
+      writer: "작성자5",
+      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
+    },
   ];
   const 추천해줄리뷰 = [
     {
@@ -83,9 +118,9 @@ const Detail = ({ review, movie }: TODProps) => {
       <div className="first-line">
         <h1>{review.title}</h1>
         <div className="emotionbox">
-          <img src="/dummy.png" alt="유용해요" /> <span>20</span>
-          <img src="/dummy.png" alt="재밌어요" /> <span>20</span>
-          <img src="/dummy.png" alt="싫어요" /> <span>20</span>
+          <img src="/smile.png" alt="유용해요" /> <span>20</span>
+          <img src="/GraduationCap.png" alt="재밌어요" /> <span>20</span>
+          <img src="/thumbdown.png" alt="싫어요" /> <span>20</span>
         </div>
       </div>
       <hr />
@@ -107,42 +142,37 @@ const Detail = ({ review, movie }: TODProps) => {
             </form>
           </div>
 
-          <div>
-            <div
-              style={{
-                border: "solid black 1px",
-                borderRadius: "30px",
-                marginTop: "20px",
-                backgroundColor: "white",
-                padding: "50px",
-                height: "1000px",
-              }}
-            >
-              {commentDummy.map((comment) => (
-                <div key={comment.id} style={{ width: "100%", height: "auto" }}>
-                  <p>{comment.comment}</p>
-                  <p>{comment.writer}</p>
-                  <hr style={{ border: "dashed 2px gray" }} />
-                </div>
-              ))}
-            </div>
+          <div
+            className="lst"
+            style={{
+              border: "solid black 1px",
+              borderRadius: "30px",
+              marginTop: "20px",
+              padding: "50px",
+              height: "90vh",
+            }}
+          >
+            {commentDummy.map((comment) => (
+              <div key={comment.id} style={{ width: "100%", height: "auto" }}>
+                <p>{comment.comment}</p>
+                <p>{comment.writer}</p>
+                <hr style={{ border: "dashed 2px gray" }} />
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="recommend">
-          <div
-            className="vertical"
-            style={{
-              border: "3px",
-              width: "auto",
-              height: "1120px",
-              backgroundColor: "white",
-            }}
-          >
-            {추천해줄리뷰.map((review) => (
-              <div></div>
-            ))}
-          </div>
+        <div
+          className="vertical"
+          style={{
+            border: "3px",
+            width: "auto",
+            height: "103vh",
+          }}
+        >
+          {추천해줄리뷰.map((review) => (
+            <div></div>
+          ))}
         </div>
       </div>
     </div>
