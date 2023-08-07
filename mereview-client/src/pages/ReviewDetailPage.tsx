@@ -15,7 +15,11 @@ export interface DummyMov {
 }
 const ReviewDetail = (props: any) => {
   const imgURL = "/test.jpg";
-  const style = { backgroundImage: `url(${imgURL})` };
+  const style = {
+    backgroundImage: `url(${imgURL})`,
+    filter: "blur(5px)",
+    zIndex: "-1",
+  };
   const dummyReview: DummyRev = {
     title: "믿고 보는 톰크루즈",
     oneLine: "볼 수 밖에 없다",
@@ -36,7 +40,14 @@ const ReviewDetail = (props: any) => {
   };
 
   return (
-    <div className="section" style={style}>
+    <div className="section">
+      <div
+        className="blurred"
+        style={{
+          backgroundImage: `url(${imgURL})`,
+          filter: "blur(5px)",
+        }}
+      ></div>
       <Top review={dummyReview} movie={dummyMovie} />
       <Detail review={dummyReview} movie={dummyMovie} />
     </div>
