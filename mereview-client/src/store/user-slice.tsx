@@ -5,19 +5,16 @@ import {
 } from "../components/interface/UserInterface";
 const initialState: UserInterface = {
   isAthenticated: false,
+  id: null,
   thirdModal: false,
   token: "",
   email: "",
+  gender: "",
+  birthDate: "",
   nickname: "",
-  signUpData: {
-    email: "",
-    password: "",
-    nickname: "",
-    birthDate: "",
-    gender: "",
-    file: "",
-    interest: [{}],
-  },
+  interests: [],
+  tiers: [],
+  achievements: [],
 };
 const userSlice = createSlice({
   name: "user",
@@ -26,11 +23,12 @@ const userSlice = createSlice({
     authorization(state, action) {
       console.log(action.payload);
       state.isAthenticated = true;
-      state.token = action.payload.accessToken;
+      state.id = action.payload.id;
       state.email = action.payload.email;
+      state.gender = action.payload.gender;
       state.nickname = action.payload.nickname;
-      localStorage.setItem("id", action.payload.id);
-      localStorage.setItem("token", action.payload.accessToken);
+      state.birthDate = action.payload.birthDate;
+      state.interests = action.payload.interests;
       console.log("로그인성공");
     },
     logout(state) {
@@ -44,23 +42,7 @@ const userSlice = createSlice({
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;
     },
-    signUp_step1(state, action: PayloadAction<InputDataInterface>) {
-      // 정보입력
-      state.signUpData.email = action.payload.email;
-      state.signUpData.password = action.payload.password;
-      state.signUpData.nickname = action.payload.nickname;
-      state.signUpData.birthDate = action.payload.birthDate;
-      state.signUpData.gender = action.payload.gender;
-    },
 
-    signUp_step3(state, action) {
-      // 관심사 선택
-      state.signUpData.interest = action.payload;
-
-      // const data = state.signUpData;
-
-      // fetch 이용해서 백에 DATA POST
-    },
     authToggler(state) {
       state.isAthenticated = true;
     },

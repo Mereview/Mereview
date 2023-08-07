@@ -18,11 +18,17 @@ function App() {
     if (id) {
       dispatch(userActions.authToggler());
       const getUserInfoURL = `http://localhost:8080/api/members/${id}`;
-      axios.get(getUserInfoURL).then((res) => console.log("성공"));
+      axios
+        .get(getUserInfoURL)
+        .then((res) => res.data.data)
+        .then((data) => {
+          dispatch(userActions.authorization(data));
+        })
+        .catch((err) => console.log("사용자 인증에서 오류가 발생했습니다."));
     }
   };
-  useEffect(getUserInfo, []);
   const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
+  useEffect(getUserInfo, []);
   return (
     <div className="App">
       <Router>
@@ -31,7 +37,7 @@ function App() {
           <Route path="/" Component={IndexPage}></Route>
           <Route path="/review" Component={ReviewHome}></Route>
           <Route path="/review/write" Component={ReviewWrite}></Route>
-          <Route path="/detail" Component={ReviewDetailPage}></Route>
+          <Route path="/review/:id" Component={ReviewDetailPage}></Route>
           <Route path="/profile" Component={ProfilePage}></Route>
         </Routes>
       </Router>

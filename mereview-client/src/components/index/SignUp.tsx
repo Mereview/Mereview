@@ -32,7 +32,7 @@ const SignUp = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   useEffect(() => {
     setAnimate(true);
-  }, [fileData]);
+  }, []);
   const dispatch = useDispatch();
   // 초기 상태로서 빈 문자열 또는 null로 초기화합니다.
   const valid = useSelector((state: any) => state.user.thirdModal);
@@ -128,7 +128,7 @@ const SignUp = () => {
       setFileData(formData);
     }
   }, []);
-
+  console.log(fileData);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
@@ -320,7 +320,13 @@ const SignUp = () => {
           </form>
         </Col>
       </Row>
-      {valid ? <SelectInterest step1={inputData} step2={fileData} /> : null}
+      {valid ? (
+        <SelectInterest
+          step1={inputData}
+          step2={fileData}
+          verificationCode={verificationCode}
+        />
+      ) : null}
     </Container>
   );
 };

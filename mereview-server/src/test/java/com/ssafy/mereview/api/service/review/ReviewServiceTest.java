@@ -5,16 +5,21 @@ import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceReq
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
+import com.ssafy.mereview.domain.member.entity.Interest;
 import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.repository.MemberInterestQueryRepository;
+import com.ssafy.mereview.domain.member.repository.MemberInterestRepository;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
+import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
 import com.ssafy.mereview.domain.review.repository.KeywordRepository;
+import com.ssafy.mereview.domain.review.repository.NotificationRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +36,8 @@ import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.DISLIKE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @TestMethodOrder(MethodOrderer.DisplayName.class)
@@ -60,12 +66,22 @@ class ReviewServiceTest {
     @Autowired
     private MovieRepository movieRepository;
 
+    @Autowired
+    private MemberInterestRepository interestRepository;
+
+    @Autowired
+    private MemberInterestQueryRepository interestQueryRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     @DisplayName("1. 새로운 리뷰를 작성한다.")
     @Test
     void createReviewTest() {
         // given
         createGenre();
         createMember();
+        createInterest();
         createMovie();
 
         List<KeywordCreateServiceRequest> keywordRequests = createKeywordCreateRequests();
@@ -82,6 +98,10 @@ class ReviewServiceTest {
 
         // then
         assertThat(saveId).isGreaterThan(0);
+        assertThat(keywordRepository.findAll()).hasSize(1);
+        assertThat(backgroundImageRepository.findById(1L)).isNotNull();
+        assertThat(interestQueryRepository.searchRandomMember(review.getGenre().getId(), 100))
+                .hasSize(1);
 
     }
 
@@ -197,6 +217,14 @@ class ReviewServiceTest {
                 .isUsing(true)
                 .build();
         genreRepository.save(genre);
+    }
+
+    private void createInterest() {
+        Interest interest = Interest.builder()
+                .genre(Genre.builder().id(1L).build())
+                .member(Member.builder().id(1L).build())
+                .build();
+        interestRepository.save(interest);
     }
 
     private Long createReview() {
