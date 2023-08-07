@@ -26,7 +26,7 @@ export async function searchReview(data: Object, success, fail) {
 }
 
 export async function updateReview(data: JSON, success, fail) {
-  await api.put(`/${data["id"]}`).then(success).catch(fail);
+  await apiForm.put(`/${data["id"]}`).then(success).catch(fail);
 }
 
 export async function deleteReview(data: JSON, success, fail) {
