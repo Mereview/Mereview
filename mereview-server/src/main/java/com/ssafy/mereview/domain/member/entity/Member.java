@@ -8,6 +8,8 @@ import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,6 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 public class Member extends BaseEntity {
 
     @Id
@@ -45,6 +48,7 @@ public class Member extends BaseEntity {
     private String birthDate;
 
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'USER'")
     private Role role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -62,8 +66,6 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private MemberVisitCount memberVisit;
 
-    private boolean isDeleted;
-
     private String introduce;
 
     @ManyToMany
@@ -78,7 +80,7 @@ public class Member extends BaseEntity {
     private List<Member> following = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, boolean isDeleted, String introduce, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<Member> followers, List<Member> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -91,7 +93,6 @@ public class Member extends BaseEntity {
         this.reviews = reviews;
         this.profileImage = profileImage;
         this.memberVisit = memberVisit;
-        this.isDeleted = isDeleted;
         this.introduce = introduce;
         this.followers = followers;
         this.following = following;
@@ -127,7 +128,7 @@ public class Member extends BaseEntity {
     }
 
     public void delete(){
-        this.isDeleted = true;
+        this.role = Role.DELETED;
     }
 
     public void update(List<Interest> interests) {

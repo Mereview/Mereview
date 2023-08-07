@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.member.dto.response;
 
+import com.ssafy.mereview.domain.member.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +18,13 @@ public class MemberLoginResponse {
 
     private String nickname;
 
-    private String role;
+    private Role role;
 
     private String accessToken;
 
     private String refreshToken;
     @Builder
-    public MemberLoginResponse(Long id, String email, ProfileImageResponse profileImage, String nickname, String role, String accessToken, String refreshToken) {
+    public MemberLoginResponse(Long id, String email, ProfileImageResponse profileImage, String nickname, Role role, String accessToken, String refreshToken) {
         this.id = id;
         this.email = email;
         this.profileImage = profileImage;
