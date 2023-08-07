@@ -9,7 +9,7 @@ export const postSignUp = (data) => {
   );
   axios
     .post(
-      "http://localhost:8080/members/sign-up", // baseURL은 여기서 URL로 수정
+      "http://i9c211.p.ssafy.io:8080/members/sign-up", // baseURL은 여기서 URL로 수정
       formData,
       {
         headers: {

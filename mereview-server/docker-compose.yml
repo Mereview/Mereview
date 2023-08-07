@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "springboot"
+    ports:
+      - "8080:8080"
+    networks:
+      - mereview_back
+      - mereview_front
+
+networks:
+  mereview_back:
+    external: true
+  mereview_front:
+    external: true
