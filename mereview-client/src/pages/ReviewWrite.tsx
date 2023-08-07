@@ -43,18 +43,20 @@ const ReviewWrite = () => {
   const contentRef = useRef(null);
   const onMovieNameHandler = (e) => {
     movieName.current = e.target.value;
+    console.log(movieName.current);
     let movieList = [];
     const encodedKeyword = encodeURIComponent(movieName.current);
     axios
       .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
       .then((res) => {
-        console.log(res.data);
-        movieList = res.data;
+        console.log(res.data.data);
+        movieList = res.data.data;
       })
       .catch(() => {
         console.log("error");
       });
     setAutoCompleteData(movieList);
+    console.log(movieList);
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -182,18 +184,15 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-            onChange={onMovieNameHandler}
+            onInput={onMovieNameHandler}
             id="movie"
             value={movieName.current}
             list="autoList"
           ></Form.Control>
           <datalist id="autoList">
-            autoCompleteData.length != 0 ?
             {autoCompleteData.map((item) => (
               <option key={item} value={item} />
             ))}{" "}
-            :
-            <option value={"데이터 없음"} />
           </datalist>
         </Col>
       </Row>
