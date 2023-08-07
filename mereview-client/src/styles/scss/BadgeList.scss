@@ -1,0 +1,14 @@
+@import "Style";
+
+$badge-size: 150px;
+.achieved-badge {
+  width: $badge-size;
+  height: $badge-size;
+  display: inline-block;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
