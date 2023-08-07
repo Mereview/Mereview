@@ -8,7 +8,6 @@ import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-import writeReview from "../api/review";
 
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
@@ -18,7 +17,6 @@ const ReviewWrite = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  // const [movieName, setMovieName] = useState<string>("");
   const movieName = useRef("");
   // const movieList = axios.get("http://localhost:8080/api/movies/");
   const [autoCompleteData, setAutoCompleteData] = useState([]);
@@ -41,22 +39,30 @@ const ReviewWrite = () => {
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
-  const onMovieNameHandler = (e) => {
-    movieName.current = e.target.value;
+  const onMovieNameHandler = (event) => {
+    movieName.current = event.target.value;
     console.log(movieName.current);
-    let movieList = [];
     const encodedKeyword = encodeURIComponent(movieName.current);
-    axios
-      .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+    axios.get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
       .then((res) => {
-        console.log(res.data.data);
-        movieList = res.data.data;
-      })
-      .catch(() => {
-        console.log("error");
-      });
-    setAutoCompleteData(movieList);
-    console.log(movieList);
+        console.log(res.data);
+        inputData.current.movieId = res.data.data.id;
+    })
+    // inputData.current.movieId
+    // console.log(movieName.current);
+    // let movieList = [];
+    // const encodedKeyword = encodeURIComponent(movieName.current);
+    // axios
+    //   .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+    //   .then((res) => {
+    //     console.log(res.data.data);
+    //     movieList = res.data.data;
+    //   })
+    //   .catch(() => {
+    //     console.log("error");
+    //   });
+    // setAutoCompleteData(movieList);
+    // console.log(movieList);
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -71,10 +77,6 @@ const ReviewWrite = () => {
       alert("한줄평을 입력해주세요");
       return;
     }
-    if (inputData.current.content == null) {
-      alert("리뷰 내용을 입력해주세요");
-      return;
-    }
     // console.log(movieList);
     const keywordList = [];
     keywordList.push(childRef1.current.getKeyInfo());
@@ -86,9 +88,11 @@ const ReviewWrite = () => {
       alert("키워드 목록을 입력해주세요");
       return;
     }
-    const reviewContent = contentRef.current
-      .getContent()
-      .replace(/<[^>]*>/g, "");
+    const reviewContent = contentRef.current;
+    if (inputData.current.content == null) {
+      alert("리뷰 내용을 입력해주세요");
+      return;
+    }
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
@@ -100,7 +104,7 @@ const ReviewWrite = () => {
       })
     );
     formData.append(
-      "file",
+      "uploadFile",
       new Blob([JSON.stringify(selectedImage)], {
         type: "application/json",
       })
@@ -113,6 +117,7 @@ const ReviewWrite = () => {
       .catch(() => {
         console.log("fail");
       });
+    
     console.log(inputData.current);
   };
   const onChangeHandler = (event) => {
@@ -185,15 +190,16 @@ const ReviewWrite = () => {
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
             onInput={onMovieNameHandler}
+            // onChange={onMovieNameHandler}
             id="movie"
-            value={movieName.current}
-            list="autoList"
+            // value={movieName.current}
+            // list="autoList"
           ></Form.Control>
-          <datalist id="autoList">
+          {/* <datalist id="autoList">
             {autoCompleteData.map((item) => (
               <option key={item} value={item} />
             ))}{" "}
-          </datalist>
+          </datalist> */}
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
