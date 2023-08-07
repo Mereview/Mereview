@@ -20,19 +20,17 @@ public class CommentService {
         return commentRepository.save(request.toEntity()).getId();
     }
 
-    public Long update(Long commentId, CommentUpdateServiceRequest request) {
-        Comment comment = commentRepository.findById(commentId)
+    public Long update(CommentUpdateServiceRequest request) {
+        Comment comment = commentRepository.findById(request.getCommentId())
                 .orElseThrow(NoSuchElementException::new);
         comment.update(request);
-        Long updateId = comment.getId();
-        return updateId;
+        return request.getCommentId();
     }
 
     public Long delete(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NoSuchElementException::new);
-        Long deleteId = comment.getId();
         commentRepository.delete(comment);
-        return deleteId;
+        return commentId;
     }
 }

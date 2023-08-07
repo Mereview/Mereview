@@ -107,7 +107,7 @@ class CommentServiceTest {
                 .build();
         
         // when
-        Long commentId = commentService.update(member.getId(), request);
+        Long commentId = commentService.update(request);
         Comment updatedComment = commentRepository.findById(commentId).orElseThrow();
         // then
         assertThat(commentId).isEqualTo(1L);
