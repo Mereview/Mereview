@@ -4,16 +4,21 @@ import com.ssafy.mereview.api.service.review.dto.request.KeywordCreateServiceReq
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
+import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.repository.MemberInterestQueryRepository;
 import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Keyword;
+import com.ssafy.mereview.domain.review.entity.Notification;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
 import com.ssafy.mereview.domain.review.repository.KeywordRepository;
+import com.ssafy.mereview.domain.review.repository.NotificationRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -26,12 +31,22 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final KeywordRepository keywordRepository;
     private final BackgroundImageRepository backgroundImageRepository;
+    private final MemberInterestQueryRepository interestQueryRepository;
+    private final NotificationRepository notificationRepository;
+
+    private static final int MEMBER_LIMIT_COUNT = 100;
 
     public Long create(ReviewCreateServiceRequest request) {
         Long saveId = reviewRepository.save(request.toEntity()).getId();
 
-        keywordRepository.saveAll(createKeywords(saveId, request.getKeywordServiceRequests()));
-        backgroundImageRepository.save(createBackgroundImage(saveId, request.getUploadFile()));
+        List<Keyword> keywords = createKeywords(saveId, request.getKeywordServiceRequests());
+        keywordRepository.saveAll(keywords);
+
+        BackgroundImage backgroundImage = createBackgroundImage(saveId, request.getUploadFile());
+        backgroundImageRepository.save(backgroundImage);
+
+        List<Notification> notifications = createNotifications(request, saveId);
+        notificationRepository.saveAll(notifications);
 
         return saveId;
     }
@@ -67,5 +82,18 @@ public class ReviewService {
                 .review(Review.builder().id(reviewId).build())
                 .uploadFile(uploadFile)
                 .build();
+    }
+
+    private List<Notification> createNotifications(ReviewCreateServiceRequest request, Long saveId) {
+        List<Long> memberIds = interestQueryRepository.searchRandomMember(request.getGenreId(), MEMBER_LIMIT_COUNT);
+        List<Notification> notifications = new ArrayList<>();
+        for (Long memberId : memberIds) {
+            Notification notification = Notification.builder()
+                    .review(Review.builder().id(saveId).build())
+                    .member(Member.builder().id(memberId).build())
+                    .build();
+            notifications.add(notification);
+        }
+        return notifications;
     }
 }
