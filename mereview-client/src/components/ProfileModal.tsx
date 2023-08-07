@@ -1,7 +1,7 @@
 import "../styles/css/ProfileModal.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userActions } from "../store/user-slice";
 
@@ -12,7 +12,7 @@ const ProfileModal = () => {
   }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const userNickname = useSelector((state: any) => state.user.nickname);
   const logout = () => {
     dispatch(userActions.logout());
     navigate("/");
@@ -21,7 +21,7 @@ const ProfileModal = () => {
     <div className="toplevel">
       <div className={`arrow ${animate ? "animate" : ""}`}></div>
       <div className={`first ${animate ? "animate" : ""}`}>
-        반갑다 user.nickname
+        반갑다 {userNickname}
       </div>
       <div className={`second ${animate ? "animate" : ""}`}>
         <Link to={"/profile"}>MY PAGE</Link>
