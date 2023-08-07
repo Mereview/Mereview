@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
 import { uiActions } from "../../store/ui-silce";
-import { SignUpInterface } from "../interface/UserInterface";
 import { postSignUp } from "../../api/user";
-import axios from "axios";
+
 interface GenreInfo {
   [id: string]: [string, string];
 }
@@ -48,7 +47,7 @@ const SelectInterest = ({ step1, step2 }) => {
   const data = {
     ...step1,
     file: step2,
-    interest: interest,
+    interests: interest,
   };
   const signUp_step3 = () => {
     console.log(data);

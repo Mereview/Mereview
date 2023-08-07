@@ -1,21 +1,29 @@
 import axios from "axios";
-import userSlice from "../store/user-slice";
-import { userActions } from "../store/user-slice";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 export const postSignUp = (data) => {
-  const formData = new FormData();
-  formData.append("file", data.file);
-  formData.append(
-    "request",
-    new Blob([JSON.stringify(data)], { type: "application/json" })
-  );
-  console.log(formData.get("request"));
+  console.log(data.file);
+  let submitData: null | FormData = null;
+  if (data.file) {
+    data.file.append(
+      "request",
+      new Blob([JSON.stringify(data)], { type: "application/json" })
+    );
+    submitData = data.file;
+  } else {
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(data)], { type: "application/json" })
+    );
+    submitData = formData;
+  }
+
+  console.log(data.file.get("file"));
+  console.log(data.file.get("request"));
   axios
     .post(
       "http://localhost:8080/api/members/sign-up", // baseURL은 여기서 URL로 수정
-      formData,
+      submitData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
