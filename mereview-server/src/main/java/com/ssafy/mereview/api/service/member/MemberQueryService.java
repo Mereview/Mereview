@@ -33,7 +33,7 @@ public class MemberQueryService {
 
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
 
-        if (searchMember == null || searchMember.isDeleted()) {
+        if (searchMember == null || searchMember.getRole().equals(Role.DELETED)) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
         if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {
@@ -50,6 +50,7 @@ public class MemberQueryService {
         return MemberLoginResponse.builder()
                 .id(searchMember.getId())
                 .email(searchMember.getEmail())
+                .role(searchMember.getRole())
                 .nickname(searchMember.getNickname())
                 .profileImage(createProfileImageResponse(searchMember.getProfileImage()))
                 .accessToken(token.get("accessToken"))
@@ -85,7 +86,7 @@ public class MemberQueryService {
 
     private ProfileImageResponse createProfileImageResponse(ProfileImage profileImage) {
         log.debug("ProfileImage : {}", profileImage);
-        return profileImage.getUploadFile() == null ? ProfileImageResponse.of(profileImage) : null;
+        return profileImage.getUploadFile() != null ? ProfileImageResponse.of(profileImage) : ProfileImageResponse.builder().build();
     }
 
     private List<MemberAchievementResponse> searchMemberAchievementResponse(Long id) {

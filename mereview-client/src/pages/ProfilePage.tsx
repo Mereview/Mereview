@@ -13,6 +13,7 @@ import { ReviewCardInterface } from "../components/interface/ReviewCardInterface
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import "../styles/css/ProfilePage.css";
+import { getInfo } from "../api/members";
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -269,9 +270,26 @@ const a = {
 const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
+/* api test */
+const id: string = localStorage.getItem("id");
+
+const test = async (userId: number) => {
+  await getInfo(
+    userId,
+    ({ data }) => {
+      console.log(data);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+/* api test */
+
 const ProfilePage = () => {
   generateData();
 
+  const [isFetched, setIsFetched] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
@@ -280,8 +298,14 @@ const ProfilePage = () => {
   const [followed, setFollowed] = useState<boolean>(false);
 
   useEffect(() => {
-    // 유저 정보 불러오기
-    // 유저정보 기다리기 https://stackoverflow.com/questions/71368340/how-to-wait-for-setstate-in-useeffect-until-render
+    const fetchData = async () => {
+      for (var i = 0; i < 100; i++) {
+        await test(Number(id));
+      }
+      setIsFetched(true);
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -336,6 +360,7 @@ const ProfilePage = () => {
 
   const joinDateText = `${year}-${month}-${day}`;
 
+  if (!isFetched) return <>Loading...</>;
   return (
     <>
       <div className="profile-image-chart-container">
