@@ -19,7 +19,7 @@ interface SelectInterestProps {
   step2: FormData;
 }
 
-const SelectInterest = ({ step1, step2 }) => {
+const SelectInterest = ({ step1, step2, verificationCode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [interest, setInterest] = useState<InterestInterface[]>([]);
   const dispatch = useDispatch();
@@ -48,6 +48,7 @@ const SelectInterest = ({ step1, step2 }) => {
     ...step1,
     file: step2,
     interests: interest,
+    verificationCode: verificationCode,
   };
   const signUp_step3 = () => {
     console.log(data);
