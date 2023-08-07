@@ -11,14 +11,16 @@ import axios from "axios";
 import writeReview from "../api/review";
 
 const ReviewWrite = () => {
+  const url = "http://localhost:8080/api";
   const userid = useSelector((state: any) => state.user.id);
   const nickname = useSelector((state: any) => state.user.nickname);
-  const movieList = ["test1", "test2", "test3"];
   const profile = "/logo2.png";
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  const [movieName, setMovieName] = useState<string | null>("");
+  // const [movieName, setMovieName] = useState<string>("");
+  const movieName = useRef("");
+  // const movieList = axios.get("http://localhost:8080/api/movies/");
   const [autoCompleteData, setAutoCompleteData] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
@@ -39,14 +41,51 @@ const ReviewWrite = () => {
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
-
+  const onMovieNameHandler = (e) => {
+    movieName.current = e.target.value;
+    // console.log(movieName.current);
+    // setMovieName(e.target.value);
+    let movieList = [];
+    // console.log(movieName);
+    axios
+      .get(`http://localhost:8080/api/movies?keyword=${movieName.current}`)
+      .then((res) => {
+        console.log(res.data);
+        movieList = res.data;
+      })
+      .catch(() => {
+        console.log("error");
+      });
+    setAutoCompleteData(movieList);
+  };
   const handleBtnClick = () => {
+    if (inputData.current.title == null) {
+      alert("제목을 입력해주세요");
+      return;
+    }
+    if (inputData.current.movieId == null) {
+      alert("영화 제목을 입려해주세요");
+      return;
+    }
+    if (inputData.current.highlight == null) {
+      alert("한줄평을 입력해주세요");
+      return;
+    }
+    if (inputData.current.content == null) {
+      alert("리뷰 내용을 입력해주세요");
+      return;
+    }
+    // console.log(movieList);
     const keywordList = [];
     keywordList.push(childRef1.current.getKeyInfo());
     keywordList.push(childRef2.current.getKeyInfo());
     keywordList.push(childRef3.current.getKeyInfo());
     keywordList.push(childRef4.current.getKeyInfo());
     keywordList.push(childRef5.current.getKeyInfo());
+    if (keywordList == null) {
+      alert("키워드 목록을 입력해주세요");
+      return;
+    }
     const reviewContent = contentRef.current
       .getContent()
       .replace(/<[^>]*>/g, "");
@@ -60,9 +99,14 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
-
+    formData.append(
+      "file",
+      new Blob([JSON.stringify(selectedImage)], {
+        type: "application/json",
+      })
+    );
     axios
-      .post("http://localhost:8080/api/reviews", formData)
+      .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
       })
@@ -140,9 +184,9 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-            onChange={onChangeHandler}
+            onChange={onMovieNameHandler}
             id="movie"
-            defaultValue={movieName}
+            value={movieName.current}
             list="autoList"
           ></Form.Control>
           <datalist id="autoList">
