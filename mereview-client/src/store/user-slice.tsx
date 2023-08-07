@@ -23,6 +23,7 @@ const userSlice = createSlice({
     authorization(state, action) {
       console.log(action.payload);
       state.isAthenticated = true;
+      state.id = action.payload.id;
       state.email = action.payload.email;
       state.gender = action.payload.gender;
       state.nickname = action.payload.nickname;

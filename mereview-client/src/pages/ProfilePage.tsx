@@ -12,8 +12,9 @@ import {
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
+import { searchMemberInfo } from "../api/members";
+import { useSelector } from "react-redux";
 import "../styles/css/ProfilePage.css";
-import { getInfo } from "../api/members";
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -271,10 +272,8 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
 /* api test */
-const id: string = localStorage.getItem("id");
-
 const test = async (userId: number) => {
-  await getInfo(
+  await searchMemberInfo(
     userId,
     ({ data }) => {
       console.log(data);
@@ -287,6 +286,7 @@ const test = async (userId: number) => {
 /* api test */
 
 const ProfilePage = () => {
+  const userId = useSelector((state: any) => state.user.id);
   generateData();
 
   const [isFetched, setIsFetched] = useState<boolean>(false);
@@ -298,15 +298,15 @@ const ProfilePage = () => {
   const [followed, setFollowed] = useState<boolean>(false);
 
   useEffect(() => {
+    if (userId === null) return;
     const fetchData = async () => {
-      for (var i = 0; i < 100; i++) {
-        await test(Number(id));
-      }
+      await test(userId);
       setIsFetched(true);
+      console.log("Featched", userId);
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     // reload review list
