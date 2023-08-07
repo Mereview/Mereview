@@ -10,6 +10,7 @@ export interface UserInterface {
   interests: [];
   tiers: [];
   achievements: [];
+  profile_URL: null | string;
 }
 
 export interface InputDataInterface {
