@@ -63,9 +63,9 @@ public class ReviewController {
             @RequestParam(defaultValue = "1") Integer pageNumber
     ) {
         SearchCondition condition = createCondition(title, content, term, orderBy);
-
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
+
         int pageCount = reviewQueryService.calculatePageCount(condition);
         PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pageCount);
 

@@ -20,14 +20,12 @@ public class NotificationController {
     @PutMapping("/{notificationId}")
     public ApiResponse<NotificationResponse> toggleStatus(@PathVariable Long notificationId) {
         NotificationResponse response = notificationService.toggleStatus(notificationId);
-
         return ApiResponse.ok(response);
     }
 
     @DeleteMapping("/{notificationId}")
     public ApiResponse<Long> deleteNotification(@PathVariable Long notificationId) {
         Long deleteId = notificationService.delete(notificationId);
-
         return ApiResponse.ok(deleteId);
     }
 }

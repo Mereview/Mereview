@@ -19,7 +19,7 @@ public class CommentUpdateRequest {
         this.content = content;
     }
 
-    public CommentUpdateServiceRequest toServiceRequest() {
-        return CommentUpdateServiceRequest.builder().content(content).build();
+    public CommentUpdateServiceRequest toServiceRequest(Long commentId) {
+        return CommentUpdateServiceRequest.builder().commentId(commentId).content(content).build();
     }
 }
