@@ -24,6 +24,11 @@ function App() {
         .then((res) => res.data.data)
         .then((data) => {
           dispatch(userActions.authorization(data));
+          if (data.profileImage) {
+            const id = data.profileImage.id;
+            const IMG_URL = `http://localhost:8080/api/image/download/profiles/${id}`;
+            dispatch(userActions.profileURLSave(IMG_URL));
+          }
         })
         .catch((err) => console.log("사용자 인증에서 오류가 발생했습니다."));
     }

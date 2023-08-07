@@ -15,6 +15,7 @@ const initialState: UserInterface = {
   interests: [],
   tiers: [],
   achievements: [],
+  profile_URL: "",
 };
 const userSlice = createSlice({
   name: "user",
@@ -45,6 +46,9 @@ const userSlice = createSlice({
 
     authToggler(state) {
       state.isAthenticated = true;
+    },
+    profileURLSave(state, action) {
+      state.profile_URL = action.payload;
     },
   },
 });
