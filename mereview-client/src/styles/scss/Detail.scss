@@ -92,6 +92,7 @@
     .input {
       display: flex;
       height: 100px;
+      justify-content: space-between;
       button {
         flex-basis: 20%;
         width: 100px;
@@ -102,7 +103,6 @@
         color: white;
       }
       input {
-        width: 100%;
         flex-basis: 80%;
         height: 100px;
         margin-right: 15px;
