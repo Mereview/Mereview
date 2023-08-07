@@ -2,7 +2,7 @@ package com.ssafy.mereview.api.service.review.dto.response;
 
 import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
-import com.ssafy.mereview.domain.review.entity.EvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class ReviewResponse {
     private String reviewTitle;
     private int hits;
     private String highlight;
-    private EvaluationType evaluationType;
+    private MovieEvaluationType movieEvaluationType;
     private int commentCount;
     private int funCount;
     private int usefulCount;
@@ -34,12 +34,12 @@ public class ReviewResponse {
     private GenreResponse genreResponse;
 
     @Builder
-    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, EvaluationType evaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, ProfileImageResponse profileImage, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
+    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, MovieEvaluationType movieEvaluationType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, ProfileImageResponse profileImage, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.hits = hits;
         this.highlight = highlight;
-        this.evaluationType = evaluationType;
+        this.movieEvaluationType = movieEvaluationType;
         this.commentCount = commentCount;
         this.funCount = funCount;
         this.usefulCount = usefulCount;

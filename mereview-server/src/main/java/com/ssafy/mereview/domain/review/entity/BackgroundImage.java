@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.api.service.review.dto.response.BackgroundImageResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
 import lombok.Builder;

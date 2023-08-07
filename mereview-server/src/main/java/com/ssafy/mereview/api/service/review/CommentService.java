@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+
     public Long save(CommentCreateServiceRequest request) {
         return commentRepository.save(request.toEntity()).getId();
     }

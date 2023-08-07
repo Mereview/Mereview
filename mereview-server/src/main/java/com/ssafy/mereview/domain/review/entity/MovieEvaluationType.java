@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EvaluationType {
+public enum MovieEvaluationType {
     LIKE("좋아요"),
     DISLIKE("싫어요"),
     BAD("똥이에요");

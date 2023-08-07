@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;

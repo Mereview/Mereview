@@ -14,7 +14,6 @@ import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
-import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
@@ -34,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.DISLIKE;
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.DISLIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

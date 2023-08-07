@@ -31,6 +31,7 @@ import static java.util.Comparator.comparingInt;
 @Transactional(readOnly = true)
 @Service
 public class ReviewQueryService {
+
     private final ReviewQueryRepository reviewQueryRepository;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
 
@@ -73,7 +74,7 @@ public class ReviewQueryService {
                                     .reviewTitle(review.getTitle())
                                     .hits(review.getHits())
                                     .highlight(review.getHighlight())
-                                    .evaluationType(review.getType())
+                                    .movieEvaluationType(review.getType())
                                     .commentCount(review.getComments().size())
                                     .funCount(getTypeCount(FUN, review.getId()))
                                     .usefulCount(getTypeCount(USEFUL, review.getId()))

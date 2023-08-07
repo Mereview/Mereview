@@ -48,7 +48,7 @@ public class CommentController {
     }
 
     @PostMapping("/comments/likes")
-    @ApiOperation(value = "리뷰 댓글 좋아요 생성")
+    @ApiOperation(value = "리뷰 댓글 좋아요 생성 및 삭제")
     public ApiResponse<CommentLikeResponse> updateCommentLike(@Valid @RequestBody CommentLikeRequest request) {
         CommentLikeResponse response = commentLikeService.updateCommentLike(request.toServiceRequest());
         return ApiResponse.ok(response);

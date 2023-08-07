@@ -4,7 +4,7 @@ import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.entity.Movie;
-import com.ssafy.mereview.domain.review.entity.EvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class ReviewCreateServiceRequest {
     private String title;
     private String content;
     private String highlight;
-    private EvaluationType type;
+    private MovieEvaluationType type;
     private Long memberId;
     private Long movieId;
     private Long genreId;
@@ -27,7 +27,7 @@ public class ReviewCreateServiceRequest {
     private UploadFile uploadFile;
 
     @Builder
-    public ReviewCreateServiceRequest(String title, String content, String highlight, EvaluationType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests, UploadFile uploadFile) {
+    public ReviewCreateServiceRequest(String title, String content, String highlight, MovieEvaluationType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests, UploadFile uploadFile) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;
