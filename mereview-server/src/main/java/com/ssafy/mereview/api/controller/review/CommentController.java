@@ -36,7 +36,7 @@ public class CommentController {
     @ApiOperation(value = "리뷰 댓글 수정")
     public ApiResponse<Long> updateReviewComment(@PathVariable Long commentId,
                                                  @Valid @RequestBody CommentUpdateRequest request) {
-        Long updateId = commentService.update(commentId, request.toServiceRequest());
+        Long updateId = commentService.update(request.toServiceRequest(commentId));
         return ApiResponse.ok(updateId);
     }
 

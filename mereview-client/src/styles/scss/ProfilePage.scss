@@ -32,14 +32,6 @@ $profile-image-size: 450px;
       margin-top: 15px;
       font-family: $BMDoHyeon;
       text-align: center;
-      padding-left: 20px;
-      padding-right: 20px;
-      display: flex;
-      justify-content: space-between;
-
-      .follow {
-        cursor: pointer;
-      }
     }
   }
 
@@ -95,20 +87,15 @@ $profile-image-size: 450px;
       width: 100%;
       position: absolute;
       bottom: 10px;
-      right: 0px;
-      font-size: $font-size-sm;
+      right: 10px;
+      margin-right: 5px;
 
       .post-counter {
         text-align: center;
       }
 
-      .visitors {
-        margin-left: 10px;
-      }
-
       .join-date {
         text-align: right;
-        margin-right: 10px;
       }
     }
   }
@@ -118,6 +105,5 @@ $profile-image-size: 450px;
     border: 1px solid $black;
     border-radius: 5px;
     height: $profile-image-size - 100px;
-    overflow: auto;
   }
 }

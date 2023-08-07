@@ -1,9 +1,11 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.domain.review.entity.Notification;
 import com.ssafy.mereview.domain.review.entity.NotificationStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -24,5 +26,15 @@ public class NotificationResponse {
         this.reviewId = reviewId;
         this.status = status;
         this.createdTime = createdTime;
+    }
+
+    public static NotificationResponse of(Notification notification) {
+        return NotificationResponse.builder()
+                .notificationId(notification.getId())
+                .memberId(notification.getMember().getId())
+                .reviewId(notification.getReview().getId())
+                .status(notification.getStatus())
+                .createdTime(notification.getCreatedTime())
+                .build();
     }
 }
