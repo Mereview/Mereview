@@ -2,7 +2,7 @@ export interface ReviewCardInterface {
   reviewId: number;
   memberId: string;
   nickname: string;
-  profileImagePath: string;
+  profileImageId: number | null;
   backgroundImagePath: string;
   oneLineReview: string;
   funnyCount: number;
