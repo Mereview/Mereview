@@ -43,12 +43,10 @@ const ReviewWrite = () => {
   const contentRef = useRef(null);
   const onMovieNameHandler = (e) => {
     movieName.current = e.target.value;
-    // console.log(movieName.current);
-    // setMovieName(e.target.value);
     let movieList = [];
-    // console.log(movieName);
+    const encodedKeyword = encodeURIComponent(movieName.current);
     axios
-      .get(`http://localhost:8080/api/movies?keyword=${movieName.current}`)
+      .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
       .then((res) => {
         console.log(res.data);
         movieList = res.data;
