@@ -14,11 +14,6 @@ interface InterestInterface {
   genreName: string;
 }
 
-interface SelectInterestProps {
-  step1: string[];
-  step2: FormData;
-}
-
 const SelectInterest = ({ step1, step2, verificationCode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [interest, setInterest] = useState<InterestInterface[]>([]);
@@ -44,14 +39,25 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
   const goBack = () => {
     dispatch(userActions.modal_toggler());
   };
-  const data = {
-    ...step1,
-    file: step2,
+  const signUpData: any = {
+    email: step1.email,
+    password: step1.password,
+    nickname: step1.nickname,
+    gender: step1.gender,
+    birthDate: step1.birthDate,
     interests: interest,
     verificationCode: verificationCode,
   };
+  console.log(step2);
+  const data = new FormData();
+  data.append("file", step2);
+  data.append(
+    "request",
+    new Blob([JSON.stringify(signUpData)], { type: "application/json" })
+  );
   const signUp_step3 = () => {
-    console.log(data);
+    console.log(data.get("file"));
+    console.log(data.get("request"));
 
     postSignUp(data);
 
@@ -59,25 +65,25 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
     dispatch(uiActions.tabChange("signUpCompleted"));
   };
   const genre: GenreInfo = {
-    "12": ["모험", "/interest/adventure"],
-    "14": ["판타지", "/interest/fantasy"],
-    "16": ["애니메이션", "/interest/animation"], ///
-    "18": ["드라마", "/interest/drama"], ///
-    "27": ["공포", "/interest/horror"], ///
-    "28": ["액션", "/interest/action"], ///
-    "35": ["코미디", "/interest/comedy"], ///
-    "36": ["역사", "/interest/history"], ///
-    "37": ["서부", "/interest/western"], ///
-    "53": ["스릴러", "/interest/thriller"], ///
-    "80": ["범죄", "/interest/crime"], // /
-    "99": ["다큐멘터리", "/interest/documentary"], ///
-    "878": ["과학소설", "/interest/SF"], ///
-    "9648": ["미스터리", "/interest/mistery"], ///
-    "10402": ["음악", "/interest/music"], ///
-    "10749": ["로맨스", "/interest/romance"],
-    "10571": ["가족", "/interest/familly"], ///
-    "10752": ["전쟁", "/interest/war"], ///
-    "10770": ["TV 영화", "/interest/TVmovie"], ///
+    "1": ["액션", "/interest/action"], ///
+    "2": ["모험", "/interest/adventure"],
+    "3": ["애니메이션", "/interest/animation"], ///
+    "4": ["코미디", "/interest/comedy"], ///
+    "5": ["범죄", "/interest/crime"], // /
+    "6": ["다큐멘터리", "/interest/documentary"], ///
+    "7": ["드라마", "/interest/drama"], ///
+    "8": ["가족", "/interest/familly"], ///
+    "9": ["판타지", "/interest/fantasy"],
+    "10": ["역사", "/interest/history"], ///
+    "11": ["공포", "/interest/horror"], ///
+    "12": ["음악", "/interest/music"], ///
+    "13": ["미스터리", "/interest/mistery"], ///
+    "14": ["로맨스", "/interest/romance"],
+    "15": ["SF", "/interest/SF"], ///
+    "16": ["TV 영화", "/interest/TVmovie"], ///
+    "17": ["스릴러", "/interest/thriller"], ///
+    "18": ["전쟁", "/interest/war"], ///
+    "19": ["서부", "/interest/western"], ///
   };
   return (
     <div className="big-box">

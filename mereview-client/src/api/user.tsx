@@ -19,28 +19,14 @@ export const postSignUp = (data) => {
   //   submitData = formData;
   // }
   // console.log(submitData);
-  const formData = new FormData();
-  const file = data.file;
-  const request = {
-    email: data.email,
-    password: data.password,
-    nickname: data.nickname,
-    gender: data.gender,
-    birthDate: data.birthDate,
-    interests: data.interests,
-  };
-  console.log(file);
-  formData.append("file", file);
-  formData.append(
-    "request",
-    new Blob([JSON.stringify(request)], { type: "application/json" })
-  );
-  console.log(formData.get("file"));
-  console.log(formData.get("request"));
+
+  console.log(data.get("file"));
+  console.log(data.get("request"));
+
   axios
     .post(
       "http://localhost:8080/api/members/sign-up", // baseURL은 여기서 URL로 수정
-      formData,
+      data,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -48,7 +34,12 @@ export const postSignUp = (data) => {
       }
     )
     .then((rsp) => alert("회원가입이 완료되었습니다!"))
-    .catch((err) => console.log(data));
+    .catch((err) => {
+      console.log(data.get("file"));
+      console.log(data.get("request"));
+      console.log(err.message);
+      console.log(err.data);
+    });
 };
 
 // export const login = (inputUserData) => {
