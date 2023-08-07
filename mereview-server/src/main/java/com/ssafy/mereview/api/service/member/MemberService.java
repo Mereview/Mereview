@@ -1,9 +1,9 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
-import com.ssafy.mereview.api.service.movie.GenreSaveService;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
@@ -139,6 +139,21 @@ public class MemberService {
         }
     }
 
+    public Long updateMemberIntroduce(MemberIntroduceRequest request, String token) {
+        log.debug("updateMemberIntroduce request = {}", request);
+
+        Member member = memberRepository.findById(request.getId()).orElseThrow(NoSuchElementException::new);
+        String memberInToken = jwtUtils.getUsernameFromJwt(token);
+
+        // 현재 로그인한 유저가 맞는지 확인
+        if(member.getEmail().equals(memberInToken)){
+            member.updateIntroduce(request.getIntroduce());
+        } else {
+            throw new IllegalArgumentException("현재 로그인한 유저가 아닙니다.");
+        }
+        return member.getId();
+    }
+
     public void updateProfileImage(Long memberId, UploadFile uploadFile) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
         member.updateProfileImage(uploadFile);
@@ -236,5 +251,6 @@ public class MemberService {
         currentMember.getFollowing().remove(target);
         target.getFollowers().remove(currentMember);
     }
+
 
 }

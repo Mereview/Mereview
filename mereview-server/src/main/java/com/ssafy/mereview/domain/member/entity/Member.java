@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
@@ -133,5 +132,9 @@ public class Member extends BaseEntity {
 
     public void update(List<Interest> interests) {
         this.interests = interests;
+    }
+
+    public void updateIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 }

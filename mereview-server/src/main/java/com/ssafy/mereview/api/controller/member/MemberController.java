@@ -1,9 +1,6 @@
 package com.ssafy.mereview.api.controller.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberUpdateRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.MemberQueryService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
@@ -19,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +40,6 @@ public class MemberController {
 
     private final FileExtensionFilter fileExtFilter;
 
-    private final GenreSaveService genreSaveService;
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", response = Join.class)
@@ -71,6 +68,20 @@ public class MemberController {
         log.debug("MemberLoginRequest : {}", request);
         MemberLoginResponse memberLoginResponse = memberQueryService.login(request);
         return ApiResponse.ok(memberLoginResponse);
+    }
+
+    @PostMapping("/introduce")
+    @ApiOperation(value = "회원 자기소개 수정", response = Join.class)
+    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request, HttpServletRequest httpServletRequest) {
+        log.debug("MemberIntroduceRequest : {}", request);
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
+        }
+        token = token.substring("Bearer ".length()).trim();
+
+        Long memberId = memberService.updateMemberIntroduce(request, token);
+        return ApiResponse.ok(memberId);
     }
 
     @DeleteMapping("/{id}")
