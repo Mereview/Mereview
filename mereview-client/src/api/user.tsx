@@ -1,35 +1,53 @@
 import axios from "axios";
 
 export const postSignUp = (data) => {
-  console.log(data.file);
-  let submitData: null | FormData = null;
-  if (data.file) {
-    data.file.append(
-      "request",
-      new Blob([JSON.stringify(data)], { type: "application/json" })
-    );
-    submitData = data.file;
-  } else {
-    const formData = new FormData();
-    formData.append("file", null);
-    formData.append(
-      "request",
-      new Blob([JSON.stringify(data)], { type: "application/json" })
-    );
-    submitData = formData;
-  }
-  console.log(submitData);
+  // console.log(data.file);
+  // let submitData: null | FormData = null;
+  // if (data.file) {
+  //   data.file.append(
+  //     "request",
+  //     new Blob([JSON.stringify(data)], { type: "application/json" })
+  //   );
+  //   submitData = data.file;
+  // } else {
+  //   const formData = new FormData();
+  //   formData.append("file", null);
+  //   formData.append(
+  //     "request",
+  //     new Blob([JSON.stringify(data)], { type: "application/json" })
+  //   );
+  //   submitData = formData;
+  // }
+  // console.log(submitData);
+  const formData = new FormData();
+  const file = data.file;
+  const request = {
+    email: data.email,
+    password: data.password,
+    nickname: data.nickname,
+    gender: data.gender,
+    birthDate: data.birthDate,
+    interests: data.interests,
+  };
+  console.log(file);
+  formData.append("file", file);
+  formData.append(
+    "request",
+    new Blob([JSON.stringify(request)], { type: "application/json" })
+  );
+  console.log(formData.get("file"));
+  console.log(formData.get("request"));
   axios
     .post(
       "http://localhost:8080/api/members/sign-up", // baseURL은 여기서 URL로 수정
-      submitData,
+      formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }
     )
-    .then((rsp) => console.log(rsp, data))
+    .then((rsp) => alert("회원가입이 완료되었습니다!"))
     .catch((err) => console.log(data));
 };
 
