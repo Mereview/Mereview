@@ -100,30 +100,30 @@ const dummyBadges: AchievedBadge[] = [
   },
 ];
 
-const userInfo: ProfileInfoInterface = {
-  memberId: "id123123",
-  nickname: "닉네임123",
-  profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
-  age: 29,
-  gender: 1,
-  introduction: "자기소개입니다. ^^",
-  reviewCount: 4,
-  commentCount: 5,
-  followerCount: 3,
-  followingCount: 5,
-  followed: false,
-  highestTier: "gold",
-  badges: dummyBadges,
-  joinDate: new Date("2022-06-03 07:23:53"),
-  todayVisitor: 2,
-  totalVisitor: 34,
-};
-
 const defaultProfileImage = "/defaultProfile.png";
 
 const genderMapping = {
-  1: "남",
-  2: "여",
+  MALE: "남",
+  FEMALE: "여",
+};
+
+const userInfo: ProfileInfoInterface = {
+  memberId: null,
+  nickname: null,
+  profileImageId: null,
+  age: null,
+  gender: null,
+  introduction: null,
+  reviewCount: 0,
+  commentCount: 0,
+  followerCount: 0,
+  followingCount: 0,
+  followed: false,
+  highestTier: null,
+  badges: dummyBadges,
+  joinDate: new Date(""),
+  todayVisitor: 0,
+  totalVisitor: 0,
 };
 /* 유저 더미 데이터 생성 끝 */
 
@@ -194,7 +194,7 @@ const someReview = {
   reviewId: 12113,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
+  profileImageId: null,
   backgroundImagePath: "/ReviewCardDummy/CardBack2.jpg",
   oneLineReview:
     "이것은 한줄평 한줄평 영화 리뷰를 요약하는 한줄평 하지만 두줄이상이 될수도 있는...",
@@ -215,7 +215,7 @@ const otherReview = {
   reviewId: 12333,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는 한줄평! 얘는 dislike가 99임",
   funnyCount: 10,
@@ -234,7 +234,7 @@ const dummy = {
   reviewId: 12223,
   memberId: "user123",
   nickname: "JohnD124124oe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 14내용을 요약하는 한줄평!",
   funnyCount: 10,
@@ -253,7 +253,7 @@ const a = {
   reviewId: 1141223,
   memberId: "us22er123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
   funnyCount: 10,
@@ -272,11 +272,21 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
 /* api test */
-const test = async (userId: number) => {
+const getMemberInfo = async (userId: number) => {
   await searchMemberInfo(
     userId,
     ({ data }) => {
-      console.log(data);
+      const response = data.data;
+      const birthDate = new Date(response.birthDate);
+      const ageDiff = Date.now() - birthDate.getTime();
+      const ageDate = new Date(ageDiff);
+
+      userInfo.memberId = userId;
+      userInfo.nickname = response.nickname;
+      userInfo.profileImageId = response.profileImage.id;
+      userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
+      userInfo.gender = response.gender;
+      userInfo.introduction = "TEST";
     },
     (error) => {
       console.log(error);
@@ -298,11 +308,12 @@ const ProfilePage = () => {
   const [followed, setFollowed] = useState<boolean>(false);
 
   useEffect(() => {
+    // 유저 정보 저장
     if (userId === null) return;
     const fetchData = async () => {
-      await test(userId);
+      await getMemberInfo(userId);
       setIsFetched(true);
-      console.log("Featched", userId);
+      console.log(userInfo);
     };
 
     fetchData();
@@ -366,7 +377,11 @@ const ProfilePage = () => {
       <div className="profile-image-chart-container">
         <div className="profile-image-container">
           <img
-            src={userInfo.profileImagePath || defaultProfileImage}
+            src={
+              userInfo.profileImageId
+                ? `http://localhost:8080/api/image/download/profiles/${userInfo.profileImageId}`
+                : defaultProfileImage
+            }
             alt="프로필 이미지"
             style={{ width: "450px" }}
           />

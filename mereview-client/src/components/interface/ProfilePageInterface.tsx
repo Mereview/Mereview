@@ -5,9 +5,9 @@ export interface AchievedBadge {
 }
 
 export interface ProfileInfoInterface {
-  memberId: string;
+  memberId: number | null;
   nickname: string;
-  profileImagePath: string | null;
+  profileImageId: number | null;
   age: number | null;
   gender: 1 | 2 | null; // 1: male, 2: female
   introduction: string | null;
