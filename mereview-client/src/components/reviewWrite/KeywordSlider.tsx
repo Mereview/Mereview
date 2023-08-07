@@ -6,23 +6,20 @@ import { Row, Col } from "react-bootstrap";
 import { Connect } from "react-redux";
 
 const KeywordSlider = forwardRef((props, ref) => {
-  const [keyInfo, setKeyInfo] = useState({ keyword: "", gauge: 0 });
+  const [keyInfo, setKeyInfo] = useState({ name: "", weight: 0 });
   const getKeyInfo = () => {
     return keyInfo;
   };
   const infoHandler = (e) => {
-    if (typeof e.target.value === "number") {
-      const newKeyword = keyInfo.keyword;
-      const newGauge = e.target.value;
-      setKeyInfo({ keyword: newKeyword, gauge: newGauge });
-    } else {
-      const newKeyword = e.target.value;
-      const newGauge = keyInfo.gauge;
-      setKeyInfo({
-        keyword: newKeyword,
-        gauge: newGauge,
-      });
+    // console.log(e.target);
+    let { id, value } = e.target;
+    if (e.target.id == null) {
+      id = e.target.name;
     }
+    setKeyInfo((prevInputData) => ({
+      ...prevInputData,
+      [id]: value,
+    }));
   };
   useImperativeHandle(ref, () => ({
     getKeyInfo,
@@ -33,15 +30,17 @@ const KeywordSlider = forwardRef((props, ref) => {
         <Col md={4}>
           <input
             className="form-control"
+            id="name"
             onChange={infoHandler}
-            value={keyInfo.keyword}
+            value={keyInfo.name}
           ></input>
         </Col>
         <Col md={2}>
-          <p>{keyInfo.gauge}</p>
+          <p>{keyInfo.weight}</p>
         </Col>
         <Slider
-          value={keyInfo.gauge}
+          name="weight"
+          value={keyInfo.weight}
           onChange={infoHandler}
           style={{ width: "50%" }}
         />
