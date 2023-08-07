@@ -210,7 +210,7 @@ public class MemberService {
 
     private void createTier(Member member) {
         List<Genre> genres = memberQueryRepository.searchAllGenre();
-
+        log.debug("genres = " + genres.size());
         List<MemberTier> memberTiers = new ArrayList<>();
         genres.forEach(genre -> memberTiers.add(MemberTier.builder()
                 .member(member)

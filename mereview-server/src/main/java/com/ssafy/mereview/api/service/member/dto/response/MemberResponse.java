@@ -22,11 +22,12 @@ public class MemberResponse {
     private List<MemberTierResponse> tiers;
     private List<MemberAchievementResponse> achievements;
     private List<ReviewResponse> reviews;
+    private int following;
+    private int follower;
     private ProfileImageResponse profileImage;
 
-
     @Builder
-    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, ProfileImageResponse profileImage, Map<String, String> token) {
+    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, int following, int follower, ProfileImageResponse profileImage) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
@@ -37,6 +38,8 @@ public class MemberResponse {
         this.tiers = tiers;
         this.achievements = achievements;
         this.reviews = reviews;
+        this.following = following;
+        this.follower = follower;
         this.profileImage = profileImage;
     }
 }

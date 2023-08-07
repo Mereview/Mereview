@@ -4,9 +4,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.MemberQueryService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
-import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
-import com.ssafy.mereview.api.service.movie.GenreSaveService;
+import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
@@ -24,6 +22,7 @@ import javax.persistence.criteria.Join;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
@@ -103,6 +102,30 @@ public class MemberController {
         MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
         memberService.updateViewCount(memberId);
         return ApiResponse.ok(memberResponse);
+    }
+
+    @GetMapping("/{id}/following")
+    @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
+    public ApiResponse<List<FollowResponse>> searchMemberFollowInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        List<FollowResponse> followingResponse = memberQueryService.searchFollowingResponse(memberId);
+        return ApiResponse.ok(followingResponse);
+    }
+
+    @GetMapping("/{id}/follower")
+    @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
+    public ApiResponse<List<FollowResponse>> searchMemberFollowerInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        List<FollowResponse> followerResponse = memberQueryService.searchFollowerResponse(memberId);
+        return ApiResponse.ok(followerResponse);
+    }
+
+    @GetMapping("/{id}/genre/{genreNumber}")
+    @ApiOperation(value = "회원 장르 별 정보", response = Join.class)
+    public ApiResponse<List<MemberTierResponse>> searchInfoByGenre(@PathVariable(name = "id") Long memberId,
+                                                                   @PathVariable(name = "genreNumber") int genreNumber) {
+        log.debug("MemberController.searchInfoByGenre : {}", memberId);
+        return ApiResponse.ok(memberQueryService.searchMemberTierByGenre(memberId, genreNumber));
     }
 
     @PutMapping("/{id}")

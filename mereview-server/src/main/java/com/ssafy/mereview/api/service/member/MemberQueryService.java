@@ -43,6 +43,17 @@ public class MemberQueryService {
         return createMemberLoginResponse(searchMember);
     }
 
+    public List<MemberTierResponse> searchMemberTierByGenre(Long memberId, int genreNumber) {
+        List<MemberTier> memberTiers = memberQueryRepository.searchMemberTierByGenre(memberId, genreNumber);
+
+        return createMemberTierResponses(memberTiers);
+    }
+
+    private List<MemberTierResponse> createMemberTierResponses(List<MemberTier> memberTiers) {
+        return memberTiers.stream().map(MemberTierResponse::of).collect(Collectors.toList());
+    }
+
+
     private MemberLoginResponse createMemberLoginResponse(Member searchMember) {
         log.debug("searchMember : {}", searchMember);
 
@@ -73,6 +84,8 @@ public class MemberQueryService {
     private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses) {
         return MemberResponse.builder()
                 .id(member.getId())
+                .following(member.getFollowing().size())
+                .follower(member.getFollowers().size())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .gender(member.getGender())
@@ -106,6 +119,23 @@ public class MemberQueryService {
         List<Interest> interests = memberQueryRepository.searchInterestByMemberId(id);
         return interests.stream()
                 .map(Interest::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<FollowResponse> searchFollowingResponse(Long memberId) {
+        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+
+        return member.getFollowing().stream()
+                .map(FollowResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<FollowResponse> searchFollowerResponse(Long memberId) {
+       Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        return member.getFollowers().stream()
+                .map(FollowResponse::of)
                 .collect(Collectors.toList());
     }
 }

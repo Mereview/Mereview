@@ -83,4 +83,11 @@ public class MemberQueryRepository{
                 .fetchOne();
     }
 
+    public List<MemberTier> searchMemberTierByGenre(Long memberId, int genreNumber) {
+        return queryFactory
+                .selectFrom(memberTier)
+                .where(memberTier.member.id.eq(memberId))
+                .where(memberTier.genre.genreNumber.eq(genreNumber))
+                .fetch();
+    }
 }
