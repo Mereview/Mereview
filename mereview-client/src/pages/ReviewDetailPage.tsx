@@ -1,7 +1,9 @@
 import "../styles/css/ReviewDetailPage.css";
 import Top from "../components/reviewDetail/Top";
 import Detail from "../components/reviewDetail/Detail";
-
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 export interface DummyRev {
   title: string;
   oneLine: string;
@@ -14,6 +16,13 @@ export interface DummyMov {
   genres: string[];
 }
 const ReviewDetail = (props: any) => {
+  // const getReviewDetail = () => {
+  //   const { id } = useParams();
+  //   const userId = localStorage.getItem("id");
+  //   const data = { loginMemberId: Number(userId) };
+  //   const GET_REVIEW_URL = `http:localhost:8080/api/reviews/${id}`;
+  //   axios.get(GET_REVIEW_URL, data);
+  // };
   const imgURL = "/test.jpg";
   const style = {
     backgroundImage: `url(${imgURL})`,

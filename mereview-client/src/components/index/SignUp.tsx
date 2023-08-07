@@ -320,7 +320,13 @@ const SignUp = () => {
           </form>
         </Col>
       </Row>
-      {valid ? <SelectInterest step1={inputData} step2={fileData} /> : null}
+      {valid ? (
+        <SelectInterest
+          step1={inputData}
+          step2={fileData}
+          verificationCode={verificationCode}
+        />
+      ) : null}
     </Container>
   );
 };

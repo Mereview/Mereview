@@ -11,15 +11,14 @@ export const postSignUp = (data) => {
     submitData = data.file;
   } else {
     const formData = new FormData();
+    formData.append("file", null);
     formData.append(
       "request",
       new Blob([JSON.stringify(data)], { type: "application/json" })
     );
     submitData = formData;
   }
-
-  console.log(data.file.get("file"));
-  console.log(data.file.get("request"));
+  console.log(submitData);
   axios
     .post(
       "http://localhost:8080/api/members/sign-up", // baseURL은 여기서 URL로 수정
