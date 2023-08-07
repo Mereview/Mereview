@@ -97,7 +97,7 @@ public class MemberService {
         // jwt 토큰으로 현재 로그인한 유저인지 확인 후 회원탈퇴 진행
         Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
-        if(member.isDeleted()){
+        if(member.getRole().equals(Role.DELETED)){
             throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
         }
 
