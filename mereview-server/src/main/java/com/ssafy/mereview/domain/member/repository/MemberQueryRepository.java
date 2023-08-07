@@ -38,6 +38,14 @@ public class MemberQueryRepository{
                 .fetchOne();
     }
 
+    public Member searchByNickname(String nickname) {
+        return queryFactory
+                .select(member)
+                .from(member)
+                .where(member.nickname.eq(nickname))
+                .fetchOne();
+    }
+
     public List<Genre> searchAllGenre() {
         return queryFactory
                 .select(genre)

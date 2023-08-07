@@ -54,6 +54,10 @@ public class MemberService {
         if (existingMember != null) {
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
+
+        if(memberQueryRepository.searchByNickname(request.getNickname()) != null){
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
         log.debug("request check = {}" + request);
 
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));

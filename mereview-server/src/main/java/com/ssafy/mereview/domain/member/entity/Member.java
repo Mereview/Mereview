@@ -29,16 +29,11 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @NotNull
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Email(message = "유효한 이메일 형식이어야 합니다.")
     private String email;
 
-    @NotNull
-    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
-    @Size(min = 6, message = "비밀번호는 최소 8자 이상이어야 합니다.")
     private String password;
 
+    @Column(unique = true)
     private String nickname;
 
     private String gender;

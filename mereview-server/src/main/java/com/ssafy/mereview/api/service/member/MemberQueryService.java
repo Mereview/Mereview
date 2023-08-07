@@ -2,9 +2,12 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
+import com.ssafy.mereview.domain.review.entity.Notification;
+import com.ssafy.mereview.domain.review.repository.NotificationQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 public class MemberQueryService {
     private final MemberQueryRepository memberQueryRepository;
 
+    private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtils jwtUtils;
@@ -36,6 +40,7 @@ public class MemberQueryService {
         if (searchMember == null || searchMember.getRole().equals(Role.DELETED)) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
+
         if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
@@ -78,15 +83,22 @@ public class MemberQueryService {
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
-        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
+        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
+
+        int count = notificationQueryRepository.countByMemberId(id);
+
+        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, notificationResponses, count);
     }
 
-    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses) {
+
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<NotificationResponse> notificationResponses, int notificationCount) {
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
                 .email(member.getEmail())
+                .notificationCount(notificationCount)
+                .notifications(notificationResponses)
                 .nickname(member.getNickname())
                 .gender(member.getGender())
                 .birthDate(member.getBirthDate())

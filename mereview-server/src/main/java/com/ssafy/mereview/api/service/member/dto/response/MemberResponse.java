@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.service.member.dto.response;
 
 
+import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.member.entity.Role;
 import lombok.*;
@@ -25,9 +26,11 @@ public class MemberResponse {
     private int following;
     private int follower;
     private ProfileImageResponse profileImage;
+    private List<NotificationResponse> notifications;
+    private int notificationCount;
 
     @Builder
-    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, int following, int follower, ProfileImageResponse profileImage) {
+    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, int following, int follower, ProfileImageResponse profileImage, List<NotificationResponse> notifications, int notificationCount) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
@@ -41,5 +44,7 @@ public class MemberResponse {
         this.following = following;
         this.follower = follower;
         this.profileImage = profileImage;
+        this.notifications = notifications;
+        this.notificationCount = notificationCount;
     }
 }
