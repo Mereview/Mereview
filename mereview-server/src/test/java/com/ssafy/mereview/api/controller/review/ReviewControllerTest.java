@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

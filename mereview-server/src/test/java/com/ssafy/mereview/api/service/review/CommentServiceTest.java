@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

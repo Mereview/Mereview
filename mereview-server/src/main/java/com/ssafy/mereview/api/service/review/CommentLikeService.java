@@ -34,6 +34,10 @@ public class CommentLikeService {
         return createCommentLikeResponse(request, isDone, likeCountsMap);
     }
 
+    /**
+     *  private methods
+     */
+
     private boolean checkIsDone(CommentLikeServiceRequest request, Optional<CommentLike> commentLike) {
         if (commentLike.isEmpty()) {
             likeRepository.save(request.toEntity());

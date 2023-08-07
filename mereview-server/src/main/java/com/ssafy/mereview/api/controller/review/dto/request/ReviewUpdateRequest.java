@@ -3,7 +3,7 @@ package com.ssafy.mereview.api.controller.review.dto.request;
 import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.review.entity.EvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,13 +28,13 @@ public class ReviewUpdateRequest {
     private String highlight;
 
     @NotNull
-    private EvaluationType type;
+    private MovieEvaluationType type;
 
     @NotEmpty
     private List<KeywordUpdateRequest> keywordRequests;
 
     @Builder
-    public ReviewUpdateRequest(String title, String content, String highlight, EvaluationType type, List<KeywordUpdateRequest> keywordRequests) {
+    public ReviewUpdateRequest(String title, String content, String highlight, MovieEvaluationType type, List<KeywordUpdateRequest> keywordRequests) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;

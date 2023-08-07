@@ -10,7 +10,7 @@ import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Comment;
-import com.ssafy.mereview.domain.review.entity.EvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.CommentLikeQueryRepository;
 import com.ssafy.mereview.domain.review.repository.CommentLikeRepository;
@@ -170,7 +170,7 @@ class CommentLikeServiceTest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(EvaluationType.LIKE)
+                .type(MovieEvaluationType.LIKE)
                 .hits(hits)
                 .member(member)
                 .movie(movie)
