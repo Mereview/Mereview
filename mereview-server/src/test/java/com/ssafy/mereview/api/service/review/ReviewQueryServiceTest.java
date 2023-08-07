@@ -224,10 +224,13 @@ class ReviewQueryServiceTest {
     @Test
     void searchExistingReviewById() {
         // given
-        Long reviewId = reviewRepository.findAll().stream().findAny().orElseThrow(NoSuchElementException::new).getId();
+        Review review = reviewRepository.findAll().stream().findAny().orElseThrow(NoSuchElementException::new);
+        Long reviewId = review.getId();
+        Long memberId = review.getMember().getId();
 
         // when
-        ReviewDetailResponse response = reviewQueryService.searchById(reviewId);
+        ReviewDetailResponse response = reviewQueryService.searchById(reviewId, memberId);
+        log.debug("response: {}", response);
 
         // then
         assertThat(response).isNotNull();
@@ -238,12 +241,17 @@ class ReviewQueryServiceTest {
     void searchNotExistingReviewById() {
         // given
         Long reviewId = 234L;
+        Long memberId = 234L;
 
         // when // then
-        assertThatThrownBy(() -> reviewQueryService.searchById(reviewId))
+        assertThatThrownBy(() -> reviewQueryService.searchById(reviewId, memberId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 리뷰입니다.");
     }
+
+    /**
+     *  private methods
+     */
 
     private Member createMember() {
         Member member = Member.builder()

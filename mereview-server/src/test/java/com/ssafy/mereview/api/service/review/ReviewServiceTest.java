@@ -5,17 +5,23 @@ import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceReq
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
+import com.ssafy.mereview.domain.member.entity.Interest;
 import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.repository.MemberInterestQueryRepository;
+import com.ssafy.mereview.domain.member.repository.MemberInterestRepository;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
+import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
 import com.ssafy.mereview.domain.review.repository.KeywordRepository;
+import com.ssafy.mereview.domain.review.repository.NotificationRepository;
 import com.ssafy.mereview.domain.review.repository.ReviewRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -30,9 +36,11 @@ import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.DISLIKE;
 import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@Slf4j
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 @Transactional
 @SpringBootTest
 class ReviewServiceTest {
@@ -58,12 +66,22 @@ class ReviewServiceTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    @DisplayName("새로운 리뷰를 작성한다.")
+    @Autowired
+    private MemberInterestRepository interestRepository;
+
+    @Autowired
+    private MemberInterestQueryRepository interestQueryRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @DisplayName("1. 새로운 리뷰를 작성한다.")
     @Test
     void createReviewTest() {
         // given
         createGenre();
         createMember();
+        createInterest();
         createMovie();
 
         List<KeywordCreateServiceRequest> keywordRequests = createKeywordCreateRequests();
@@ -73,14 +91,21 @@ class ReviewServiceTest {
         ReviewCreateServiceRequest request = createReviewCreateRequest(keywordRequests, uploadFile);
 
         // when
-        Long saveId = reviewService.createReview(request);
+        Long saveId = reviewService.create(request);
+        Review review = reviewRepository.findById(saveId)
+                .orElseThrow();
+        log.debug("review: {}", review);
 
         // then
         assertThat(saveId).isGreaterThan(0);
+        assertThat(keywordRepository.findAll()).hasSize(1);
+        assertThat(backgroundImageRepository.findById(1L)).isNotNull();
+        assertThat(interestQueryRepository.searchRandomMember(review.getGenre().getId(), 100))
+                .hasSize(1);
 
     }
 
-    @DisplayName("존재하는 리뷰를 수정한다.")
+    @DisplayName("2. 작성된 리뷰를 수정한다.")
     @Test
     void updateExistingReview() {
         // given
@@ -97,6 +122,7 @@ class ReviewServiceTest {
         UploadFile uploadFile = createUploadFile("수정.jpg", "수정.jpg");
 
         ReviewUpdateServiceRequest request = ReviewUpdateServiceRequest.builder()
+                .reviewId(reviewId)
                 .title("수정 제목")
                 .content("수정 내용")
                 .highlight("수정 한줄평")
@@ -106,7 +132,7 @@ class ReviewServiceTest {
                 .build();
 
         // when
-        Long updateId = reviewService.update(reviewId, request);
+        Long updateId = reviewService.update(request);
         Review updatedReview = reviewRepository.findById(updateId).orElseThrow(NoSuchElementException::new);
         List<Keyword> updatedKeywords = updatedReview.getKeywords();
 
@@ -117,7 +143,7 @@ class ReviewServiceTest {
         assertThat(updatedKeywords).hasSize(1);
     }
 
-    @DisplayName("존재하지 않는 리뷰를 수정한다.")
+    @DisplayName("3. 작성되지 않은 리뷰를 수정한다.")
     @Test
     void updateNotExistingReview() {
         // given
@@ -125,6 +151,7 @@ class ReviewServiceTest {
         Long reviewId = 235L;
 
         ReviewUpdateServiceRequest request = ReviewUpdateServiceRequest.builder()
+                .reviewId(reviewId)
                 .title("수정 제목")
                 .content("수정 내용")
                 .highlight("수정 한줄평")
@@ -133,11 +160,11 @@ class ReviewServiceTest {
                 .build();
 
         // when // then
-        assertThatThrownBy(() -> reviewService.update(reviewId, request))
+        assertThatThrownBy(() -> reviewService.update(request))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-    @DisplayName("존재하는 리뷰를 삭제한다.")
+    @DisplayName("3. 작성된 리뷰를 삭제한다.")
     @Test
     void deleteExistingReview() {
         // given
@@ -151,7 +178,7 @@ class ReviewServiceTest {
         assertThat(reviews).isEmpty();
     }
 
-    @DisplayName("존재하지 않는 리뷰를 삭제한다.")
+    @DisplayName("4. 작성되지 않은 리뷰를 삭제한다.")
     @Test
     void deleteNotExistingReview() {
         // given
@@ -162,6 +189,10 @@ class ReviewServiceTest {
         assertThatThrownBy(() -> reviewService.delete(reviewId))
                 .isInstanceOf(NoSuchElementException.class);
     }
+
+    /**
+     * private methods
+     */
 
     private void createMovie() {
         Movie movie = Movie.builder()
@@ -186,6 +217,14 @@ class ReviewServiceTest {
                 .isUsing(true)
                 .build();
         genreRepository.save(genre);
+    }
+
+    private void createInterest() {
+        Interest interest = Interest.builder()
+                .genre(Genre.builder().id(1L).build())
+                .member(Member.builder().id(1L).build())
+                .build();
+        interestRepository.save(interest);
     }
 
     private Long createReview() {
@@ -214,7 +253,7 @@ class ReviewServiceTest {
         keywordRepository.saveAll(keywords);
     }
 
-    private static List<KeywordCreateServiceRequest> createKeywordCreateRequests() {
+    private List<KeywordCreateServiceRequest> createKeywordCreateRequests() {
         List<KeywordCreateServiceRequest> keywordRequests = new ArrayList<>();
         keywordRequests.add(KeywordCreateServiceRequest.builder()
                 .name("키워드1")
@@ -224,14 +263,14 @@ class ReviewServiceTest {
         return keywordRequests;
     }
 
-    private static UploadFile createUploadFile(String uploadFileName, String storeFileName) {
+    private UploadFile createUploadFile(String uploadFileName, String storeFileName) {
         return UploadFile.builder()
                 .uploadFileName(uploadFileName)
                 .storeFileName(storeFileName)
                 .build();
     }
 
-    private static ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, UploadFile uploadFile) {
+    private ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, UploadFile uploadFile) {
         return ReviewCreateServiceRequest.builder()
                 .title("테스트 제목")
                 .content("테스트 내용")

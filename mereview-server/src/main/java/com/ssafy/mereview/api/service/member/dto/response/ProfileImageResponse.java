@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.member.dto.response;
 
+import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,13 @@ public class ProfileImageResponse {
         this.id = id;
         this.fileName = fileName;
         this.createdTime = createdTime;
+    }
+
+    public static ProfileImageResponse of(ProfileImage profileImage) {
+        return ProfileImageResponse.builder()
+                .id(profileImage.getId())
+                .fileName(profileImage.getUploadFile().getUploadFileName())
+                .createdTime(profileImage.getCreatedTime())
+                .build();
     }
 }

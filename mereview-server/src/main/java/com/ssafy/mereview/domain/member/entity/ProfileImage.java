@@ -34,16 +34,6 @@ public class ProfileImage extends BaseEntity {
 
     public void update(UploadFile uploadFile){
         this.uploadFile = uploadFile;
-
     }
-    public ProfileImageResponse of() {
-        return ProfileImageResponse.builder()
-                .id(id)
-                .fileName(uploadFile.getUploadFileName())
-                .createdTime(getCreatedTime())
-                .build();
-    }
-
-
 
 }

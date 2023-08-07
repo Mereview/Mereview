@@ -9,12 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewEvaluationResponse {
 
-    private Long reviewEvaluationId;
     private ReviewEvaluationType reviewEvaluationType;
+    private boolean isDone;
+    private int funCount;
+    private int usefulCount;
+    private int badCount;
 
     @Builder
-    public ReviewEvaluationResponse(Long reviewEvaluationId, ReviewEvaluationType reviewEvaluationType) {
-        this.reviewEvaluationId = reviewEvaluationId;
+    public ReviewEvaluationResponse(ReviewEvaluationType reviewEvaluationType, boolean isDone, int funCount, int usefulCount, int badCount) {
         this.reviewEvaluationType = reviewEvaluationType;
+        this.isDone = isDone;
+        this.funCount = funCount;
+        this.usefulCount = usefulCount;
+        this.badCount = badCount;
     }
 }

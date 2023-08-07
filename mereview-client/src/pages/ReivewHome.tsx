@@ -4,8 +4,10 @@ import { ReviewCardInterface } from "../components/interface/ReviewCardInterface
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
 import MovieList from "../components/MovieList";
-import { SearchBoxInterface } from "../components/interface/SearchBoxInterface";
-import SearchBox from "../components/SearchBox";
+import { ReviewSearchInterface } from "../components/interface/ReviewSearchInterface";
+import ReviewSearch from "../components/ReviewSearch";
+import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
+import ReviewSort from "../components/ReviewSort";
 
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
@@ -65,6 +67,7 @@ const getBoxOfficeMovieNames = async () => {
   }
 };
 
+// Use API later
 const genres: Record<string, string> = {
   "28": "액션",
   "12": "모험",
@@ -223,13 +226,15 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 const ReviewHome = () => {
   const [movieList, setMovieList] = useState<MovieCardInterface[]>([]);
   // 검색조건, 검색어, 정렬조건 통합하기
+  // 정렬
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
+  const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("all");
+  // 검색
   const [searchParam, setSearchParam] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
-  const [searchTerm, setSearchTerm] = useState<string>("all");
-  const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [emptySearchParam, setEmptySearchParam] = useState<boolean>(false);
 
   useEffect(() => {
@@ -255,28 +260,31 @@ const ReviewHome = () => {
           ? "DESC"
           : "ASC"
       }, 조회기간: ${
-        searchTerm === "" ? "전체기간" : searchTerm + "개월"
+        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
   }, [sortBy, dateDescend, recommendDescend, searchTerm, onlyInterest]);
 
-  const searchBoxProps: SearchBoxInterface = {
+  const searchProps: ReviewSearchInterface = {
+    searchParam: searchParam,
+    setSearchParam: setSearchParam,
+    searchCriteria: searchCriteria,
+    setSearchCriteria: setSearchCriteria,
+    emptySearchParam: emptySearchParam,
+    setEmptySearchParam: setEmptySearchParam,
+  };
+
+  const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
     setSortBy: setSortBy,
     dateDescend: dateDescend,
     setDateDescend: setDateDescend,
     recommendDescend: recommendDescend,
     setRecommendDescend: setRecommendDescend,
-    searchParam: searchParam,
-    setSearchParam: setSearchParam,
-    searchCriteria: searchCriteria,
-    setSearchCriteria: setSearchCriteria,
     searchTerm: searchTerm,
     setSearchTerm: setSearchTerm,
     onlyInterest: onlyInterest,
     setOnlyInterest: setOnlyInterest,
-    emptySearchParam: emptySearchParam,
-    setEmptySearchParam: setEmptySearchParam,
   };
 
   const searchSubmit = () => {
@@ -291,14 +299,14 @@ const ReviewHome = () => {
     }
   };
 
-  // SearchBox => Enter키 연결, 아이콘 추가
-  // SearchBox,
+  // ReviewSearch => Enter키 연결, 아이콘 추가
+  // ReviewSearch,
   return (
     <>
       <MovieList movieList={movieList} />
       <hr />
-      <SearchBox searchBoxProps={searchBoxProps} searchSubmit={searchSubmit} />
-
+      <ReviewSearch searchProps={searchProps} searchSubmit={searchSubmit} />
+      <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewList} />
     </>
   );

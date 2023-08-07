@@ -46,7 +46,7 @@ public class MemberRegisterRequest {
         this.profileImage = profileImage;
     }
 
-    public MemberCreateServiceRequest toMemberCreateServiceRequest(UploadFile profileImage) {
+    public MemberCreateServiceRequest toServiceRequest(UploadFile profileImage) {
         return MemberCreateServiceRequest.builder()
                 .email(email)
                 .password(password)
@@ -61,6 +61,8 @@ public class MemberRegisterRequest {
     private List<InterestRequest> createInterestRequests() {
         return this.interests.stream().map(interest -> InterestRequest.builder()
                 .genreName(interest.getGenreName())
+                .genreId(interest.getGenreId())
+                .genreNumber(interest.getGenreNumber())
                 .build()).collect(Collectors.toList());
     }
 }

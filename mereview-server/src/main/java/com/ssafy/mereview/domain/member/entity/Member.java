@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
@@ -8,6 +7,8 @@ import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,6 +21,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 public class Member extends BaseEntity {
 
     @Id
@@ -45,9 +47,10 @@ public class Member extends BaseEntity {
     private String birthDate;
 
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'USER'")
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Interest> interests = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
@@ -62,6 +65,8 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private MemberVisitCount memberVisit;
 
+    private String introduce;
+
     @ManyToMany
     @JoinTable(
             name = "member_followers",
@@ -74,7 +79,7 @@ public class Member extends BaseEntity {
     private List<Member> following = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<Member> followers, List<Member> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -87,9 +92,11 @@ public class Member extends BaseEntity {
         this.reviews = reviews;
         this.profileImage = profileImage;
         this.memberVisit = memberVisit;
+        this.introduce = introduce;
         this.followers = followers;
         this.following = following;
     }
+
 
     public MemberResponse of() {
         return
@@ -97,16 +104,16 @@ public class Member extends BaseEntity {
                 .id(id)
                 .nickname(nickname)
                 .email(email)
+                .gender(gender)
+                .birthDate(birthDate)
                 .build();
     }
 
     //update member
-    public void update(MemberUpdateServiceRequest request, List<Interest> interests){
-        this.nickname = request.getNickname();
-        this.gender = request.getGender();
-        this.birthDate = request.getBirthDate();
-        this.interests = interests;
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
     }
+
     //update profile image
     public void updateProfileImage(UploadFile uploadFile){
         if(this.profileImage == null){
@@ -117,5 +124,17 @@ public class Member extends BaseEntity {
         }else{
             this.profileImage.update(uploadFile);
         }
+    }
+
+    public void delete(){
+        this.role = Role.DELETED;
+    }
+
+    public void update(List<Interest> interests) {
+        this.interests = interests;
+    }
+
+    public void updateIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 }

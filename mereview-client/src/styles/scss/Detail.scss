@@ -1,0 +1,133 @@
+@import "Style";
+
+.detail {
+  border-radius: 50px;
+  border: solid black 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  min-height: 140vh;
+  margin: 0px;
+  padding: 2%;
+  z-index: 2;
+  filter: blur(0px);
+
+  hr {
+    border: 1px white solid;
+    opacity: 100%;
+    width: 100%;
+    margin: 10px 0px 20px 0px;
+  }
+  .first-line {
+    display: flex;
+    h1 {
+      color: white;
+      width: 75%;
+      height: auto;
+      font-size: 48px;
+    }
+    .emotionbox {
+      justify-content: end;
+      gap: 15px;
+      display: flex;
+      width: 25%;
+
+      img {
+        margin-top: 25px;
+        width: 30px;
+        height: 30px;
+      }
+      span {
+        margin-top: 20px;
+        color: white;
+        font-size: 30px;
+        text-decoration: underline solid white;
+      }
+    }
+  }
+  .content {
+    p {
+      margin: 0 50px 50px 50px;
+      color: white;
+      font-family: $GowunDodum;
+      font-size: $font-size-h3;
+    }
+  }
+  .ratingbuttons {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin: 50px 0px;
+    #useful {
+      background-image: url("/public/useful.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+    #funny {
+      background-image: url("/public/funny.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+    #dislike {
+      background-image: url("/public/dislike.png");
+      background-size: cover;
+      height: 100px;
+      width: 100px;
+      border-radius: 15px;
+    }
+  }
+
+  .comment {
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 8fr 4fr;
+    gap: 50px;
+    .left {
+      column-width: 8;
+    }
+    .input {
+      display: flex;
+      height: 100px;
+      justify-content: space-between;
+      button {
+        flex-basis: 20%;
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        background-color: $blue-5;
+        font-weight: bold;
+        color: white;
+      }
+      input {
+        flex-basis: 80%;
+        height: 100px;
+        margin-right: 15px;
+        border-radius: 12px;
+      }
+    }
+    .lst {
+      background-color: white;
+      overflow: auto;
+    }
+    .lst::-webkit-scrollbar {
+      width: 10px;
+    }
+    .lst::-webkit-scrollbar-track {
+      background: transparent; /* 스크롤바 트랙 배경색 */
+    }
+
+    .lst::-webkit-scrollbar-thumb {
+      height: 3px;
+      background: -webkit-linear-gradient(75deg, white, $magenta-5, $blue-5);
+      border-radius: 10px;
+    }
+    .vertical {
+      border-radius: 12px;
+      background-color: #c2c0bf;
+    }
+  }
+}
