@@ -1,15 +1,10 @@
 package com.ssafy.mereview.api.controller.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.FollowRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberRegisterRequest;
-import com.ssafy.mereview.api.controller.member.dto.request.MemberUpdateRequest;
+import com.ssafy.mereview.api.controller.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.MemberQueryService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.response.MemberLoginResponse;
-import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
-import com.ssafy.mereview.api.service.movie.GenreSaveService;
+import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
@@ -19,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +22,7 @@ import javax.persistence.criteria.Join;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
@@ -42,7 +39,6 @@ public class MemberController {
 
     private final FileExtensionFilter fileExtFilter;
 
-    private final GenreSaveService genreSaveService;
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", response = Join.class)
@@ -73,6 +69,20 @@ public class MemberController {
         return ApiResponse.ok(memberLoginResponse);
     }
 
+    @PostMapping("/introduce")
+    @ApiOperation(value = "회원 자기소개 수정", response = Join.class)
+    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request, HttpServletRequest httpServletRequest) {
+        log.debug("MemberIntroduceRequest : {}", request);
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
+        }
+        token = token.substring("Bearer ".length()).trim();
+
+        Long memberId = memberService.updateMemberIntroduce(request, token);
+        return ApiResponse.ok(memberId);
+    }
+
     @DeleteMapping("/{id}")
     @ApiOperation(value = "회원 탈퇴", response = Join.class)
     public ApiResponse<Long> deleteMember(@PathVariable Long id, HttpServletRequest request) {
@@ -92,6 +102,30 @@ public class MemberController {
         MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
         memberService.updateViewCount(memberId);
         return ApiResponse.ok(memberResponse);
+    }
+
+    @GetMapping("/{id}/following")
+    @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
+    public ApiResponse<List<FollowResponse>> searchMemberFollowInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        List<FollowResponse> followingResponse = memberQueryService.searchFollowingResponse(memberId);
+        return ApiResponse.ok(followingResponse);
+    }
+
+    @GetMapping("/{id}/follower")
+    @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
+    public ApiResponse<List<FollowResponse>> searchMemberFollowerInfo(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        List<FollowResponse> followerResponse = memberQueryService.searchFollowerResponse(memberId);
+        return ApiResponse.ok(followerResponse);
+    }
+
+    @GetMapping("/{id}/genre/{genreNumber}")
+    @ApiOperation(value = "회원 장르 별 정보", response = Join.class)
+    public ApiResponse<List<MemberTierResponse>> searchInfoByGenre(@PathVariable(name = "id") Long memberId,
+                                                                   @PathVariable(name = "genreNumber") int genreNumber) {
+        log.debug("MemberController.searchInfoByGenre : {}", memberId);
+        return ApiResponse.ok(memberQueryService.searchMemberTierByGenre(memberId, genreNumber));
     }
 
     @PutMapping("/{id}")
