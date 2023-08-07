@@ -78,16 +78,16 @@ class ReviewServiceTest {
     @Test
     void createReviewTest() {
         // given
-        createGenre();
-        createMember();
-        createInterest();
-        createMovie();
+        Genre genre = createGenre();
+        Member member = createMember();
+        createInterest(member, genre);
+        Movie movie = createMovie();
 
-        List<KeywordCreateServiceRequest> keywordRequests = createKeywordCreateRequests();
+        List<KeywordCreateServiceRequest> keywordRequests = createKeywordCreateRequests(movie.getId());
 
         UploadFile uploadFile = createUploadFile("xxx.jpg", "xxxxxxxxx.jpg");
 
-        ReviewCreateServiceRequest request = createReviewCreateRequest(keywordRequests, uploadFile);
+        ReviewCreateServiceRequest request = createReviewCreateRequest(keywordRequests, uploadFile, genre.getId(), member.getId(), movie.getId());
 
         // when
         Long saveId = reviewService.create(request);
@@ -98,7 +98,7 @@ class ReviewServiceTest {
         // then
         assertThat(saveId).isGreaterThan(0);
         assertThat(keywordRepository.findAll()).hasSize(1);
-        assertThat(backgroundImageRepository.findById(1L)).isNotNull();
+        assertThat(backgroundImageRepository.findAll()).isNotEmpty();
         assertThat(interestQueryRepository.searchRandomMember(review.getGenre().getId(), 100))
                 .hasSize(1);
 
@@ -193,35 +193,35 @@ class ReviewServiceTest {
      * private methods
      */
 
-    private void createMovie() {
+    private Movie createMovie() {
         Movie movie = Movie.builder()
                 .movieContentId(1)
                 .title("영화제목")
                 .build();
-        movieRepository.save(movie);
+        return movieRepository.save(movie);
     }
 
-    private void createMember() {
+    private Member createMember() {
         Member member = Member.builder()
                 .email("test@gmail.com")
                 .password("123456")
                 .build();
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
-    private void createGenre() {
+    private Genre createGenre() {
         Genre genre = Genre.builder()
                 .genreNumber(1)
                 .genreName("name")
                 .isUsing(true)
                 .build();
-        genreRepository.save(genre);
+        return genreRepository.save(genre);
     }
 
-    private void createInterest() {
+    private void createInterest(Member member, Genre genre) {
         Interest interest = Interest.builder()
-                .genre(Genre.builder().id(1L).build())
-                .member(Member.builder().id(1L).build())
+                .genre(genre)
+                .member(member)
                 .build();
         interestRepository.save(interest);
     }
@@ -252,12 +252,12 @@ class ReviewServiceTest {
         keywordRepository.saveAll(keywords);
     }
 
-    private List<KeywordCreateServiceRequest> createKeywordCreateRequests() {
+    private List<KeywordCreateServiceRequest> createKeywordCreateRequests(Long movieId) {
         List<KeywordCreateServiceRequest> keywordRequests = new ArrayList<>();
         keywordRequests.add(KeywordCreateServiceRequest.builder()
                 .name("키워드1")
                 .weight(5)
-                .movieId(1L)
+                .movieId(movieId)
                 .build());
         return keywordRequests;
     }
@@ -269,15 +269,15 @@ class ReviewServiceTest {
                 .build();
     }
 
-    private ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, UploadFile uploadFile) {
+    private ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, UploadFile uploadFile, Long genreId, Long memberId, Long movieId) {
         return ReviewCreateServiceRequest.builder()
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .highlight("테스트 한줄평")
                 .type(LIKE)
-                .movieId(1L)
-                .memberId(1L)
-                .genreId(1L)
+                .movieId(movieId)
+                .memberId(memberId)
+                .genreId(genreId)
                 .uploadFile(uploadFile)
                 .keywordCreateServiceRequests(keywordRequests)
                 .build();

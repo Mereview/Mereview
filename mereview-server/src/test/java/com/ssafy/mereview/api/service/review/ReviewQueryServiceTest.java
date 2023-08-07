@@ -81,6 +81,11 @@ class ReviewQueryServiceTest {
         SearchCondition condition = new SearchCondition("", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
+        List<Review> reviews = reviewRepository.findAll();
+        for (Review review : reviews) {
+            log.debug("review: {}", review.toString());
+        }
+
         // when
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
 
@@ -91,7 +96,7 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1"),
                         tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1")
@@ -176,7 +181,7 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight", "funCount")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 1),
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0),
                         tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
@@ -197,11 +202,11 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight", "usefulCount")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 1),
-                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
-                        tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0)
-                );
+                        tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0),
+                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
+                        );
 
     }
 

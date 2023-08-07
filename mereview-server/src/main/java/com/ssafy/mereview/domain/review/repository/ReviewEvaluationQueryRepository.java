@@ -1,11 +1,14 @@
 package com.ssafy.mereview.domain.review.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.domain.review.entity.QReviewEvaluation.reviewEvaluation;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class ReviewEvaluationQueryRepository {
@@ -23,7 +27,7 @@ public class ReviewEvaluationQueryRepository {
         return Optional.ofNullable(queryFactory
                 .selectFrom(reviewEvaluation)
                 .where(
-                        reviewEvaluation.review.id.eq(reviewId),
+                        isReview(reviewId),
                         reviewEvaluation.member.id.eq(memberId)
                 )
                 .fetchOne());
@@ -33,7 +37,7 @@ public class ReviewEvaluationQueryRepository {
         return queryFactory
                 .select(reviewEvaluation.type, reviewEvaluation.count())
                 .from(reviewEvaluation)
-                .where(reviewEvaluation.review.id.eq(reviewId))
+                .where(isReview(reviewId))
                 .groupBy(reviewEvaluation.type)
                 .fetch()
                 .stream()
@@ -44,14 +48,24 @@ public class ReviewEvaluationQueryRepository {
     }
 
     public int getCountByReviewIdAndType(Long reviewId, ReviewEvaluationType type) {
-        return queryFactory
+        Long result = queryFactory
                 .select(reviewEvaluation.count())
                 .from(reviewEvaluation)
                 .where(
-                        reviewEvaluation.review.id.eq(reviewId),
-                        reviewEvaluation.type.eq(type)
+                        isReview(reviewId),
+                        isType(type)
                 )
                 .groupBy(reviewEvaluation.type)
-                .fetchFirst().intValue();
+                .fetchFirst();
+
+        return result == null ? 0 : result.intValue();
+    }
+
+    private BooleanExpression isReview(Long reviewId) {
+        return reviewEvaluation.review.id.eq(reviewId);
+    }
+
+    private BooleanExpression isType(ReviewEvaluationType type) {
+        return reviewEvaluation.type.eq(type);
     }
 }

@@ -83,7 +83,7 @@ class ReviewControllerTest {
         // when // then
         String jsonRequest = objectMapper.writeValueAsString(request);
         mockMvc.perform(
-                        multipart("/reviews")
+                        multipart("/api/reviews")
                                 .file(file)
                                 .file(createRequestPart(jsonRequest))
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -110,7 +110,7 @@ class ReviewControllerTest {
         // when // then
         String jsonRequest = objectMapper.writeValueAsString(request);
         mockMvc.perform(
-                        multipart("/reviews")
+                        multipart("/api/reviews")
                                 .file(file)
                                 .file(createRequestPart(jsonRequest))
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -141,7 +141,7 @@ class ReviewControllerTest {
 
         // when // then
         mockMvc.perform(
-                        get("/reviews")
+                        get("/api/reviews")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -169,7 +169,7 @@ class ReviewControllerTest {
 
         // when // then
         mockMvc.perform(
-                        get("/reviews")
+                        get("/api/reviews")
                                 .queryParam("title", "테스트")
                 )
                 .andDo(print())
@@ -186,7 +186,7 @@ class ReviewControllerTest {
         // given
         Long reviewId = 1L;
         Long memberId = 1L;
-        ReviewDetailResponse response = createReviewDetailResponse(1L, 1L, 1L);
+        ReviewDetailResponse response = createReviewDetailResponse(reviewId, memberId, 1L);
 
         // stubbing 작업
         given(reviewQueryService.searchById(reviewId, memberId))
@@ -194,7 +194,7 @@ class ReviewControllerTest {
 
         // when // then
         mockMvc.perform(
-                        get("/reviews/1")
+                        get("/api/reviews/" + response.getReviewId() + "?loginMemberId=" + memberId)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
