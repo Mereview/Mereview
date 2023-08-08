@@ -106,6 +106,14 @@ public class MemberController {
         return ApiResponse.ok(memberResponse);
     }
 
+    @GetMapping("/{id}/info")
+    @ApiOperation(value = "회원 정보 조회", response = Join.class)
+    public ApiResponse<MemberResponse> searchMemberInfoData(@PathVariable(name = "id") Long memberId) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+        MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
+        return ApiResponse.ok(memberResponse);
+    }
+
     @GetMapping("/{id}/following")
     @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
     public ApiResponse<List<FollowResponse>> searchMemberFollowInfo(@PathVariable(name = "id") Long memberId) {
