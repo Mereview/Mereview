@@ -21,21 +21,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MovieService {
 
-        private final MovieQueryRepository movieQueryRepository;
+    private final MovieQueryRepository movieQueryRepository;
 
-        private final MovieGenreQueryRepository movieGenreQueryRepository;
+    private final MovieGenreQueryRepository movieGenreQueryRepository;
 
-        private final MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
-        public List<MovieResponse> searchMovies(String keyword) {
-            log.debug("keyword = {}", keyword);
+    public List<MovieResponse> searchMovies(String keyword) {
+        log.debug("keyword = {}", keyword);
 
-            return
-            createMovieReponses(movieQueryRepository.searchMovieByKeyword(keyword));
-        }
+        List<Movie> movies = movieQueryRepository.searchMovieByKeyword(keyword);
 
-    public List<MovieResponse> createMovieReponses(List<Movie> movies) {
         return movies.stream().map(MovieResponse::of).collect(Collectors.toList());
+
     }
 
     public MovieResponse searchMovieById(Long movieId) {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
-public class MemberVisitCount {
+public class MemberVisit {
 
     @Id @GeneratedValue
     private Long id;
@@ -29,7 +29,7 @@ public class MemberVisitCount {
     private LocalDateTime lastVisitDate;
 
     @Builder
-    public MemberVisitCount(Long id, Member member, int todayVisitCount, int totalVisitCount) {
+    public MemberVisit(Long id, Member member, int todayVisitCount, int totalVisitCount) {
         this.id = id;
         this.member = member;
         this.todayVisitCount = todayVisitCount;
