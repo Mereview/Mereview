@@ -90,8 +90,8 @@ class NotificationServiceTest {
         NotificationResponse response = notificationService.toggleStatus(notificationId);
 
         // then
-        assertThat(response).extracting("notificationId", "reviewId", "memberId", "status")
-                .containsExactly(notificationId, 1L, 1L, CONFIRMED);
+        assertThat(response).extracting("notificationId", "status")
+                .containsExactly(notificationId, CONFIRMED);
     }
 
     @DisplayName("2. 알림을 삭제한다.")

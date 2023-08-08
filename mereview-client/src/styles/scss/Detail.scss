@@ -44,6 +44,13 @@
       }
     }
   }
+  .edit {
+    display: flex;
+    justify-content: center;
+    Button {
+      width: 48px;
+    }
+  }
   .content {
     p {
       margin: 0 50px 50px 50px;
@@ -122,7 +129,7 @@
 
     .lst::-webkit-scrollbar-thumb {
       height: 3px;
-      background: -webkit-linear-gradient(75deg, white, $magenta-5, $blue-5);
+      background: -webkit-linear-gradient(75deg, rgb(124, 124, 124), black);
       border-radius: 10px;
     }
     .vertical {

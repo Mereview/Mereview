@@ -5,6 +5,7 @@ const uiSlice = createSlice({
   initialState: {
     isModal: false,
     tabToggle: "login",
+    grantAuth: false,
   },
   reducers: {
     tabChange(state, action) {
@@ -15,6 +16,9 @@ const uiSlice = createSlice({
       } else if (action.payload === "signUpCompleted") {
         state.tabToggle = "login";
       }
+    },
+    grantAuthToggler(state) {
+      state.grantAuth = true;
     },
   },
 });

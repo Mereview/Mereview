@@ -2,7 +2,7 @@
 
 .total {
   color: white;
-  height: 30vh;
+  height: auto;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -16,6 +16,7 @@
     align-items: start;
     flex-basis: 60%;
     justify-content: space-between;
+    height: auto;
 
     h1 {
       font-family: $GowunDodum;

@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -81,9 +81,11 @@ class CommentServiceTest {
 
         // when
         Long commentId = commentService.save(request);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow();
 
         // then
-        assertThat(commentId).isEqualTo(1L);
+        assertThat(comment.getContent()).isEqualTo("content");
     }
 
     @DisplayName("댓글을 수정한다.")
@@ -103,6 +105,7 @@ class CommentServiceTest {
         commentRepository.save(comment);
 
         CommentUpdateServiceRequest request = CommentUpdateServiceRequest.builder()
+                .commentId(comment.getId())
                 .content("수정 댓글")
                 .build();
         
@@ -110,7 +113,6 @@ class CommentServiceTest {
         Long commentId = commentService.update(request);
         Comment updatedComment = commentRepository.findById(commentId).orElseThrow();
         // then
-        assertThat(commentId).isEqualTo(1L);
         assertThat(updatedComment.getContent())
                 .isEqualTo("수정 댓글");
     }

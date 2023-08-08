@@ -1,7 +1,7 @@
 package com.ssafy.mereview.api.service.review.dto.request;
 
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.review.entity.EvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,12 +16,12 @@ public class ReviewUpdateServiceRequest {
     private String title;
     private String content;
     private String highlight;
-    private EvaluationType type;
+    private MovieEvaluationType type;
     private List<KeywordUpdateServiceRequest> keywordServiceRequests;
     private UploadFile uploadFile;
 
     @Builder
-    public ReviewUpdateServiceRequest(Long reviewId, String title, String content, String highlight, EvaluationType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, UploadFile uploadFile) {
+    public ReviewUpdateServiceRequest(Long reviewId, String title, String content, String highlight, MovieEvaluationType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, UploadFile uploadFile) {
         this.reviewId = reviewId;
         this.title = title;
         this.content = content;

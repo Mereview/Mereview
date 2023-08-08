@@ -10,8 +10,8 @@ import java.util.List;
 @Slf4j
 public class FileExtensionFilter {
     // TODO: 2023-07-31 나중에 리팩토링 해야함 
-    private final String[] IMG_EXTENSION = {"png", "jpg", "jpeg", "gif"};
-    private final String[] BAD_EXTENSION = {"jsp", "php", "asp", "html", "perl"};
+    private final String[] NOT_ALLOWED_IMG_EXTENSIONS = {"png", "jpg", "jpeg", "gif"};
+    private final String[] NOT_ALLOWED_FILE_EXTENSIONS = {"jsp", "php", "asp", "html", "perl"};
 
     public void imageFilter(MultipartFile file) {
         boolean isValid = false;
@@ -19,7 +19,7 @@ public class FileExtensionFilter {
         String originalFileName = file.getOriginalFilename();
         if (originalFileName != null) {
             String extension = extractExtension(originalFileName.toLowerCase());
-            for (String ext : IMG_EXTENSION) {
+            for (String ext : NOT_ALLOWED_IMG_EXTENSIONS) {
                 if (ext.equals(extension)) {
                     isValid = true;
                     break;
@@ -37,7 +37,7 @@ public class FileExtensionFilter {
             String originalFilename = file.getOriginalFilename();
             if (originalFilename != null) {
                 String ext = extractExtension(originalFilename).toLowerCase();
-                for (String s : IMG_EXTENSION) {
+                for (String s : NOT_ALLOWED_IMG_EXTENSIONS) {
                     if (s.equals(ext)) {
                         isValid = true;
                         break;
@@ -56,7 +56,7 @@ public class FileExtensionFilter {
             String originalFilename = file.getOriginalFilename();
             if (originalFilename != null) {
                 String ext = extractExtension(originalFilename).toLowerCase();
-                for (String s : BAD_EXTENSION) {
+                for (String s : NOT_ALLOWED_FILE_EXTENSIONS) {
                     if (ext.equals(s)) {
                         isValid = false;
                         break;

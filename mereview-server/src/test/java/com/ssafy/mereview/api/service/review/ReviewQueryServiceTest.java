@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.EvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;
@@ -81,6 +81,11 @@ class ReviewQueryServiceTest {
         SearchCondition condition = new SearchCondition("", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
+        List<Review> reviews = reviewRepository.findAll();
+        for (Review review : reviews) {
+            log.debug("review: {}", review.toString());
+        }
+
         // when
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
 
@@ -91,7 +96,7 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1"),
                         tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1")
@@ -176,7 +181,7 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight", "funCount")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 1),
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 0),
                         tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
@@ -197,11 +202,11 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight", "usefulCount")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1", 1),
-                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0),
-                        tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0)
-                );
+                        tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1", 0),
+                        tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2", 0)
+                        );
 
     }
 

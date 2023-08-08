@@ -18,6 +18,7 @@ public class MeReviewApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MeReviewApplication.class, args);
+		//test
 	}
 
 }

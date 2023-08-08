@@ -5,9 +5,9 @@ import "../styles/css/NavigationBar.css";
 import { useState } from "react";
 import ProfileModal from "./ProfileModal";
 const NavigationBar = () => {
-  const profileURL = useSelector((state: any) => state.user.profileURL);
-  const style = profileURL
-    ? { backgroundImage: `url(${profileURL})` }
+  const profile_URL = useSelector((state: any) => state.user.profile_URL);
+  const style = profile_URL
+    ? { backgroundImage: `url(${profile_URL})` }
     : { backgroundImage: "url(/testProfile.gif)" };
   const [isModal, setIsModal] = useState(false);
   const modalToggler = () => {

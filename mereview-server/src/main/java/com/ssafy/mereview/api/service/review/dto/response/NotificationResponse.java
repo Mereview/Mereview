@@ -5,7 +5,6 @@ import com.ssafy.mereview.domain.review.entity.NotificationStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 

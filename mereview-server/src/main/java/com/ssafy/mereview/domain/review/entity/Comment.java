@@ -1,7 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
 import com.ssafy.mereview.api.service.review.dto.request.CommentUpdateServiceRequest;
-import com.ssafy.mereview.api.service.review.dto.response.CommentResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
@@ -9,12 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ssafy.mereview.domain.review.entity.CommentLikeType.DISLIKE;
-import static com.ssafy.mereview.domain.review.entity.CommentLikeType.LIKE;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
