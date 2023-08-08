@@ -9,6 +9,8 @@ import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
+import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.entity.MemberFollow;
 import com.sun.jdi.request.DuplicateRequestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -149,9 +151,10 @@ public class MemberController {
 
     @PostMapping("/follow")
     @ApiOperation(value = "팔로우", response = Join.class)
-    public void follow(@RequestBody FollowRequest followRequest) {
+    public ApiResponse<MemberFollowResponse> follow(@RequestBody FollowRequest followRequest) {
         log.debug("MemberController.follow : {}", followRequest);
-        memberService.createFollow(followRequest.getTargetId(), followRequest.getMemberId());
+        MemberFollowResponse response = memberService.createFollow(followRequest.getTargetId(), followRequest.getMemberId());
+        return ApiResponse.ok(response);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
