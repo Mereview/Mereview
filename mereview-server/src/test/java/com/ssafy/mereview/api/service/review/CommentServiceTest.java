@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -192,7 +192,7 @@ class CommentServiceTest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(LIKE)
+                .type(YES)
                 .hits(hits)
                 .member(member)
                 .movie(movie)

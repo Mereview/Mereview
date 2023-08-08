@@ -9,15 +9,18 @@ import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
+import static com.ssafy.mereview.domain.member.entity.QInterest.interest;
 import static com.ssafy.mereview.domain.member.entity.QMember.member;
 import static com.ssafy.mereview.domain.movie.entity.QMovie.movie;
 import static com.ssafy.mereview.domain.review.entity.QReview.review;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
 @RequiredArgsConstructor
@@ -26,20 +29,11 @@ public class ReviewQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<Review> searchByCondition(SearchCondition condition, Pageable pageable) {
-        List<Long> ids = queryFactory
-                .select(review.id)
-                .from(review)
-                .where(
-                        isTitle(condition.getTitle()),
-                        isContent(condition.getContent()),
-                        isTerm(condition.getTerm())
-                )
-                .orderBy(sortByField(condition.getOrderBy()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        List<Long> genreIds = getGenreIds(condition);
 
-        if (CollectionUtils.isEmpty(ids)) {
+        List<Long> reviewIds = getReviewIds(condition, pageable, genreIds);
+
+        if (isEmpty(reviewIds)) {
             return new ArrayList<>();
         }
 
@@ -48,22 +42,11 @@ public class ReviewQueryRepository {
                 .from(review)
                 .join(review.member, member).fetchJoin()
                 .join(review.movie, movie).fetchJoin()
-                .where(review.id.in(ids))
-                .orderBy(sortByField(condition.getOrderBy()))
+                .where(review.id.in(reviewIds))
+                .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
                 .fetch();
 
     }
-
-//    // 사용 여부 미정 메소드
-//    private int getReviewEvaluationCount(NumberPath<Long> reviewId, ReviewEvaluationType type) {
-//        return queryFactory
-//                .select(reviewEvaluation.count())
-//                .from(reviewEvaluation)
-//                .where(
-//                        reviewEvaluation.review.id.eq(reviewId),
-//                        reviewEvaluation.type.eq(type)
-//                ).fetchFirst().intValue();
-//    }
 
     public int getTotalPages(SearchCondition condition) {
         return queryFactory
@@ -90,6 +73,35 @@ public class ReviewQueryRepository {
                 ).fetchOne();
     }
 
+    /**
+     * private methods
+     */
+
+    private List<Long> getGenreIds(SearchCondition condition) {
+        return queryFactory
+                .select(interest.genre.id)
+                .from(interest)
+                .join(interest.member, member)
+                .where(isMemberId(condition.getMemberId()))
+                .fetch();
+    }
+
+    private List<Long> getReviewIds(SearchCondition condition, Pageable pageable, List<Long> genreIds) {
+        return queryFactory
+                .select(review.id)
+                .from(review)
+                .where(
+                        isTitle(condition.getTitle()),
+                        isContent(condition.getContent()),
+                        isTerm(condition.getTerm()),
+                        isGenreIds(condition.getMemberId(), genreIds)
+                )
+                .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
     private BooleanExpression isTitle(String title) {
         return hasText(title) ? review.title.like("%" + title + "%") : null;
     }
@@ -113,8 +125,19 @@ public class ReviewQueryRepository {
         return null;
     }
 
-    private OrderSpecifier<?> sortByField(String filedName) {
-        Order order = Order.DESC;
+    private BooleanExpression isGenreIds(String memberId, List<Long> genreIds) {
+        return hasText(memberId) ? review.genre.id.in(genreIds) : null;
+    }
+
+    private BooleanExpression isMemberId(String memberId) {
+        return hasText(memberId) ? interest.member.id.eq(Long.parseLong(memberId)) : null;
+    }
+
+    private OrderSpecifier<?> sortByField(String filedName, String direction) {
+        Order order = DESC;
+        if (direction.equals("ASC")) {
+            order = ASC;
+        }
 
         if (hasText(filedName)) {
             if (filedName.equals("hits")) {

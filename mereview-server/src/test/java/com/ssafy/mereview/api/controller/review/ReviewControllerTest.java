@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -132,7 +132,7 @@ class ReviewControllerTest {
         ReviewResponse response3 = createReviewResponse(3L, 3L, 3L);
 
         List<ReviewResponse> responses = List.of(response1, response2, response3);
-        SearchCondition searchCondition = new SearchCondition("", "", "", "");
+        SearchCondition searchCondition = new SearchCondition("", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
@@ -160,7 +160,7 @@ class ReviewControllerTest {
         ReviewResponse response3 = createReviewResponse(3L, 3L, 3L);
 
         List<ReviewResponse> responses = List.of(response1, response2, response3);
-        SearchCondition searchCondition = new SearchCondition("", "", "", "");
+        SearchCondition searchCondition = new SearchCondition("", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
@@ -235,7 +235,7 @@ class ReviewControllerTest {
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .highlight("테스트 한줄평")
-                .type(LIKE)
+                .type(YES)
                 .memberId(1L)
                 .genreId(1L)
                 .movieId(1L)

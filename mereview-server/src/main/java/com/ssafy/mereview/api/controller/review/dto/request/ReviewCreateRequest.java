@@ -3,7 +3,7 @@ package com.ssafy.mereview.api.controller.review.dto.request;
 import com.ssafy.mereview.api.service.review.dto.request.KeywordCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
+import com.ssafy.mereview.domain.review.entity.MovieRecommendType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +30,7 @@ public class ReviewCreateRequest {
     private String highlight;
 
     @NotNull
-    private MovieEvaluationType type;
+    private MovieRecommendType type;
 
     @NotNull
     private Long memberId;
@@ -45,7 +45,7 @@ public class ReviewCreateRequest {
     private List<KeywordCreateRequest> keywordRequests;
 
     @Builder
-    public ReviewCreateRequest(String title, String content, String highlight, MovieEvaluationType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateRequest> keywordRequests) {
+    public ReviewCreateRequest(String title, String content, String highlight, MovieRecommendType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateRequest> keywordRequests) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;

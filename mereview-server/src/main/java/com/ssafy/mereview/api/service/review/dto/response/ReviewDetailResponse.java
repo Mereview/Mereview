@@ -26,6 +26,7 @@ public class ReviewDetailResponse {
     private LocalDateTime reviewCreatedTime;
     private List<KeywordResponse> keywords;
     private boolean evaluated;
+    private int positiveCount;
     private int funCount;
     private int usefulCount;
     private int badCount;
@@ -40,7 +41,7 @@ public class ReviewDetailResponse {
     private List<CommentResponse> comments = new ArrayList<>();
 
     @Builder
-    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, boolean evaluated, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
+    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, boolean evaluated, int positiveCount, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
@@ -50,6 +51,7 @@ public class ReviewDetailResponse {
         this.reviewCreatedTime = reviewCreatedTime;
         this.keywords = keywords;
         this.evaluated = evaluated;
+        this.positiveCount = positiveCount;
         this.funCount = funCount;
         this.usefulCount = usefulCount;
         this.badCount = badCount;

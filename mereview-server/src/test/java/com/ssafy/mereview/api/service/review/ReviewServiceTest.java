@@ -27,15 +27,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.DISLIKE;
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.NO;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -128,7 +127,7 @@ class ReviewServiceTest {
                 .title("수정 제목")
                 .content("수정 내용")
                 .highlight("수정 한줄평")
-                .type(DISLIKE)
+                .type(NO)
                 .keywordServiceRequests(keywordRequests)
                 .uploadFile(uploadFile)
                 .build();
@@ -141,7 +140,7 @@ class ReviewServiceTest {
         // then
         assertThat(updatedReview)
                 .extracting("title", "content", "highlight", "type")
-                .containsExactly("수정 제목", "수정 내용", "수정 한줄평", DISLIKE);
+                .containsExactly("수정 제목", "수정 내용", "수정 한줄평", NO);
         assertThat(updatedKeywords).hasSize(1);
     }
 
@@ -158,7 +157,7 @@ class ReviewServiceTest {
                 .content("수정 내용")
                 .highlight("수정 한줄평")
                 .keywordServiceRequests(List.of())
-                .type(DISLIKE)
+                .type(NO)
                 .build();
 
         // when // then
@@ -277,7 +276,7 @@ class ReviewServiceTest {
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .highlight("테스트 한줄평")
-                .type(LIKE)
+                .type(YES)
                 .movieId(movieId)
                 .memberId(memberId)
                 .genreId(genreId)
