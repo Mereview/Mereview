@@ -50,3 +50,9 @@
   padding: 20px;
   transition: transform 0.2s ease;
 }
+
+.scrollable-content {
+  overflow: hidden; /* 스크롤바를 숨김 */
+  flex: 1;
+  padding: 10px;
+}
