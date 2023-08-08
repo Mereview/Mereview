@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.review.repository;
+package com.ssafy.mereview.domain.review.repository.command;
 
 import com.ssafy.mereview.domain.review.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
