@@ -1,17 +1,10 @@
 package com.ssafy.mereview.api.service.movie.dto.response;
 
 import com.ssafy.mereview.domain.movie.entity.Movie;
-import com.ssafy.mereview.domain.movie.entity.MovieGenre;
-import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
 @NoArgsConstructor
@@ -32,8 +25,10 @@ public class MovieResponse {
 
     private String releaseDate;
 
+    private List<GenreResponse> genres;
+
     @Builder
-    public MovieResponse(Long id, int movieContentId, String title, String overview, Double voteAverage, String posterImg, String releaseDate) {
+    public MovieResponse(Long id, int movieContentId, String title, String overview, Double voteAverage, String posterImg, String releaseDate, List<GenreResponse> genres) {
         this.id = id;
         this.movieContentId = movieContentId;
         this.title = title;
@@ -41,6 +36,7 @@ public class MovieResponse {
         this.voteAverage = voteAverage;
         this.posterImg = posterImg;
         this.releaseDate = releaseDate;
+        this.genres = genres;
     }
 
     public static MovieResponse of(Movie movie){
@@ -54,4 +50,19 @@ public class MovieResponse {
                 .releaseDate(movie.getReleaseDate())
                 .build();
     }
+
+
+    public static MovieResponse of(Movie movie, List<GenreResponse> genreResponses){
+        return MovieResponse.builder()
+                .id(movie.getId())
+                .movieContentId(movie.getMovieContentId())
+                .title(movie.getTitle())
+                .genres(genreResponses)
+                .overview(movie.getOverview())
+                .voteAverage(movie.getVoteAverage())
+                .posterImg(movie.getPosterImg())
+                .releaseDate(movie.getReleaseDate())
+                .build();
+    }
+
 }

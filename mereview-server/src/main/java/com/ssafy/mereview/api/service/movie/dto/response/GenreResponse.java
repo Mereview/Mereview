@@ -26,7 +26,7 @@ public class GenreResponse {
         return GenreResponse.builder()
                 .genreId(genre.getId())
                 .genreNumber(genre.getGenreNumber())
-                .genreName(builder().genreName)
+                .genreName(genre.getGenreName())
                 .isUsing(genre.isUsing())
                 .build();
     }
