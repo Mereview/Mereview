@@ -301,6 +301,7 @@ const getMemberInfo = async (userId: number) => {
       userInfo.totalVisitor = response.totalVisitCount;
       userInfo.joinDate = response.createdTime;
       userInfo.reviewCount = response.reviews.length;
+
       // userInfo.commentCount = response.commentCount;
       console.log(response);
     },
@@ -358,8 +359,8 @@ const getFollowingCount = async (userId: number) => {
 /* api test */
 
 const ProfilePage = () => {
-  const loginId: number = useSelector((state: any) => state.user.id);
-  loginNickname = useSelector((state: any) => state.user.nickname);
+  const loginId: number = useSelector((state: any) => state.user.user.id);
+  loginNickname = useSelector((state: any) => state.user.user.nickname);
   const { id } = useParams();
   const userId: number = id ? Number(id) : loginId;
   generateData();
@@ -380,6 +381,7 @@ const ProfilePage = () => {
     followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
 
   useEffect(() => {
+    if (userId === null || loginId === null || userId === undefined) return;
     const followCheck = async () => {
       await isFollower(userId, loginId);
       await getFollowerCount(userId);
@@ -387,11 +389,11 @@ const ProfilePage = () => {
     };
 
     followCheck();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     // 유저 정보 저장
-    if (userId === null) return;
+    if (userId === null || loginId === null || userId === undefined) return;
     const fetchData = async () => {
       await getMemberInfo(userId);
       if (error !== null) navigate(-1);
