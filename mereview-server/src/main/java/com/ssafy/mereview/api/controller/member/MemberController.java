@@ -9,8 +9,6 @@ import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.ssafy.mereview.domain.member.entity.Member;
-import com.ssafy.mereview.domain.member.entity.MemberFollow;
 import com.sun.jdi.request.DuplicateRequestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -108,10 +106,10 @@ public class MemberController {
 
     @GetMapping("/{id}/info")
     @ApiOperation(value = "회원 정보 조회", response = Join.class)
-    public ApiResponse<MemberResponse> searchMemberInfoData(@PathVariable(name = "id") Long memberId) {
+    public ApiResponse<MemberDataResponse> searchMemberInfoData(@PathVariable(name = "id") Long memberId) {
         log.debug("MemberController.getMemberInfo : {}", memberId);
-        MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
-        return ApiResponse.ok(memberResponse);
+        MemberDataResponse memberDataResponse = memberQueryService.searchMemberData(memberId);
+        return ApiResponse.ok(memberDataResponse);
     }
 
     @GetMapping("/{id}/following")
