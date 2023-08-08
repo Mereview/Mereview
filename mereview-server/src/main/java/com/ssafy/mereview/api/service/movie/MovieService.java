@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,20 @@ public class MovieService {
 
         List<Movie> movies = movieQueryRepository.searchMovieByKeyword(keyword);
 
-        return movies.stream().map(MovieResponse::of).collect(Collectors.toList());
+        return createMovieResponses(movies);
 
+    }
+
+    private List<MovieResponse> createMovieResponses(List<Movie> movies) {
+        List<MovieResponse> movieResponses = new ArrayList<>();
+
+        for(Movie movie : movies){
+            List<MovieGenre> movieGenres = movieGenreQueryRepository.searchMovieGenreByMovieId(movie.getId());
+            List<GenreResponse> genreResponses = movieGenres.stream().map(MovieGenre::getGenre).map(GenreResponse::of).collect(Collectors.toList());
+            MovieResponse movieResponse = MovieResponse.of(movie, genreResponses); //
+            movieResponses.add(movieResponse);
+        }
+        return movieResponses;
     }
 
     public MovieResponse searchMovieById(Long movieId) {
