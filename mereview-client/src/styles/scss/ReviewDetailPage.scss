@@ -4,23 +4,30 @@
   position: relative;
   height: auto;
   padding: 3% 20% 3% 20%;
-}
-.blurred {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background-size: cover;
-}
-.section::-webkit-scrollbar {
-  width: 0px; /* Chrome, Safari, Opera */
-  display: none; /* Chrome, Safari, Opera */
-}
-.topbutton {
-  background-image: url("/public/Top.png");
-  width: 100px;
-  height: 100px;
-  background-size: cover;
+
+  .blurred {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+  }
+  .section::-webkit-scrollbar {
+    width: 0px; /* Chrome, Safari, Opera */
+    display: none; /* Chrome, Safari, Opera */
+  }
+  .topbutton {
+    position: fixed;
+    margin: auto;
+    bottom: 50px;
+    right: 100px;
+    background-image: url("/public/Top.png");
+    width: 80px;
+    height: 80px;
+    background-size: cover;
+    border: solid white;
+    border-radius: 9999px;
+  }
 }

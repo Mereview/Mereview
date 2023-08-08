@@ -139,8 +139,8 @@ const Detail = ({ review, movie }: TODProps) => {
       </div>
       {userId === review.memberId ? (
         <div className="edit">
-          <Button text="수정" styles="btn-primary" onClick={onClick}></Button>
-          <Button text="삭제" styles="btn-secondary" onClick={onClick}></Button>
+          <Button text="수정" styles="btn-primary" onClick={onClick} />
+          <Button text="삭제" styles="btn-secondary" onClick={onClick} />
         </div>
       ) : null}
 
@@ -148,7 +148,7 @@ const Detail = ({ review, movie }: TODProps) => {
       <div className="comment">
         <div className="left" style={{ margin: "0px" }}>
           <form className="input">
-            <input type="text" />
+            <textarea name="" id="input"></textarea>
             <button type="submit">댓글 등록</button>
           </form>
 
