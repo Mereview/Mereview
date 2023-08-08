@@ -37,6 +37,8 @@ const ReviewWrite = () => {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [genreList, setGenreList] = useState([]);
   const [genreName, setGenreName] = useState("");
+  const [fileData, setFileData] = useState<File>(null);
+  const fileDataRef = useRef<File>(null);
   const genreSelectHandler = (event) => {
     const genre = JSON.parse(event.target.value);
     setGenreName(genre.genreName);
@@ -110,15 +112,14 @@ const ReviewWrite = () => {
     //   //   type: "application/json",
     //   // })
     // );
-    if (file.current != null) {
-      formData.append(
-        "uploadFile",
-        file.current
-        // new Blob([JSON.stringify(selectedImage)], {
-        //   type: "application/json",
-        // })
-      );
-    }
+    formData.append(
+      "file",
+      // fileData
+      fileDataRef.current
+      // new Blob([JSON.stringify(selectedImage)], {
+      //   type: "application/json",
+      // })
+    );
     axios
       .post(url + "/reviews", formData)
       .then(() => {
@@ -134,15 +135,14 @@ const ReviewWrite = () => {
     console.log(id + " " + inputData[id]);
   };
   // const [file, setFile] = useState(null);
-  const file = useRef(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    // const file = acceptedFiles[0];
-    file.current = acceptedFiles[0];
-    const inputImage = acceptedFiles[0];
-    if (inputImage) {
-      const objectURL = URL.createObjectURL(inputImage);
+    const file = acceptedFiles[0];
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
-      setImgName(inputImage.name);
+      setImgName(file.name);
+      // setFileData(file);
+      fileDataRef.current = file;
     }
   }, []);
 
