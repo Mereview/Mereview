@@ -1,25 +1,25 @@
 import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-
+import MovieList from "../components/MovieList";
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
   const userid = useSelector((state: any) => state.user.id);
   const nickname = useSelector((state: any) => state.user.nickname);
-  const profile = "/logo2.png";
+  const profile = useSelector((state: any) => state.user.profile_URL);
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
   const movieName = useRef("");
-  // const movieList = axios.get("http://localhost:8080/api/movies/");
-  const [autoCompleteData, setAutoCompleteData] = useState([]);
+  const autoCompleteData = useRef([]);
+  const [movieList, setMovieList] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
@@ -39,30 +39,41 @@ const ReviewWrite = () => {
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
+  const [typingTimeout, setTypingTimeout] = useState(null);
   const onMovieNameHandler = (event) => {
+    const searchValue = event.target.value;
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    const timeout = setTimeout(() => {
+      const encodedKeyword = encodeURIComponent(searchValue);
+
+      axios
+        .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+        .then((res) => {
+          console.log(res.data.data);
+          // autoCompleteData.current = res.data.data;
+          setMovieList(res.data.data);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    }, 300);
+    setTypingTimeout(timeout);
+  };
+  const movieSelectHandler = (event) => {
     movieName.current = event.target.value;
-    console.log(movieName.current);
     const encodedKeyword = encodeURIComponent(movieName.current);
-    axios.get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+    axios
+      .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
       .then((res) => {
-        console.log(res.data);
-        inputData.current.movieId = res.data.data.id;
-    })
-    // inputData.current.movieId
-    // console.log(movieName.current);
-    // let movieList = [];
-    // const encodedKeyword = encodeURIComponent(movieName.current);
-    // axios
-    //   .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
-    //   .then((res) => {
-    //     console.log(res.data.data);
-    //     movieList = res.data.data;
-    //   })
-    //   .catch(() => {
-    //     console.log("error");
-    //   });
-    // setAutoCompleteData(movieList);
-    // console.log(movieList);
+        // console.log(res.data.data);
+        const movie = res.data.data;
+        console.log(movie);
+        inputData.current.movieId = movie[0].movieContentId;
+        inputData.current.genreId = movie[0].genres;
+        console.log(inputData.current);
+      });
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -77,7 +88,6 @@ const ReviewWrite = () => {
       alert("한줄평을 입력해주세요");
       return;
     }
-    // console.log(movieList);
     const keywordList = [];
     keywordList.push(childRef1.current.getKeyInfo());
     keywordList.push(childRef2.current.getKeyInfo());
@@ -88,14 +98,17 @@ const ReviewWrite = () => {
       alert("키워드 목록을 입력해주세요");
       return;
     }
-    const reviewContent = contentRef.current;
+    // console.log(contentRef.current.getContent());
+    const reviewContent = contentRef.current.getContent();
+    inputData.current.memberId = userid;
+    inputData.current.keywordRequests = keywordList;
+    inputData.current.content = reviewContent;
+    // console.log(reviewContent);
     if (inputData.current.content == null) {
       alert("리뷰 내용을 입력해주세요");
       return;
     }
-    inputData.current.memberId = userid;
-    inputData.current.keywordRequests = keywordList;
-    inputData.current.content = reviewContent;
+    console.log(inputData.current);
     const formData = new FormData();
     formData.append(
       "request",
@@ -117,8 +130,6 @@ const ReviewWrite = () => {
       .catch(() => {
         console.log("fail");
       });
-    
-    console.log(inputData.current);
   };
   const onChangeHandler = (event) => {
     let { id, value } = event.target;
@@ -189,17 +200,16 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-            onInput={onMovieNameHandler}
-            // onChange={onMovieNameHandler}
+            onChange={onMovieNameHandler}
             id="movie"
-            // value={movieName.current}
-            // list="autoList"
           ></Form.Control>
-          {/* <datalist id="autoList">
-            {autoCompleteData.map((item) => (
-              <option key={item} value={item} />
-            ))}{" "}
-          </datalist> */}
+          <select value={movieName.current} onChange={movieSelectHandler}>
+            {movieList.map((option) => (
+              <option key={option.title} value={option.title}>
+                {option.title}
+              </option>
+            ))}
+          </select>
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
