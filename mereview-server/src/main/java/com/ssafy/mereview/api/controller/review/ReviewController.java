@@ -63,7 +63,7 @@ public class ReviewController {
             @RequestParam(defaultValue = "") String memberId,
             @RequestParam(defaultValue = "") String term,
             @RequestParam(defaultValue = "1") Integer pageNumber) {
-        SearchCondition condition = createCondition(title, content, memberId, term, orderBy, orderDir);
+        SearchCondition condition = createCondition(title, content, term, orderBy, orderDir, memberId);
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
 
