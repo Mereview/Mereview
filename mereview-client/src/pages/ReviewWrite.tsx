@@ -8,19 +8,13 @@ import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-import MovieList from "../components/MovieList";
+import Select from "react-select";
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
   const userid = useSelector((state: any) => state.user.id);
-  const nickname = useSelector((state: any) => state.user.nickname);
-  const profile = useSelector((state: any) => state.user.profile_URL);
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  // const movieName = useRef("");
-  const [movieName, setMovieName] = useState("");
-  const autoCompleteData = useRef([]);
-  const [movieList, setMovieList] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
@@ -41,37 +35,6 @@ const ReviewWrite = () => {
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
   const [typingTimeout, setTypingTimeout] = useState(null);
-  const onMovieNameHandler = (event) => {
-    setMovieName(event.target.value);
-    const searchValue = event.target.value;
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-    const timeout = setTimeout(() => {
-      const encodedKeyword = encodeURIComponent(searchValue);
-
-      axios
-        .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
-        .then((res) => {
-          console.log(res.data.data);
-          // autoCompleteData.current = res.data.data;
-          setMovieList(res.data.data);
-        })
-        .catch(() => {
-          console.log("error");
-        });
-    }, 300);
-    setTypingTimeout(timeout);
-  };
-  const movieSelectHandler = (event) => {
-    const movie = JSON.parse(event.target.value);
-    setMovieName(movie.title);
-    // console.log(movie);
-    inputData.current.movieId = movie.movieContentId;
-    // inputData.current.genreId = movie.genres[0].genreId;
-    setGenreList(movie.genres);
-    // movieName.current = movie.title;
-  };
   const [genreList, setGenreList] = useState([]);
   const [genreName, setGenreName] = useState("");
   const genreSelectHandler = (event) => {
@@ -123,12 +86,10 @@ const ReviewWrite = () => {
       alert("키워드 목록을 입력해주세요");
       return;
     }
-    // console.log(contentRef.current.getContent());
     const reviewContent = contentRef.current.getContent();
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
-    // console.log(reviewContent);
     if (inputData.current.content == null) {
       alert("리뷰 내용을 입력해주세요");
       return;
@@ -188,6 +149,41 @@ const ReviewWrite = () => {
     let { id, value } = e.target;
     inputData.current[id] = value;
   };
+  const movieName = useRef("");
+  const [movieList, setMovieList] = useState([]);
+  const [selectMovie, setSelectMovie] = useState(null);
+  const movieNameHandler = (input) => {
+    movieName.current = input;
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    const timeout = setTimeout(() => {
+      const encodedKeyword = encodeURIComponent(movieName.current);
+
+      axios
+        .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+        .then((res) => {
+          setMovieList(res.data.data);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    }, 300);
+    setTypingTimeout(timeout);
+  };
+  const selectMovieHandler = (selected) => {
+    setSelectMovie(selected);
+    axios
+      .get(`http://localhost:8080/api/movies/${selected.value}`)
+      .then((res) => {
+        const movie = res.data.data;
+        inputData.current.movieId = movie.movieContentId;
+        setGenreList(movie.genres);
+      })
+      .catch(() => {
+        console.log("error");
+      });
+  };
   return (
     <Container
       className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
@@ -195,9 +191,12 @@ const ReviewWrite = () => {
       style={{
         backgroundImage: `url(${selectedImage})`,
         margin: "auto",
+        overflowY: "auto",
+        overflowX: "hidden",
+        flex: "1",
       }}
     >
-      <Row className="mt-5 mx-4">
+      <Row className="my-5 mx-4">
         <Col lg={8}>
           <Form.Control
             placeholder="리뷰 제목을 입력하세요"
@@ -208,7 +207,7 @@ const ReviewWrite = () => {
             defaultValue={reviewName}
           ></Form.Control>
         </Col>
-        <Col className="t-right" lg={4}>
+        {/* <Col className="t-right" lg={4}>
           <p className="fs-4">
             <label htmlFor="profile">{nickname}</label>
             <img
@@ -218,47 +217,7 @@ const ReviewWrite = () => {
               id="profile"
             ></img>
           </p>
-        </Col>
-      </Row>
-      <Row className="mx-4 align-items-center">
-        <Col md={6}>
-          <input
-            placeholder="영화 제목을 입력하세요"
-            className="border rounded-2 text-lg"
-            onChange={onMovieNameHandler}
-            value={movieName}
-            id="movie"
-            size={50}
-          ></input>
-          <select onChange={movieSelectHandler}>
-            <option value={movieName}></option>
-            {movieList.map((option) => (
-              <option key={option.title} value={JSON.stringify(option)}>
-                {option.title}
-              </option>
-            ))}
-          </select>
-          <select onChange={genreSelectHandler}>
-            <option value={genreName}></option>
-            {genreList.map((option) => (
-              <option key={option.genreId} value={JSON.stringify(option)}>
-                {option.genreName}
-              </option>
-            ))}
-          </select>
-        </Col>
-      </Row>
-      <Row className="mx-4 my-4 align-items-center">
-        <Col sm={6}>
-          <Form.Control
-            placeholder="한줄평을 입력하세요"
-            className="border rounded-2 text-lg"
-            id="highlight"
-            onChange={onChangeHandler}
-            defaultValue={oneSentance}
-          ></Form.Control>
-        </Col>
-        <Col sm={2} />
+        </Col> */}
         <Col sm={2}>
           <Form.Control
             className="text-center border border-5 rounded-2"
@@ -272,6 +231,42 @@ const ReviewWrite = () => {
             <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
           </div>
         </Col>
+      </Row>
+      <Row className="mx-4 my-5 align-items-center">
+        <Col md={6}>
+          <Select
+            value={selectMovie}
+            options={movieList.map((option) => ({
+              value: option.id,
+              label: option.title,
+            }))}
+            inputValue={movieName.current}
+            onInputChange={movieNameHandler}
+            onChange={selectMovieHandler}
+          ></Select>
+          <select onChange={genreSelectHandler}>
+            <option value={genreName}></option>
+            {genreList.map((option) => (
+              <option key={option.genreId} value={JSON.stringify(option)}>
+                {option.genreName}
+              </option>
+            ))}
+          </select>
+        </Col>
+        <Col sm={2} />
+      </Row>
+      <Row className="mx-4 my-4 align-items-center">
+        <Col sm={6}>
+          <Form.Control
+            placeholder="한줄평을 입력하세요"
+            className="border rounded-2 text-lg"
+            id="highlight"
+            onChange={onChangeHandler}
+            defaultValue={oneSentance}
+          ></Form.Control>
+        </Col>
+        <Col sm={2} />
+
         <Col />
       </Row>
       <Row className="mx-4">
