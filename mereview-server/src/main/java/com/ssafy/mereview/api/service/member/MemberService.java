@@ -171,7 +171,7 @@ public class MemberService {
     //***************private method*****************//
 
     private void createVisitCount(Member member) {
-        MemberVisitCount memberVisitCount = MemberVisitCount.builder()
+        MemberVisit memberVisitCount = com.ssafy.mereview.domain.member.entity.MemberVisit.builder()
                 .member(member)
                 .build();
         memberVisitCountRepository.save(memberVisitCount);
