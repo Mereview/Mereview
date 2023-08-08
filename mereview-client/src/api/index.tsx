@@ -34,3 +34,10 @@ export const movieApi = axios.create({
     "Content-type": "application/json",
   },
 });
+
+export const emailApi = axios.create({
+  baseURL: `${process.env.REACT_APP_API_URL}/email`,
+  headers: {
+    "Content-type": "application/json",
+  },
+});

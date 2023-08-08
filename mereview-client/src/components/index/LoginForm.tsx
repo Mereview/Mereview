@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { login } from "../../api/members";
 const LoginForm = () => {
   const [animate, setAnimate] = useState<boolean>(false);
   useEffect(() => {
@@ -35,20 +35,19 @@ const LoginForm = () => {
       alert("아이디와 비밀번호를 확인해주세요!");
       return;
     }
-    const loginURL = "http://localhost:8080/api/members/login";
-    axios
-      .post(loginURL, loginData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
+
+    login(
+      loginData,
+      (res) => {
         localStorage.setItem("id", res.data.data.id);
         localStorage.setItem("token", res.data.data.accessToken);
         dispatch(userActions.authToggler());
         navigate("/review");
-      })
-      .catch((err) => alert("이메일과 비밀번호를 확인해주세요."));
+      },
+      (err) => {
+        alert("이메일과 비밀번호를 확인해주세요.");
+      }
+    );
   };
 
   return (

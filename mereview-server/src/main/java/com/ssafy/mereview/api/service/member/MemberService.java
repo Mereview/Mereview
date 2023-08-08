@@ -48,14 +48,21 @@ public class MemberService {
 
     private final GenreRepository genreRepository;
 
+    private final MemberFollowRepository memberFollowRepository;
+
+    private final MemberFollowQueryRepository memberFollowQueryRepository;
+
     public Long createMember(MemberCreateServiceRequest request) {
 
         Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
         if (existingMember != null) {
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }
-        log.debug("request check = {}" + request);
 
+        if (memberQueryRepository.searchByNickname(request.getNickname()) != null) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
+        log.debug("request = {}", request);
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
         log.debug("member = " + member.getEmail());
 
@@ -70,7 +77,7 @@ public class MemberService {
 
         createInterests(request.getInterestRequests(), member);
 
-        //회원 티어 초기화
+        // 회원 티어 초기화
         createTier(member);
         createAchievement(member);
 
@@ -97,7 +104,7 @@ public class MemberService {
         // jwt 토큰으로 현재 로그인한 유저인지 확인 후 회원탈퇴 진행
         Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
-        if(member.getRole().equals(Role.DELETED)){
+        if (member.getRole().equals(Role.DELETED)) {
             throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
         }
 
@@ -107,36 +114,38 @@ public class MemberService {
         log.debug("member.getEmail() = {}", member.getEmail());
 
         // 현재 로그인한 유저가 맞는지 확인
-        if(member.getEmail().equals(memberInToken)){
+        if (member.getEmail().equals(memberInToken)) {
             member.delete();
         } else {
             throw new IllegalArgumentException("현재 로그인한 유저가 아닙니다.");
         }
     }
 
-    public void updateViewCount(Long id){
+    public void updateViewCount(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        log.debug("조회수 : {}",member.getMemberVisit());
+        log.debug("조회수 : {}", member.getMemberVisit());
         member.getMemberVisit().updateVisitCount();
     }
 
-    public void createFollow(Long targetId, Long currentUserId) {
+    public Long createFollow(Long targetId, Long currentMemberId) {
         // 팔로우 할 유저
 
         Member target = memberRepository.findById(targetId)
                 .orElseThrow(() -> new IllegalArgumentException("Follower not found!"));
 
-        Member currentMember = memberRepository.findById(currentUserId)
+        Member currentMember = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new IllegalArgumentException("Following not found!"));
 
         // 팔로워가 현재 유저인 타겟(내가 팔로우하는 타겟)이 존재할 경우
         // TODO: 2023-08-03 쿼리로 만들어주기
-        if (currentMember.getFollowing().contains(target)) {
-            unfollow(target, currentMember);
+        MemberFollow existFollow = memberFollowQueryRepository.searchByTargetAndCurrentMember(targetId, currentMemberId);
+        log.debug("memberFollow = {}", existFollow);
+
+        if (existFollow != null) {
+            memberFollowRepository.delete(existFollow);
+            return targetId;
         }
-        else {
-            follow(target, currentMember);
-        }
+        return follow(target, currentMember);
     }
 
     public Long updateMemberIntroduce(MemberIntroduceRequest request, String token) {
@@ -146,7 +155,7 @@ public class MemberService {
         String memberInToken = jwtUtils.getUsernameFromJwt(token);
 
         // 현재 로그인한 유저가 맞는지 확인
-        if(member.getEmail().equals(memberInToken)){
+        if (member.getEmail().equals(memberInToken)) {
             member.updateIntroduce(request.getIntroduce());
         } else {
             throw new IllegalArgumentException("현재 로그인한 유저가 아닙니다.");
@@ -173,14 +182,14 @@ public class MemberService {
         log.debug("requests = " + requests);
         //TODO:genre 없을 경우 exception 터뜨려야함
 
-        for(InterestRequest request : requests){
+        for (InterestRequest request : requests) {
             Genre genre = genreRepository.findById(request.getGenreId()).orElseThrow(NoSuchElementException::new);
             Interest interest = Interest.builder().member(Member.builder().id(member.getId()).build())
                     .genre(genre).build();
 
             interests.add(interest);
         }
-            memberInterestRepository.saveAll(interests);
+        memberInterestRepository.saveAll(interests);
 
 
     }
@@ -191,7 +200,7 @@ public class MemberService {
         List<Interest> interests = updateMember.getInterests();
         interests.clear();
         log.debug("member interests : {}", requests);
-        for(InterestRequest interestRequest : requests){
+        for (InterestRequest interestRequest : requests) {
             Genre genre = genreRepository.findById(interestRequest.getGenreId()).orElseThrow(NoSuchElementException::new);
             Interest interest = Interest.builder().member(Member.builder().id(updateMember.getId()).build())
                     .genre(genre).build();
@@ -242,15 +251,12 @@ public class MemberService {
                 .build();
     }
 
-    private void follow(Member target, Member currentMember) {
-        currentMember.getFollowing().add(target);
-        target.getFollowers().add(currentMember);
+    private Long follow(Member target, Member currentMember) {
+        MemberFollow memberFollow = MemberFollow.builder()
+                .member(currentMember)
+                .targetMember(target)
+                .build();
+
+        return memberFollowRepository.save(memberFollow).getId();
     }
-
-    private void unfollow(Member target, Member currentMember) {
-        currentMember.getFollowing().remove(target);
-        target.getFollowers().remove(currentMember);
-    }
-
-
 }

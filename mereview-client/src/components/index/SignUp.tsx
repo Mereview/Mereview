@@ -10,7 +10,7 @@ import "../../styles/css/ImageUploader.css";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useState } from "react";
 import axios from "axios";
-
+import { emailCheck, emailSend } from "../../api/members";
 const SignUp = () => {
   const formData = new FormData();
 
@@ -78,40 +78,34 @@ const SignUp = () => {
     const id = event.currentTarget.id;
     if (id === "step1" && inputData.email.includes("@")) {
       // axios 로 사용자에게 메일보내는 로직
-      const SEND_EMAIL_URL = "http://localhost:8080/api/email/send";
       const data = { email: inputData.email };
-      setChecking(true);
-      alert(
-        `${inputData.email} 로 메일을 보냈습니다. 인증번호를 확인해주세요!`
-      );
-      axios
-        .post(SEND_EMAIL_URL, data, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .catch((err) => {
+      alert(`${inputData.email} 로 메일을 메일을 보내는중입니다!`);
+      emailSend(
+        data,
+        (res) => {
+          setChecking(true);
+          alert("메일을 보냈습니다. 코드를 입력해주세요.");
+        },
+        (err) => {
           alert("메일 전송에 실패했습니다!");
-        });
+        }
+      );
     } else if (id === "step2") {
-      const CHECK_EMAIL_URL = "http://localhost:8080/api/email/check";
       const data = {
         email: inputData.email,
         verificationCode: verificationCode,
       };
-
-      axios
-        .post(CHECK_EMAIL_URL, data, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
+      emailCheck(
+        data,
+        (res) => {
           setCheckEmail(true);
           setChecking(false);
           alert("이메일 인증에 성공했습니다!");
-        })
-        .catch((err) => alert("인증번호를 확인해주세요!"));
+        },
+        (err) => {
+          alert("인증번호를 확인해주세요!");
+        }
+      );
     } else {
       alert("메일을 정확히 입력해주세요!");
     }
