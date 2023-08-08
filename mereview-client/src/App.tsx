@@ -46,6 +46,7 @@ function App() {
           <Route path="/review/write" Component={ReviewWrite}></Route>
           <Route path="/review/:id" Component={ReviewDetailPage}></Route>
           <Route path="/profile" Component={ProfilePage}></Route>
+          <Route path="/profile/:id" Component={ProfilePage}></Route>
           <Route path="/404" Component={PageNotFound404}></Route>
         </Routes>
       </Router>

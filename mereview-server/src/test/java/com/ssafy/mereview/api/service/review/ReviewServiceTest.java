@@ -16,10 +16,10 @@ import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
-import com.ssafy.mereview.domain.review.repository.KeywordRepository;
-import com.ssafy.mereview.domain.review.repository.NotificationRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewRepository;
+import com.ssafy.mereview.domain.review.repository.command.BackgroundImageRepository;
+import com.ssafy.mereview.domain.review.repository.command.KeywordRepository;
+import com.ssafy.mereview.domain.review.repository.command.NotificationRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -73,6 +74,8 @@ class ReviewServiceTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+
 
     @DisplayName("1. 새로운 리뷰를 작성한다.")
     @Test

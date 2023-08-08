@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
@@ -15,6 +16,7 @@ import { ReviewSortInterface } from "../components/interface/ReviewSortInterface
 import { searchMemberInfo } from "../api/members";
 import { useSelector } from "react-redux";
 import "../styles/css/ProfilePage.css";
+import { AxiosError } from "axios";
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -272,6 +274,7 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
 /* api test */
+let error: AxiosError | null = null;
 const getMemberInfo = async (userId: number) => {
   await searchMemberInfo(
     userId,
@@ -288,15 +291,18 @@ const getMemberInfo = async (userId: number) => {
       userInfo.gender = response.gender;
       userInfo.introduction = "TEST";
     },
-    (error) => {
-      console.log(error);
+    (e) => {
+      error = e;
+      alert(e.response.data.message);
     }
   );
 };
 /* api test */
 
 const ProfilePage = () => {
-  const userId = useSelector((state: any) => state.user.id);
+  const loginId: number = useSelector((state: any) => state.user.id);
+  const { id } = useParams();
+  const userId: number = id ? Number(id) : loginId;
   generateData();
 
   const [isFetched, setIsFetched] = useState<boolean>(false);
@@ -306,14 +312,15 @@ const ProfilePage = () => {
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
   const [followed, setFollowed] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 유저 정보 저장
     if (userId === null) return;
     const fetchData = async () => {
       await getMemberInfo(userId);
-      setIsFetched(true);
-      console.log(userInfo);
+      if (error !== null) navigate(-1);
+      else setIsFetched(true);
     };
 
     fetchData();

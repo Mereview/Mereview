@@ -3,7 +3,7 @@ package com.ssafy.mereview.api.service.review;
 import com.ssafy.mereview.api.service.review.dto.request.CommentUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.CommentCreateServiceRequest;
 import com.ssafy.mereview.domain.review.entity.Comment;
-import com.ssafy.mereview.domain.review.repository.CommentRepository;
+import com.ssafy.mereview.domain.review.repository.command.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

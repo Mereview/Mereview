@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.review.repository;
+package com.ssafy.mereview.domain.review.repository.query;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -101,12 +101,13 @@ public class ReviewQueryRepository {
     private BooleanExpression isTerm(String term) {
         if (hasText(term)) {
             LocalDateTime today = LocalDateTime.now();
-            if (term.equals("weekly")) {
-                return review.createdTime.between(today.minusDays(7), today);
-            } else if (term.equals("semiannual")) {
-                return review.createdTime.between(today.minusMonths(6), today);
-            } else if (term.equals("yearly")) {
-                return review.createdTime.between(today.minusYears(1), today);
+            switch (term) {
+                case "weekly":
+                    return review.createdTime.between(today.minusDays(7), today);
+                case "semiannual":
+                    return review.createdTime.between(today.minusMonths(6), today);
+                case "yearly":
+                    return review.createdTime.between(today.minusYears(1), today);
             }
         }
         return null;

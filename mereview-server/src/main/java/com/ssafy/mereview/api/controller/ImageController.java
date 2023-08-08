@@ -4,7 +4,7 @@ import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import com.ssafy.mereview.domain.member.repository.ProfileImageRepository;
 import com.ssafy.mereview.domain.review.entity.BackgroundImage;
-import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
+import com.ssafy.mereview.domain.review.repository.command.BackgroundImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;

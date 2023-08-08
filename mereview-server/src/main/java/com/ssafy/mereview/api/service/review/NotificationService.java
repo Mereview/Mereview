@@ -2,7 +2,7 @@ package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.domain.review.entity.Notification;
-import com.ssafy.mereview.domain.review.repository.NotificationRepository;
+import com.ssafy.mereview.domain.review.repository.command.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

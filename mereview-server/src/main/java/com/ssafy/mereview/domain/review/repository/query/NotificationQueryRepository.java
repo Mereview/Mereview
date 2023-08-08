@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.review.repository;
+package com.ssafy.mereview.domain.review.repository.query;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -48,12 +48,13 @@ public class NotificationQueryRepository {
     }
 
     public int countByMemberId(Long memberId) {
-        return queryFactory
+        Long result = queryFactory
                 .select(notification.id.count())
                 .from(notification)
                 .join(notification.member, member)
                 .join(notification.review, review)
                 .where(notification.member.id.eq(memberId))
-                .fetchOne().intValue();
+                .fetchOne();
+        return result == null ? 0 : result.intValue();
     }
 }
