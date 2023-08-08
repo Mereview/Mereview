@@ -4,8 +4,8 @@ import com.ssafy.mereview.api.service.review.dto.request.CommentLikeServiceReque
 import com.ssafy.mereview.api.service.review.dto.response.CommentLikeResponse;
 import com.ssafy.mereview.domain.review.entity.CommentLike;
 import com.ssafy.mereview.domain.review.entity.CommentLikeType;
-import com.ssafy.mereview.domain.review.repository.CommentLikeQueryRepository;
-import com.ssafy.mereview.domain.review.repository.CommentLikeRepository;
+import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
+import com.ssafy.mereview.domain.review.repository.command.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

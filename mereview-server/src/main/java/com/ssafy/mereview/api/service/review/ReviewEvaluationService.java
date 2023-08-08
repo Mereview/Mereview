@@ -4,8 +4,8 @@ import com.ssafy.mereview.api.service.review.dto.request.ReviewEvaluationService
 import com.ssafy.mereview.api.service.review.dto.response.ReviewEvaluationResponse;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
-import com.ssafy.mereview.domain.review.repository.ReviewEvaluationQueryRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewEvaluationRepository;
+import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewEvaluationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
