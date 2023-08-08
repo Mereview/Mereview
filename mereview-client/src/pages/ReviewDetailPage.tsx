@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { uiActions } from "../store/ui-silce";
 import uiSlice from "../store/ui-silce";
 import { useDispatch, useSelector } from "react-redux";
+import { searchReview } from "../api/review";
+
 export interface DummyRev {
   title: string;
   oneLine: string;
@@ -24,21 +26,20 @@ const ReviewDetail = (props: any) => {
   const [review, setReview] = useState(null);
   const { id } = useParams();
   const userId = localStorage.getItem("id");
-  console.log(userId);
   const navigate = useNavigate();
+  //리뷰불러오기
   const getReviewDetail = () => {
-    const GET_REVIEW_URL = `http://localhost:8080/api/reviews/${id}`;
-    const data: any = {
+    const data: Object = {
+      reviewId: id,
       loginMemberId: userId,
     };
-    console.log(GET_REVIEW_URL);
-    axios
-      .get(GET_REVIEW_URL, data)
-      .then((res) => setReview(res.data.data))
-      .catch((err) => {
-        console.log(err);
-      });
+    const success = (res) => setReview(res.data.data);
+    const fail = (err) => console.log(err); // 나중에 404 로직추가
+    searchReview(data, success, fail);
   };
+  // 영화 불러오기
+  const getMovieDetail = () => {};
+
   useEffect(() => {
     getReviewDetail();
   }, []);
@@ -79,6 +80,7 @@ const ReviewDetail = (props: any) => {
       ></div>
       <Top review={dummyReview} movie={dummyMovie} />
       <Detail review={dummyReview} movie={dummyMovie} />
+      <div className="topbutton"></div>
     </div>
   );
 };

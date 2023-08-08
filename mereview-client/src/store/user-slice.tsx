@@ -33,12 +33,13 @@ const userSlice = createSlice({
       console.log("로그인성공");
     },
     logout(state) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      return initialState;
       state.isAthenticated = false;
       state.token = "";
       state.email = "";
       state.nickname = "";
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
     },
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;
