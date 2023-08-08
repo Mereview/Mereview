@@ -228,6 +228,7 @@ const ReviewWrite = () => {
             onChange={onMovieNameHandler}
             value={movieName}
             id="movie"
+            size={50}
           ></input>
           <select onChange={movieSelectHandler}>
             <option value={movieName}></option>
@@ -240,7 +241,7 @@ const ReviewWrite = () => {
           <select onChange={genreSelectHandler}>
             <option value={genreName}></option>
             {genreList.map((option) => (
-              <option key={option} value={JSON.stringify(option)}>
+              <option key={option.genreId} value={JSON.stringify(option)}>
                 {option.genreName}
               </option>
             ))}
