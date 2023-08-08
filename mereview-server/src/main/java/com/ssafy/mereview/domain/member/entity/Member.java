@@ -11,10 +11,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,14 +47,14 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTier> memberTiers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToOne(mappedBy = "member")
     private ProfileImage profileImage;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MemberVisitCount memberVisit;
+    private MemberVisit memberVisit;
 
     private String introduce;
 
@@ -68,8 +64,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "targetMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFollow> following = new ArrayList<>();
 
+
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<MemberFollow> followers, List<MemberFollow> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisit memberVisit, String introduce, List<MemberFollow> followers, List<MemberFollow> following) {
         this.id = id;
         this.email = email;
         this.password = password;

@@ -24,7 +24,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     private final JwtUtils jwtUtils;
-    private Map<String, EmailCheckCode> emailCheckCodeMap = new HashMap<>();
+    private final Map<String, EmailCheckCode> emailCheckCodeMap = new HashMap<>();
 
 
     //실제 메일 전송
@@ -56,7 +56,7 @@ public class EmailService {
 
     private void createCode(String email) {
         Random random = new Random();
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
             int index = random.nextInt(3);
@@ -85,8 +85,8 @@ public class EmailService {
     private MimeMessage createEmailForm(String email) throws MessagingException, UnsupportedEncodingException {
 
         createCode(email); // 인증 코드 생성
-        String senderEmail = "youremail@example.com"; // Replace with your email address (sender)
-        String senderName = "Your Name"; // Replace with your name (sender)
+        String senderEmail = "noreply@mereview.com"; // Replace with your email address (sender)
+        String senderName = "Mereview"; // Replace with your name (sender)
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");

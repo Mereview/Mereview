@@ -1,26 +1,26 @@
 import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-
+import MovieList from "../components/MovieList";
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
   const userid = useSelector((state: any) => state.user.id);
   const nickname = useSelector((state: any) => state.user.nickname);
-  const profile = "/logo2.png";
+  const profile = useSelector((state: any) => state.user.profile_URL);
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  // const [movieName, setMovieName] = useState<string>("");
-  const movieName = useRef("");
-  // const movieList = axios.get("http://localhost:8080/api/movies/");
-  const [autoCompleteData, setAutoCompleteData] = useState([]);
+  // const movieName = useRef("");
+  const [movieName, setMovieName] = useState("");
+  const autoCompleteData = useRef([]);
+  const [movieList, setMovieList] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
@@ -40,22 +40,45 @@ const ReviewWrite = () => {
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
-  const onMovieNameHandler = (e) => {
-    movieName.current = e.target.value;
-    // console.log(movieName.current);
-    // setMovieName(e.target.value);
-    let movieList = [];
-    // console.log(movieName);
-    axios
-      .get(`http://localhost:8080/api/movies?keyword=${movieName.current}`)
-      .then((res) => {
-        console.log(res.data);
-        movieList = res.data;
-      })
-      .catch(() => {
-        console.log("error");
-      });
-    setAutoCompleteData(movieList);
+  const [typingTimeout, setTypingTimeout] = useState(null);
+  const onMovieNameHandler = (event) => {
+    setMovieName(event.target.value);
+    const searchValue = event.target.value;
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    const timeout = setTimeout(() => {
+      const encodedKeyword = encodeURIComponent(searchValue);
+
+      axios
+        .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+        .then((res) => {
+          console.log(res.data.data);
+          // autoCompleteData.current = res.data.data;
+          setMovieList(res.data.data);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    }, 300);
+    setTypingTimeout(timeout);
+  };
+  const movieSelectHandler = (event) => {
+    const movie = JSON.parse(event.target.value);
+    setMovieName(movie.title);
+    // console.log(movie);
+    inputData.current.movieId = movie.movieContentId;
+    // inputData.current.genreId = movie.genres[0].genreId;
+    setGenreList(movie.genres);
+    // movieName.current = movie.title;
+  };
+  const [genreList, setGenreList] = useState([]);
+  const [genreName, setGenreName] = useState("");
+  const genreSelectHandler = (event) => {
+    const genre = JSON.parse(event.target.value);
+    setGenreName(genre.genreName);
+    console.log(genre.genreId);
+    inputData.current.genreId = genre.genreId;
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -70,27 +93,47 @@ const ReviewWrite = () => {
       alert("한줄평을 입력해주세요");
       return;
     }
-    if (inputData.current.content == null) {
-      alert("리뷰 내용을 입력해주세요");
-      return;
-    }
-    // console.log(movieList);
     const keywordList = [];
-    keywordList.push(childRef1.current.getKeyInfo());
-    keywordList.push(childRef2.current.getKeyInfo());
-    keywordList.push(childRef3.current.getKeyInfo());
-    keywordList.push(childRef4.current.getKeyInfo());
-    keywordList.push(childRef5.current.getKeyInfo());
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef1.current.getKeyInfo().name,
+      weight: childRef1.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef2.current.getKeyInfo().name,
+      weight: childRef2.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef3.current.getKeyInfo().name,
+      weight: childRef3.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef4.current.getKeyInfo().name,
+      weight: childRef4.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef5.current.getKeyInfo().name,
+      weight: childRef5.current.getKeyInfo().weight,
+    });
     if (keywordList == null) {
       alert("키워드 목록을 입력해주세요");
       return;
     }
-    const reviewContent = contentRef.current
-      .getContent()
-      .replace(/<[^>]*>/g, "");
+    // console.log(contentRef.current.getContent());
+    const reviewContent = contentRef.current.getContent();
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
+    // console.log(reviewContent);
+    if (inputData.current.content == null) {
+      alert("리뷰 내용을 입력해주세요");
+      return;
+    }
+    console.log(inputData.current);
     const formData = new FormData();
     formData.append(
       "request",
@@ -99,7 +142,7 @@ const ReviewWrite = () => {
       })
     );
     formData.append(
-      "file",
+      "uploadFile",
       new Blob([JSON.stringify(selectedImage)], {
         type: "application/json",
       })
@@ -112,7 +155,6 @@ const ReviewWrite = () => {
       .catch(() => {
         console.log("fail");
       });
-    console.log(inputData.current);
   };
   const onChangeHandler = (event) => {
     let { id, value } = event.target;
@@ -136,7 +178,7 @@ const ReviewWrite = () => {
     maxFiles: 1,
   });
   const feedbackHandler = (e) => {
-    if (e.target.value === "BAD") {
+    if (e.target.value === "NO") {
       setBadBtn(true);
       setGoodBtn(false);
     } else {
@@ -180,22 +222,30 @@ const ReviewWrite = () => {
       </Row>
       <Row className="mx-4 align-items-center">
         <Col md={6}>
-          <Form.Control
+          <input
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
             onChange={onMovieNameHandler}
+            value={movieName}
             id="movie"
-            value={movieName.current}
-            list="autoList"
-          ></Form.Control>
-          <datalist id="autoList">
-            autoCompleteData.length != 0 ?
-            {autoCompleteData.map((item) => (
-              <option key={item} value={item} />
-            ))}{" "}
-            :
-            <option value={"데이터 없음"} />
-          </datalist>
+            size={50}
+          ></input>
+          <select onChange={movieSelectHandler}>
+            <option value={movieName}></option>
+            {movieList.map((option) => (
+              <option key={option.title} value={JSON.stringify(option)}>
+                {option.title}
+              </option>
+            ))}
+          </select>
+          <select onChange={genreSelectHandler}>
+            <option value={genreName}></option>
+            {genreList.map((option) => (
+              <option key={option.genreId} value={JSON.stringify(option)}>
+                {option.genreName}
+              </option>
+            ))}
+          </select>
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
@@ -253,7 +303,7 @@ const ReviewWrite = () => {
               transform: badBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={"BAD"}
+            value={"NO"}
           ></button>
           <button
             id="type"
@@ -265,7 +315,7 @@ const ReviewWrite = () => {
               transform: goodBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={"LIKE"}
+            value={"YES"}
           ></button>
         </Col>
         <Col>
