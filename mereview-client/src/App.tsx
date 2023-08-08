@@ -35,10 +35,11 @@ function App() {
   };
   const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
   useEffect(getUserInfo, []);
+  const profileURL = useSelector((state: any) => state.user.profile_URL);
   return (
     <div className="App">
       <Router>
-        {isAthenticated ? <NavigationBar /> : null}
+        {isAthenticated ? <NavigationBar profileURL={profileURL} /> : null}
         <Routes>
           <Route path="/" Component={IndexPage}></Route>
           <Route path="/review" Component={ReviewHome}></Route>

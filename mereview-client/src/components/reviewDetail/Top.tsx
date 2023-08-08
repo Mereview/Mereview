@@ -32,43 +32,31 @@ const Top = ({ review, movie }: TopProps) => {
         </div>
       </div>
       <div className="rightInfo">
-        <div className="img">
-          <img src="/ddabong.png" alt="따봉" />
-        </div>
-        <div
-          className="wordcloud"
-          style={{
-            display: "block", // 레이아웃 속성을 변경
-            width: "100%",
-            height: "auto",
-            overflow: "auto",
+        <img src="/ddabong.png" alt="따봉" />
+
+        <WordCloud
+          data={words}
+          width={300}
+          height={330}
+          font="Times"
+          fontStyle="italic"
+          fontWeight="bold"
+          fontSize={(word) => word.value * 10}
+          rotate={(word) => word.value % 360}
+          spiral="archimedean"
+          padding={5}
+          random={Math.random}
+          fill={() => "white"}
+          onWordClick={(event, d) => {
+            console.log(`onWordClick: ${d.text}`);
           }}
-        >
-          <WordCloud
-            data={words}
-            width={330}
-            height={250}
-            font="Times"
-            fontStyle="italic"
-            fontWeight="bold"
-            fontSize={(word) => word.value * 10}
-            rotate={(word) => word.value % 360}
-            spiral="archimedean"
-            padding={5}
-            random={Math.random}
-            fill={(d, i) => schemeCategory10ScaleOrdinal(i)}
-            onWordClick={(event, d) => {
-              console.log(`onWordClick: ${d.text}`);
-            }}
-            onWordMouseOver={(event, d) => {
-              console.log(`onWordMouseOver: ${d.text}`);
-            }}
-            onWordMouseOut={(event, d) => {
-              console.log(`onWordMouseOut: ${d.text}`);
-            }}
-          />
-          ,
-        </div>
+          onWordMouseOver={(event, d) => {
+            console.log(`onWordMouseOver: ${d.text}`);
+          }}
+          onWordMouseOut={(event, d) => {
+            console.log(`onWordMouseOut: ${d.text}`);
+          }}
+        />
       </div>
     </div>
   );

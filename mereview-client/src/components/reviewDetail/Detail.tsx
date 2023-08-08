@@ -147,12 +147,10 @@ const Detail = ({ review, movie }: TODProps) => {
       {/* 아랫단 디테일  */}
       <div className="comment">
         <div className="left" style={{ margin: "0px" }}>
-          <div className="input">
-            <form>
-              <input type="text" />
-              <button type="submit">댓글 등록</button>
-            </form>
-          </div>
+          <form className="input">
+            <input type="text" />
+            <button type="submit">댓글 등록</button>
+          </form>
 
           <div
             className="lst"
