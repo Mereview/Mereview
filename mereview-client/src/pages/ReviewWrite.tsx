@@ -17,7 +17,8 @@ const ReviewWrite = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  const movieName = useRef("");
+  // const movieName = useRef("");
+  const [movieName, setMovieName] = useState("");
   const autoCompleteData = useRef([]);
   const [movieList, setMovieList] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
@@ -41,6 +42,7 @@ const ReviewWrite = () => {
   const contentRef = useRef(null);
   const [typingTimeout, setTypingTimeout] = useState(null);
   const onMovieNameHandler = (event) => {
+    setMovieName(event.target.value);
     const searchValue = event.target.value;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
@@ -62,18 +64,12 @@ const ReviewWrite = () => {
     setTypingTimeout(timeout);
   };
   const movieSelectHandler = (event) => {
-    movieName.current = event.target.value;
-    const encodedKeyword = encodeURIComponent(movieName.current);
-    axios
-      .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
-      .then((res) => {
-        // console.log(res.data.data);
-        const movie = res.data.data;
-        console.log(movie);
-        inputData.current.movieId = movie[0].movieContentId;
-        inputData.current.genreId = movie[0].genres;
-        console.log(inputData.current);
-      });
+    const movie = JSON.parse(event.target.value);
+    console.log(movie);
+    inputData.current.movieId = movie.movieContentId;
+    inputData.current.genreId = movie.genres[0].genreId;
+    // movieName.current = movie.title;
+    setMovieName(movie.title);
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -89,11 +85,31 @@ const ReviewWrite = () => {
       return;
     }
     const keywordList = [];
-    keywordList.push(childRef1.current.getKeyInfo());
-    keywordList.push(childRef2.current.getKeyInfo());
-    keywordList.push(childRef3.current.getKeyInfo());
-    keywordList.push(childRef4.current.getKeyInfo());
-    keywordList.push(childRef5.current.getKeyInfo());
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef1.current.getKeyInfo().name,
+      weight: childRef1.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef2.current.getKeyInfo().name,
+      weight: childRef2.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef3.current.getKeyInfo().name,
+      weight: childRef3.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef4.current.getKeyInfo().name,
+      weight: childRef4.current.getKeyInfo().weight,
+    });
+    keywordList.push({
+      movieId: inputData.current.movieId,
+      name: childRef5.current.getKeyInfo().name,
+      weight: childRef5.current.getKeyInfo().weight,
+    });
     if (keywordList == null) {
       alert("키워드 목록을 입력해주세요");
       return;
@@ -153,7 +169,7 @@ const ReviewWrite = () => {
     maxFiles: 1,
   });
   const feedbackHandler = (e) => {
-    if (e.target.value === "BAD") {
+    if (e.target.value === "NO") {
       setBadBtn(true);
       setGoodBtn(false);
     } else {
@@ -197,15 +213,17 @@ const ReviewWrite = () => {
       </Row>
       <Row className="mx-4 align-items-center">
         <Col md={6}>
-          <Form.Control
+          <input
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
             onChange={onMovieNameHandler}
+            value={movieName}
             id="movie"
-          ></Form.Control>
-          <select value={movieName.current} onChange={movieSelectHandler}>
+          ></input>
+          <select value={movieName} onChange={movieSelectHandler}>
+            <option value=""></option>
             {movieList.map((option) => (
-              <option key={option.title} value={option.title}>
+              <option key={option.title} value={JSON.stringify(option)}>
                 {option.title}
               </option>
             ))}
@@ -267,7 +285,7 @@ const ReviewWrite = () => {
               transform: badBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={"BAD"}
+            value={"NO"}
           ></button>
           <button
             id="type"
@@ -279,7 +297,7 @@ const ReviewWrite = () => {
               transform: goodBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={"LIKE"}
+            value={"YES"}
           ></button>
         </Col>
         <Col>
