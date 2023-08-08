@@ -53,6 +53,9 @@ public class MovieResponse {
 
 
     public static MovieResponse of(Movie movie, List<GenreResponse> genreResponses){
+        if (genreResponses.size() == 0){
+            genreResponses.add(GenreResponse.builder().genreId(0L).genreName("없음").build());
+        }
         return MovieResponse.builder()
                 .id(movie.getId())
                 .movieContentId(movie.getMovieContentId())
