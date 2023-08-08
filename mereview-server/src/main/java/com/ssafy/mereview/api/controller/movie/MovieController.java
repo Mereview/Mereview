@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,10 +21,14 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    @PostMapping("/{keyword}")
+    @GetMapping
     @ApiOperation(value = "영화 키워드로 검색")
-    public ApiResponse<List<MovieResponse>> searchMovies(@PathVariable String keyword) {
+    public ApiResponse<List<MovieResponse>> searchMovies(@RequestParam(required = false) String keyword) {
         log.debug("keyword = {}", keyword);
+        if(keyword==null){
+            return ApiResponse.ok(new ArrayList<>());
+        }
+
         return ApiResponse.ok(movieService.searchMovies(keyword));
     }
 

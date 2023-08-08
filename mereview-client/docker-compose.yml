@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  react:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "react"
+    ports:
+      - "3000:3000"
+    networks:
+      - mereview_front
+
+networks:
+  mereview_front:
+    external: true

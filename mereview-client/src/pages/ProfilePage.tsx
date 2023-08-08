@@ -1,37 +1,129 @@
 import { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
-import AchievedBadge from "../components/AchievedBadge";
+import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
 import {
   Experience,
   ProfileInfoInterface,
+  AchievedBadge,
 } from "../components/interface/ProfilePageInterface";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
+import { searchMemberInfo } from "../api/members";
+import { useSelector } from "react-redux";
 import "../styles/css/ProfilePage.css";
 
 /* 유저 더미 데이터 생성 시작 */
-const userInfo: ProfileInfoInterface = {
-  memberId: "id123123",
-  nickname: "닉네임123",
-  profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
-  age: 29,
-  gender: 1,
-  introduction: "자기소개입니다. ^^",
-  reviewCount: 4,
-  commentCount: 5,
-  followerCount: 3,
-  followingCount: 5,
-  joinDate: new Date("2022-06-03 07:23:53"),
-};
+const dummyBadges: AchievedBadge[] = [
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0001",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0002",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0012",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0043",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0041",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0231",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0072",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0053",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0081",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0542",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0063",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0992",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0113",
+  },
+  {
+    genre: "액션",
+    rank: "gold",
+    achievementId: "0211",
+  },
+  {
+    genre: "SF",
+    rank: "bronze",
+    achievementId: "0312",
+  },
+  {
+    genre: "범죄",
+    rank: "silver",
+    achievementId: "0653",
+  },
+];
 
 const defaultProfileImage = "/defaultProfile.png";
 
 const genderMapping = {
-  1: "남",
-  2: "여",
+  MALE: "남",
+  FEMALE: "여",
+};
+
+const userInfo: ProfileInfoInterface = {
+  memberId: null,
+  nickname: null,
+  profileImageId: null,
+  age: null,
+  gender: null,
+  introduction: null,
+  reviewCount: 0,
+  commentCount: 0,
+  followerCount: 0,
+  followingCount: 0,
+  followed: false,
+  highestTier: null,
+  badges: dummyBadges,
+  joinDate: new Date(""),
+  todayVisitor: 0,
+  totalVisitor: 0,
 };
 /* 유저 더미 데이터 생성 끝 */
 
@@ -102,7 +194,7 @@ const someReview = {
   reviewId: 12113,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
+  profileImageId: null,
   backgroundImagePath: "/ReviewCardDummy/CardBack2.jpg",
   oneLineReview:
     "이것은 한줄평 한줄평 영화 리뷰를 요약하는 한줄평 하지만 두줄이상이 될수도 있는...",
@@ -123,7 +215,7 @@ const otherReview = {
   reviewId: 12333,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는 한줄평! 얘는 dislike가 99임",
   funnyCount: 10,
@@ -142,7 +234,7 @@ const dummy = {
   reviewId: 12223,
   memberId: "user123",
   nickname: "JohnD124124oe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 14내용을 요약하는 한줄평!",
   funnyCount: 10,
@@ -161,7 +253,7 @@ const a = {
   reviewId: 1141223,
   memberId: "us22er123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
   funnyCount: 10,
@@ -179,14 +271,53 @@ const a = {
 const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
+/* api test */
+const getMemberInfo = async (userId: number) => {
+  await searchMemberInfo(
+    userId,
+    ({ data }) => {
+      const response = data.data;
+      const birthDate = new Date(response.birthDate);
+      const ageDiff = Date.now() - birthDate.getTime();
+      const ageDate = new Date(ageDiff);
+
+      userInfo.memberId = userId;
+      userInfo.nickname = response.nickname;
+      userInfo.profileImageId = response.profileImage.id;
+      userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
+      userInfo.gender = response.gender;
+      userInfo.introduction = "TEST";
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+/* api test */
+
 const ProfilePage = () => {
+  const userId = useSelector((state: any) => state.user.id);
+  generateData();
+
+  const [isFetched, setIsFetched] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [followed, setFollowed] = useState<boolean>(false);
 
-  generateData();
+  useEffect(() => {
+    // 유저 정보 저장
+    if (userId === null) return;
+    const fetchData = async () => {
+      await getMemberInfo(userId);
+      setIsFetched(true);
+      console.log(userInfo);
+    };
+
+    fetchData();
+  }, [userId]);
 
   useEffect(() => {
     // reload review list
@@ -202,10 +333,10 @@ const ProfilePage = () => {
           ? "DESC"
           : "ASC"
       }, 조회기간: ${
-        searchTerm === "" ? "전체기간" : searchTerm + "개월"
+        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
-  }, [sortBy, dateDescend, recommendDescend, onlyInterest]);
+  }, [sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
 
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
@@ -220,6 +351,16 @@ const ProfilePage = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
+  const follow = () => {
+    if (followed) {
+      console.log("unfollow!");
+    } else {
+      console.log("follow!");
+    }
+
+    setFollowed(!followed);
+  };
+
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
   const year: number = formattedCreateDate.getFullYear();
   const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
@@ -230,19 +371,26 @@ const ProfilePage = () => {
 
   const joinDateText = `${year}-${month}-${day}`;
 
+  if (!isFetched) return <>Loading...</>;
   return (
     <>
       <div className="profile-image-chart-container">
         <div className="profile-image-container">
           <img
-            src={userInfo.profileImagePath || defaultProfileImage}
+            src={
+              userInfo.profileImageId
+                ? `http://localhost:8080/api/image/download/profiles/${userInfo.profileImageId}`
+                : defaultProfileImage
+            }
             alt="프로필 이미지"
             style={{ width: "450px" }}
           />
           <div className="follow-info">
-            팔로잉: {userInfo.followerCount} | 팔로워 :{" "}
-            {userInfo.followingCount}
-            <span> 팔로우 버튼^^</span>
+            <span>팔로잉: {userInfo.followerCount}</span>
+            <span>팔로워: {userInfo.followingCount}</span>
+            <span className="follow" onClick={follow}>
+              팔로우 {followed ? <BsHeartFill /> : <BsHeart />}
+            </span>
           </div>
         </div>
         <div className="profile-chart-scroll-div">
@@ -272,12 +420,16 @@ const ProfilePage = () => {
               </Col>
             </Row>
             <Row>
+              <Col className="visitors">
+                방문자) 오늘: {userInfo.todayVisitor} / 전체:{" "}
+                {userInfo.totalVisitor}
+              </Col>
               <Col className="join-date">가입일: {joinDateText}</Col>
             </Row>
           </div>
         </div>
         <div className="profile-badge-container">
-          <AchievedBadge />
+          <BadgeList badgeListProps={userInfo.badges} />
         </div>
       </div>
       <hr />

@@ -1,7 +1,11 @@
 import "../styles/css/ReviewDetailPage.css";
 import Top from "../components/reviewDetail/Top";
 import Detail from "../components/reviewDetail/Detail";
-
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { AxiosRequestConfig } from "axios";
+import { useNavigate } from "react-router-dom";
 export interface DummyRev {
   title: string;
   oneLine: string;
@@ -14,6 +18,33 @@ export interface DummyMov {
   genres: string[];
 }
 const ReviewDetail = (props: any) => {
+  const [review, setReview] = useState(null);
+  const [grantAuth, setGrantAuth] = useState(false);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const getReviewDetail = () => {
+    const userId = localStorage.getItem("id");
+    const GET_REVIEW_URL = `http:localhost:8080/api/reviews/${id}`;
+    axios
+      .get(GET_REVIEW_URL, {
+        params: {
+          loginMemberId: userId,
+        },
+      })
+      .then((res) => res.data.data)
+      .then((review) => {
+        if (userId === review.memberId) {
+          setGrantAuth(true);
+        }
+        setReview(review);
+      })
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          // navigate("/404");
+        }
+      });
+  };
+  useEffect(getReviewDetail, []);
   const imgURL = "/test.jpg";
   const style = {
     backgroundImage: `url(${imgURL})`,

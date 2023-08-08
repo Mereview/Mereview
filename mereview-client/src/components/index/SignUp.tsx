@@ -19,7 +19,7 @@ const SignUp = () => {
   const [checkEmail, setCheckEmail] = useState(false);
   const [checking, setChecking] = useState(false); // 선택된 성별을 상태로 관리합니다.
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [fileData, setFileData] = useState<FormData | null>(null);
+  const [fileData, setFileData] = useState<File>(null);
   const [verificationCode, setVerificationCode] = useState<string | null>("");
   const [inputData, setInputData] = useState<InputDataInterface>({
     email: null,
@@ -66,10 +66,10 @@ const SignUp = () => {
       alert("정보를 정확하게 입력해주세요!");
       return;
     }
-    if (!checkEmail) {
-      alert("메일 인증을 완료해주세요!");
-      return;
-    }
+    // if (!checkEmail) {
+    //   alert("메일 인증을 완료해주세요!");
+    //   return;
+    // }
     dispatch(userActions.modal_toggler());
   };
 
@@ -124,8 +124,7 @@ const SignUp = () => {
       console.log(file);
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
-      formData.append("file", file);
-      setFileData(formData);
+      setFileData(file);
     }
   }, []);
   console.log(fileData);
@@ -320,7 +319,13 @@ const SignUp = () => {
           </form>
         </Col>
       </Row>
-      {valid ? <SelectInterest step1={inputData} step2={fileData} /> : null}
+      {valid ? (
+        <SelectInterest
+          step1={inputData}
+          step2={fileData}
+          verificationCode={verificationCode}
+        />
+      ) : null}
     </Container>
   );
 };

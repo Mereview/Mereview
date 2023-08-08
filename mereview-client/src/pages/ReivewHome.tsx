@@ -146,7 +146,7 @@ const someReview = {
   reviewId: 12113,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile.jpg",
+  profileImageId: null,
   backgroundImagePath: "/ReviewCardDummy/CardBack2.jpg",
   oneLineReview:
     "이것은 한줄평 한줄평 영화 리뷰를 요약하는 한줄평 하지만 두줄이상이 될수도 있는...",
@@ -167,7 +167,7 @@ const otherReview = {
   reviewId: 12333,
   memberId: "user123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는 한줄평! 얘는 dislike가 99임",
   funnyCount: 10,
@@ -182,11 +182,12 @@ const otherReview = {
   onClickProfile: handleClickProfile,
   onClickTitle: handleClickTitle,
 };
+
 const dummy = {
   reviewId: 12223,
   memberId: "user123",
   nickname: "JohnD124124oe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 14내용을 요약하는 한줄평!",
   funnyCount: 10,
@@ -201,11 +202,12 @@ const dummy = {
   onClickProfile: handleClickProfile,
   onClickTitle: handleClickTitle,
 };
+
 const a = {
   reviewId: 1141223,
   memberId: "us22er123",
   nickname: "JohnDoe",
-  profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
+  profileImageId: null,
   backgroundImagePath: "/test.jpg",
   oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
   funnyCount: 10,
@@ -260,7 +262,7 @@ const ReviewHome = () => {
           ? "DESC"
           : "ASC"
       }, 조회기간: ${
-        searchTerm === "" ? "전체기간" : searchTerm + "개월"
+        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
       }, 관심사만: ${onlyInterest}`
     );
   }, [sortBy, dateDescend, recommendDescend, searchTerm, onlyInterest]);

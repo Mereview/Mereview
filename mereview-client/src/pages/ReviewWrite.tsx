@@ -11,31 +11,29 @@ import axios from "axios";
 import writeReview from "../api/review";
 
 const ReviewWrite = () => {
-  // const userid = useSelector((state: any) => state.user.id);
-  // const userid = "test";
-  // const nickname = useSelector((state: any) => state.user.email);
-  const userid = "test";
-  const nickname = "test";
-  const movieList = ["test1", "test2", "test3"];
+  const url = "http://localhost:8080/api";
+  const userid = useSelector((state: any) => state.user.id);
+  const nickname = useSelector((state: any) => state.user.nickname);
   const profile = "/logo2.png";
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  const [movieName, setMovieName] = useState<string | null>("");
+  // const [movieName, setMovieName] = useState<string>("");
+  const movieName = useRef("");
+  // const movieList = axios.get("http://localhost:8080/api/movies/");
   const [autoCompleteData, setAutoCompleteData] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
-  const [feedback, setFeedback] = useState<number | null>(0);
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
-  const [inputData, setInputData] = useState<ReviewDataInterface>({
+  const inputData = useRef<ReviewDataInterface>({
     title: null,
-    content: "test",
+    content: null,
     highlight: null,
-    type: "LIKE",
-    memberId: 1,
+    type: null,
+    memberId: null,
     movieId: 1,
     genreId: 0,
-    keywordRequests: null,
+    keywordRequests: [],
   });
   const childRef1 = useRef(null);
   const childRef2 = useRef(null);
@@ -43,43 +41,84 @@ const ReviewWrite = () => {
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
-
-  const handleBtnClick = (event) => {
-    event.preventDefault();
+  const onMovieNameHandler = (e) => {
+    movieName.current = e.target.value;
+    // console.log(movieName.current);
+    // setMovieName(e.target.value);
+    let movieList = [];
+    // console.log(movieName);
+    axios
+      .get(`http://localhost:8080/api/movies?keyword=${movieName.current}`)
+      .then((res) => {
+        console.log(res.data);
+        movieList = res.data;
+      })
+      .catch(() => {
+        console.log("error");
+      });
+    setAutoCompleteData(movieList);
+  };
+  const handleBtnClick = () => {
+    if (inputData.current.title == null) {
+      alert("제목을 입력해주세요");
+      return;
+    }
+    if (inputData.current.movieId == null) {
+      alert("영화 제목을 입려해주세요");
+      return;
+    }
+    if (inputData.current.highlight == null) {
+      alert("한줄평을 입력해주세요");
+      return;
+    }
+    if (inputData.current.content == null) {
+      alert("리뷰 내용을 입력해주세요");
+      return;
+    }
+    // console.log(movieList);
     const keywordList = [];
     keywordList.push(childRef1.current.getKeyInfo());
     keywordList.push(childRef2.current.getKeyInfo());
     keywordList.push(childRef3.current.getKeyInfo());
     keywordList.push(childRef4.current.getKeyInfo());
     keywordList.push(childRef5.current.getKeyInfo());
-
-    setInputData((prevInputData) => ({
-      ...prevInputData,
-      keywordRequests: keywordList,
-    }));
-    console.log(inputData);
-
+    if (keywordList == null) {
+      alert("키워드 목록을 입력해주세요");
+      return;
+    }
+    const reviewContent = contentRef.current
+      .getContent()
+      .replace(/<[^>]*>/g, "");
+    inputData.current.memberId = userid;
+    inputData.current.keywordRequests = keywordList;
+    inputData.current.content = reviewContent;
     const formData = new FormData();
     formData.append(
       "request",
-      new Blob([JSON.stringify(inputData)], { type: "application/json" })
+      new Blob([JSON.stringify(inputData.current)], {
+        type: "application/json",
+      })
     );
-
+    formData.append(
+      "file",
+      new Blob([JSON.stringify(selectedImage)], {
+        type: "application/json",
+      })
+    );
     axios
-      .post("http://localhost:8080/api/reviews", formData)
+      .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
       })
       .catch(() => {
         console.log("fail");
       });
+    console.log(inputData.current);
   };
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (event) => {
     let { id, value } = event.target;
-    setInputData((prevInputData) => ({
-      ...prevInputData,
-      [id]: value,
-    }));
+    inputData.current[id] = value;
+    console.log(id + " " + inputData[id]);
   };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -98,20 +137,20 @@ const ReviewWrite = () => {
     maxFiles: 1,
   });
   const feedbackHandler = (e) => {
-    if (e.target.id === "badBtn") {
+    if (e.target.value === "BAD") {
       setBadBtn(true);
       setGoodBtn(false);
     } else {
       setBadBtn(false);
       setGoodBtn(true);
     }
-    setFeedback(e.target.Value);
+    let { id, value } = e.target;
+    inputData.current[id] = value;
   };
   return (
-    <Form
+    <Container
       className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
       id="reviewForm"
-      onSubmit={handleBtnClick}
       style={{
         backgroundImage: `url(${selectedImage})`,
         margin: "auto",
@@ -145,9 +184,9 @@ const ReviewWrite = () => {
           <Form.Control
             placeholder="영화 제목을 입력하세요"
             className="border rounded-2 text-lg"
-            onChange={onChangeHandler}
+            onChange={onMovieNameHandler}
             id="movie"
-            defaultValue={movieName}
+            value={movieName.current}
             list="autoList"
           ></Form.Control>
           <datalist id="autoList">
@@ -206,38 +245,39 @@ const ReviewWrite = () => {
         <Col lg={8} />
         <Col lg={2}>
           <button
-            id="badBtn"
+            id="type"
             className="bg-danger feed-btn mx-1 my-1"
+            type="button"
             style={{
               backgroundImage: "url(/thumbDown.png)",
               boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
               transform: badBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={-1}
+            value={"BAD"}
           ></button>
           <button
-            id="goodBtn"
+            id="type"
             className="bg-primary feed-btn mx-1 my-1"
+            type="button"
             style={{
               backgroundImage: "url(/thumbUp.png)",
               boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
               transform: goodBtn ? "scale(0.95)" : "",
             }}
             onClick={feedbackHandler}
-            value={1}
+            value={"LIKE"}
           ></button>
         </Col>
         <Col>
           <Button
             styles="btn-primary"
-            btnType="submit"
             text="등록"
-            // onClick={handleBtnClick}
+            onClick={handleBtnClick}
           ></Button>
         </Col>
       </Row>
-    </Form>
+    </Container>
   );
 };
 

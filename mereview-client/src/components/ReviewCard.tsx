@@ -12,7 +12,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     reviewId,
     memberId,
     nickname,
-    profileImagePath,
+    profileImageId,
     backgroundImagePath,
     oneLineReview,
     funnyCount,
@@ -50,6 +50,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     "0"
   );
   const genres: string = movieGenre.join(". ");
+  const defaultProfileImage = "/defaultProfile.png";
 
   return (
     <>
@@ -75,7 +76,14 @@ const ReviewCard = (props: ReviewCardInterface) => {
             <Row>
               <Col className="profile-container">
                 <div className="profile-img">
-                  <img src={profileImagePath} alt="Profile" />
+                  <img
+                    src={
+                      profileImageId
+                        ? `http://localhost:8080/api/image/download/profiles/${profileImageId}`
+                        : defaultProfileImage
+                    }
+                    alt="Profile"
+                  />
                 </div>
                 <span className="nickname">{nickname}</span>
               </Col>
