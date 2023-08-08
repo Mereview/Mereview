@@ -8,7 +8,6 @@ import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-import writeReview from "../api/review";
 
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
