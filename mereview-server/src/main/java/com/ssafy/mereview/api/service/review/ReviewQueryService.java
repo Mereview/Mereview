@@ -73,7 +73,7 @@ public class ReviewQueryService {
                                     .reviewTitle(review.getTitle())
                                     .hits(review.getHits())
                                     .highlight(review.getHighlight())
-                                    .movieEvaluationType(review.getType())
+                                    .movieRecommendType(review.getType())
                                     .commentCount(review.getComments().size())
                                     .funCount(getTypeCount(FUN, review.getId()))
                                     .usefulCount(getTypeCount(USEFUL, review.getId()))

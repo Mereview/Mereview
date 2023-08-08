@@ -43,7 +43,7 @@ public class Review extends BaseEntity {
     private String highlight;
 
     @Enumerated(EnumType.STRING)
-    private MovieEvaluationType type;
+    private MovieRecommendType type;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
@@ -70,7 +70,7 @@ public class Review extends BaseEntity {
     private BackgroundImage backgroundImage;
 
     @Builder
-    public Review(Long id, String title, String content, int hits, String highlight, MovieEvaluationType type, Member member, Movie movie, Genre genre) {
+    public Review(Long id, String title, String content, int hits, String highlight, MovieRecommendType type, Member member, Movie movie, Genre genre) {
         this.id = id;
         this.title = title;
         this.content = content;
