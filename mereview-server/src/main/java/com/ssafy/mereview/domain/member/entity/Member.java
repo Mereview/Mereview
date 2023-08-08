@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTier> memberTiers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToOne(mappedBy = "member")
@@ -63,6 +63,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "targetMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFollow> following = new ArrayList<>();
+
 
     @Builder
     public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisit memberVisit, String introduce, List<MemberFollow> followers, List<MemberFollow> following) {

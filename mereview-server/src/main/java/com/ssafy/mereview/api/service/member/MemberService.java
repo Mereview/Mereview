@@ -127,7 +127,7 @@ public class MemberService {
         member.getMemberVisit().updateVisitCount();
     }
 
-    public Long createFollow(Long targetId, Long currentMemberId) {
+    public void createFollow(Long targetId, Long currentMemberId) {
         // 팔로우 할 유저
 
         Member target = memberRepository.findById(targetId)
@@ -137,7 +137,6 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Following not found!"));
 
         // 팔로워가 현재 유저인 타겟(내가 팔로우하는 타겟)이 존재할 경우
-        // TODO: 2023-08-03 쿼리로 만들어주기
         MemberFollow existFollow = memberFollowQueryRepository.searchByTargetAndCurrentMember(targetId, currentMemberId);
         log.debug("memberFollow = {}", existFollow);
 
