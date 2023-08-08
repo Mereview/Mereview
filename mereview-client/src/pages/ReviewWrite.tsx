@@ -110,13 +110,15 @@ const ReviewWrite = () => {
     //   //   type: "application/json",
     //   // })
     // );
-    formData.append(
-      "uploadFile",
-      file.current
-      // new Blob([JSON.stringify(selectedImage)], {
-      //   type: "application/json",
-      // })
-    );
+    if (file.current != null) {
+      formData.append(
+        "uploadFile",
+        file.current
+        // new Blob([JSON.stringify(selectedImage)], {
+        //   type: "application/json",
+        // })
+      );
+    }
     axios
       .post(url + "/reviews", formData)
       .then(() => {
