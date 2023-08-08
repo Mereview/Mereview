@@ -98,4 +98,9 @@ public class MemberQueryRepository{
                 .where(memberTier.genre.genreNumber.eq(genreNumber))
                 .fetch();
     }
+//
+//    public void searchFollowerByMemberId(Long currentUserId) {
+//        return queryFactory
+//                .selectFrom(member)
+//    }
 }

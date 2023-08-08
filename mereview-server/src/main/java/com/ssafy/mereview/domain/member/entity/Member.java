@@ -62,19 +62,14 @@ public class Member extends BaseEntity {
 
     private String introduce;
 
-    @ManyToMany
-    @JoinTable(
-            name = "member_followers",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberFollow> followers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "followers")
-    private List<Member> following = new ArrayList<>();
+    @OneToMany(mappedBy = "targetMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberFollow> following = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<MemberFollow> followers, List<MemberFollow> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -91,7 +86,6 @@ public class Member extends BaseEntity {
         this.followers = followers;
         this.following = following;
     }
-
 
     public MemberResponse of() {
         return
