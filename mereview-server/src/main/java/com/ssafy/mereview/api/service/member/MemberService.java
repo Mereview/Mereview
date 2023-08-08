@@ -4,6 +4,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
@@ -127,7 +128,7 @@ public class MemberService {
         member.getMemberVisit().updateVisitCount();
     }
 
-    public void createFollow(Long targetId, Long currentMemberId) {
+    public MemberFollowResponse createFollow(Long targetId, Long currentMemberId) {
         // 팔로우 할 유저
 
         Member target = memberRepository.findById(targetId)
@@ -142,9 +143,11 @@ public class MemberService {
 
         if (existFollow != null) {
             memberFollowRepository.delete(existFollow);
-            return targetId;
+            return MemberFollowResponse.of(existFollow, "unfollow");
         }
+
         return follow(target, currentMember);
+
     }
 
     public Long updateMemberIntroduce(MemberIntroduceRequest request, String token) {
@@ -250,12 +253,14 @@ public class MemberService {
                 .build();
     }
 
-    private Long follow(Member target, Member currentMember) {
+    private MemberFollowResponse follow(Member target, Member currentMember) {
         MemberFollow memberFollow = MemberFollow.builder()
                 .member(currentMember)
                 .targetMember(target)
                 .build();
 
-        return memberFollowRepository.save(memberFollow).getId();
+        memberFollowRepository.save(memberFollow);
+
+        return MemberFollowResponse.of(memberFollow, "follow");
     }
 }
