@@ -21,8 +21,8 @@ public class MemberRegisterRequest {
 
     @NotBlank(message = "비밀번호는 필수 입력 항목입니다.")
     @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다.")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
-            message = "비밀번호는 영문 소문자, 숫자, 특수문자(@$!%*?&)를 포함해야 합니다.")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[@$!%#*?&])[A-Za-z\\d@$!%*#?&]+$",
+            message = "비밀번호는 영문 소문자, 숫자, 특수문자(@$#!%*?&)를 포함해야 합니다.")
     private String password;
 
     private String nickname;

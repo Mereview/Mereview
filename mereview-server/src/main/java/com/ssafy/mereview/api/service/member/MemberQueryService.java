@@ -6,6 +6,7 @@ import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
+import com.ssafy.mereview.domain.member.repository.MemberVisitQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.NotificationQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MemberQueryService {
     private final MemberQueryRepository memberQueryRepository;
-
+    private final MemberVisitQueryRepository memberVisitQueryRepository;
     private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -60,7 +61,6 @@ public class MemberQueryService {
 
     private MemberLoginResponse createMemberLoginResponse(Member searchMember) {
         log.debug("searchMember : {}", searchMember);
-
         Map<String, String> token = jwtUtils.generateJwt(searchMember);
         return MemberLoginResponse.builder()
                 .id(searchMember.getId())
@@ -84,18 +84,22 @@ public class MemberQueryService {
 
         List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
 
+
         int count = notificationQueryRepository.countByMemberId(id);
 
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, notificationResponses, count);
     }
-
 
     private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<NotificationResponse> notificationResponses, int notificationCount) {
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
+                .todayVisitCount(member.getMemberVisit().getTodayVisitCount())
+                .totalVisitCount(member.getMemberVisit().getTotalVisitCount())
                 .email(member.getEmail())
+                .introduce(member.getIntroduce())
+                .createdTime(member.getCreatedTime())
                 .notificationCount(notificationCount)
                 .notifications(notificationResponses)
                 .nickname(member.getNickname())
