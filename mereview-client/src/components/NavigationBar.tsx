@@ -2,13 +2,9 @@ import { Navbar, Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/css/NavigationBar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileModal from "./ProfileModal";
-const NavigationBar = () => {
-  const profile_URL = useSelector((state: any) => state.user.profile_URL);
-  const style = profile_URL
-    ? { backgroundImage: `url(${profile_URL})` }
-    : { backgroundImage: "url(/testProfile.gif)" };
+const NavigationBar = ({ profileURL }) => {
   const [isModal, setIsModal] = useState(false);
   const modalToggler = () => {
     setIsModal((currentState: boolean) => !currentState);
@@ -37,7 +33,11 @@ const NavigationBar = () => {
             <Nav.Item>
               <div
                 className="profile"
-                style={style}
+                style={
+                  profileURL
+                    ? { backgroundImage: `url(${profileURL})` }
+                    : { backgroundImage: "url(/testProfile.gif)" }
+                }
                 onClick={modalToggler}
               ></div>
             </Nav.Item>
