@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
@@ -14,9 +16,7 @@ import { ReviewCardInterface } from "../components/interface/ReviewCardInterface
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import { searchMemberInfo } from "../api/members";
-import { useSelector } from "react-redux";
 import "../styles/css/ProfilePage.css";
-import { AxiosError } from "axios";
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -276,6 +276,7 @@ const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* api test */
 let error: AxiosError | null = null;
 const getMemberInfo = async (userId: number) => {
+  console.log("getMemberInfo userId", userId);
   await searchMemberInfo(
     userId,
     ({ data }) => {
@@ -289,7 +290,13 @@ const getMemberInfo = async (userId: number) => {
       userInfo.profileImageId = response.profileImage.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
-      userInfo.introduction = "TEST";
+      userInfo.introduction = response.introduce;
+      userInfo.followerCount = response.follower;
+      userInfo.followingCount = response.following;
+      userInfo.todayVisitor = response.todayVisitCount;
+      userInfo.totalVisitor = response.totalVisitCount;
+      userInfo.joinDate = response.createdTime;
+      console.log(userInfo);
     },
     (e) => {
       error = e;
@@ -313,6 +320,10 @@ const ProfilePage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("all");
   const [followed, setFollowed] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const isSelf = userId !== loginId;
+  const followIcon =
+    followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
 
   useEffect(() => {
     // 유저 정보 저장
@@ -395,8 +406,12 @@ const ProfilePage = () => {
           <div className="follow-info">
             <span>팔로잉: {userInfo.followerCount}</span>
             <span>팔로워: {userInfo.followingCount}</span>
-            <span className="follow" onClick={follow}>
-              팔로우 {followed ? <BsHeartFill /> : <BsHeart />}
+            <span
+              className="follow"
+              onClick={isSelf ? follow : null}
+              style={isSelf ? { cursor: "pointer" } : null}
+            >
+              팔로우 {followIcon}
             </span>
           </div>
         </div>

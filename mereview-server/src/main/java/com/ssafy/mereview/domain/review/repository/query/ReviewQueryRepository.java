@@ -52,8 +52,8 @@ public class ReviewQueryRepository {
         return queryFactory
                 .select(review.count())
                 .from(review)
-                .join(review.member, member).fetchJoin()
-                .join(review.movie, movie).fetchJoin()
+                .join(review.member, member)
+                .join(review.movie, movie)
                 .where(
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
