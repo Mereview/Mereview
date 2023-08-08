@@ -41,6 +41,8 @@ const LoginForm = () => {
       (res) => {
         localStorage.setItem("id", res.data.data.id);
         localStorage.setItem("token", res.data.data.accessToken);
+
+        dispatch(userActions.authorization(res.data.data));
         dispatch(userActions.authToggler());
         navigate("/review");
       },

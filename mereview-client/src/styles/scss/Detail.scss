@@ -101,7 +101,7 @@
       height: 100px;
       justify-content: space-between;
       button {
-        flex-basis: 20%;
+        flex-basis: 15%;
         width: 100px;
         height: 100px;
         border-radius: 12px;
@@ -109,8 +109,8 @@
         font-weight: bold;
         color: white;
       }
-      input {
-        flex-basis: 80%;
+      #input {
+        flex-basis: 85%;
         height: 100px;
         margin-right: 15px;
         border-radius: 12px;
@@ -134,7 +134,7 @@
     }
     .vertical {
       border-radius: 12px;
-      background-color: #c2c0bf;
+      background-color: #c2c0bf80;
     }
   }
 }

@@ -5,17 +5,8 @@ import {
 } from "../components/interface/UserInterface";
 const initialState: UserInterface = {
   isAthenticated: false,
-  id: null,
   thirdModal: false,
-  token: "",
-  email: "",
-  gender: "",
-  birthDate: "",
-  nickname: "",
-  interests: [],
-  tiers: [],
-  achievements: [],
-  profile_URL: "",
+  user: {},
 };
 const userSlice = createSlice({
   name: "user",
@@ -24,22 +15,13 @@ const userSlice = createSlice({
     authorization(state, action) {
       console.log(action.payload);
       state.isAthenticated = true;
-      state.id = action.payload.id;
-      state.email = action.payload.email;
-      state.gender = action.payload.gender;
-      state.nickname = action.payload.nickname;
-      state.birthDate = action.payload.birthDate;
-      state.interests = action.payload.interests;
+      state.user = action.payload;
       console.log("로그인성공");
     },
     logout(state) {
       localStorage.removeItem("token");
       localStorage.removeItem("id");
       return initialState;
-      state.isAthenticated = false;
-      state.token = "";
-      state.email = "";
-      state.nickname = "";
     },
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;
@@ -47,9 +29,6 @@ const userSlice = createSlice({
 
     authToggler(state) {
       state.isAthenticated = true;
-    },
-    profileURLSave(state, action) {
-      state.profile_URL = action.payload;
     },
   },
 });
