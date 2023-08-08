@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// axios 객체 생성
 export const memberApi = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL}/members`,
   headers: {

@@ -1,5 +1,4 @@
 import { reviewApi, reviewApiFormData } from "./index";
-import { login } from "./members";
 
 const api = reviewApi;
 const apiForm = reviewApiFormData;
@@ -15,7 +14,7 @@ export async function searchReviews(data: Object, success, fail) {
   }
   const queryString: string = queryParams.join("&");
 
-  await api.get(`/?${queryString}`).then(success).catch(fail);
+  await api.get(`?${queryString}`).then(success).catch(fail);
 }
 
 export async function searchReview(data: Object, success, fail) {
@@ -25,27 +24,37 @@ export async function searchReview(data: Object, success, fail) {
     .catch(fail);
 }
 
-export async function updateReview(data: JSON, success, fail) {
-  await apiForm.put(`/${data["id"]}`).then(success).catch(fail);
+export async function updateReview(
+  reviewId: number,
+  data: FormData,
+  success,
+  fail
+) {
+  await apiForm.put(`/${reviewId}`, data).then(success).catch(fail);
 }
 
-export async function deleteReview(data: JSON, success, fail) {
-  await api.delete(`/follow`, data).then(success).catch(fail);
+export async function deleteReview(reviewId: number, success, fail) {
+  await api.delete(`/${reviewId}`).then(success).catch(fail);
 }
 
 /* Comment API */
 export async function createReviewComment(data: JSON, success, fail) {
-  await api.post(`/follow`, data).then(success).catch(fail);
+  await api.post(`/comments/`, data).then(success).catch(fail);
 }
 
-export async function updateReviewComment(data: JSON, success, fail) {
-  await api.delete(`/follow`, data).then(success).catch(fail);
+export async function updateReviewComment(
+  commentId: number,
+  data: JSON,
+  success,
+  fail
+) {
+  await api.put(`/comments/${commentId}`, data).then(success).catch(fail);
 }
 
-export async function deleteReviewComment(data: JSON, success, fail) {
-  await api.delete(`/follow`, data).then(success).catch(fail);
+export async function deleteReviewComment(commentId: number, success, fail) {
+  await api.delete(`/comments/${commentId}`).then(success).catch(fail);
 }
 
 export async function updateCommentLike(data: JSON, success, fail) {
-  await api.delete(`/follow`, data).then(success).catch(fail);
+  await api.post(`/comments/likes`, data).then(success).catch(fail);
 }
