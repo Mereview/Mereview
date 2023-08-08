@@ -65,11 +65,20 @@ const ReviewWrite = () => {
   };
   const movieSelectHandler = (event) => {
     const movie = JSON.parse(event.target.value);
-    console.log(movie);
-    inputData.current.movieId = movie.movieContentId;
-    inputData.current.genreId = movie.genres[0].genreId;
-    // movieName.current = movie.title;
     setMovieName(movie.title);
+    // console.log(movie);
+    inputData.current.movieId = movie.movieContentId;
+    // inputData.current.genreId = movie.genres[0].genreId;
+    setGenreList(movie.genres);
+    // movieName.current = movie.title;
+  };
+  const [genreList, setGenreList] = useState([]);
+  const [genreName, setGenreName] = useState("");
+  const genreSelectHandler = (event) => {
+    const genre = JSON.parse(event.target.value);
+    setGenreName(genre.genreName);
+    console.log(genre.genreId);
+    inputData.current.genreId = genre.genreId;
   };
   const handleBtnClick = () => {
     if (inputData.current.title == null) {
@@ -220,11 +229,19 @@ const ReviewWrite = () => {
             value={movieName}
             id="movie"
           ></input>
-          <select value={movieName} onChange={movieSelectHandler}>
-            <option value=""></option>
+          <select onChange={movieSelectHandler}>
+            <option value={movieName}></option>
             {movieList.map((option) => (
               <option key={option.title} value={JSON.stringify(option)}>
                 {option.title}
+              </option>
+            ))}
+          </select>
+          <select onChange={genreSelectHandler}>
+            <option value={genreName}></option>
+            {genreList.map((option) => (
+              <option key={option} value={JSON.stringify(option)}>
+                {option.genreName}
               </option>
             ))}
           </select>
