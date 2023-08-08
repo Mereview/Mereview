@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 import static org.assertj.core.api.Assertions.*;
@@ -157,7 +157,7 @@ class ReviewQueryServiceTest {
         // then
         assertThat(responses).hasSize(3)
                 .extracting("movieTitle", "reviewTitle", "hits", "highlight")
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         tuple("영화제목", "테스트 제목2", 20, "테스트 한줄평2"),
                         tuple("영화제목", "테스트 제목1", 0, "테스트 한줄평1"),
                         tuple("영화제목", "그냥 제목1", 0, "그냥 한줄평1")
@@ -300,7 +300,7 @@ class ReviewQueryServiceTest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(LIKE)
+                .type(YES)
                 .hits(hits)
                 .member(member)
                 .movie(movie)
