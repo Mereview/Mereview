@@ -38,7 +38,7 @@ export async function deleteReview(reviewId: number, success, fail) {
 }
 
 /* Comment API */
-export async function createReviewComment(data: JSON, success, fail) {
+export async function createReviewComment(data: Object, success, fail) {
   await api.post(`/comments/`, data).then(success).catch(fail);
 }
 
@@ -55,6 +55,6 @@ export async function deleteReviewComment(commentId: number, success, fail) {
   await api.delete(`/comments/${commentId}`).then(success).catch(fail);
 }
 
-export async function updateCommentLike(data: JSON, success, fail) {
+export async function updateCommentLike(data: Object, success, fail) {
   await api.post(`/comments/likes`, data).then(success).catch(fail);
 }
