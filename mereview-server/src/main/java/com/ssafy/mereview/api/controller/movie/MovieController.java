@@ -32,4 +32,10 @@ public class MovieController {
         return ApiResponse.ok(movieService.searchMovies(keyword));
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation(value = "영화 아이디로 상세조회")
+    public ApiResponse<MovieResponse> searchMovieById(@PathVariable Long id) {
+        return ApiResponse.ok(movieService.searchMovieById(id));
+    }
+
 }

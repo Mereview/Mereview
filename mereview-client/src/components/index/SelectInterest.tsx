@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { userActions } from "../../store/user-slice";
 import { uiActions } from "../../store/ui-silce";
-import { postSignUp } from "../../api/user";
-
+import { signup } from "../../api/members";
 interface GenreInfo {
   [id: string]: [string, string];
 }
@@ -55,14 +54,21 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
     "request",
     new Blob([JSON.stringify(signUpData)], { type: "application/json" })
   );
-  const signUp_step3 = () => {
-    console.log(data.get("file"));
-    console.log(data.get("request"));
-
-    postSignUp(data);
-
-    dispatch(userActions.modal_toggler());
-    dispatch(uiActions.tabChange("signUpCompleted"));
+  const signUpHandler = () => {
+    signup(
+      data,
+      (res) => {
+        alert("회원가입이 완료되었습니다!");
+        dispatch(userActions.modal_toggler());
+        dispatch(uiActions.tabChange("signUpCompleted"));
+      },
+      (err) => {
+        console.log(data.get("file"));
+        console.log(data.get("request"));
+        console.log(err.message);
+        console.log(err.data);
+      }
+    );
   };
   const genre: GenreInfo = {
     "1": ["액션", "/interest/action"], ///
@@ -117,7 +123,7 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
       <p></p>
       <div className="finish">
         <Button
-          onClick={signUp_step3}
+          onClick={signUpHandler}
           styles="btn-primary"
           text={`${interest.length} 개 선택, 완료하기!`}
         />

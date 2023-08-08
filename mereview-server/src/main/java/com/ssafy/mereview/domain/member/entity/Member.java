@@ -11,10 +11,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +25,11 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @NotNull
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Email(message = "유효한 이메일 형식이어야 합니다.")
     private String email;
 
-    @NotNull
-    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
-    @Size(min = 6, message = "비밀번호는 최소 8자 이상이어야 합니다.")
     private String password;
 
+    @Column(unique = true)
     private String nickname;
 
     private String gender;
@@ -56,30 +47,26 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTier> memberTiers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToOne(mappedBy = "member")
     private ProfileImage profileImage;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MemberVisitCount memberVisit;
+    private MemberVisit memberVisit;
 
     private String introduce;
 
-    @ManyToMany
-    @JoinTable(
-            name = "member_followers",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberFollow> followers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "followers")
-    private List<Member> following = new ArrayList<>();
+    @OneToMany(mappedBy = "targetMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberFollow> following = new ArrayList<>();
+
 
     @Builder
-    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisitCount memberVisit, String introduce, List<Member> followers, List<Member> following) {
+    public Member(Long id, String email, String password, String nickname, String gender, String birthDate, Role role, List<Interest> interests, List<MemberTier> memberTiers, List<Review> reviews, ProfileImage profileImage, MemberVisit memberVisit, String introduce, List<MemberFollow> followers, List<MemberFollow> following) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -96,7 +83,6 @@ public class Member extends BaseEntity {
         this.followers = followers;
         this.following = following;
     }
-
 
     public MemberResponse of() {
         return

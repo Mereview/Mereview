@@ -16,10 +16,10 @@ import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Keyword;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.repository.BackgroundImageRepository;
-import com.ssafy.mereview.domain.review.repository.KeywordRepository;
-import com.ssafy.mereview.domain.review.repository.NotificationRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewRepository;
+import com.ssafy.mereview.domain.review.repository.command.BackgroundImageRepository;
+import com.ssafy.mereview.domain.review.repository.command.KeywordRepository;
+import com.ssafy.mereview.domain.review.repository.command.NotificationRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.DISLIKE;
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.NO;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -73,6 +73,8 @@ class ReviewServiceTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+
 
     @DisplayName("1. 새로운 리뷰를 작성한다.")
     @Test
@@ -125,7 +127,7 @@ class ReviewServiceTest {
                 .title("수정 제목")
                 .content("수정 내용")
                 .highlight("수정 한줄평")
-                .type(DISLIKE)
+                .type(NO)
                 .keywordServiceRequests(keywordRequests)
                 .uploadFile(uploadFile)
                 .build();
@@ -138,7 +140,7 @@ class ReviewServiceTest {
         // then
         assertThat(updatedReview)
                 .extracting("title", "content", "highlight", "type")
-                .containsExactly("수정 제목", "수정 내용", "수정 한줄평", DISLIKE);
+                .containsExactly("수정 제목", "수정 내용", "수정 한줄평", NO);
         assertThat(updatedKeywords).hasSize(1);
     }
 
@@ -155,7 +157,7 @@ class ReviewServiceTest {
                 .content("수정 내용")
                 .highlight("수정 한줄평")
                 .keywordServiceRequests(List.of())
-                .type(DISLIKE)
+                .type(NO)
                 .build();
 
         // when // then
@@ -274,7 +276,7 @@ class ReviewServiceTest {
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .highlight("테스트 한줄평")
-                .type(LIKE)
+                .type(YES)
                 .movieId(movieId)
                 .memberId(memberId)
                 .genreId(genreId)

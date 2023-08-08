@@ -3,7 +3,7 @@
 .section {
   position: relative;
   height: auto;
-  padding: 3%;
+  padding: 3% 20% 3% 20%;
 }
 .blurred {
   position: absolute;
@@ -17,4 +17,10 @@
 .section::-webkit-scrollbar {
   width: 0px; /* Chrome, Safari, Opera */
   display: none; /* Chrome, Safari, Opera */
+}
+.topbutton {
+  background-image: url("/public/Top.png");
+  width: 100px;
+  height: 100px;
+  background-size: cover;
 }

@@ -9,9 +9,9 @@ import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.repository.ReviewEvaluationQueryRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewEvaluationRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewRepository;
+import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewEvaluationRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static com.ssafy.mereview.domain.review.entity.MovieEvaluationType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -156,7 +156,7 @@ class ReviewEvaluationServiceTest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(LIKE)
+                .type(YES)
                 .hits(hits)
                 .member(member)
                 .movie(movie)

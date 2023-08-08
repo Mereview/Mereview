@@ -4,13 +4,18 @@ import Detail from "../components/reviewDetail/Detail";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { AxiosRequestConfig } from "axios";
 import { useNavigate } from "react-router-dom";
+import { uiActions } from "../store/ui-silce";
+import uiSlice from "../store/ui-silce";
+import { useDispatch, useSelector } from "react-redux";
+import { searchReview } from "../api/review";
+
 export interface DummyRev {
   title: string;
   oneLine: string;
   content: string;
   keyword: { [key: string]: string }; // 키와 값의 타입을 모두 문자열로 정의
+  memberId: number;
 }
 export interface DummyMov {
   title: string;
@@ -19,32 +24,25 @@ export interface DummyMov {
 }
 const ReviewDetail = (props: any) => {
   const [review, setReview] = useState(null);
-  const [grantAuth, setGrantAuth] = useState(false);
   const { id } = useParams();
+  const userId = localStorage.getItem("id");
   const navigate = useNavigate();
+  //리뷰불러오기
   const getReviewDetail = () => {
-    const userId = localStorage.getItem("id");
-    const GET_REVIEW_URL = `http:localhost:8080/api/reviews/${id}`;
-    axios
-      .get(GET_REVIEW_URL, {
-        params: {
-          loginMemberId: userId,
-        },
-      })
-      .then((res) => res.data.data)
-      .then((review) => {
-        if (userId === review.memberId) {
-          setGrantAuth(true);
-        }
-        setReview(review);
-      })
-      .catch((err) => {
-        if (err.message.includes("404")) {
-          // navigate("/404");
-        }
-      });
+    const data: Object = {
+      reviewId: id,
+      loginMemberId: userId,
+    };
+    const success = (res) => setReview(res.data.data);
+    const fail = (err) => console.log(err); // 나중에 404 로직추가
+    searchReview(data, success, fail);
   };
-  useEffect(getReviewDetail, []);
+  // 영화 불러오기
+  const getMovieDetail = () => {};
+
+  useEffect(() => {
+    getReviewDetail();
+  }, []);
   const imgURL = "/test.jpg";
   const style = {
     backgroundImage: `url(${imgURL})`,
@@ -63,6 +61,7 @@ const ReviewDetail = (props: any) => {
       톰크루즈: "5",
       노잼: "1",
     },
+    memberId: 7,
   };
   const dummyMovie: DummyMov = {
     title: "미션 임파서블: 데드레코닝 PART ONE",
@@ -76,11 +75,12 @@ const ReviewDetail = (props: any) => {
         className="blurred"
         style={{
           backgroundImage: `url(${imgURL})`,
-          filter: "blur(5px)",
+          filter: "blur(15px)",
         }}
       ></div>
       <Top review={dummyReview} movie={dummyMovie} />
       <Detail review={dummyReview} movie={dummyMovie} />
+      <div className="topbutton"></div>
     </div>
   );
 };

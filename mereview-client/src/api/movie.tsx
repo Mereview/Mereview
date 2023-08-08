@@ -1,5 +1,10 @@
-const movie = () => {
-  return <div></div>;
-};
+import { movieApi } from "./index";
 
-export default movie;
+const api = movieApi;
+
+export async function searchMovies(keyword: string, success, fail) {
+  await api
+    .get(`?${keyword || ""}`)
+    .then(success)
+    .catch(fail);
+}

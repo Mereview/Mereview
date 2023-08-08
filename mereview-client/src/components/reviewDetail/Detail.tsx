@@ -1,14 +1,19 @@
 import { DummyMov, DummyRev } from "../../pages/ReviewDetailPage";
 import "../../styles/css/Detail.css";
-import { Container, Col, Row } from "react-bootstrap";
 import ReviewCard from "../ReviewCard";
 import { ReviewCardInterface } from "../interface/ReviewCardInterface";
+import { useSelector } from "react-redux";
+import { Button } from "../common";
 interface TODProps {
   review: DummyRev;
   movie: DummyMov;
 }
 
 const Detail = ({ review, movie }: TODProps) => {
+  const userId = useSelector((state: any) => state.user.id);
+  const onClick = (event: any) => {
+    console.log(event.target);
+  };
   const commentDummy = [
     {
       id: 1,
@@ -132,15 +137,20 @@ const Detail = ({ review, movie }: TODProps) => {
         <button id="funny"></button>
         <button id="dislike"></button>
       </div>
+      {userId === review.memberId ? (
+        <div className="edit">
+          <Button text="수정" styles="btn-primary" onClick={onClick}></Button>
+          <Button text="삭제" styles="btn-secondary" onClick={onClick}></Button>
+        </div>
+      ) : null}
+
       {/* 아랫단 디테일  */}
       <div className="comment">
         <div className="left" style={{ margin: "0px" }}>
-          <div className="input">
-            <form>
-              <input type="text" />
-              <button type="submit">댓글 등록</button>
-            </form>
-          </div>
+          <form className="input">
+            <input type="text" />
+            <button type="submit">댓글 등록</button>
+          </form>
 
           <div
             className="lst"

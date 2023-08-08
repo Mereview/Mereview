@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.member.repository;
 
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class MemberInterestQueryRepository {
                 .from(interest)
                 .join(interest.member, member)
                 .where(interest.genre.id.eq(genreId))
-                .orderBy(NumberExpression.random().desc())
+                .orderBy(Expressions.numberTemplate(Long.class, "function('rand')").desc())
                 .limit(count)
                 .fetch();
     }

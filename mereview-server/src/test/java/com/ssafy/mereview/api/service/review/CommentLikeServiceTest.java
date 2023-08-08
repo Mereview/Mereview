@@ -10,12 +10,11 @@ import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.repository.GenreRepository;
 import com.ssafy.mereview.domain.movie.repository.MovieRepository;
 import com.ssafy.mereview.domain.review.entity.Comment;
-import com.ssafy.mereview.domain.review.entity.MovieEvaluationType;
 import com.ssafy.mereview.domain.review.entity.Review;
-import com.ssafy.mereview.domain.review.repository.CommentLikeQueryRepository;
-import com.ssafy.mereview.domain.review.repository.CommentLikeRepository;
-import com.ssafy.mereview.domain.review.repository.CommentRepository;
-import com.ssafy.mereview.domain.review.repository.ReviewRepository;
+import com.ssafy.mereview.domain.review.repository.command.CommentLikeRepository;
+import com.ssafy.mereview.domain.review.repository.command.CommentRepository;
+import com.ssafy.mereview.domain.review.repository.command.ReviewRepository;
+import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static com.ssafy.mereview.domain.review.entity.CommentLikeType.LIKE;
+import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -170,7 +170,7 @@ class CommentLikeServiceTest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(MovieEvaluationType.LIKE)
+                .type(YES)
                 .hits(hits)
                 .member(member)
                 .movie(movie)

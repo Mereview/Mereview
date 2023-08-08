@@ -15,6 +15,7 @@ const initialState: UserInterface = {
   interests: [],
   tiers: [],
   achievements: [],
+  profile_URL: "",
 };
 const userSlice = createSlice({
   name: "user",
@@ -32,12 +33,13 @@ const userSlice = createSlice({
       console.log("로그인성공");
     },
     logout(state) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      return initialState;
       state.isAthenticated = false;
       state.token = "";
       state.email = "";
       state.nickname = "";
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
     },
     modal_toggler(state) {
       state.thirdModal = !state.thirdModal;
@@ -45,6 +47,9 @@ const userSlice = createSlice({
 
     authToggler(state) {
       state.isAthenticated = true;
+    },
+    profileURLSave(state, action) {
+      state.profile_URL = action.payload;
     },
   },
 });

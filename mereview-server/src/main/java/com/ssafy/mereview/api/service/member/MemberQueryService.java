@@ -2,19 +2,27 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
+import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
+import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
+import com.ssafy.mereview.domain.member.repository.MemberVisitQueryRepository;
+import com.ssafy.mereview.domain.movie.entity.Movie;
+import com.ssafy.mereview.domain.review.entity.*;
+import com.ssafy.mereview.domain.review.repository.query.NotificationQueryRepository;
+import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
+import static java.util.Comparator.comparingInt;
 
 @Service
 @Slf4j
@@ -22,8 +30,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MemberQueryService {
     private final MemberQueryRepository memberQueryRepository;
-
+    private final MemberVisitQueryRepository memberVisitQueryRepository;
+    private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
 
     private final JwtUtils jwtUtils;
 
@@ -36,6 +46,7 @@ public class MemberQueryService {
         if (searchMember == null || searchMember.getRole().equals(Role.DELETED)) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
+
         if (!passwordEncoder.matches(request.getPassword(), searchMember.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
@@ -56,7 +67,6 @@ public class MemberQueryService {
 
     private MemberLoginResponse createMemberLoginResponse(Member searchMember) {
         log.debug("searchMember : {}", searchMember);
-
         Map<String, String> token = jwtUtils.generateJwt(searchMember);
         return MemberLoginResponse.builder()
                 .id(searchMember.getId())
@@ -78,15 +88,26 @@ public class MemberQueryService {
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
-        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses);
+        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
+        List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
+        int count = notificationQueryRepository.countByMemberId(id);
+
+        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, notificationResponses, count, reviewResponses);
     }
 
-    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses) {
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<NotificationResponse> notificationResponses, int notificationCount, List<ReviewResponse> reviewResponses){
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
+                .reviews(reviewResponses)
+                .todayVisitCount(member.getMemberVisit().getTodayVisitCount())
+                .totalVisitCount(member.getMemberVisit().getTotalVisitCount())
                 .email(member.getEmail())
+                .introduce(member.getIntroduce())
+                .createdTime(member.getCreatedTime())
+                .notificationCount(notificationCount)
+                .notifications(notificationResponses)
                 .nickname(member.getNickname())
                 .gender(member.getGender())
                 .birthDate(member.getBirthDate())
@@ -137,5 +158,115 @@ public class MemberQueryService {
         return member.getFollowers().stream()
                 .map(FollowResponse::of)
                 .collect(Collectors.toList());
+    }
+
+
+
+    /**
+     * private methods
+     */
+
+    private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
+        return reviews.stream()
+                .map(review -> {
+                            Movie movie = review.getMovie();
+                            Member writeMember = review.getMember();
+                            return ReviewResponse.builder()
+                                    .reviewId(review.getId())
+                                    .reviewTitle(review.getTitle())
+                                    .hits(review.getHits())
+                                    .highlight(review.getHighlight())
+                                    .movieRecommendType(review.getType())
+                                    .commentCount(review.getComments().size())
+                                    .positiveCount(getPositiveCount(review.getId()))
+                                    .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
+                                    .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
+                                    .badCount(getTypeCountByReviewAndType(BAD, review.getId()))
+                                    .backgroundImageResponse(createBackgroundImageResponse(review.getBackgroundImage()))
+                                    .createdTime(review.getCreatedTime())
+                                    .memberId(writeMember.getId())
+                                    .nickname(writeMember.getNickname())
+                                    .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
+                                    .movieId(movie.getId())
+                                    .movieTitle(movie.getTitle())
+                                    .movieReleaseDate(movie.getReleaseDate())
+                                    .genreResponse(GenreResponse.of(review.getGenre()))
+                                    .build();
+                        }
+                ).collect(Collectors.toList());
+    }
+
+    private void increaseHits(Long loginMemberId, Review review) {
+        if (!review.getMember().getId().equals(loginMemberId)) {
+            review.increaseHits();
+        }
+    }
+
+    private boolean isEvaluated(Long reviewId, Long memberId) {
+        Optional<ReviewEvaluation> reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, memberId);
+        return reviewEvaluation.isPresent();
+    }
+
+    private int getPositiveCount(Long reviewId) {
+        return getTypeCountByReviewAndType(FUN, reviewId) + getTypeCountByReviewAndType(USEFUL, reviewId);
+    }
+
+    private int getTypeCountByReviewAndType(ReviewEvaluationType type, Long reviewId) {
+        return reviewEvaluationQueryRepository.getCountByReviewIdAndType(reviewId, type);
+    }
+
+    private BackgroundImageResponse createBackgroundImageResponse(BackgroundImage backgroundImage) {
+        if (backgroundImage == null) {
+            return null;
+        }
+        return BackgroundImageResponse.of(backgroundImage);
+    }
+
+    private void sortByReviewEvaluationTypeCounts(List<ReviewResponse> responses, String orderBy, String orderDir) {
+        switch (orderBy) {
+            case "FUN":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getFunCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
+                }
+                break;
+            case "USEFUL":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getUsefulCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getUsefulCount).reversed());
+                }
+                break;
+            case "POSITIVE":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getPositiveCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getPositiveCount).reversed());
+                }
+                break;
+        }
+    }
+
+    private List<KeywordResponse> getKeywordResponses(List<Keyword> keywords) {
+        return keywords.stream().map(KeywordResponse::of).collect(Collectors.toList());
+    }
+
+    private List<MemberTierResponse> getMemberTierResponses(List<MemberTier> memberTiers) {
+        if (memberTiers == null) {
+            return new ArrayList<>();
+        }
+        return memberTiers.stream().map(MemberTierResponse::of).collect(Collectors.toList());
+    }
+
+    private ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {
+        if (profileImage == null) {
+            return null;
+        }
+        return ProfileImageResponse.of(profileImage);
+    }
+
+    private List<CommentResponse> getCommentResponses(List<Comment> comments) {
+        return comments.stream().map(CommentResponse::of).collect(Collectors.toList());
     }
 }

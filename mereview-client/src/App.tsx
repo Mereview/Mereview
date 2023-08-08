@@ -24,22 +24,29 @@ function App() {
         .then((res) => res.data.data)
         .then((data) => {
           dispatch(userActions.authorization(data));
+          if (data.profileImage) {
+            const id = data.profileImage.id;
+            const IMG_URL = `http://localhost:8080/api/image/download/profiles/${id}`;
+            dispatch(userActions.profileURLSave(IMG_URL));
+          }
         })
         .catch((err) => console.log("사용자 인증에서 오류가 발생했습니다."));
     }
   };
   const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
   useEffect(getUserInfo, []);
+  const profileURL = useSelector((state: any) => state.user.profile_URL);
   return (
     <div className="App">
       <Router>
-        {isAthenticated ? <NavigationBar /> : null}
+        {isAthenticated ? <NavigationBar profileURL={profileURL} /> : null}
         <Routes>
           <Route path="/" Component={IndexPage}></Route>
           <Route path="/review" Component={ReviewHome}></Route>
           <Route path="/review/write" Component={ReviewWrite}></Route>
           <Route path="/review/:id" Component={ReviewDetailPage}></Route>
           <Route path="/profile" Component={ProfilePage}></Route>
+          <Route path="/profile/:id" Component={ProfilePage}></Route>
           <Route path="/404" Component={PageNotFound404}></Route>
         </Routes>
       </Router>

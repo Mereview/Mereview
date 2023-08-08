@@ -1,9 +1,8 @@
-package com.ssafy.mereview.domain.review.repository;
+package com.ssafy.mereview.domain.review.repository.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.review.entity.CommentLike;
 import com.ssafy.mereview.domain.review.entity.CommentLikeType;
-import com.ssafy.mereview.domain.review.entity.QCommentLike;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
