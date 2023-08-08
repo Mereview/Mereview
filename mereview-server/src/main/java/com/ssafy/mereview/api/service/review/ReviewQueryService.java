@@ -62,34 +62,6 @@ public class ReviewQueryService {
         return createReviewDetailResponse(review);
     }
 
-    private ReviewDetailResponse createReviewDetailResponse(Review review) {
-        Member writeMember = review.getMember();
-        Movie movie = review.getMovie();
-        return ReviewDetailResponse.builder()
-                .reviewId(review.getId())
-                .reviewTitle(review.getTitle())
-                .reviewContent(review.getContent())
-                .hits(review.getHits())
-                .backgroundImage(createBackgroundImageResponse(review.getBackgroundImage()))
-                .reviewHighlight(review.getHighlight())
-                .reviewCreatedTime(review.getCreatedTime())
-                .keywords(getKeywordResponses(review.getKeywords()))
-                .evaluated(isEvaluated(review.getId(), writeMember.getId()))
-                .funCount(getTypeCount(FUN, review.getId()))
-                .usefulCount(getTypeCount(USEFUL, review.getId()))
-                .badCount(getTypeCount(BAD, review.getId()))
-                .movieId(movie.getId())
-                .movieTitle(movie.getTitle())
-                .genre(GenreResponse.of(review.getGenre()))
-                .movieReleaseDate(movie.getReleaseDate())
-                .memberId(writeMember.getId())
-                .nickname(writeMember.getNickname())
-                .memberTiers(getMemberTierResponses(writeMember.getMemberTiers()))
-                .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
-                .comments(getCommentResponses(review.getComments()))
-                .build();
-    }
-
     /**
      * private methods
      */
