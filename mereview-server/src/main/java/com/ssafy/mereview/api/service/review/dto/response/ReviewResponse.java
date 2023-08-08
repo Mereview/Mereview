@@ -20,6 +20,7 @@ public class ReviewResponse {
     private String highlight;
     private MovieRecommendType movieRecommendType;
     private int commentCount;
+    private int positiveCount;
     private int funCount;
     private int usefulCount;
     private int badCount;
@@ -34,13 +35,14 @@ public class ReviewResponse {
     private GenreResponse genreResponse;
 
     @Builder
-    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, MovieRecommendType movieRecommendType, int commentCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, ProfileImageResponse profileImage, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
+    public ReviewResponse(Long reviewId, String reviewTitle, int hits, String highlight, MovieRecommendType movieRecommendType, int commentCount, int positiveCount, int funCount, int usefulCount, int badCount, BackgroundImageResponse backgroundImageResponse, LocalDateTime createdTime, Long memberId, String nickname, ProfileImageResponse profileImage, Long movieId, String movieTitle, String movieReleaseDate, GenreResponse genreResponse) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.hits = hits;
         this.highlight = highlight;
         this.movieRecommendType = movieRecommendType;
         this.commentCount = commentCount;
+        this.positiveCount = positiveCount;
         this.funCount = funCount;
         this.usefulCount = usefulCount;
         this.badCount = badCount;

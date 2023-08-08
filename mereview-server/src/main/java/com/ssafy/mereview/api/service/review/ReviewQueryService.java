@@ -9,16 +9,19 @@ import com.ssafy.mereview.domain.member.entity.MemberTier;
 import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.*;
+import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewQueryRepository;
-import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -39,7 +42,7 @@ public class ReviewQueryService {
         log.debug("reviews: {}", reviews);
 
         List<ReviewResponse> responses = createReviewResponses(reviews);
-        sortByReviewEvaluationTypeCounts(responses, condition.getOrderBy());
+        sortByReviewEvaluationTypeCounts(responses, condition.getOrderBy(), condition.getOrderDir());
         log.debug("responses: {}", responses);
 
         return responses;
@@ -59,34 +62,6 @@ public class ReviewQueryService {
         return createReviewDetailResponse(review);
     }
 
-    private ReviewDetailResponse createReviewDetailResponse(Review review) {
-        Member writeMember = review.getMember();
-        Movie movie = review.getMovie();
-        return ReviewDetailResponse.builder()
-                .reviewId(review.getId())
-                .reviewTitle(review.getTitle())
-                .reviewContent(review.getContent())
-                .hits(review.getHits())
-                .backgroundImage(createBackgroundImageResponse(review.getBackgroundImage()))
-                .reviewHighlight(review.getHighlight())
-                .reviewCreatedTime(review.getCreatedTime())
-                .keywords(getKeywordResponses(review.getKeywords()))
-                .evaluated(isEvaluated(review.getId(), writeMember.getId()))
-                .funCount(getTypeCount(FUN, review.getId()))
-                .usefulCount(getTypeCount(USEFUL, review.getId()))
-                .badCount(getTypeCount(BAD, review.getId()))
-                .movieId(movie.getId())
-                .movieTitle(movie.getTitle())
-                .genre(GenreResponse.of(review.getGenre()))
-                .movieReleaseDate(movie.getReleaseDate())
-                .memberId(writeMember.getId())
-                .nickname(writeMember.getNickname())
-                .memberTiers(getMemberTierResponses(writeMember.getMemberTiers()))
-                .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
-                .comments(getCommentResponses(review.getComments()))
-                .build();
-    }
-
     /**
      * private methods
      */
@@ -103,9 +78,10 @@ public class ReviewQueryService {
                                     .highlight(review.getHighlight())
                                     .movieRecommendType(review.getType())
                                     .commentCount(review.getComments().size())
-                                    .funCount(getTypeCount(FUN, review.getId()))
-                                    .usefulCount(getTypeCount(USEFUL, review.getId()))
-                                    .badCount(getTypeCount(BAD, review.getId()))
+                                    .positiveCount(getPositiveCount(review.getId()))
+                                    .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
+                                    .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
+                                    .badCount(getTypeCountByReviewAndType(BAD, review.getId()))
                                     .backgroundImageResponse(createBackgroundImageResponse(review.getBackgroundImage()))
                                     .createdTime(review.getCreatedTime())
                                     .memberId(writeMember.getId())
@@ -120,6 +96,35 @@ public class ReviewQueryService {
                 ).collect(Collectors.toList());
     }
 
+    private ReviewDetailResponse createReviewDetailResponse(Review review) {
+        Member writeMember = review.getMember();
+        Movie movie = review.getMovie();
+        return ReviewDetailResponse.builder()
+                .reviewId(review.getId())
+                .reviewTitle(review.getTitle())
+                .reviewContent(review.getContent())
+                .hits(review.getHits())
+                .backgroundImage(createBackgroundImageResponse(review.getBackgroundImage()))
+                .reviewHighlight(review.getHighlight())
+                .reviewCreatedTime(review.getCreatedTime())
+                .keywords(getKeywordResponses(review.getKeywords()))
+                .evaluated(isEvaluated(review.getId(), writeMember.getId()))
+                .positiveCount(getPositiveCount(review.getId()))
+                .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
+                .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
+                .badCount(getTypeCountByReviewAndType(BAD, review.getId()))
+                .movieId(movie.getId())
+                .movieTitle(movie.getTitle())
+                .genre(GenreResponse.of(review.getGenre()))
+                .movieReleaseDate(movie.getReleaseDate())
+                .memberId(writeMember.getId())
+                .nickname(writeMember.getNickname())
+                .memberTiers(getMemberTierResponses(writeMember.getMemberTiers()))
+                .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
+                .comments(getCommentResponses(review.getComments()))
+                .build();
+    }
+
     private void increaseHits(Long loginMemberId, Review review) {
         if (!review.getMember().getId().equals(loginMemberId)) {
             review.increaseHits();
@@ -131,7 +136,11 @@ public class ReviewQueryService {
         return reviewEvaluation.isPresent();
     }
 
-    private int getTypeCount(ReviewEvaluationType type, Long reviewId) {
+    private int getPositiveCount(Long reviewId) {
+        return getTypeCountByReviewAndType(FUN, reviewId) + getTypeCountByReviewAndType(USEFUL, reviewId);
+    }
+
+    private int getTypeCountByReviewAndType(ReviewEvaluationType type, Long reviewId) {
         return reviewEvaluationQueryRepository.getCountByReviewIdAndType(reviewId, type);
     }
 
@@ -142,11 +151,29 @@ public class ReviewQueryService {
         return BackgroundImageResponse.of(backgroundImage);
     }
 
-    private void sortByReviewEvaluationTypeCounts(List<ReviewResponse> responses, String orderBy) {
-        if (orderBy.equals("FUN")) {
-            responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
-        } else if (orderBy.equals("USEFUL")) {
-            responses.sort(comparingInt(ReviewResponse::getUsefulCount).reversed());
+    private void sortByReviewEvaluationTypeCounts(List<ReviewResponse> responses, String orderBy, String orderDir) {
+        switch (orderBy) {
+            case "FUN":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getFunCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getFunCount).reversed());
+                }
+                break;
+            case "USEFUL":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getUsefulCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getUsefulCount).reversed());
+                }
+                break;
+            case "POSITIVE":
+                if (orderDir.equals("ASC")) {
+                    responses.sort(comparingInt(ReviewResponse::getPositiveCount));
+                } else {
+                    responses.sort(comparingInt(ReviewResponse::getPositiveCount).reversed());
+                }
+                break;
         }
     }
 

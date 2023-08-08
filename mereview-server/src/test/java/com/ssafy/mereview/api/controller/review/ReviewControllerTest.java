@@ -132,7 +132,7 @@ class ReviewControllerTest {
         ReviewResponse response3 = createReviewResponse(3L, 3L, 3L);
 
         List<ReviewResponse> responses = List.of(response1, response2, response3);
-        SearchCondition searchCondition = new SearchCondition("", "", "", "");
+        SearchCondition searchCondition = new SearchCondition("", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
@@ -160,7 +160,7 @@ class ReviewControllerTest {
         ReviewResponse response3 = createReviewResponse(3L, 3L, 3L);
 
         List<ReviewResponse> responses = List.of(response1, response2, response3);
-        SearchCondition searchCondition = new SearchCondition("", "", "", "");
+        SearchCondition searchCondition = new SearchCondition("", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // stubbing 작업
