@@ -102,11 +102,20 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
+    console.log(selectedImage);
+    // formData.append(
+    //   "uploadFile",
+    //   selectedImage
+    //   // new Blob([JSON.stringify(selectedImage)], {
+    //   //   type: "application/json",
+    //   // })
+    // );
     formData.append(
       "uploadFile",
-      new Blob([JSON.stringify(selectedImage)], {
-        type: "application/json",
-      })
+      file.current
+      // new Blob([JSON.stringify(selectedImage)], {
+      //   type: "application/json",
+      // })
     );
     axios
       .post(url + "/reviews", formData)
@@ -122,12 +131,16 @@ const ReviewWrite = () => {
     inputData.current[id] = value;
     console.log(id + " " + inputData[id]);
   };
+  // const [file, setFile] = useState(null);
+  const file = useRef(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
+    // const file = acceptedFiles[0];
+    file.current = acceptedFiles[0];
+    const inputImage = acceptedFiles[0];
+    if (inputImage) {
+      const objectURL = URL.createObjectURL(inputImage);
       setSelectedImage(objectURL);
-      setImgName(file.name);
+      setImgName(inputImage.name);
     }
   }, []);
 
