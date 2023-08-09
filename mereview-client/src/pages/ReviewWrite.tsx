@@ -40,6 +40,11 @@ const ReviewWrite = () => {
   const movieName = useRef("");
   const [movieList, setMovieList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
+  const [selectGenre, setSelecteGenre] = useState(null);
+  const selectGenreHandler = (selected) => {
+    setSelecteGenre(selected);
+    inputData.current.genreId = selectGenre;
+  };
   const movieNameHandler = (input) => {
     movieName.current = input;
     console.log(input);
@@ -248,16 +253,25 @@ const ReviewWrite = () => {
             inputValue={movieName.current}
             onInputChange={movieNameHandler}
             onChange={selectMovieHandler}
+            placeholder="영화 제목을 입려하세요"
           ></Select>
-
-          <select onChange={genreSelectHandler}>
+          <Select
+            value={selectGenre}
+            options={genreList.map((option) => ({
+              value: option.genreId,
+              label: option.genreName,
+            }))}
+            onChange={selectGenreHandler}
+            placeholder="장르를 선택하세요"
+          ></Select>
+          {/* <select onChange={genreSelectHandler}>
             <option value={genreName}></option>
             {genreList.map((option) => (
               <option key={option.genreId} value={JSON.stringify(option)}>
                 {option.genreName}
               </option>
             ))}
-          </select>
+          </select> */}
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
