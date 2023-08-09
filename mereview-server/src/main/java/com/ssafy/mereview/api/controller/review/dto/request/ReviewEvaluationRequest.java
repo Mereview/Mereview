@@ -17,13 +17,16 @@ public class ReviewEvaluationRequest {
     private Long reviewId;
     @NotNull
     private Long memberId;
+    @NotNull
+    private Long genreId;
     @NotBlank
     private ReviewEvaluationType type;
 
     @Builder
-    public ReviewEvaluationRequest(Long reviewId, Long memberId, ReviewEvaluationType type) {
+    public ReviewEvaluationRequest(Long reviewId, Long memberId, Long genreId, ReviewEvaluationType type) {
         this.reviewId = reviewId;
         this.memberId = memberId;
+        this.genreId = genreId;
         this.type = type;
     }
 
@@ -31,6 +34,7 @@ public class ReviewEvaluationRequest {
         return ReviewEvaluationServiceRequest.builder()
                 .reviewId(reviewId)
                 .memberId(memberId)
+                .genreId(genreId)
                 .type(type)
                 .build();
     }
