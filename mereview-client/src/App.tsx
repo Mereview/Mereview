@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
-import ReviewHome from "./pages/ReivewHome";
+import ReviewHome from "./pages/ReviewHome";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -29,12 +29,12 @@ function App() {
     }
   };
   useEffect(getUserInfo, []);
-  const isAthenticated = useSelector((state: any) => state.user.isAthenticated);
+  const isAuthenticated = useSelector((state: any) => state.user.isAthenticated);
   const user = useSelector((state: any) => state.user.user);
   return (
     <div className="App">
       <Router>
-        {isAthenticated && user && <NavigationBar user={user} />}
+        {isAuthenticated && user && <NavigationBar user={user} />}
         <Routes>
           <Route path="/" Component={IndexPage}></Route>
           <Route path="/review" Component={ReviewHome}></Route>
