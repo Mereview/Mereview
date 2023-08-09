@@ -114,17 +114,17 @@ public class MemberController {
 
     @GetMapping("/{id}/following")
     @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
-    public ApiResponse<List<FollowResponse>> searchMemberFollowInfo(@PathVariable(name = "id") Long memberId) {
+    public ApiResponse<List<FollowingResponse>> searchMemberFollowInfo(@PathVariable(name = "id") Long memberId) {
         log.debug("MemberController.getMemberInfo : {}", memberId);
-        List<FollowResponse> followingResponse = memberQueryService.searchFollowingResponse(memberId);
+        List<FollowingResponse> followingResponse = memberQueryService.searchFollowingResponse(memberId);
         return ApiResponse.ok(followingResponse);
     }
 
     @GetMapping("/{id}/follower")
     @ApiOperation(value = "회원 팔로우 정보 조회", response = Join.class)
-    public ApiResponse<List<FollowResponse>> searchMemberFollowerInfo(@PathVariable(name = "id") Long memberId) {
+    public ApiResponse<List<FollowerResponse>> searchMemberFollowerInfo(@PathVariable(name = "id") Long memberId) {
         log.debug("MemberController.getMemberInfo : {}", memberId);
-        List<FollowResponse> followerResponse = memberQueryService.searchFollowerResponse(memberId);
+        List<FollowerResponse> followerResponse = memberQueryService.searchFollowerResponse(memberId);
         return ApiResponse.ok(followerResponse);
     }
 
