@@ -210,24 +210,27 @@ const ReviewWrite = () => {
 
   return (
     <Container
-      className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5 mainForm"
+      className="mx-auto my-4 border border-5 border-dark rounded-5 mainForm"
       style={{
         position: "relative",
-        overflowY: "auto",
-        overflowX: "hidden",
+        height: "auto",
         flex: "1",
+        backgroundColor: "rgba(0, 0, 0, 0.2)",
+        boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
       }}
     >
       <div
         id="reviewForm"
-        style={{ backgroundImage: `url(${selectedImage})` }}
+        style={{
+          backgroundImage: `url(${selectedImage})`,
+        }}
       ></div>
       <Row className="top mx-2">
         <Col lg={8}>
           <Row className="mb-3">
             <Form.Control
               placeholder="리뷰 제목을 입력하세요"
-              className="border rounded-2 text-lg"
+              className="rounded-2 text-lg inputBox"
               size="lg"
               id="title"
               onChange={onChangeHandler}
@@ -238,6 +241,7 @@ const ReviewWrite = () => {
             <Col lg={6} className="p-0">
               <Select
                 value={selectMovie}
+                className="inputBox"
                 options={movieList.map((option) => ({
                   value: option.id,
                   label: option.title,
@@ -251,6 +255,7 @@ const ReviewWrite = () => {
             <Col lg={5}>
               <Select
                 value={selectGenre}
+                className="inputBox"
                 options={genreList.map((option) => ({
                   value: option.genreId,
                   label: option.genreName,
@@ -261,10 +266,10 @@ const ReviewWrite = () => {
             </Col>
           </Row>
           <Row className="my-5">
-            <Col lg={10} className="p-0">
+            <Col lg={11} className="p-0">
               <Form.Control
                 placeholder="한줄평을 입력하세요"
-                className="border rounded-2 text-lg"
+                className="rounded-2 text-lg inputBox"
                 id="highlight"
                 onChange={onChangeHandler}
                 defaultValue={oneSentance}
@@ -272,7 +277,7 @@ const ReviewWrite = () => {
             </Col>
           </Row>
           <Row>
-            <Col lg={10} className="p-0">
+            <Col lg={11} className="p-0">
               <TextEditor ref={contentRef}></TextEditor>
             </Col>
           </Row>
@@ -304,14 +309,18 @@ const ReviewWrite = () => {
           <Row className="my-5">
             {/* <label htmlFor="keywordBox">키워드</label> */}
             <Col
-              className="my-auto text-center border border-5 rounded-2 i-box"
+              className="my-auto text-center border border-5 rounded-2 i-box justify-content-center align-items-center"
               style={{ backgroundColor: "white" }}
               id="keywordBox"
             >
               <KeywordSlider ref={childRef1}></KeywordSlider>
+              <Row />
               <KeywordSlider ref={childRef2}></KeywordSlider>
+              <Row />
               <KeywordSlider ref={childRef3}></KeywordSlider>
+              <Row />
               <KeywordSlider ref={childRef4}></KeywordSlider>
+              <Row />
               <KeywordSlider ref={childRef5}></KeywordSlider>
             </Col>
           </Row>
@@ -319,11 +328,9 @@ const ReviewWrite = () => {
           <Row className="my-5" />
           <Row className="my-5" />
           <Row className="my-5" />
-          <Row className="my-5" />
-          <Row className="my-5" />
           <Row className="align-items-center justify-content-end">
-            <Col lg={3} />
-            <Col>
+            {/* <Col lg={3} /> */}
+            <Col lg={8}>
               <button
                 id="type"
                 className="bg-danger feed-btn mx-1 my-1"
@@ -349,7 +356,7 @@ const ReviewWrite = () => {
                 value={"YES"}
               ></button>
             </Col>
-            <Col>
+            <Col lg={4}>
               <Button
                 styles="btn-primary"
                 text="등록"
@@ -359,120 +366,6 @@ const ReviewWrite = () => {
           </Row>
         </Col>
       </Row>
-      {/* <Row className="mt-5 mx-4">
-        <Col lg={8}>
-          <Form.Control
-            placeholder="리뷰 제목을 입력하세요"
-            className="border rounded-2 text-lg"
-            size="lg"
-            id="title"
-            onChange={onChangeHandler}
-            defaultValue={reviewName}
-          ></Form.Control>
-        </Col>
-      </Row>
-      <Row className="mx-4 align-items-center">
-        <Col md={6}>
-          <Select
-            value={selectMovie}
-            options={movieList.map((option) => ({
-              value: option.id,
-              label: option.title,
-            }))}
-            inputValue={movieName.current}
-            onInputChange={movieNameHandler}
-            onChange={selectMovieHandler}
-            placeholder="영화 제목을 입력하세요"
-          ></Select>
-          <Select
-            value={selectGenre}
-            options={genreList.map((option) => ({
-              value: option.genreId,
-              label: option.genreName,
-            }))}
-            onChange={selectGenreHandler}
-            placeholder="장르를 선택하세요"
-          ></Select>
-        </Col>
-      </Row>
-      <Row className="mx-4 my-4 align-items-center">
-        <Col sm={6}>
-          <Form.Control
-            placeholder="한줄평을 입력하세요"
-            className="border rounded-2 text-lg"
-            id="highlight"
-            onChange={onChangeHandler}
-            defaultValue={oneSentance}
-          ></Form.Control>
-        </Col>
-        <Col sm={2} />
-        <Col sm={2}>
-          <Form.Control
-            className="text-center border border-5 rounded-2"
-            value={imgName}
-            readOnly
-          ></Form.Control>
-        </Col>
-        <Col sm={1}>
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
-          </div>
-        </Col>
-        <Col />
-      </Row>
-      <Row className="mx-4">
-        <Col md={6}>
-          <TextEditor ref={contentRef}></TextEditor>
-        </Col>
-        <Col md={2} />
-        <Col
-          className="my-auto text-center border border-5 rounded-2 i-box"
-          style={{ backgroundColor: "white" }}
-        >
-          <KeywordSlider ref={childRef1}></KeywordSlider>
-          <KeywordSlider ref={childRef2}></KeywordSlider>
-          <KeywordSlider ref={childRef3}></KeywordSlider>
-          <KeywordSlider ref={childRef4}></KeywordSlider>
-          <KeywordSlider ref={childRef5}></KeywordSlider>
-        </Col>
-      </Row>
-      <Row lg={12} className="mt-3 align-items-center">
-        <Col lg={8} />
-        <Col lg={2}>
-          <button
-            id="type"
-            className="bg-danger feed-btn mx-1 my-1"
-            type="button"
-            style={{
-              backgroundImage: "url(/thumbDown.png)",
-              boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-              transform: badBtn ? "scale(0.95)" : "",
-            }}
-            onClick={feedbackHandler}
-            value={"NO"}
-          ></button>
-          <button
-            id="type"
-            className="bg-primary feed-btn mx-1 my-1"
-            type="button"
-            style={{
-              backgroundImage: "url(/thumbUp.png)",
-              boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-              transform: goodBtn ? "scale(0.95)" : "",
-            }}
-            onClick={feedbackHandler}
-            value={"YES"}
-          ></button>
-        </Col>
-        <Col>
-          <Button
-            styles="btn-primary"
-            text="등록"
-            onClick={reviewCreateHandler}
-          ></Button>
-        </Col>
-      </Row> */}
     </Container>
   );
 };

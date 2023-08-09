@@ -28,10 +28,13 @@ const NavigationBar = ({ user }) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto me-4">
             <Nav.Link href="/review" className="text-white fs-4">
-              review
+              리뷰 전체보기
+            </Nav.Link>
+            <Nav.Link href="/review/write" className="text-white fs-4">
+              리뷰 작성하기
             </Nav.Link>
             <Nav.Link href="/profile" className="text-white fs-4">
-              profile
+              프로필
             </Nav.Link>
             <Nav.Item>
               <div
