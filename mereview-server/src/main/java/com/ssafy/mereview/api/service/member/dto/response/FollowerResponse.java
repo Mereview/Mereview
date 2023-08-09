@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FollowResponse {
+public class FollowerResponse {
 
     Long id;
 
@@ -15,14 +15,14 @@ public class FollowResponse {
 
 
     @Builder
-    public FollowResponse(Long id, String nickname, ProfileImageResponse profileImage) {
+    public FollowerResponse(Long id, String nickname, ProfileImageResponse profileImage) {
         this.id = id;
         this.nickname = nickname;
     }
 
-    public static FollowResponse of(MemberFollow memberFollow) {
-        return FollowResponse.builder()
-                .id(memberFollow.getId())
+    public static FollowerResponse of(MemberFollow memberFollow) {
+        return FollowerResponse.builder()
+                .id(memberFollow.getMember().getId())
                 .nickname(memberFollow.getMember().getNickname())
                 .build();
     }
