@@ -12,7 +12,7 @@ const ProfileModal = () => {
   }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userNickname = useSelector((state: any) => state.user.nickname);
+  const userNickname = useSelector((state: any) => state.user.user.nickname);
   const logout = () => {
     dispatch(userActions.logout());
     navigate("/");

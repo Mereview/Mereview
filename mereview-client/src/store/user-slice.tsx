@@ -1,8 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  InputDataInterface,
-  UserInterface,
-} from "../components/interface/UserInterface";
+import { createSlice } from "@reduxjs/toolkit";
+import { UserInterface } from "../components/interface/UserInterface";
 const initialState: UserInterface = {
   isAthenticated: false,
   thirdModal: false,

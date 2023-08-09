@@ -1,0 +1,33 @@
+@import "Style";
+
+.comment {
+  display: flex;
+  width: 100%;
+  height: auto;
+  .writer {
+    display: flex;
+    flex-basis: 10%;
+    flex-direction: column;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 9999px;
+    }
+  }
+
+  .content {
+    flex-basis: 80%;
+  }
+
+  .buttons {
+    display: flex;
+    flex-basis: 10%;
+    flex-direction: column;
+    .lndl {
+      display: flex;
+      flex-direction: column;
+    }
+    .delete {
+    }
+  }
+}
