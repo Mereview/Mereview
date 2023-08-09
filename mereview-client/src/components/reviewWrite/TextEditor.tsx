@@ -46,11 +46,13 @@ const TextEditor = forwardRef((props, ref) => {
   return (
     <ReactQuill
       ref={quillRef}
+      className="p-0 mb-3"
       style={{
+        border: "gray solid",
         overflow: "hidden",
-        height: "100%",
+        height: "100vh",
         borderRadius: "5px",
-        border: "black solid",
+        backgroundColor: "white",
       }}
       theme="snow"
       value={content}

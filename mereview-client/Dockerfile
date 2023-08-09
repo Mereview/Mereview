@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:18
 # 경로 설정하기
 WORKDIR /app
 

@@ -6,6 +6,7 @@ import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
+import com.ssafy.mereview.domain.member.repository.MemberFollowQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberVisitQueryRepository;
 import com.ssafy.mereview.domain.movie.entity.Movie;
@@ -31,7 +32,7 @@ public class MemberQueryService {
     private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
-
+    private final MemberFollowQueryRepository memberFollowQueryRepository;
     private final JwtUtils jwtUtils;
 
 
@@ -145,20 +146,19 @@ public class MemberQueryService {
                 .collect(Collectors.toList());
     }
 
-    public List<FollowResponse> searchFollowingResponse(Long memberId) {
-        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public List<FollowingResponse> searchFollowingResponse(Long memberId) {
+        List<MemberFollow> memberFollow =  memberFollowQueryRepository.searchFollowing(memberId);
 
-
-        return member.getFollowing().stream()
-                .map(FollowResponse::of)
+        return memberFollow.stream()
+                .map(FollowingResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<FollowResponse> searchFollowerResponse(Long memberId) {
-       Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public List<FollowerResponse> searchFollowerResponse(Long memberId) {
+        List<MemberFollow> memberFollow =  memberFollowQueryRepository.searchFollower(memberId);
 
-        return member.getFollowers().stream()
-                .map(FollowResponse::of)
+        return memberFollow.stream()
+                .map(FollowerResponse::of)
                 .collect(Collectors.toList());
     }
 
