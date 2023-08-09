@@ -61,14 +61,8 @@ public class MemberService {
 
         emailCheck(request, emailCheckCode);
 
-        Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
-        if (existingMember != null) {
-            throw new DuplicateKeyException("이미 존재하는 회원입니다.");
-        }
+        // TODO: 2023-08-09 컨트롤러로 빼기
 
-        if (memberQueryRepository.searchByNickname(request.getNickname()) != null) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-        }
         log.debug("request = {}", request);
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
         log.debug("member = " + member.getEmail());
@@ -76,7 +70,10 @@ public class MemberService {
         Member savedMember = memberRepository.save(member);
         log.debug("savedMember = " + savedMember.getEmail());
 
-        profileImageRepository.save(createProfileImage(request, savedMember.getId()));
+        if(request.getProfileImage() != null){
+            UploadFile profileImage = request.getProfileImage();
+            profileImageRepository.save(createProfileImage(request, savedMember.getId()));
+        }
 
         // 방문자 수 초기화
         createVisitCount(member);
@@ -90,6 +87,17 @@ public class MemberService {
         EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
 
         return savedMember.getId();
+    }
+
+    public void searchExistMember(MemberCreateServiceRequest request) {
+        Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
+        if (existingMember != null) {
+            throw new DuplicateKeyException("이미 존재하는 회원입니다.");
+        }
+
+        if (memberQueryRepository.searchByNickname(request.getNickname()) != null) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
     }
 
     private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
