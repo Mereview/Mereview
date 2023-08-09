@@ -189,7 +189,7 @@ const ReviewWrite = () => {
       alert("리뷰 내용을 입력해주세요");
       return;
     }
-    console.log(inputData.current);
+    console.log(fileDataRef.current);
     const formData = new FormData();
     formData.append(
       "request",
