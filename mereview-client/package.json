@@ -40,7 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "pkgroll --target=node12.19 --minify",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
