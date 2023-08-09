@@ -461,7 +461,7 @@ const ProfilePage = () => {
           <img
             src={
               userInfo.profileImageId
-                ? `http://localhost:8080/api/image/download/profiles/${userInfo.profileImageId}`
+                ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${userInfo.profileImageId}`
                 : defaultProfileImage
             }
             alt="프로필 이미지"
