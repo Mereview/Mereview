@@ -8,19 +8,15 @@ import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
-import MovieList from "../components/MovieList";
+import Select from "react-select";
 const ReviewWrite = () => {
-  const url = "http://localhost:8080/api";
+  const url = `${process.env.REACT_APP_API_URL}`;
   const userid = useSelector((state: any) => state.user.id);
   const nickname = useSelector((state: any) => state.user.nickname);
   const profile = useSelector((state: any) => state.user.profile_URL);
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
-  // const movieName = useRef("");
-  const [movieName, setMovieName] = useState("");
-  const autoCompleteData = useRef([]);
-  const [movieList, setMovieList] = useState([]);
   const [oneSentance, setOneSentance] = useState<string | null>("");
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
   const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
@@ -41,20 +37,22 @@ const ReviewWrite = () => {
   const childRef5 = useRef(null);
   const contentRef = useRef(null);
   const [typingTimeout, setTypingTimeout] = useState(null);
-  const onMovieNameHandler = (event) => {
-    setMovieName(event.target.value);
-    const searchValue = event.target.value;
+  const movieName = useRef("");
+  const [movieList, setMovieList] = useState([]);
+  const [selectMovie, setSelectMovie] = useState(null);
+  const movieNameHandler = (input) => {
+    movieName.current = input;
+    console.log(input);
+    console.log(url);
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
     const timeout = setTimeout(() => {
-      const encodedKeyword = encodeURIComponent(searchValue);
+      const encodedKeyword = encodeURIComponent(movieName.current);
 
       axios
-        .get(`http://localhost:8080/api/movies?keyword=${encodedKeyword}`)
+        .get(url + `/movies?keyword=${encodedKeyword}`)
         .then((res) => {
-          console.log(res.data.data);
-          // autoCompleteData.current = res.data.data;
           setMovieList(res.data.data);
         })
         .catch(() => {
@@ -63,18 +61,22 @@ const ReviewWrite = () => {
     }, 300);
     setTypingTimeout(timeout);
   };
-  const movieSelectHandler = (event) => {
-    const movie = JSON.parse(event.target.value);
-    setMovieName(movie.title);
-    // console.log(movie);
-    inputData.current.movieId = movie.movieContentId;
-    // inputData.current.genreId = movie.genres[0].genreId;
-    setGenreList(movie.genres);
-    // movieName.current = movie.title;
+  const selectMovieHandler = (selected) => {
+    setSelectMovie(selected);
+    axios
+      .get(`http://localhost:8080/api/movies/${selected.value}`)
+      .then((res) => {
+        const movie = res.data.data;
+        inputData.current.movieId = movie.movieContentId;
+        setGenreList(movie.genres);
+      })
+      .catch(() => {
+        console.log("error");
+      });
   };
+
   const [genreList, setGenreList] = useState([]);
   const [genreName, setGenreName] = useState("");
-  const [fileData, setFileData] = useState<File>(null);
   const fileDataRef = useRef<File>(null);
   const genreSelectHandler = (event) => {
     const genre = JSON.parse(event.target.value);
@@ -237,22 +239,17 @@ const ReviewWrite = () => {
       </Row>
       <Row className="mx-4 align-items-center">
         <Col md={6}>
-          <input
-            placeholder="영화 제목을 입력하세요"
-            className="border rounded-2 text-lg"
-            onChange={onMovieNameHandler}
-            value={movieName}
-            id="movie"
-            size={50}
-          ></input>
-          <select onChange={movieSelectHandler}>
-            <option value={movieName}></option>
-            {movieList.map((option) => (
-              <option key={option.title} value={JSON.stringify(option)}>
-                {option.title}
-              </option>
-            ))}
-          </select>
+          <Select
+            value={selectMovie}
+            options={movieList.map((option) => ({
+              value: option.id,
+              label: option.title,
+            }))}
+            inputValue={movieName.current}
+            onInputChange={movieNameHandler}
+            onChange={selectMovieHandler}
+          ></Select>
+
           <select onChange={genreSelectHandler}>
             <option value={genreName}></option>
             {genreList.map((option) => (
