@@ -11,40 +11,89 @@ import axios from "axios";
 import Select from "react-select";
 const ReviewWrite = () => {
   const url = `${process.env.REACT_APP_API_URL}`;
-  const userid = useSelector((state: any) => state.user.id);
-  const nickname = useSelector((state: any) => state.user.nickname);
-  const profile = useSelector((state: any) => state.user.profile_URL);
-  const [selectedImage, setSelectedImage] = useState<string | null>("");
-  const [imgName, setImgName] = useState<string>("");
-  const [reviewName, setReviewName] = useState<string | null>("");
-  const [oneSentance, setOneSentance] = useState<string | null>("");
-  const [badBtn, setBadBtn] = useState<boolean | null>(false);
-  const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
+
+  //유저 정보 받아오기
+  const userid = useSelector((state: any) => state.user.user.id);
+
+  //서버로 보낼 리뷰 데이터
   const inputData = useRef<ReviewDataInterface>({
     title: null,
     content: null,
     highlight: null,
     type: null,
     memberId: null,
-    movieId: 1,
+    movieId: 0,
     genreId: 0,
     keywordRequests: [],
   });
+
+  //리뷰의 배경이미지 정보(선택한 이미지 url, 이미지 이름, 서버로 보낼 이미지 파일)
+  const [selectedImage, setSelectedImage] = useState<string | null>("");
+  const [imgName, setImgName] = useState<string>("");
+  const fileDataRef = useRef<File>(null);
+
+  //배경이미지 첨부 함수
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
+      setSelectedImage(objectURL);
+      setImgName(file.name);
+      fileDataRef.current = file;
+    }
+  }, []);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+    },
+    maxFiles: 1,
+  });
+
+  //리뷰 정보를 넘길 데이터들(리뷰 제목, 한줄평) : useState를 사용하지만 input 내에 값을 넣는용도로만 사용
+  const [reviewName, setReviewName] = useState<string | null>("");
+  const [oneSentance, setOneSentance] = useState<string | null>("");
+  const onChangeHandler = (event) => {
+    let { id, value } = event.target;
+    inputData.current[id] = value;
+  };
+
+  //영화에 대한 평가 버튼
+  const [badBtn, setBadBtn] = useState<boolean | null>(false);
+  const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
+
+  //영화에 대한 반응을 저장하는 함수
+  const feedbackHandler = (e) => {
+    if (e.target.value === "NO") {
+      setBadBtn(true);
+      setGoodBtn(false);
+    } else {
+      setBadBtn(false);
+      setGoodBtn(true);
+    }
+    let { id, value } = e.target;
+    inputData.current[id] = value;
+  };
+
+  //키워드 정보 저장 변수
   const childRef1 = useRef(null);
   const childRef2 = useRef(null);
   const childRef3 = useRef(null);
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
+
+  //상세리뷰 저장 변수
   const contentRef = useRef(null);
-  const [typingTimeout, setTypingTimeout] = useState(null);
+
+  //영화이름에 따른 자동완성과 해당 영화의 장르 저장을 위한 변수
+  const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
   const movieName = useRef("");
   const [movieList, setMovieList] = useState([]);
+  const [genreList, setGenreList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
-  const [selectGenre, setSelecteGenre] = useState(null);
-  const selectGenreHandler = (selected) => {
-    setSelecteGenre(selected);
-    inputData.current.genreId = selectGenre;
-  };
+  const [selectGenre, setSelectGenre] = useState(null);
+
+  //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
     movieName.current = input;
     console.log(input);
@@ -69,27 +118,27 @@ const ReviewWrite = () => {
   const selectMovieHandler = (selected) => {
     setSelectMovie(selected);
     axios
-      .get(`http://localhost:8080/api/movies/${selected.value}`)
+      .get(url + `/movies/${selected.value}`)
       .then((res) => {
         const movie = res.data.data;
         inputData.current.movieId = movie.movieContentId;
+        console.log(movie.genres);
         setGenreList(movie.genres);
+        console.log(genreList);
       })
       .catch(() => {
         console.log("error");
       });
   };
 
-  const [genreList, setGenreList] = useState([]);
-  const [genreName, setGenreName] = useState("");
-  const fileDataRef = useRef<File>(null);
-  const genreSelectHandler = (event) => {
-    const genre = JSON.parse(event.target.value);
-    setGenreName(genre.genreName);
-    console.log(genre.genreId);
-    inputData.current.genreId = genre.genreId;
+  //장르 리스트 중 선택한 장르를 inputData에 저장
+  const selectGenreHandler = (selected) => {
+    setSelectGenre(selected);
+    inputData.current.genreId = selected.value;
   };
-  const handleBtnClick = () => {
+
+  //리뷰 정보를 서버에 보내기 위한 함수
+  const reviewCreateHandler = () => {
     if (inputData.current.title == null) {
       alert("제목을 입력해주세요");
       return;
@@ -132,12 +181,10 @@ const ReviewWrite = () => {
       alert("키워드 목록을 입력해주세요");
       return;
     }
-    // console.log(contentRef.current.getContent());
     const reviewContent = contentRef.current.getContent();
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
-    // console.log(reviewContent);
     if (inputData.current.content == null) {
       alert("리뷰 내용을 입력해주세요");
       return;
@@ -150,22 +197,7 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
-    console.log(selectedImage);
-    // formData.append(
-    //   "uploadFile",
-    //   selectedImage
-    //   // new Blob([JSON.stringify(selectedImage)], {
-    //   //   type: "application/json",
-    //   // })
-    // );
-    formData.append(
-      "file",
-      // fileData
-      fileDataRef.current
-      // new Blob([JSON.stringify(selectedImage)], {
-      //   type: "application/json",
-      // })
-    );
+    formData.append("file", fileDataRef.current);
     axios
       .post(url + "/reviews", formData)
       .then(() => {
@@ -175,41 +207,7 @@ const ReviewWrite = () => {
         console.log("fail");
       });
   };
-  const onChangeHandler = (event) => {
-    let { id, value } = event.target;
-    inputData.current[id] = value;
-    console.log(id + " " + inputData[id]);
-  };
-  // const [file, setFile] = useState(null);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setSelectedImage(objectURL);
-      setImgName(file.name);
-      // setFileData(file);
-      fileDataRef.current = file;
-    }
-  }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: {
-      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
-    },
-    maxFiles: 1,
-  });
-  const feedbackHandler = (e) => {
-    if (e.target.value === "NO") {
-      setBadBtn(true);
-      setGoodBtn(false);
-    } else {
-      setBadBtn(false);
-      setGoodBtn(true);
-    }
-    let { id, value } = e.target;
-    inputData.current[id] = value;
-  };
   return (
     <Container
       className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
@@ -230,17 +228,6 @@ const ReviewWrite = () => {
             defaultValue={reviewName}
           ></Form.Control>
         </Col>
-        <Col className="t-right" lg={4}>
-          <p className="fs-4">
-            <label htmlFor="profile">{nickname}</label>
-            <img
-              src={profile}
-              height="30px"
-              className="c-img"
-              id="profile"
-            ></img>
-          </p>
-        </Col>
       </Row>
       <Row className="mx-4 align-items-center">
         <Col md={6}>
@@ -253,7 +240,7 @@ const ReviewWrite = () => {
             inputValue={movieName.current}
             onInputChange={movieNameHandler}
             onChange={selectMovieHandler}
-            placeholder="영화 제목을 입려하세요"
+            placeholder="영화 제목을 입력하세요"
           ></Select>
           <Select
             value={selectGenre}
@@ -264,14 +251,6 @@ const ReviewWrite = () => {
             onChange={selectGenreHandler}
             placeholder="장르를 선택하세요"
           ></Select>
-          {/* <select onChange={genreSelectHandler}>
-            <option value={genreName}></option>
-            {genreList.map((option) => (
-              <option key={option.genreId} value={JSON.stringify(option)}>
-                {option.genreName}
-              </option>
-            ))}
-          </select> */}
         </Col>
       </Row>
       <Row className="mx-4 my-4 align-items-center">
@@ -348,7 +327,7 @@ const ReviewWrite = () => {
           <Button
             styles="btn-primary"
             text="등록"
-            onClick={handleBtnClick}
+            onClick={reviewCreateHandler}
           ></Button>
         </Col>
       </Row>
