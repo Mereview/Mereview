@@ -87,6 +87,7 @@ public class MemberService {
         // 회원 티어 초기화
         createTier(member);
         createAchievement(member);
+        EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
 
         return savedMember.getId();
     }
@@ -104,7 +105,6 @@ public class MemberService {
             throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
         }
 
-        EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
     }
 
     public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
@@ -195,7 +195,7 @@ public class MemberService {
     //***************private method*****************//
 
     private void createVisitCount(Member member) {
-        MemberVisit memberVisitCount = com.ssafy.mereview.domain.member.entity.MemberVisit.builder()
+        MemberVisit memberVisitCount = MemberVisit.builder()
                 .member(member)
                 .build();
         memberVisitCountRepository.save(memberVisitCount);

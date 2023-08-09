@@ -7,6 +7,7 @@ import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -32,10 +33,12 @@ public class MemberTier extends BaseEntity {
 
     @Column(name = "fun_tier")
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'NONE'")
     private Rank funTier;
 
     @Column(name = "useful_tier")
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'NONE'")
     private Rank usefulTier;
 
     @Column(name = "fun_experience")
