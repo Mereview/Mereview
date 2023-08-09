@@ -57,6 +57,8 @@ public class MemberController {
         log.debug("MemberRegisterRequest : {}", request);
         log.debug("MemberCreateServiceRequest : {}", saveMemberServiceRequest);
 
+        memberService.searchExistMember(request.toServiceRequest(uploadFile));
+
 
         Long memberId = memberService.createMember(saveMemberServiceRequest);
         if (memberId == -1) {

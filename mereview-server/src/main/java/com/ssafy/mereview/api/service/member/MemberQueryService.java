@@ -18,8 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 
 @Service
@@ -66,6 +68,7 @@ public class MemberQueryService {
     private MemberLoginResponse createMemberLoginResponse(Member searchMember) {
         log.debug("searchMember : {}", searchMember);
         Map<String, String> token = jwtUtils.generateJwt(searchMember);
+
         return MemberLoginResponse.builder()
                 .id(searchMember.getId())
                 .email(searchMember.getEmail())
@@ -93,14 +96,14 @@ public class MemberQueryService {
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
     }
 
-    public MemberDataResponse searchMemberData(Long id){
+    public MemberDataResponse searchMemberData(Long id) {
         List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
         int count = notificationQueryRepository.countByMemberId(id);
         Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         return MemberDataResponse.of(member, notificationResponses, count);
     }
 
-    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses){
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses) {
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
@@ -123,7 +126,8 @@ public class MemberQueryService {
 
     private ProfileImageResponse createProfileImageResponse(ProfileImage profileImage) {
         log.debug("ProfileImage : {}", profileImage);
-        return profileImage.getUploadFile() != null ? ProfileImageResponse.of(profileImage) : ProfileImageResponse.builder().build();
+
+        return profileImage != null ? ProfileImageResponse.of(profileImage) : null;
     }
 
     private List<MemberAchievementResponse> searchMemberAchievementResponse(Long id) {
@@ -147,7 +151,7 @@ public class MemberQueryService {
     }
 
     public List<FollowingResponse> searchFollowingResponse(Long memberId) {
-        List<MemberFollow> memberFollow =  memberFollowQueryRepository.searchFollowing(memberId);
+        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollowing(memberId);
 
         return memberFollow.stream()
                 .map(FollowingResponse::of)
@@ -155,7 +159,7 @@ public class MemberQueryService {
     }
 
     public List<FollowerResponse> searchFollowerResponse(Long memberId) {
-        List<MemberFollow> memberFollow =  memberFollowQueryRepository.searchFollower(memberId);
+        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollower(memberId);
 
         return memberFollow.stream()
                 .map(FollowerResponse::of)
