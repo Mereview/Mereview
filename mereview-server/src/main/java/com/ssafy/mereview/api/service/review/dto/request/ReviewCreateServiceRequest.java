@@ -24,10 +24,9 @@ public class ReviewCreateServiceRequest {
     private Long movieId;
     private Long genreId;
     private List<KeywordCreateServiceRequest> keywordServiceRequests;
-    private UploadFile uploadFile;
 
     @Builder
-    public ReviewCreateServiceRequest(String title, String content, String highlight, MovieRecommendType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests, UploadFile uploadFile) {
+    public ReviewCreateServiceRequest(String title, String content, String highlight, MovieRecommendType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateServiceRequest> keywordCreateServiceRequests) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;
@@ -36,7 +35,6 @@ public class ReviewCreateServiceRequest {
         this.movieId = movieId;
         this.genreId = genreId;
         this.keywordServiceRequests = keywordCreateServiceRequests;
-        this.uploadFile = uploadFile;
     }
 
     public Review toEntity() {

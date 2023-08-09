@@ -36,14 +36,15 @@ public class ReviewService {
 
     private static final int MEMBER_LIMIT_COUNT = 100;
 
-    public Long create(ReviewCreateServiceRequest request) {
+    public Long create(ReviewCreateServiceRequest request, UploadFile uploadFile) {
         Long saveId = reviewRepository.save(request.toEntity()).getId();
 
         List<Keyword> keywords = createKeywords(saveId, request.getKeywordServiceRequests());
         keywordRepository.saveAll(keywords);
 
-        BackgroundImage backgroundImage = createBackgroundImage(saveId, request.getUploadFile());
-        backgroundImageRepository.save(backgroundImage);
+        if (uploadFile != null) {
+            createBackgroundImage(saveId, uploadFile);
+        }
 
         List<Notification> notifications = createNotifications(request, saveId);
         notificationRepository.saveAll(notifications);
@@ -77,23 +78,22 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    private BackgroundImage createBackgroundImage(Long reviewId, UploadFile uploadFile) {
-        return BackgroundImage.builder()
+    private void createBackgroundImage(Long reviewId, UploadFile uploadFile) {
+        BackgroundImage backgroundImage = BackgroundImage.builder()
                 .review(Review.builder().id(reviewId).build())
                 .uploadFile(uploadFile)
                 .build();
+        backgroundImageRepository.save(backgroundImage);
     }
 
     private List<Notification> createNotifications(ReviewCreateServiceRequest request, Long saveId) {
         List<Long> memberIds = interestQueryRepository.searchRandomMember(request.getGenreId(), MEMBER_LIMIT_COUNT);
-        List<Notification> notifications = new ArrayList<>();
-        for (Long memberId : memberIds) {
-            Notification notification = Notification.builder()
-                    .review(Review.builder().id(saveId).build())
-                    .member(Member.builder().id(memberId).build())
-                    .build();
-            notifications.add(notification);
+        if (memberIds.isEmpty()) {
+            return new ArrayList<>();
         }
-        return notifications;
+        return memberIds.stream().map(memberId -> Notification.builder()
+                .review(Review.builder().id(saveId).build())
+                .member(Member.builder().id(memberId).build())
+                .build()).collect(Collectors.toList());
     }
 }

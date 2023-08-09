@@ -89,10 +89,10 @@ class ReviewServiceTest {
 
         UploadFile uploadFile = createUploadFile("xxx.jpg", "xxxxxxxxx.jpg");
 
-        ReviewCreateServiceRequest request = createReviewCreateRequest(keywordRequests, uploadFile, genre.getId(), member.getId(), movie.getId());
+        ReviewCreateServiceRequest request = createReviewCreateRequest(keywordRequests, genre.getId(), member.getId(), movie.getId());
 
         // when
-        Long saveId = reviewService.create(request);
+        Long saveId = reviewService.create(request, uploadFile);
         Review review = reviewRepository.findById(saveId)
                 .orElseThrow();
         log.debug("review: {}", review);
@@ -271,7 +271,7 @@ class ReviewServiceTest {
                 .build();
     }
 
-    private ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, UploadFile uploadFile, Long genreId, Long memberId, Long movieId) {
+    private ReviewCreateServiceRequest createReviewCreateRequest(List<KeywordCreateServiceRequest> keywordRequests, Long genreId, Long memberId, Long movieId) {
         return ReviewCreateServiceRequest.builder()
                 .title("테스트 제목")
                 .content("테스트 내용")
@@ -280,7 +280,6 @@ class ReviewServiceTest {
                 .movieId(movieId)
                 .memberId(memberId)
                 .genreId(genreId)
-                .uploadFile(uploadFile)
                 .keywordCreateServiceRequests(keywordRequests)
                 .build();
     }
