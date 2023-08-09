@@ -20,10 +20,8 @@ public class MemberVisit {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ColumnDefault("0")
     private int todayVisitCount;
 
-    @ColumnDefault("0")
     private int totalVisitCount;
 
     private LocalDateTime lastVisitDate;
