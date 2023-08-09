@@ -43,7 +43,7 @@ public class MemberQueryService {
 
         Member searchMember = memberQueryRepository.searchByEmail(request.getEmail());
 
-        if (searchMember == null || searchMember.getRole().equals(Role.DELETED)) {
+        if (searchMember == null || searchMember.getRole() == Role.DELETED) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
 
