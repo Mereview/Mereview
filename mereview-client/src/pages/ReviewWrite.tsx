@@ -11,9 +11,9 @@ import axios from "axios";
 import MovieList from "../components/MovieList";
 const ReviewWrite = () => {
   const url = "http://localhost:8080/api";
-  const userid = useSelector((state: any) => state.user.id);
-  const nickname = useSelector((state: any) => state.user.nickname);
-  const profile = useSelector((state: any) => state.user.profile_URL);
+  const userid = useSelector((state: any) => state.user.user.id);
+  const nickname = useSelector((state: any) => state.user.user.nickname);
+  const profile = useSelector((state: any) => state.user.user.profile_URL);
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const [reviewName, setReviewName] = useState<string | null>("");
@@ -72,6 +72,8 @@ const ReviewWrite = () => {
     setGenreList(movie.genres);
     // movieName.current = movie.title;
   };
+  const fileDataRef = useRef(null);
+
   const [genreList, setGenreList] = useState([]);
   const [genreName, setGenreName] = useState("");
   const genreSelectHandler = (event) => {
@@ -133,7 +135,7 @@ const ReviewWrite = () => {
       alert("리뷰 내용을 입력해주세요");
       return;
     }
-    console.log(inputData.current);
+    console.log(fileDataRef.current);
     const formData = new FormData();
     formData.append(
       "request",
@@ -141,11 +143,14 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
+    console.log(fileDataRef.current);
     formData.append(
-      "uploadFile",
-      new Blob([JSON.stringify(selectedImage)], {
-        type: "application/json",
-      })
+      "file",
+      // fileData
+      fileDataRef.current
+      // new Blob([JSON.stringify(selectedImage)], {
+      //   type: "application/json",
+      // })
     );
     axios
       .post(url + "/reviews", formData)
@@ -167,6 +172,8 @@ const ReviewWrite = () => {
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
       setImgName(file.name);
+      fileDataRef.current = file;
+      console.log(fileDataRef.current);
     }
   }, []);
 

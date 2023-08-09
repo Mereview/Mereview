@@ -1,85 +1,39 @@
-import { DummyMov, DummyRev } from "../../pages/ReviewDetailPage";
 import "../../styles/css/Detail.css";
 import ReviewCard from "../ReviewCard";
 import { ReviewCardInterface } from "../interface/ReviewCardInterface";
 import { useSelector } from "react-redux";
 import { Button } from "../common";
-interface TODProps {
-  review: DummyRev;
-  movie: DummyMov;
-}
-
-const Detail = ({ review, movie }: TODProps) => {
-  const userId = useSelector((state: any) => state.user.id);
+import { useState } from "react";
+import { createReviewComment } from "../../api/review";
+import Comments from "./Comments";
+const Detail = ({ review }: any) => {
+  const userId = useSelector((state: any) => state.user.user.id);
+  const [comments, setComments] = useState(review.comments);
+  const [inputComment, setInputComment] = useState("");
   const onClick = (event: any) => {
     console.log(event.target);
   };
-  const commentDummy = [
-    {
-      id: 1,
-      writer: "작성자1",
-      comment:
-        "코멘트1코멘트1코멘트1코멘트1코멘트1코멘트1코멘트1코멘트1코멘트1",
-    },
-    {
-      id: 2,
-      writer: "작성자2",
-      comment:
-        "코멘트2코멘트2코멘트2코멘트2코멘트2코멘트2코멘트2코멘트2코멘트2코멘트2",
-    },
-    {
-      id: 3,
-      writer: "작성자3",
-      comment:
-        "코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3코멘트3",
-    },
-    {
-      id: 4,
-      writer: "작성자4",
-      comment:
-        "코멘트4코멘트4코멘트4코멘트4코멘트4코멘트4코멘트4코멘트4코멘트4",
-    },
-    {
-      id: 5,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 6,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 7,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 8,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 9,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 10,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 11,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-    {
-      id: 12,
-      writer: "작성자5",
-      comment: "코5코5코5코5코5코5코5코5코5코5코5코5코5코5코5",
-    },
-  ];
+  const inputCommentHandler = (event: any) => {
+    setInputComment(event.target.value);
+    console.log(inputComment);
+  };
+
+  const submitComment = (event: any) => {
+    event.preventDefault();
+    const data = {
+      content: inputComment,
+      memberId: userId,
+      reviewId: review.reviewId,
+    };
+    const success = (res) => {
+      console.log("success");
+    };
+    const fail = () => {
+      console.log("fail");
+    };
+    console.log(review);
+    createReviewComment(data, success, fail);
+  };
   const 추천해줄리뷰 = [
     {
       id: 1,
@@ -100,37 +54,23 @@ const Detail = ({ review, movie }: TODProps) => {
       id: 6,
     },
   ];
-  const ReviewDummy = {
-    reviewId: 1141223,
-    memberId: "us22er123",
-    nickname: "JohnDoe",
-    profileImagePath: "/ReviewCardDummy/dummyprofile2.jpg",
-    backgroundImagePath: "/test.jpg",
-    oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
-    funnyCount: 10,
-    usefulCount: 15,
-    dislikeCount: 2,
-    commentCount: 5,
-    movieTitle: "Example Movie",
-    releaseYear: 2023,
-    movieGenre: ["액션", "모험"],
-    createDate: Date.now(),
-    recommend: false,
-  };
-
+  console.log(review);
   return (
     <div className="detail">
       <div className="first-line">
-        <h1>{review.title}</h1>
+        <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
-          <img src="/smile.png" alt="유용해요" /> <span>20</span>
-          <img src="/GraduationCap.png" alt="재밌어요" /> <span>20</span>
-          <img src="/thumbdown.png" alt="싫어요" /> <span>20</span>
+          <img src="/smile.png" alt="유용해요" />{" "}
+          <span>{review.usefulCount}</span>
+          <img src="/GraduationCap.png" alt="재밌어요" />{" "}
+          <span>{review.funCount}</span>
+          <img src="/thumbdown.png" alt="싫어요" />{" "}
+          <span>{review.badCount}</span>
         </div>
       </div>
       <hr />
       <div className="content">
-        <p>{review.content}</p>
+        <p>{review.reviewContent.replace(/<.*?>/g, "")}</p>
       </div>
       <div className="ratingbuttons">
         <button id="useful"></button>
@@ -147,8 +87,14 @@ const Detail = ({ review, movie }: TODProps) => {
       {/* 아랫단 디테일  */}
       <div className="comment">
         <div className="left" style={{ margin: "0px" }}>
-          <form className="input">
-            <textarea name="" id="input"></textarea>
+          <form className="input" onSubmit={submitComment}>
+            <textarea
+              name=""
+              id="input"
+              placeholder="의견을 입력해주세요."
+              value={inputComment}
+              onChange={inputCommentHandler}
+            ></textarea>
             <button type="submit">댓글 등록</button>
           </form>
 
@@ -162,13 +108,16 @@ const Detail = ({ review, movie }: TODProps) => {
               height: "90vh",
             }}
           >
-            {commentDummy.map((comment) => (
-              <div key={comment.id} style={{ width: "100%", height: "auto" }}>
-                <p>{comment.comment}</p>
-                <p>{comment.writer}</p>
-                <hr style={{ border: "dashed 2px gray" }} />
+            {comments.length ? (
+              comments.map((comment) => <Comments comment={comment} />)
+            ) : (
+              <div
+                className="nocoment"
+                style={{ width: "100%", height: "auto" }}
+              >
+                No Coments 댓글좀 주세요 ㅋ
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -181,7 +130,7 @@ const Detail = ({ review, movie }: TODProps) => {
           }}
         >
           {추천해줄리뷰.map((review) => (
-            <div></div>
+            <div key={review.id}></div>
           ))}
         </div>
       </div>

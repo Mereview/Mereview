@@ -1,18 +1,10 @@
-import { memberApi, memberApiFormData, emailApi } from "./index";
+import { memberApi, memberApiFormData } from "./index";
 
 const api = memberApi;
 const apiForm = memberApiFormData;
 
 export async function signup(data: FormData, success, fail) {
   await apiForm.post(`/sign-up`, data).then(success).catch(fail);
-}
-
-export async function emailSend(data: Object, success, fail) {
-  await emailApi.post(`/send`, data).then(success).catch(fail);
-}
-
-export async function emailCheck(data: Object, success, fail) {
-  await emailApi.post(`/check`, data).then(success).catch(fail);
 }
 
 export async function login(data: Object, success, fail) {

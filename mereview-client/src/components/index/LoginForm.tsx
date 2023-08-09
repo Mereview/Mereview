@@ -5,7 +5,6 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { login } from "../../api/members";
 const LoginForm = () => {
   const [animate, setAnimate] = useState<boolean>(false);
@@ -28,7 +27,7 @@ const LoginForm = () => {
 
   ///로그인 로직
 
-  const loginHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const loginHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (loginData.email === "" || loginData.password === "") {
@@ -36,13 +35,13 @@ const LoginForm = () => {
       return;
     }
 
-    login(
+    await login(
       loginData,
-      (res) => {
-        localStorage.setItem("id", res.data.data.id);
-        localStorage.setItem("token", res.data.data.accessToken);
+      ({ data }) => {
+        localStorage.setItem("id", data.data.id);
+        localStorage.setItem("token", data.data.accessToken);
 
-        dispatch(userActions.authorization(res.data.data));
+        dispatch(userActions.authorization(data.data));
         dispatch(userActions.authToggler());
         navigate("/review");
       },
@@ -75,7 +74,7 @@ const LoginForm = () => {
             />
           </Row>
           <Row className="justify-content-center">
-            <a href="">비밀번호를 잊으셨나요?</a>
+            <a href="/">비밀번호를 잊으셨나요?</a>
           </Row>
 
           <Row className="justify-content-end">
