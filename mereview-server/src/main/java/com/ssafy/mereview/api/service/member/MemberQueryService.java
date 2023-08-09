@@ -104,6 +104,7 @@ public class MemberQueryService {
     }
 
     private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses) {
+        ProfileImage profileImage = member.getProfileImage();
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
@@ -120,7 +121,7 @@ public class MemberQueryService {
                 .interests(interestResponses)
                 .achievements(memberAchievementResponses)
                 .tiers(memberTierResponses)
-                .profileImage(createProfileImageResponse(member.getProfileImage()))
+                .profileImage(createProfileImageResponse(profileImage))
                 .build();
     }
 

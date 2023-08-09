@@ -38,7 +38,7 @@ public class MemberDataResponse {
                 .nickname(member.getNickname())
                 .notificationCount(count)
                 .notifications(notificationResponses)
-                .profileImage(ProfileImageResponse.of(member.getProfileImage()))
+                .profileImage(ProfileImageResponse.of(profileImage))
                 .role(member.getRole().toString())
                 .build();
     }
