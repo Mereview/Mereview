@@ -9,11 +9,8 @@ import "../../styles/css/SignUp.css";
 import "../../styles/css/ImageUploader.css";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useState } from "react";
-import axios from "axios";
-import { emailCheck, emailSend } from "../../api/members";
+import { emailCheck, emailSend } from "../../api/email";
 const SignUp = () => {
-  const formData = new FormData();
-
   const [animate, setAnimate] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>("");
   const [checkEmail, setCheckEmail] = useState(false);
@@ -36,7 +33,6 @@ const SignUp = () => {
   const dispatch = useDispatch();
   // 초기 상태로서 빈 문자열 또는 null로 초기화합니다.
   const valid = useSelector((state: any) => state.user.thirdModal);
-
   //
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { id, value } = event.target;
@@ -62,25 +58,22 @@ const SignUp = () => {
     event.preventDefault();
     const isValid = Object.values(inputData).every((value) => value !== null);
     if (!isValid || !passwordValid) {
-      console.log(inputData);
       alert("정보를 정확하게 입력해주세요!");
       return;
     }
-    // if (!checkEmail) {
-    //   alert("메일 인증을 완료해주세요!");
-    //   return;
-    // }
+
     dispatch(userActions.modal_toggler());
   };
 
   //이메일 인증 핸들러
-  const emailCheckHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const emailCheckHandler = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     const id = event.currentTarget.id;
     if (id === "step1" && inputData.email.includes("@")) {
-      // axios 로 사용자에게 메일보내는 로직
       const data = { email: inputData.email };
       alert(`${inputData.email} 로 메일을 메일을 보내는중입니다!`);
-      emailSend(
+      await emailSend(
         data,
         (res) => {
           setChecking(true);
@@ -95,7 +88,7 @@ const SignUp = () => {
         email: inputData.email,
         verificationCode: verificationCode,
       };
-      emailCheck(
+      await emailCheck(
         data,
         (res) => {
           setCheckEmail(true);

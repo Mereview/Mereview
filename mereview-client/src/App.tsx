@@ -6,7 +6,7 @@ import ReviewDetailPage from "./pages/ReviewDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavigationBar from "./components/NavigationBar";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./styles/css/App.css";
 import axios from "axios";
 import { userActions } from "./store/user-slice";
@@ -17,11 +17,12 @@ function App() {
     const id = localStorage.getItem("id");
     if (id) {
       dispatch(userActions.authToggler());
-      const getUserInfoURL = `http://localhost:8080/api/members/${id}/info`;
+      const getUserInfoURL = `http://localhost:8080/api/members/${id}`;
       axios
         .get(getUserInfoURL)
         .then((res) => res.data.data)
         .then((data) => {
+          console.log(data);
           dispatch(userActions.authorization(data));
         })
         .catch((err) => console.log("사용자 인증에서 오류가 발생했습니다."));

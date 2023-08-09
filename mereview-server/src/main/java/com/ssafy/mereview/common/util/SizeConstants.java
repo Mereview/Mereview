@@ -4,8 +4,6 @@ import java.util.Map;
 
 public class SizeConstants {
     public static final int PAGE_SIZE = 10;
-    public static final int ATTRACTION_SIZE = 15;
-
     public static final int REVIEW_BRONZE_MAX_COUNT = 1;
     public static final int REVIEW_SILVER_MAX_COUNT = 30;
     public static final int REVIEW_GOLD_MAX_COUNT = 50;
@@ -33,7 +31,5 @@ public class SizeConstants {
             "PLATINUM", COMMENT_PLATINUM_MAX_COUNT,
             "DIAMOND", COMMENT_DIAMOND_MAX_COUNT
     );
-
-
 
 }

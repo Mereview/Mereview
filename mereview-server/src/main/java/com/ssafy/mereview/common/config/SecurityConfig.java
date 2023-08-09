@@ -33,13 +33,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors();
-        http.
-                csrf().disable()
+        http
+                .cors().and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("api/auth/**").permitAll()
-                .anyRequest().permitAll();
+                .antMatchers("/api/members/sign-up").permitAll()
+                .antMatchers("/api/members/login").permitAll()
+                .antMatchers("/api/members/forbidden").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/api/members/forbidden") // 로그인 페이지 설정
+                .and()
+                .csrf().disable();
+
     }
 
     @Override

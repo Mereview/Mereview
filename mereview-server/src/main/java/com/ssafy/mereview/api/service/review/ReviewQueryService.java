@@ -10,6 +10,7 @@ import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.*;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
+import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
+import static com.ssafy.mereview.domain.review.entity.CommentLikeType.DISLIKE;
+import static com.ssafy.mereview.domain.review.entity.CommentLikeType.LIKE;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 import static java.util.Comparator.comparingInt;
 
@@ -36,6 +39,7 @@ public class ReviewQueryService {
 
     private final ReviewQueryRepository reviewQueryRepository;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
+    private final CommentLikeQueryRepository commentLikeQueryRepository;
 
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
         List<Review> reviews = reviewQueryRepository.searchByCondition(condition, pageable);
@@ -121,7 +125,7 @@ public class ReviewQueryService {
                 .nickname(writeMember.getNickname())
                 .memberTiers(getMemberTierResponses(writeMember.getMemberTiers()))
                 .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
-                .comments(getCommentResponses(review.getComments()))
+                .comments(createCommentResponses(review.getComments(), review.getMember().getId()))
                 .build();
     }
 
@@ -188,14 +192,36 @@ public class ReviewQueryService {
         return memberTiers.stream().map(MemberTierResponse::of).collect(Collectors.toList());
     }
 
+    private List<CommentResponse> createCommentResponses(List<Comment> comments, Long memberId) {
+        return comments.stream()
+                .map(comment ->
+                        CommentResponse.builder()
+                                .commentId(comment.getId())
+                                .memberId(comment.getMember().getId())
+                                .nickname(comment.getMember().getNickname())
+                                .content(comment.getContent())
+                                .isDone(checkIsDone(comment, memberId))
+                                .likeCount(getCountByType(LIKE, comment.getId()))
+                                .dislikeCount(getCountByType(DISLIKE, comment.getId()))
+                                .profileImage(getProfileImageResponse(comment.getMember().getProfileImage()))
+                                .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    private boolean checkIsDone(Comment comment, Long memberId) {
+        Optional<CommentLike> commentLike = commentLikeQueryRepository.searchByCommentAndMember(comment.getId(), memberId);
+        return commentLike.isPresent();
+    }
+
+    private Integer getCountByType(CommentLikeType commentLikeType, Long commentId) {
+        return commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId).get(commentLikeType);
+    }
+
     private ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {
         if (profileImage == null) {
             return null;
         }
         return ProfileImageResponse.of(profileImage);
-    }
-
-    private List<CommentResponse> getCommentResponses(List<Comment> comments) {
-        return comments.stream().map(CommentResponse::of).collect(Collectors.toList());
     }
 }

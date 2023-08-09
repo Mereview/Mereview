@@ -13,12 +13,13 @@
   border: solid black 5px;
   border-radius: 30px;
   background-color: #00000079;
+  padding: 30px;
 
   .leftInfo {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
     flex-basis: 60%;
     justify-content: center;
     height: auto;
@@ -58,7 +59,6 @@
     border-radius: 50px;
     width: 100%;
     flex-basis: 40%;
-    padding: 30px;
     align-items: center;
 
     img {

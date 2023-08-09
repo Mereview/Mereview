@@ -39,6 +39,11 @@ public class MemberController {
 
     private final FileExtensionFilter fileExtFilter;
 
+    @GetMapping("/forbidden")
+    @ApiOperation(value = "권한 없음", response = Join.class)
+    public ApiResponse<String> forbidden() {
+        return ApiResponse.of(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+    }
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", response = Join.class)

@@ -35,8 +35,10 @@ public class MemberRegisterRequest {
 
     private UploadFile profileImage;
 
+    private String verificationCode;
+
     @Builder
-    public MemberRegisterRequest(String email, String password, String nickname, String gender, String birthDate, List<InterestRequest> interests, UploadFile profileImage) {
+    public MemberRegisterRequest(String email, String password, String nickname, String gender, String birthDate, List<InterestRequest> interests, UploadFile profileImage, String verificationCode) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -44,6 +46,7 @@ public class MemberRegisterRequest {
         this.birthDate = birthDate;
         this.interests = interests;
         this.profileImage = profileImage;
+        this.verificationCode = verificationCode;
     }
 
     public MemberCreateServiceRequest toServiceRequest(UploadFile profileImage) {
@@ -51,6 +54,7 @@ public class MemberRegisterRequest {
                 .email(email)
                 .password(password)
                 .nickname(nickname)
+                .verificationCode(verificationCode)
                 .gender(gender)
                 .birthDate(birthDate)
                 .uploadFile(profileImage)

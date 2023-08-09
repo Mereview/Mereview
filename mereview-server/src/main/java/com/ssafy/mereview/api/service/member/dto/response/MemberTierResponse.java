@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.service.member.dto.response;
 
 import com.ssafy.mereview.domain.member.entity.MemberTier;
+import com.ssafy.mereview.domain.member.entity.Rank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +11,14 @@ import lombok.NoArgsConstructor;
 public class MemberTierResponse {
 
     private Long id;
-    private String funTier;
-    private String usefulTier;
+    private Rank funTier;
+    private Rank usefulTier;
     private int funExperience;
     private int usefulExperience;
     private String genreName;
 
     @Builder
-    public MemberTierResponse(Long id, String funTier, String usefulTier, int funExperience, int usefulExperience, String genreName) {
+    public MemberTierResponse(Long id, Rank funTier, Rank usefulTier, int funExperience, int usefulExperience, String genreName) {
         this.id = id;
         this.funTier = funTier;
         this.usefulTier = usefulTier;

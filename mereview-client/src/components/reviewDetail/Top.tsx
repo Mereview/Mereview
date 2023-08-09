@@ -1,32 +1,30 @@
-import { Row, Col, Container } from "react-bootstrap";
-import { DummyRev, DummyMov } from "../../pages/ReviewDetailPage";
 import "../../styles/css/Top.css";
 import WordCloud from "react-d3-cloud";
-import { scaleOrdinal } from "d3-scale";
-import { schemeCategory10 } from "d3-scale-chromatic";
-interface TopProps {
-  review: DummyRev;
-  movie: DummyMov;
-}
-const Top = ({ review, movie }: TopProps) => {
-  const words = Object.keys(review.keyword).map((word) => ({
-    text: word,
-    value: Number(review.keyword[word]),
+
+const Top = ({ review }: any) => {
+  console.log(review.keywords);
+  const words = review.keywords.map((word) => ({
+    text: word.keywordName,
+    value: word.keywordWeight / 20,
   }));
-  const schemeCategory10ScaleOrdinal = scaleOrdinal(schemeCategory10);
+  console.log(words);
+  const profileImageURL = review.profileImage.id
+    ? `http://localhost:8080/api/image/download/profiles/${review.profileImage.id}`
+    : "/testProfile.gif";
+
   console.log(words);
   return (
     <div className="total">
       <div className="leftInfo">
-        <h1>"{review.oneLine}"</h1>
-        <h2>{movie.title}</h2>
+        <h1>"{review.reviewHighlight}"</h1>
+        <h2>{review.movieTitle}</h2>
         <p>
-          {movie.released_date} | {movie.genres}
+          {review.movieReleaseDate} | {review.genre.genreName}
         </p>
         <div className="userInfo">
-          <img src="/testProfile.gif" alt="" />
+          <img src={profileImageURL} alt="작성자프로필이미지" />
           <div>
-            <p className="nickname">User.NickName</p>
+            <p className="nickname">{review.nickname}</p>
             <p>작성글: 여기서</p>
           </div>
         </div>
