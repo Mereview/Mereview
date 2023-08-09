@@ -3,6 +3,7 @@ package com.ssafy.mereview.api.service.member;
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.EmailCheckCode;
+import com.ssafy.mereview.api.service.member.dto.request.InterestServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
@@ -56,7 +57,7 @@ public class MemberService {
 
     private final MemberFollowQueryRepository memberFollowQueryRepository;
 
-    public Long createMember(MemberCreateServiceRequest request) {
+    public Long createMember(MemberCreateServiceRequest request, UploadFile uploadFile) {
         EmailCheckCode emailCheckCode = EMAIL_CHECK_CODE_HASH_MAP.getOrDefault(request.getEmail(), null);
 
         emailCheck(request, emailCheckCode);
@@ -68,16 +69,15 @@ public class MemberService {
         Member savedMember = memberRepository.save(member);
         log.debug("savedMember = " + savedMember.getEmail());
 
-        if(request.getProfileImage() != null){
-            UploadFile profileImage = request.getProfileImage();
-            profileImageRepository.save(createProfileImage(request, savedMember.getId()));
+        if (uploadFile != null) {
+            createProfileImage(uploadFile, savedMember.getId());
         }
 
         // 방문자 수 초기화
         createVisitCount(member);
-        // 회원 관심사 초기화
 
-        createInterests(request.getInterestRequests(), member);
+        // 회원 관심사 초기화
+        createInterests(request.getInterests(), member);
 
         // 회원 티어 초기화
         createTier(member);
@@ -99,15 +99,15 @@ public class MemberService {
     }
 
     private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
-        if(emailCheckCode == null){
+        if (emailCheckCode == null) {
             throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
 
         }
-        if(!jwtUtils.validateJwt(emailCheckCode.getJwtToken())){
+        if (!jwtUtils.validateJwt(emailCheckCode.getJwtToken())) {
             throw new IllegalArgumentException("인증 코드가 만료되었습니다.");
         }
 
-        if(!emailCheckCode.getVerificationCode().equals(request.getVerificationCode())){
+        if (!emailCheckCode.getVerificationCode().equals(request.getVerificationCode())) {
             throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
         }
 
@@ -124,7 +124,7 @@ public class MemberService {
         member.updateNickname(request.getNickname());
         log.debug("Member nickname 확인 : {}", member.getNickname());
         updateInterests(interestRequests, member);
-        log.debug("Member inteerest 확인 : {}", member.getInterests());
+        log.debug("Member interest 확인 : {}", member.getInterests());
         return member.getId();
     }
 
@@ -207,12 +207,11 @@ public class MemberService {
         memberVisitCountRepository.save(memberVisitCount);
     }
 
-    private void createInterests(List<InterestRequest> requests, Member member) {
+    private void createInterests(List<InterestServiceRequest> requests, Member member) {
         List<Interest> interests = new ArrayList<>();
         log.debug("requests = " + requests);
-        //TODO:genre 없을 경우 exception 터뜨려야함
 
-        for (InterestRequest request : requests) {
+        for (InterestServiceRequest request : requests) {
             Genre genre = genreRepository.findById(request.getGenreId()).orElseThrow(NoSuchElementException::new);
             Interest interest = Interest.builder().member(Member.builder().id(member.getId()).build())
                     .genre(genre).build();
@@ -220,7 +219,6 @@ public class MemberService {
             interests.add(interest);
         }
         memberInterestRepository.saveAll(interests);
-
 
     }
 
@@ -273,12 +271,12 @@ public class MemberService {
         memberAchievementRepository.saveAll(memberAchievements);
     }
 
-    private ProfileImage createProfileImage(MemberCreateServiceRequest request, Long saveId) {
-        log.debug("request.getUploadFile() = " + request.getUploadFile());
-        return ProfileImage.builder()
+    private void createProfileImage(UploadFile uploadFile, Long saveId) {
+        ProfileImage profileImage = ProfileImage.builder()
                 .member(Member.builder().id(saveId).build())
-                .uploadFile(request.getUploadFile())
+                .uploadFile(uploadFile)
                 .build();
+        profileImageRepository.save(profileImage);
     }
 
     private MemberFollowResponse follow(Member target, Member currentMember) {
