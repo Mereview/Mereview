@@ -12,9 +12,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
+
+import static com.ssafy.mereview.common.util.EmailConstants.EMAIL_CHECK_CODE_HASH_MAP;
 
 @Service
 @Slf4j
@@ -24,8 +24,6 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     private final JwtUtils jwtUtils;
-    private final Map<String, EmailCheckCode> emailCheckCodeMap = new HashMap<>();
-
 
     //실제 메일 전송
     public void sendEmail(String toEmail) throws MessagingException, UnsupportedEncodingException {
@@ -37,7 +35,7 @@ public class EmailService {
     }
 
     public boolean checkEmail(String email, String verificationCode) {
-        EmailCheckCode checkCode = emailCheckCodeMap.getOrDefault(email, null);
+        EmailCheckCode checkCode = EMAIL_CHECK_CODE_HASH_MAP.getOrDefault(email, null);
 
         if(checkCode == null){
             throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
@@ -50,7 +48,6 @@ public class EmailService {
         if (!email.equals(jwtUtils.getUsernameFromJwt(checkCode.getJwtToken())) || !checkCode.getVerificationCode().equals(verificationCode)) {
             return false;
         }
-        emailCheckCodeMap.remove(email);
         return true;
     }
 
@@ -78,7 +75,7 @@ public class EmailService {
                 .verificationCode(key.toString())
                 .build();
 
-        emailCheckCodeMap.put(email, emailCheckcode);
+        EMAIL_CHECK_CODE_HASH_MAP.put(email, emailCheckcode);
     }
 
     //메일 양식 작성
@@ -99,7 +96,7 @@ public class EmailService {
                 + "<h2>안녕하세요!!</h2>"
                 + "<p>Mereview 사이트에 회원가입을 해주셔서 감사합니다!</p>"
                 + "<p>인증코드입니다.:</p>"
-                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + emailCheckCodeMap.get(email).getVerificationCode() + "</h3>"
+                + "<h3 style=\"background-color: #f0f0f0; padding: 10px;\">" + EMAIL_CHECK_CODE_HASH_MAP.get(email).getVerificationCode() + "</h3>"
                 + "<p>Please use this code to verify your account.</p>"
                 + "<p>Best regards,<br/>Your Website Team</p>"
                 + "</body></html>";
