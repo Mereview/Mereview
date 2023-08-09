@@ -32,9 +32,11 @@ public class MemberCreateServiceRequest {
     private UploadFile profileImage;
     private UploadFile uploadFile;
 
+    private String verificationCode;
+
 
     @Builder
-    public MemberCreateServiceRequest(String email, String password, String nickname, String gender, List<InterestRequest> interestRequests, String birthDate, List<InterestRequest> interests, UploadFile profileImage, UploadFile uploadFile) {
+    public MemberCreateServiceRequest(String email, String password, String nickname, String gender, List<InterestRequest> interestRequests, String birthDate, List<InterestRequest> interests, UploadFile profileImage, UploadFile uploadFile, String verificationCode) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -44,6 +46,7 @@ public class MemberCreateServiceRequest {
         this.interests = interests;
         this.profileImage = profileImage;
         this.uploadFile = uploadFile;
+        this.verificationCode = verificationCode;
     }
 
     public Member toEntity(String password){

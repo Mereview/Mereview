@@ -2,6 +2,7 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.EmailCheckCode;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static com.ssafy.mereview.common.util.EmailConstants.EMAIL_CHECK_CODE_HASH_MAP;
 
 @Service
 @Slf4j
@@ -54,6 +57,9 @@ public class MemberService {
     private final MemberFollowQueryRepository memberFollowQueryRepository;
 
     public Long createMember(MemberCreateServiceRequest request) {
+        EmailCheckCode emailCheckCode = EMAIL_CHECK_CODE_HASH_MAP.getOrDefault(request.getEmail(), null);
+
+        emailCheck(request, emailCheckCode);
 
         Member existingMember = memberQueryRepository.searchByEmail(request.getEmail());
         if (existingMember != null) {
@@ -83,6 +89,22 @@ public class MemberService {
         createAchievement(member);
 
         return savedMember.getId();
+    }
+
+    private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
+        if(emailCheckCode == null){
+            throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
+
+        }
+        if(!jwtUtils.validateJwt(emailCheckCode.getJwtToken())){
+            throw new IllegalArgumentException("인증 코드가 만료되었습니다.");
+        }
+
+        if(!emailCheckCode.getVerificationCode().equals(request.getVerificationCode())){
+            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+        }
+
+        EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
     }
 
     public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
