@@ -61,8 +61,6 @@ public class MemberService {
 
         emailCheck(request, emailCheckCode);
 
-        // TODO: 2023-08-09 컨트롤러로 빼기
-
         log.debug("request = {}", request);
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
         log.debug("member = " + member.getEmail());
