@@ -8,7 +8,7 @@ const NavigationBar = ({ user }) => {
   const [isModal, setIsModal] = useState(false);
   console.log(user);
   const profilURL =
-    user.profileImage.id !== null
+    user.profileImage?.id
       ? `http://localhost:8080/api/image/download/profiles/${user.profileImage.id}`
       : "/testProfile.gif";
   const modalToggler = () => {
