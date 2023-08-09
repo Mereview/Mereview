@@ -215,9 +215,149 @@ const ReviewWrite = () => {
       style={{
         backgroundImage: `url(${selectedImage})`,
         margin: "auto",
+        overflowY: "auto",
+        overflowX: "hidden",
+        flex: "1",
       }}
     >
-      <Row className="mt-5 mx-4">
+      <Row className="top mx-2">
+        <Col lg={8}>
+          <Row className="mb-3">
+            <Form.Control
+              placeholder="리뷰 제목을 입력하세요"
+              className="border rounded-2 text-lg"
+              size="lg"
+              id="title"
+              onChange={onChangeHandler}
+              defaultValue={reviewName}
+            ></Form.Control>
+          </Row>
+          <Row className="justify-content-start my-5">
+            <Col lg={6} className="p-0">
+              <Select
+                value={selectMovie}
+                options={movieList.map((option) => ({
+                  value: option.id,
+                  label: option.title,
+                }))}
+                inputValue={movieName.current}
+                onInputChange={movieNameHandler}
+                onChange={selectMovieHandler}
+                placeholder="영화 제목을 입력하세요"
+              ></Select>
+            </Col>
+            <Col lg={5}>
+              <Select
+                value={selectGenre}
+                options={genreList.map((option) => ({
+                  value: option.genreId,
+                  label: option.genreName,
+                }))}
+                onChange={selectGenreHandler}
+                placeholder="장르를 선택하세요"
+              ></Select>
+            </Col>
+          </Row>
+          <Row className="my-5">
+            <Col lg={10} className="p-0">
+              <Form.Control
+                placeholder="한줄평을 입력하세요"
+                className="border rounded-2 text-lg"
+                id="highlight"
+                onChange={onChangeHandler}
+                defaultValue={oneSentance}
+              ></Form.Control>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={10} className="p-0">
+              <TextEditor ref={contentRef}></TextEditor>
+            </Col>
+          </Row>
+        </Col>
+        <Col lg={4}>
+          <Row className="align-items-center justify-content-center mb-3">
+            <Col lg={1} />
+            <Col lg={5}>
+              <Form.Control
+                className="text-center border border-5 rounded-2"
+                value={imgName}
+                readOnly
+              ></Form.Control>
+            </Col>
+            <Col>
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <Button
+                  styles="btn-fourth"
+                  btnType="button"
+                  text="첨부"
+                ></Button>
+              </div>
+            </Col>
+          </Row>
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5">
+            {/* <label htmlFor="keywordBox">키워드</label> */}
+            <Col
+              className="my-auto text-center border border-5 rounded-2 i-box"
+              style={{ backgroundColor: "white" }}
+              id="keywordBox"
+            >
+              <KeywordSlider ref={childRef1}></KeywordSlider>
+              <KeywordSlider ref={childRef2}></KeywordSlider>
+              <KeywordSlider ref={childRef3}></KeywordSlider>
+              <KeywordSlider ref={childRef4}></KeywordSlider>
+              <KeywordSlider ref={childRef5}></KeywordSlider>
+            </Col>
+          </Row>
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="align-items-center justify-content-end">
+            <Col lg={3} />
+            <Col>
+              <button
+                id="type"
+                className="bg-danger feed-btn mx-1 my-1"
+                type="button"
+                style={{
+                  backgroundImage: "url(/thumbDown.png)",
+                  boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+                  transform: badBtn ? "scale(0.95)" : "",
+                }}
+                onClick={feedbackHandler}
+                value={"NO"}
+              ></button>
+              <button
+                id="type"
+                className="bg-primary feed-btn mx-1 my-1"
+                type="button"
+                style={{
+                  backgroundImage: "url(/thumbUp.png)",
+                  boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+                  transform: goodBtn ? "scale(0.95)" : "",
+                }}
+                onClick={feedbackHandler}
+                value={"YES"}
+              ></button>
+            </Col>
+            <Col>
+              <Button
+                styles="btn-primary"
+                text="등록"
+                onClick={reviewCreateHandler}
+              ></Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {/* <Row className="mt-5 mx-4">
         <Col lg={8}>
           <Form.Control
             placeholder="리뷰 제목을 입력하세요"
@@ -330,7 +470,7 @@ const ReviewWrite = () => {
             onClick={reviewCreateHandler}
           ></Button>
         </Col>
-      </Row>
+      </Row> */}
     </Container>
   );
 };

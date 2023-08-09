@@ -27,7 +27,7 @@ const KeywordSlider = forwardRef((props, ref) => {
   return (
     <div>
       <Row className="mx-1 my-4">
-        <Col md={4}>
+        <Col md={5}>
           <input
             className="form-control"
             id="name"
@@ -42,7 +42,7 @@ const KeywordSlider = forwardRef((props, ref) => {
           name="weight"
           value={keyInfo.weight}
           onChange={infoHandler}
-          style={{ width: "50%" }}
+          style={{ width: "40%" }}
         />
       </Row>
     </div>
