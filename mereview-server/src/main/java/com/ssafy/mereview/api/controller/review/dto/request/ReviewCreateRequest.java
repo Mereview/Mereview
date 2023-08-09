@@ -2,7 +2,6 @@ package com.ssafy.mereview.api.controller.review.dto.request;
 
 import com.ssafy.mereview.api.service.review.dto.request.KeywordCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
-import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.review.entity.MovieRecommendType;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +55,7 @@ public class ReviewCreateRequest {
         this.keywordRequests = keywordRequests;
     }
 
-    public ReviewCreateServiceRequest toServiceRequest(UploadFile uploadFile) {
+    public ReviewCreateServiceRequest toServiceRequest() {
         return ReviewCreateServiceRequest.builder()
                 .title(title)
                 .content(content)
@@ -66,7 +65,6 @@ public class ReviewCreateRequest {
                 .movieId(movieId)
                 .genreId(genreId)
                 .keywordCreateServiceRequests(toKeywordServiceRequests())
-                .uploadFile(uploadFile)
                 .build();
     }
 

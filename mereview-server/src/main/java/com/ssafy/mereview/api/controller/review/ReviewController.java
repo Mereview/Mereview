@@ -4,6 +4,7 @@ import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
+import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
@@ -47,7 +48,7 @@ public class ReviewController {
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        Long saveId = reviewService.create(request.toServiceRequest(uploadFile));
+        Long saveId = reviewService.create(request.toServiceRequest(), uploadFile);
         log.debug("saveId: {}", saveId);
 
         return ApiResponse.ok(saveId);
