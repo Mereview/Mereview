@@ -14,12 +14,14 @@ public class ReviewEvaluationServiceRequest {
 
     private Long reviewId;
     private Long memberId;
+    private Long genreId;
     private ReviewEvaluationType type;
 
     @Builder
-    public ReviewEvaluationServiceRequest(Long reviewId, Long memberId, ReviewEvaluationType type) {
+    public ReviewEvaluationServiceRequest(Long reviewId, Long memberId, Long genreId, ReviewEvaluationType type) {
         this.reviewId = reviewId;
         this.memberId = memberId;
+        this.genreId = genreId;
         this.type = type;
     }
 

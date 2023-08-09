@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
@@ -13,10 +15,13 @@ import {
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
-import { searchMemberInfo } from "../api/members";
-import { useSelector } from "react-redux";
+import {
+  searchMemberInfo,
+  searchMemberFollowInfo,
+  searchMemberFollowerInfo,
+  follow,
+} from "../api/members";
 import "../styles/css/ProfilePage.css";
-import { AxiosError } from "axios";
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -289,7 +294,16 @@ const getMemberInfo = async (userId: number) => {
       userInfo.profileImageId = response.profileImage.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
-      userInfo.introduction = "TEST";
+      userInfo.introduction = response.introduce;
+      userInfo.followerCount = response.follower;
+      userInfo.followingCount = response.following;
+      userInfo.todayVisitor = response.todayVisitCount;
+      userInfo.totalVisitor = response.totalVisitCount;
+      userInfo.joinDate = response.createdTime;
+      userInfo.reviewCount = response.reviews.length;
+
+      // userInfo.commentCount = response.commentCount;
+      console.log(response);
     },
     (e) => {
       error = e;
@@ -297,10 +311,56 @@ const getMemberInfo = async (userId: number) => {
     }
   );
 };
+
+let loginNickname: string | null = null;
+let followFlag: boolean = false;
+const isFollower = async (userId: number, loginId: number) => {
+  await searchMemberFollowInfo(
+    userId,
+    ({ data }) => {
+      for (const follower of data.data) {
+        if (follower["nickname"] === loginNickname) {
+          followFlag = true;
+          break;
+        }
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+let followerCountRenewaler: number = 0;
+const getFollowerCount = async (userId: number) => {
+  await searchMemberFollowInfo(
+    userId,
+    ({ data }) => {
+      followerCountRenewaler = data.data.length;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+let followingCountRenewaler: number = 0;
+const getFollowingCount = async (userId: number) => {
+  await searchMemberFollowerInfo(
+    userId,
+    ({ data }) => {
+      followingCountRenewaler = data.data.length;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
 /* api test */
 
 const ProfilePage = () => {
-  const loginId: number = useSelector((state: any) => state.user.id);
+  const loginId: number = useSelector((state: any) => state.user.user.id);
+  loginNickname = useSelector((state: any) => state.user.user.nickname);
   const { id } = useParams();
   const userId: number = id ? Number(id) : loginId;
   generateData();
@@ -312,19 +372,53 @@ const ProfilePage = () => {
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
   const [followed, setFollowed] = useState<boolean>(false);
+  const [followerCount, setFollowerCount] = useState<number>(0);
+  const [followingCount, setFollowingCount] = useState<number>(0);
   const navigate = useNavigate();
+
+  const isSelf = userId !== loginId;
+  const followIcon =
+    followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
+
+  useEffect(() => {
+    if (userId === null || loginId === null || userId === undefined) return;
+    const followCheck = async () => {
+      await isFollower(userId, loginId);
+      await getFollowerCount(userId);
+      await getFollowingCount(userId);
+    };
+
+    followCheck();
+  }, [userId]);
 
   useEffect(() => {
     // 유저 정보 저장
-    if (userId === null) return;
+    if (userId === null || loginId === null || userId === undefined) return;
     const fetchData = async () => {
       await getMemberInfo(userId);
       if (error !== null) navigate(-1);
-      else setIsFetched(true);
+      else {
+        if (userId !== loginId) {
+          await isFollower(userId, loginId);
+        }
+        setIsFetched(true);
+      }
     };
 
     fetchData();
   }, [userId]);
+
+  useEffect(() => {
+    setFollowed(followFlag);
+  }, [followFlag]);
+
+  useEffect(() => {
+    setFollowingCount(followingCountRenewaler);
+  }, [followingCountRenewaler]);
+
+  useEffect(() => {
+    setFollowerCount(followerCountRenewaler);
+  }, [followerCountRenewaler]);
 
   useEffect(() => {
     // reload review list
@@ -358,12 +452,29 @@ const ProfilePage = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
-  const follow = () => {
-    if (followed) {
-      console.log("unfollow!");
-    } else {
-      console.log("follow!");
-    }
+  const followClicked = async () => {
+    if (loginId === userId) return;
+    const data: Object = {
+      memberId: loginId,
+      targetId: userId,
+    };
+
+    await follow(
+      data,
+      ({ data }) => {
+        if (data.status === "unfollow") {
+          setFollowed(false);
+        } else if (data.status === "follow") {
+          setFollowed(true);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    await getFollowerCount(userId);
+    await getFollowingCount(userId);
 
     setFollowed(!followed);
   };
@@ -393,10 +504,14 @@ const ProfilePage = () => {
             style={{ width: "450px" }}
           />
           <div className="follow-info">
-            <span>팔로잉: {userInfo.followerCount}</span>
-            <span>팔로워: {userInfo.followingCount}</span>
-            <span className="follow" onClick={follow}>
-              팔로우 {followed ? <BsHeartFill /> : <BsHeart />}
+            <span>팔로잉: {followingCount}</span>
+            <span>팔로워: {followerCount}</span>
+            <span
+              className="follow"
+              onClick={isSelf ? followClicked : null}
+              style={isSelf ? { cursor: "pointer" } : null}
+            >
+              팔로우 {followIcon}
             </span>
           </div>
         </div>

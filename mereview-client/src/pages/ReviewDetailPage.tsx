@@ -43,6 +43,7 @@ const ReviewDetail = (props: any) => {
   useEffect(() => {
     getReviewDetail();
   }, []);
+
   const imgURL = "/test.jpg";
   const style = {
     backgroundImage: `url(${imgURL})`,

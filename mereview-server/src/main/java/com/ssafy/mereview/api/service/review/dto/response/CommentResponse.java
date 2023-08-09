@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review.dto.response;
 
+import com.ssafy.mereview.api.service.member.dto.response.ProfileImageResponse;
 import com.ssafy.mereview.domain.review.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,15 +19,16 @@ public class CommentResponse {
 
     private Long commentId;
     private Long memberId;
-    private Long nickname;
+    private String nickname;
     private String content;
     private boolean isDone;
     private int likeCount;
     private int dislikeCount;
+    private ProfileImageResponse profileImage;
     private LocalDateTime createdTime;
 
     @Builder
-    public CommentResponse(Long commentId, Long memberId, Long nickname, String content, boolean isDone, int likeCount, int dislikeCount, LocalDateTime createdTime) {
+    public CommentResponse(Long commentId, Long memberId, String nickname, String content, boolean isDone, int likeCount, int dislikeCount, ProfileImageResponse profileImage, LocalDateTime createdTime) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.nickname = nickname;
@@ -34,6 +36,7 @@ public class CommentResponse {
         this.isDone = isDone;
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
+        this.profileImage = profileImage;
         this.createdTime = createdTime;
     }
 

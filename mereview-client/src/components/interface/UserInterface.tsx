@@ -1,16 +1,7 @@
 export interface UserInterface {
   isAthenticated: boolean;
   thirdModal: boolean;
-  id: number | null;
-  token: string | null;
-  email: string | null;
-  nickname: string | null;
-  gender: string | null;
-  birthDate: string | null;
-  interests: [];
-  tiers: [];
-  achievements: [];
-  profile_URL: null | string;
+  user: Object;
 }
 
 export interface InputDataInterface {
