@@ -7,6 +7,7 @@ import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -17,6 +18,7 @@ import static com.ssafy.mereview.domain.member.entity.Rank.*;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.USEFUL;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor

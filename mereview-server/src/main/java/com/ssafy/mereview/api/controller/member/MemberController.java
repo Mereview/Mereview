@@ -9,7 +9,6 @@ import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
 import com.ssafy.mereview.common.util.file.FileStore;
 import com.ssafy.mereview.common.util.file.UploadFile;
-import com.sun.jdi.request.DuplicateRequestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -47,23 +46,20 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", response = Join.class)
-    public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberRegisterRequest request,
+    public ApiResponse<Long> signup(@Valid @RequestPart(name = "request") MemberCreateRequest request,
                                     @RequestPart(name = "file", required = false) MultipartFile file) throws Exception {
 
         UploadFile uploadFile = createUploadFile(file);
         log.debug("uploadFile: {}", uploadFile);
 
-        MemberCreateServiceRequest saveMemberServiceRequest = request.toServiceRequest(uploadFile);
+        MemberCreateServiceRequest serviceRequest = request.toServiceRequest();
         log.debug("MemberRegisterRequest : {}", request);
-        log.debug("MemberCreateServiceRequest : {}", saveMemberServiceRequest);
+        log.debug("MemberCreateServiceRequest : {}", serviceRequest);
 
-        memberService.searchExistMember(request.toServiceRequest(uploadFile));
+        memberService.searchExistMember(serviceRequest);
 
+        Long memberId = memberService.createMember(serviceRequest, uploadFile);
 
-        Long memberId = memberService.createMember(saveMemberServiceRequest);
-        if (memberId == -1) {
-            throw new DuplicateRequestException("중복되는 회원이 존재합니다.");
-        }
         return ApiResponse.ok(memberId);
     }
 

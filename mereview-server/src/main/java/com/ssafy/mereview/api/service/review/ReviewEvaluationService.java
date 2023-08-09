@@ -41,6 +41,7 @@ public class ReviewEvaluationService {
         Map<ReviewEvaluationType, Integer> evaluationCountsMap = evaluationQueryRepository.getCountByReviewIdGroupedByType(request.getReviewId());
 
         MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
+        log.debug("memberTier: {}", memberTier);
         if (request.getType().equals(BAD)) {
             memberTier.decreaseExp();
         } else {
