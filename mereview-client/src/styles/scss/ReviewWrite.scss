@@ -60,3 +60,14 @@
 .top {
   margin-top: 60px;
 }
+
+#reviewForm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  filter: blur(10px); /* 배경용 div에만 블러 처리 */
+  z-index: -1;
+}
