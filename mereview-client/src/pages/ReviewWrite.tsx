@@ -210,16 +210,18 @@ const ReviewWrite = () => {
 
   return (
     <Container
-      className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5"
-      id="reviewForm"
+      className="mx-auto my-4 vh-100 border border-dark border-5 rounded-5 mainForm"
       style={{
-        backgroundImage: `url(${selectedImage})`,
-        margin: "auto",
+        position: "relative",
         overflowY: "auto",
         overflowX: "hidden",
         flex: "1",
       }}
     >
+      <div
+        id="reviewForm"
+        style={{ backgroundImage: `url(${selectedImage})` }}
+      ></div>
       <Row className="top mx-2">
         <Col lg={8}>
           <Row className="mb-3">
