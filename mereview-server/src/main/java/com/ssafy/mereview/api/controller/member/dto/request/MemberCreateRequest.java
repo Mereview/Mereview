@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.controller.member.dto.request;
 
+import com.ssafy.mereview.api.service.member.dto.request.InterestServiceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class MemberRegisterRequest {
+public class MemberCreateRequest {
 
     @NotBlank(message = "이메일은 필수 입력 항목입니다.")
     @Email(message = "유효한 이메일 형식이어야 합니다.")
@@ -38,7 +39,7 @@ public class MemberRegisterRequest {
     private String verificationCode;
 
     @Builder
-    public MemberRegisterRequest(String email, String password, String nickname, String gender, String birthDate, List<InterestRequest> interests, UploadFile profileImage, String verificationCode) {
+    public MemberCreateRequest(String email, String password, String nickname, String gender, String birthDate, List<InterestRequest> interests, UploadFile profileImage, String verificationCode) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -49,7 +50,7 @@ public class MemberRegisterRequest {
         this.verificationCode = verificationCode;
     }
 
-    public MemberCreateServiceRequest toServiceRequest(UploadFile profileImage) {
+    public MemberCreateServiceRequest toServiceRequest() {
         return MemberCreateServiceRequest.builder()
                 .email(email)
                 .password(password)
@@ -57,13 +58,12 @@ public class MemberRegisterRequest {
                 .verificationCode(verificationCode)
                 .gender(gender)
                 .birthDate(birthDate)
-                .uploadFile(profileImage)
-                .interestRequests(createInterestRequests())
+                .interests(createInterestRequests())
                 .build();
     }
 
-    private List<InterestRequest> createInterestRequests() {
-        return this.interests.stream().map(interest -> InterestRequest.builder()
+    private List<InterestServiceRequest> createInterestRequests() {
+        return interests.stream().map(interest -> InterestServiceRequest.builder()
                 .genreName(interest.getGenreName())
                 .genreId(interest.getGenreId())
                 .genreNumber(interest.getGenreNumber())

@@ -2,6 +2,7 @@ package com.ssafy.mereview.api.service.member.dto.response;
 
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,12 +32,13 @@ public class MemberDataResponse {
     }
 
     public static MemberDataResponse of(Member member, List<NotificationResponse> notificationResponses, int count) {
+        ProfileImage profileImage = member.getProfileImage();
         return MemberDataResponse.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .notificationCount(count)
                 .notifications(notificationResponses)
-                .profileImage(ProfileImageResponse.of(member.getProfileImage()))
+                .profileImage(ProfileImageResponse.of(profileImage))
                 .role(member.getRole().toString())
                 .build();
     }
