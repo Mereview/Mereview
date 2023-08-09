@@ -79,7 +79,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
                   <img
                     src={
                       profileImageId
-                        ? `http://localhost:8080/api/image/download/profiles/${profileImageId}`
+                        ? `http://${process.env.REACT_APP_API_URL}/image/download/profiles/${profileImageId}`
                         : defaultProfileImage
                     }
                     alt="Profile"
