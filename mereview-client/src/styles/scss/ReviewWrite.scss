@@ -12,7 +12,7 @@
   border: 5px solid rgb(209, 240, 122);
 }
 .i-box {
-  height: 350px;
+  height: 100%;
 }
 .f-in {
   color: $blue-10;
@@ -70,4 +70,10 @@
   background-size: cover;
   filter: blur(10px); /* 배경용 div에만 블러 처리 */
   z-index: -1;
+}
+
+.inputBox {
+  // background-color: rgba(255, 255, 255, 0.5);
+  border-bottom: 3px solid black;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
