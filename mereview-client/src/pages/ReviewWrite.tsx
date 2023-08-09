@@ -74,6 +74,8 @@ const ReviewWrite = () => {
   };
   const [genreList, setGenreList] = useState([]);
   const [genreName, setGenreName] = useState("");
+  const [fileData, setFileData] = useState<File>(null);
+  const fileDataRef = useRef<File>(null);
   const genreSelectHandler = (event) => {
     const genre = JSON.parse(event.target.value);
     setGenreName(genre.genreName);
@@ -141,11 +143,21 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
+    console.log(selectedImage);
+    // formData.append(
+    //   "uploadFile",
+    //   selectedImage
+    //   // new Blob([JSON.stringify(selectedImage)], {
+    //   //   type: "application/json",
+    //   // })
+    // );
     formData.append(
-      "uploadFile",
-      new Blob([JSON.stringify(selectedImage)], {
-        type: "application/json",
-      })
+      "file",
+      // fileData
+      fileDataRef.current
+      // new Blob([JSON.stringify(selectedImage)], {
+      //   type: "application/json",
+      // })
     );
     axios
       .post(url + "/reviews", formData)
@@ -161,12 +173,15 @@ const ReviewWrite = () => {
     inputData.current[id] = value;
     console.log(id + " " + inputData[id]);
   };
+  // const [file, setFile] = useState(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
       setImgName(file.name);
+      // setFileData(file);
+      fileDataRef.current = file;
     }
   }, []);
 
