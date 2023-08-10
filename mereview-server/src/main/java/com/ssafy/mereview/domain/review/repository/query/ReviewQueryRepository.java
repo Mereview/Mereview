@@ -88,7 +88,7 @@ public class ReviewQueryRepository {
                 .select(interest.genre.id)
                 .from(interest)
                 .join(interest.member, member)
-                .where(isMyInterest(condition.getMyInterest(), interest.member))
+                .where(isMyInterest(condition.getMyInterest()))
                 .fetch();
     }
 
@@ -101,7 +101,6 @@ public class ReviewQueryRepository {
                         isContent(condition.getContent()),
                         isTerm(condition.getTerm()),
                         isNickname(condition.getNickname()),
-                        isMyInterest(condition.getMyInterest(), review.member),
                         isMember(condition.getMemberId()),
                         inGenreIds(condition.getMyInterest(), genreIds)
                 )
@@ -146,8 +145,8 @@ public class ReviewQueryRepository {
         return hasText(myInterest) ? review.genre.id.in(genreIds) : null;
     }
 
-    private BooleanExpression isMyInterest(String myInterest, QMember member) {
-        return hasText(myInterest) ? member.id.eq(Long.parseLong(myInterest)) : null;
+    private BooleanExpression isMyInterest(String myInterest) {
+        return hasText(myInterest) ? interest.member.id.eq(Long.parseLong(myInterest)) : null;
     }
 
     private OrderSpecifier<?> sortByField(String filedName, String direction) {
