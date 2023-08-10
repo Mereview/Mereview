@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.member.entity;
 
-
 import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.movie.entity.Genre;
@@ -39,23 +38,22 @@ public class MemberAchievement extends BaseEntity {
     @ColumnDefault("'NONE'")
     private Rank achievementRank;
 
+    private int achievementPercent;
+
+    private int achievementCount;
+
+    @Enumerated(EnumType.STRING)
+    AchievementType achievementType;
 
     @Builder
-    public MemberAchievement(Long id, Member member, Genre genre, Achievement achievement, Rank achievementRank) {
+    public MemberAchievement(Long id, Member member, Genre genre, Achievement achievement, Rank achievementRank, int achievementPercent, int achievementCount, AchievementType achievementType) {
         this.id = id;
         this.member = member;
         this.genre = genre;
         this.achievement = achievement;
         this.achievementRank = achievementRank;
-    }
-
-    public MemberAchievementResponse of() {
-        return
-                MemberAchievementResponse.builder()
-                        .genreName(genre.getGenreName())
-                        .achievementName(achievement.getAchievementName())
-                        .achievementRank(achievementRank)
-                        .build();
-
+        this.achievementPercent = achievementPercent;
+        this.achievementCount = achievementCount;
+        this.achievementType = achievementType;
     }
 }

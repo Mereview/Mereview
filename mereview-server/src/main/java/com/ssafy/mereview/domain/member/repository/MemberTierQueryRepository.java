@@ -2,7 +2,6 @@ package com.ssafy.mereview.domain.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
-import com.ssafy.mereview.domain.member.entity.QMemberTier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
