@@ -4,7 +4,6 @@ import com.ssafy.mereview.api.controller.review.dto.request.ReviewCreateRequest;
 import com.ssafy.mereview.api.controller.review.dto.request.ReviewUpdateRequest;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.ReviewService;
-import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewDetailResponse;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
@@ -59,12 +58,14 @@ public class ReviewController {
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchReviews(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String content,
+            @RequestParam(defaultValue = "") String memberId,
+            @RequestParam(defaultValue = "") String myInterest,
+            @RequestParam(defaultValue = "") String nickname,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "DESC") String orderDir,
-            @RequestParam(defaultValue = "") String memberId,
             @RequestParam(defaultValue = "") String term,
             @RequestParam(defaultValue = "1") Integer pageNumber) {
-        SearchCondition condition = createCondition(title, content, term, orderBy, orderDir, memberId);
+        SearchCondition condition = createCondition(title, content, memberId, nickname, myInterest, orderBy, orderDir, term);
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
 
@@ -104,7 +105,7 @@ public class ReviewController {
     }
 
     /**
-     *  private methods
+     * private methods
      */
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
@@ -116,11 +117,13 @@ public class ReviewController {
         return uploadFile;
     }
 
-    private SearchCondition createCondition(String title, String content, String term, String orderBy, String orderDir, String memberId) {
+    private SearchCondition createCondition(String title, String content, String memberId, String nickname, String myInterest, String term, String orderBy, String orderDir) {
         return SearchCondition.builder()
                 .title(title)
                 .content(content)
                 .memberId(memberId)
+                .nickname(nickname)
+                .myInterest(myInterest)
                 .term(term)
                 .orderBy(orderBy)
                 .orderDir(orderDir)
