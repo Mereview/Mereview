@@ -17,7 +17,6 @@ const TextEditor = forwardRef((props, ref) => {
   const imageHandler = () => {
     console.log("에디터에서 이미지 버튼을 클릭하면 이 핸들러가 시작됩니다!");
 
-    // 1. 이미지를 저장할 input type=file DOM을 만든다.
     const input = document.createElement("input");
     // 속성 써주기
     input.setAttribute("type", "file");
@@ -28,9 +27,6 @@ const TextEditor = forwardRef((props, ref) => {
     return {
       toolbar: {
         container: toolbarOptions,
-        // handlers: {
-        //   image: imageHandler,
-        // },
       },
     };
   }, []);
@@ -53,7 +49,9 @@ const TextEditor = forwardRef((props, ref) => {
         height: "100vh",
         borderRadius: "5px",
         backgroundColor: "white",
+        boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
       }}
+      placeholder="리뷰 상세정보를 작성하세요"
       theme="snow"
       value={content}
       onChange={contentHandler}

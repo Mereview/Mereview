@@ -33,6 +33,7 @@ const KeywordSlider = forwardRef((props, ref) => {
           id="name"
           onChange={infoHandler}
           value={keyInfo.name}
+          placeholder="키워드"
         ></input>
       </Col>
       <Col md={2}>
