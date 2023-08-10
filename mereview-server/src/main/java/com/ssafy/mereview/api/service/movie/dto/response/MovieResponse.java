@@ -13,7 +13,6 @@ public class MovieResponse {
 
     private Long id;
 
-    private int movieContentId;
 
     private String title;
 
@@ -30,7 +29,6 @@ public class MovieResponse {
     @Builder
     public MovieResponse(Long id, int movieContentId, String title, String overview, Double voteAverage, String posterImg, String releaseDate, List<GenreResponse> genres) {
         this.id = id;
-        this.movieContentId = movieContentId;
         this.title = title;
         this.overview = overview;
         this.voteAverage = voteAverage;
@@ -42,7 +40,6 @@ public class MovieResponse {
     public static MovieResponse of(Movie movie){
         return MovieResponse.builder()
                 .id(movie.getId())
-                .movieContentId(movie.getMovieContentId())
                 .title(movie.getTitle())
                 .overview(movie.getOverview())
                 .voteAverage(movie.getVoteAverage())
@@ -58,7 +55,6 @@ public class MovieResponse {
         }
         return MovieResponse.builder()
                 .id(movie.getId())
-                .movieContentId(movie.getMovieContentId())
                 .title(movie.getTitle())
                 .genres(genreResponses)
                 .overview(movie.getOverview())

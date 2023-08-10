@@ -74,7 +74,6 @@ public class MemberTier extends BaseEntity {
             usefulExperience += 5;
             checkAndPromoteUsefulTier();
         }
-
     }
 
     public void decreaseExp() {
@@ -83,16 +82,14 @@ public class MemberTier extends BaseEntity {
         checkExpAndDemote();
     }
 
-    /** private methods **/
-
-    private void checkAndPromoteFunTier() {
+    public void checkAndPromoteFunTier() {
         if (checkFunTierPromotionEligibility()) {
             funTier = promote(funTier);
             funExperience = 0;
         }
     }
 
-    private void checkAndPromoteUsefulTier() {
+    public void checkAndPromoteUsefulTier() {
         if (checkUsefulTierPromotionEligibility()) {
             usefulTier = promote(usefulTier);
             usefulExperience = 0;
@@ -150,6 +147,5 @@ public class MemberTier extends BaseEntity {
     private boolean checkDemotionEligibility(int experience) {
         return experience <= 0;
     }
-
 }
 
