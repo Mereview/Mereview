@@ -11,24 +11,24 @@ import "./styles/css/App.css";
 import axios from "axios";
 import { userActions } from "./store/user-slice";
 import PageNotFound404 from "./pages/PageNotFound404";
+import { searchMemberInfoSimple } from "./api/members";
 function App() {
   const dispatch = useDispatch();
-  const getUserInfo = () => {
-    const id = localStorage.getItem("id");
-    if (id) {
-      dispatch(userActions.authToggler());
-      const getUserInfoURL = `http://localhost:8080/api/members/${id}`;
-      axios
-        .get(getUserInfoURL)
-        .then((res) => res.data.data)
-        .then((data) => {
-          console.log(data);
-          dispatch(userActions.authorization(data));
-        })
-        .catch((err) => console.log("사용자 인증에서 오류가 발생했습니다."));
-    }
-  };
-  useEffect(getUserInfo, []);
+
+  useEffect(() => {
+    const getUserInfo = () => {
+      const id = localStorage.getItem("id");
+      if (id) {
+        dispatch(userActions.authToggler());
+        searchMemberInfoSimple(
+          Number(id),
+          (res) => dispatch(userActions.authorization(res.data.data)),
+          (err) => console.log("사용자 인증 오류 발생")
+        );
+      }
+    };
+    getUserInfo();
+  }, []);
   const isAuthenticated = useSelector(
     (state: any) => state.user.isAthenticated
   );

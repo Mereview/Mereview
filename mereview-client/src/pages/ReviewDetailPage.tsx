@@ -47,7 +47,7 @@ const ReviewDetail = () => {
 
   const backgroundImageURL =
     review.backgroundImage && review.backgroundImage.id
-      ? `http://localhost:8080/api/image/download/backgrounds/${review.backgroundImage.id}`
+      ? `${process.env.REACT_APP_API_URL}/image/download/backgrounds/${review.backgroundImage.id}`
       : false;
   const style = backgroundImageURL
     ? {
