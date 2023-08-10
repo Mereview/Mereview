@@ -279,11 +279,6 @@ const ReviewWrite = () => {
               ></Form.Control>
             </Col>
           </Row>
-          <Row>
-            <Col lg={11} className="p-0">
-              <TextEditor ref={contentRef}></TextEditor>
-            </Col>
-          </Row>
         </Col>
         <Col lg={4}>
           <Row className="align-items-center justify-content-center mb-3">
@@ -306,67 +301,70 @@ const ReviewWrite = () => {
               </div>
             </Col>
           </Row>
-          <Row className="my-5" />
-          <Row className="my-5" />
-          <Row className="my-5" />
-          <Row className="my-5">
-            {/* <label htmlFor="keywordBox">키워드</label> */}
+          <Row className="ms-2">
             <Col
               className="my-auto text-center border border-5 rounded-2 i-box justify-content-center align-items-center"
               style={{ backgroundColor: "white" }}
               id="keywordBox"
             >
               <KeywordSlider ref={childRef1}></KeywordSlider>
-              <Row />
               <KeywordSlider ref={childRef2}></KeywordSlider>
-              <Row />
               <KeywordSlider ref={childRef3}></KeywordSlider>
-              <Row />
               <KeywordSlider ref={childRef4}></KeywordSlider>
-              <Row />
               <KeywordSlider ref={childRef5}></KeywordSlider>
             </Col>
           </Row>
+          {/* <Row className="my-5" />
           <Row className="my-5" />
           <Row className="my-5" />
-          <Row className="my-5" />
-          <Row className="my-5" />
-          <Row className="align-items-center justify-content-end">
-            {/* <Col lg={3} /> */}
-            <Col lg={8}>
-              <button
-                id="type"
-                className="bg-danger feed-btn mx-1 my-1"
-                type="button"
-                style={{
-                  backgroundImage: "url(/thumbDown.png)",
-                  boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-                  transform: badBtn ? "scale(0.95)" : "",
-                }}
-                onClick={feedbackHandler}
-                value={"NO"}
-              ></button>
-              <button
-                id="type"
-                className="bg-primary feed-btn mx-1 my-1"
-                type="button"
-                style={{
-                  backgroundImage: "url(/thumbUp.png)",
-                  boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-                  transform: goodBtn ? "scale(0.95)" : "",
-                }}
-                onClick={feedbackHandler}
-                value={"YES"}
-              ></button>
-            </Col>
-            <Col lg={4}>
-              <Button
-                styles="btn-primary"
-                text="등록"
-                onClick={reviewCreateHandler}
-              ></Button>
-            </Col>
+          <Row className="my-5">
+            <label htmlFor="keywordBox">키워드</label>
           </Row>
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" />
+          <Row className="my-5" /> */}
+        </Col>
+      </Row>
+      <Row className="mx-2 my-4">
+        {/* <Col lg={11} className="p-0"> */}
+        <TextEditor ref={contentRef}></TextEditor>
+        {/* </Col> */}
+      </Row>
+      <Row className="align-items-center justify-content-end mb-3">
+        <Col lg={7} />
+        <Col lg={3}>
+          <button
+            id="type"
+            className="bg-danger feed-btn mx-1 my-1"
+            type="button"
+            style={{
+              backgroundImage: "url(/thumbDown.png)",
+              boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+              transform: badBtn ? "scale(0.95)" : "",
+            }}
+            onClick={feedbackHandler}
+            value={"NO"}
+          ></button>
+          <button
+            id="type"
+            className="bg-primary feed-btn ms-1 me-5 my-1"
+            type="button"
+            style={{
+              backgroundImage: "url(/thumbUp.png)",
+              boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+              transform: goodBtn ? "scale(0.95)" : "",
+            }}
+            onClick={feedbackHandler}
+            value={"YES"}
+          ></button>
+          {/* </Col>
+        <Col lg={2}> */}
+          <Button
+            styles="btn-primary"
+            text="등록"
+            onClick={reviewCreateHandler}
+          ></Button>
         </Col>
       </Row>
     </Container>

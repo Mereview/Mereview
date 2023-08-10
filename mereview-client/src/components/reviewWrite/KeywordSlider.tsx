@@ -25,27 +25,27 @@ const KeywordSlider = forwardRef((props, ref) => {
     getKeyInfo,
   }));
   return (
-    <div>
-      <Row className="mx-1 my-4">
-        <Col md={5}>
-          <input
-            className="form-control"
-            id="name"
-            onChange={infoHandler}
-            value={keyInfo.name}
-          ></input>
-        </Col>
-        <Col md={2}>
-          <p>{keyInfo.weight}</p>
-        </Col>
-        <Slider
-          name="weight"
-          value={keyInfo.weight}
+    // <div>
+    <Row className="mx-1 my-2">
+      <Col md={5}>
+        <input
+          className="form-control"
+          id="name"
           onChange={infoHandler}
-          style={{ width: "40%" }}
-        />
-      </Row>
-    </div>
+          value={keyInfo.name}
+        ></input>
+      </Col>
+      <Col md={2}>
+        <p>{keyInfo.weight}</p>
+      </Col>
+      <Slider
+        name="weight"
+        value={keyInfo.weight}
+        onChange={infoHandler}
+        style={{ width: "40%" }}
+      />
+    </Row>
+    // </div>
   );
 });
 
