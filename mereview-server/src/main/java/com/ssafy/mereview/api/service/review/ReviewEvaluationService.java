@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
@@ -45,13 +46,28 @@ public class ReviewEvaluationService {
 
     private boolean updateReviewEvaluation(ReviewEvaluationServiceRequest request, Optional<ReviewEvaluation> reviewEvaluation) {
         if (reviewEvaluation.isEmpty()) {
-            evaluationRepository.save(request.toEntity());
-            updateExperienceAfterEvaluation(request);
+            createReviewEvaluation(request);
             return true;
         }
-        reviewEvaluation.ifPresent(evaluationRepository::delete);
+
+        ReviewEvaluation evaluation = reviewEvaluation.orElseThrow(NoSuchElementException::new);
+        if (evaluation.getType().equals(request.getType())) {
+            deleteReviewEvaluation(request, evaluation);
+            return false;
+        } else {
+            createReviewEvaluation(request);
+            return true;
+        }
+    }
+
+    private void createReviewEvaluation(ReviewEvaluationServiceRequest request) {
+        evaluationRepository.save(request.toEntity());
+        updateExperienceAfterEvaluation(request);
+    }
+
+    private void deleteReviewEvaluation(ReviewEvaluationServiceRequest request, ReviewEvaluation evaluation) {
+        evaluationRepository.delete(evaluation);
         updateExperienceAfterCancelEvaluation(request);
-        return false;
     }
 
     private void updateExperienceAfterEvaluation(ReviewEvaluationServiceRequest request) {
