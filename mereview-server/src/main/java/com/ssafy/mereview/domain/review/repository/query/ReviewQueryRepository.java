@@ -4,6 +4,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.mereview.domain.member.entity.QMember;
 import com.ssafy.mereview.domain.review.entity.Review;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class ReviewQueryRepository {
                 .select(interest.genre.id)
                 .from(interest)
                 .join(interest.member, member)
-                .where(isMemberId(condition.getMemberId()))
+                .where(isMemberId(condition.getMemberId(), interest.member))
                 .fetch();
     }
 
@@ -94,7 +95,8 @@ public class ReviewQueryRepository {
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
                         isTerm(condition.getTerm()),
-                        isGenreIds(condition.getMemberId(), genreIds)
+                        isGenreIds(condition.getMemberId(), genreIds),
+                        isMemberId(condition.getMemberId(), review.member)
                 )
                 .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
                 .offset(pageable.getOffset())
@@ -129,8 +131,8 @@ public class ReviewQueryRepository {
         return hasText(memberId) ? review.genre.id.in(genreIds) : null;
     }
 
-    private BooleanExpression isMemberId(String memberId) {
-        return hasText(memberId) ? interest.member.id.eq(Long.parseLong(memberId)) : null;
+    private BooleanExpression isMemberId(String memberId, QMember member) {
+        return hasText(memberId) ? member.id.eq(Long.parseLong(memberId)) : null;
     }
 
     private OrderSpecifier<?> sortByField(String filedName, String direction) {
