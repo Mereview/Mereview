@@ -127,18 +127,8 @@ public class ReviewQueryRepository {
     }
 
     private BooleanExpression isTerm(String term) {
-        if (hasText(term)) {
-            LocalDateTime today = LocalDateTime.now();
-            switch (term) {
-                case "weekly":
-                    return review.createdTime.between(today.minusDays(7), today);
-                case "semiannual":
-                    return review.createdTime.between(today.minusMonths(6), today);
-                case "yearly":
-                    return review.createdTime.between(today.minusYears(1), today);
-            }
-        }
-        return null;
+        LocalDateTime today = LocalDateTime.now();
+        return hasText(term) ? review.createdTime.between(today.minusMonths(Long.parseLong(term)), today) : null;
     }
 
     private BooleanExpression inGenreIds(String myInterest, List<Long> genreIds) {
