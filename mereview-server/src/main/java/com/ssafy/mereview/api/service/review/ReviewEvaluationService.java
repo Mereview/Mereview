@@ -2,11 +2,8 @@ package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.request.ReviewEvaluationServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.ReviewEvaluationResponse;
-import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
-import com.ssafy.mereview.domain.member.repository.MemberRepository;
 import com.ssafy.mereview.domain.member.repository.MemberTierQueryRepository;
-import com.ssafy.mereview.domain.member.repository.MemberTierRepository;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluation;
 import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
@@ -16,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
@@ -40,14 +35,6 @@ public class ReviewEvaluationService {
 
         Map<ReviewEvaluationType, Integer> evaluationCountsMap = evaluationQueryRepository.getCountByReviewIdGroupedByType(request.getReviewId());
 
-        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
-        log.debug("memberTier: {}", memberTier);
-        if (request.getType().equals(BAD)) {
-            memberTier.decreaseExp();
-        } else {
-            memberTier.increaseExp(request.getType());
-        }
-
         return createReviewEvaluationResponse(request, isDone, evaluationCountsMap);
 
     }
@@ -59,10 +46,32 @@ public class ReviewEvaluationService {
     private boolean updateReviewEvaluation(ReviewEvaluationServiceRequest request, Optional<ReviewEvaluation> reviewEvaluation) {
         if (reviewEvaluation.isEmpty()) {
             evaluationRepository.save(request.toEntity());
+            updateExperienceAfterEvaluation(request);
             return true;
         }
         reviewEvaluation.ifPresent(evaluationRepository::delete);
+        updateExperienceAfterCancelEvaluation(request);
         return false;
+    }
+
+    private void updateExperienceAfterEvaluation(ReviewEvaluationServiceRequest request) {
+        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
+        log.debug("memberTier: {}", memberTier);
+        if (request.getType().equals(BAD)) {
+            memberTier.decreaseExp();
+        } else {
+            memberTier.increaseExp(request.getType());
+        }
+    }
+
+    private void updateExperienceAfterCancelEvaluation(ReviewEvaluationServiceRequest request) {
+        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
+        log.debug("memberTier: {}", memberTier);
+        if (request.getType().equals(BAD)) {
+            memberTier.increaseExp();
+        } else {
+            memberTier.decreaseExp(request.getType());
+        }
     }
 
     private ReviewEvaluationResponse createReviewEvaluationResponse(ReviewEvaluationServiceRequest request, boolean isDone, Map<ReviewEvaluationType, Integer> evaluationCountsMap) {
