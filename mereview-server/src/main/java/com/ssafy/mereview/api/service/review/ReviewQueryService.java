@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -218,7 +215,11 @@ public class ReviewQueryService {
     }
 
     private Integer getCountByType(CommentLikeType commentLikeType, Long commentId) {
-        return commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId).get(commentLikeType);
+        Map<CommentLikeType, Integer> countMap = commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId);
+        if (countMap.containsKey(commentLikeType)) {
+            return countMap.get(commentLikeType);
+        }
+        return 0;
     }
 
     private ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {

@@ -50,6 +50,8 @@ public class ReviewQueryRepository {
     }
 
     public int getTotalPages(SearchCondition condition) {
+        List<Long> genreIds = getGenreIds(condition);
+
         return queryFactory
                 .select(review.count())
                 .from(review)
@@ -58,7 +60,11 @@ public class ReviewQueryRepository {
                 .where(
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
-                        isTerm(condition.getTerm())
+                        isTerm(condition.getTerm()),
+                        isNickname(condition.getNickname()),
+                        isMyInterest(condition.getMyInterest(), review.member),
+                        isMember(condition.getMemberId()),
+                        inGenreIds(condition.getMemberId(), genreIds)
                 )
                 .fetchFirst().intValue();
     }
@@ -83,7 +89,7 @@ public class ReviewQueryRepository {
                 .select(interest.genre.id)
                 .from(interest)
                 .join(interest.member, member)
-                .where(isMemberId(condition.getMemberId(), interest.member))
+                .where(isMyInterest(condition.getMemberId(), interest.member))
                 .fetch();
     }
 
@@ -95,8 +101,10 @@ public class ReviewQueryRepository {
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
                         isTerm(condition.getTerm()),
-                        isGenreIds(condition.getMemberId(), genreIds),
-                        isMemberId(condition.getMemberId(), review.member)
+                        isNickname(condition.getNickname()),
+                        isMyInterest(condition.getMyInterest(), review.member),
+                        isMember(condition.getMemberId()),
+                        inGenreIds(condition.getMemberId(), genreIds)
                 )
                 .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
                 .offset(pageable.getOffset())
@@ -110,6 +118,14 @@ public class ReviewQueryRepository {
 
     private BooleanExpression isContent(String content) {
         return hasText(content) ? review.content.like("%" + content + "%") : null;
+    }
+
+    private BooleanExpression isNickname(String nickname) {
+        return hasText(nickname) ? review.member.nickname.like("%" + nickname + "%") : null;
+    }
+
+    private BooleanExpression isMember(String memberId) {
+        return hasText(memberId) ? review.member.id.eq(Long.parseLong(memberId)) : null;
     }
 
     private BooleanExpression isTerm(String term) {
@@ -127,12 +143,12 @@ public class ReviewQueryRepository {
         return null;
     }
 
-    private BooleanExpression isGenreIds(String memberId, List<Long> genreIds) {
+    private BooleanExpression inGenreIds(String memberId, List<Long> genreIds) {
         return hasText(memberId) ? review.genre.id.in(genreIds) : null;
     }
 
-    private BooleanExpression isMemberId(String memberId, QMember member) {
-        return hasText(memberId) ? member.id.eq(Long.parseLong(memberId)) : null;
+    private BooleanExpression isMyInterest(String myInterest, QMember member) {
+        return hasText(myInterest) ? member.id.eq(Long.parseLong(myInterest)) : null;
     }
 
     private OrderSpecifier<?> sortByField(String filedName, String direction) {
