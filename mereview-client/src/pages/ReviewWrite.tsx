@@ -9,9 +9,11 @@ import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+
 const ReviewWrite = () => {
   const url = `${process.env.REACT_APP_API_URL}`;
-
+  const navigate = useNavigate();
   //유저 정보 받아오기
   const userid = useSelector((state: any) => state.user.user.id);
 
@@ -121,7 +123,7 @@ const ReviewWrite = () => {
       .get(url + `/movies/${selected.value}`)
       .then((res) => {
         const movie = res.data.data;
-        inputData.current.movieId = movie.movieContentId;
+        inputData.current.movieId = movie.id;
         console.log(movie.genres);
         setGenreList(movie.genres);
         console.log(genreList);
@@ -202,6 +204,7 @@ const ReviewWrite = () => {
       .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
+        navigate("/review");
       })
       .catch(() => {
         console.log("fail");
