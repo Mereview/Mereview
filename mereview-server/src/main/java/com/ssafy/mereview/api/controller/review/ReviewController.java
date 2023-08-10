@@ -117,7 +117,7 @@ public class ReviewController {
         return uploadFile;
     }
 
-    private SearchCondition createCondition(String title, String content, String memberId, String nickname, String myInterest, String term, String orderBy, String orderDir) {
+    private SearchCondition createCondition(String title, String content, String memberId, String nickname, String myInterest, String orderBy, String orderDir, String term) {
         return SearchCondition.builder()
                 .title(title)
                 .content(content)

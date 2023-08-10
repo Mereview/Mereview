@@ -102,8 +102,10 @@ public class MemberTier extends BaseEntity {
     private void checkExpAndDemote() {
         if (checkDemotionEligibility(funExperience)) {
             funTier = demote(funTier);
+            funExperience = 0;
         } else if (checkDemotionEligibility(usefulExperience)) {
             usefulTier = demote(usefulTier);
+            usefulExperience = 0;
         }
     }
 
