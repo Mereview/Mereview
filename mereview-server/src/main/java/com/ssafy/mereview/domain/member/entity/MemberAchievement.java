@@ -11,6 +11,12 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
+import static com.ssafy.mereview.common.util.SizeConstants.COMMENT_ACHIEVEMENT_MAX_COUNT_MAP;
+import static com.ssafy.mereview.common.util.SizeConstants.REVIEW_ACHIEVEMENT_MAX_COUNT_MAP;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.COMMENT;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.REVIEW;
+import static com.ssafy.mereview.domain.member.entity.Rank.*;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -56,4 +62,38 @@ public class MemberAchievement extends BaseEntity {
         this.achievementCount = achievementCount;
         this.achievementType = achievementType;
     }
+
+    public void checkAndPromoteAchievement(int achievementCount) {
+        this.achievementCount = achievementCount;
+        if (achievementType.equals(REVIEW) && checkReviewAchievementEligibility() ||
+                achievementType.equals(COMMENT) && checkCommentAchievementEligibility()) {
+            achievementRank = promote(achievementRank);
+        }
+    }
+
+    private boolean checkReviewAchievementEligibility() {
+        return achievementCount >= REVIEW_ACHIEVEMENT_MAX_COUNT_MAP.get(achievementRank);
+    }
+
+    private boolean checkCommentAchievementEligibility() {
+        return achievementCount >= COMMENT_ACHIEVEMENT_MAX_COUNT_MAP.get(achievementRank);
+    }
+
+    private Rank promote(Rank tier) {
+        switch (tier) {
+            case NONE:
+                return BRONZE;
+            case BRONZE:
+                return SILVER;
+            case SILVER:
+                return GOLD;
+            case GOLD:
+                return PLATINUM;
+            case PLATINUM:
+                return DIAMOND;
+            default:
+                return tier;
+        }
+    }
+
 }
