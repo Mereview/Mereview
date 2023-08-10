@@ -2,6 +2,7 @@ package com.ssafy.mereview.api.controller.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.EmailCheckRequest;
 import com.ssafy.mereview.api.service.member.EmailService;
+import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.common.response.ApiResponse;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,12 @@ import java.io.UnsupportedEncodingException;
 public class EmailController {
 
     private final EmailService emailService;
+    private final MemberService memberService;
 
     @PostMapping("/send")
     public ApiResponse<String> sendEmail(@RequestBody EmailCheckRequest request) throws MessagingException, UnsupportedEncodingException {
+        memberService.searchExistedEmailCheck(request.getEmail());
+
         emailService.sendEmail(request.getEmail());
 
         return ApiResponse.ok("이메일이 발송되었습니다.");
