@@ -62,9 +62,8 @@ public class ReviewQueryRepository {
                         isContent(condition.getContent()),
                         isTerm(condition.getTerm()),
                         isNickname(condition.getNickname()),
-                        isMyInterest(condition.getMyInterest(), review.member),
                         isMember(condition.getMemberId()),
-                        inGenreIds(condition.getMemberId(), genreIds)
+                        inGenreIds(condition.getMyInterest(), genreIds)
                 )
                 .fetchFirst().intValue();
     }
@@ -89,7 +88,7 @@ public class ReviewQueryRepository {
                 .select(interest.genre.id)
                 .from(interest)
                 .join(interest.member, member)
-                .where(isMyInterest(condition.getMemberId(), interest.member))
+                .where(isMyInterest(condition.getMyInterest(), interest.member))
                 .fetch();
     }
 
@@ -104,7 +103,7 @@ public class ReviewQueryRepository {
                         isNickname(condition.getNickname()),
                         isMyInterest(condition.getMyInterest(), review.member),
                         isMember(condition.getMemberId()),
-                        inGenreIds(condition.getMemberId(), genreIds)
+                        inGenreIds(condition.getMyInterest(), genreIds)
                 )
                 .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
                 .offset(pageable.getOffset())
@@ -143,8 +142,8 @@ public class ReviewQueryRepository {
         return null;
     }
 
-    private BooleanExpression inGenreIds(String memberId, List<Long> genreIds) {
-        return hasText(memberId) ? review.genre.id.in(genreIds) : null;
+    private BooleanExpression inGenreIds(String myInterest, List<Long> genreIds) {
+        return hasText(myInterest) ? review.genre.id.in(genreIds) : null;
     }
 
     private BooleanExpression isMyInterest(String myInterest, QMember member) {
