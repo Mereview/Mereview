@@ -18,10 +18,10 @@ public class CommentLikeRequest {
     @NotNull
     private Long memberId;
     @NotBlank
-    private CommentLikeType type;
+    private String type;
 
     @Builder
-    public CommentLikeRequest(Long commentId, Long memberId, CommentLikeType type) {
+    public CommentLikeRequest(Long commentId, Long memberId, String type) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.type = type;
@@ -31,7 +31,7 @@ public class CommentLikeRequest {
         return CommentLikeServiceRequest.builder()
                 .commentId(commentId)
                 .memberId(memberId)
-                .type(type)
+                .type(CommentLikeType.valueOf(type))
                 .build();
     }
 }

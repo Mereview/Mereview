@@ -20,10 +20,10 @@ public class ReviewEvaluationRequest {
     @NotNull
     private Long genreId;
     @NotBlank
-    private ReviewEvaluationType type;
+    private String type;
 
     @Builder
-    public ReviewEvaluationRequest(Long reviewId, Long memberId, Long genreId, ReviewEvaluationType type) {
+    public ReviewEvaluationRequest(Long reviewId, Long memberId, Long genreId, String type) {
         this.reviewId = reviewId;
         this.memberId = memberId;
         this.genreId = genreId;
@@ -35,7 +35,7 @@ public class ReviewEvaluationRequest {
                 .reviewId(reviewId)
                 .memberId(memberId)
                 .genreId(genreId)
-                .type(type)
+                .type(ReviewEvaluationType.valueOf(type))
                 .build();
     }
 }
