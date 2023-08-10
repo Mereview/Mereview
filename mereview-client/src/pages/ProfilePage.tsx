@@ -107,7 +107,7 @@ const dummyBadges: AchievedBadge[] = [
   },
 ];
 
-const defaultProfileImage = "/defaultProfile.png";
+const defaultProfileImage = "/testProfile.gif";
 
 const genderMapping = {
   MALE: "남",
@@ -239,7 +239,7 @@ const getMemberInfo = async (userId: number) => {
 
       userInfo.memberId = userId;
       userInfo.nickname = response.nickname;
-      userInfo.profileImageId = response.profileImage.id;
+      userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
       userInfo.introduction = response.introduce;
