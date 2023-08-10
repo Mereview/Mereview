@@ -107,7 +107,7 @@ const dummyBadges: AchievedBadge[] = [
   },
 ];
 
-const defaultProfileImage = "/defaultProfile.png";
+const defaultProfileImage = "/testProfile.gif";
 
 const genderMapping = {
   MALE: "남",
@@ -239,7 +239,7 @@ const getMemberInfo = async (userId: number) => {
 
       userInfo.memberId = userId;
       userInfo.nickname = response.nickname;
-      userInfo.profileImageId = response.profileImage.id;
+      userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
       userInfo.introduction = response.introduce;
@@ -298,7 +298,7 @@ const isFollower = async (userId: number, loginId: number) => {
 
 let followerCountRenewaler: number = 0;
 const getFollowerCount = async (userId: number) => {
-  await searchMemberFollowInfo(
+  await searchMemberFollowerInfo(
     userId,
     ({ data }) => {
       followerCountRenewaler = data.data.length;
@@ -311,7 +311,7 @@ const getFollowerCount = async (userId: number) => {
 
 let followingCountRenewaler: number = 0;
 const getFollowingCount = async (userId: number) => {
-  await searchMemberFollowerInfo(
+  await searchMemberFollowInfo(
     userId,
     ({ data }) => {
       followingCountRenewaler = data.data.length;
@@ -461,7 +461,7 @@ const ProfilePage = () => {
           <img
             src={
               userInfo.profileImageId
-                ? `http://localhost:8080/api/image/download/profiles/${userInfo.profileImageId}`
+                ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${userInfo.profileImageId}`
                 : defaultProfileImage
             }
             alt="프로필 이미지"

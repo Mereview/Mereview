@@ -23,6 +23,10 @@ export async function searchMemberInfo(memberId: number, success, fail) {
   await api.get(`/${memberId}`).then(success).catch(fail);
 }
 
+export async function searchMemberInfoSimple(memberId: number, success, fail) {
+  await api.get(`/${memberId}/info`).then(success).catch(fail);
+}
+
 export async function searchMemberFollowInfo(memberId: number, success, fail) {
   await api.get(`/${memberId}/following`).then(success).catch(fail);
 }

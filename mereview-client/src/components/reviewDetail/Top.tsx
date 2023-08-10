@@ -9,7 +9,7 @@ const Top = ({ review }: any) => {
   }));
   console.log(words);
   const profileImageURL = review.profileImage.id
-    ? `http://localhost:8080/api/image/download/profiles/${review.profileImage.id}`
+    ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${review.profileImage.id}`
     : "/testProfile.gif";
 
   console.log(words);

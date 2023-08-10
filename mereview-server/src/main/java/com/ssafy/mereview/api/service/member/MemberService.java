@@ -98,6 +98,13 @@ public class MemberService {
         }
     }
 
+    public void searchExistedEmailCheck(String email){
+        Member existingMember = memberQueryRepository.searchByEmail(email);
+        if (existingMember != null) {
+            throw new NoSuchElementException("이미 가입된 회원입니다.");
+        }
+    }
+
     private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
         if (emailCheckCode == null) {
             throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
