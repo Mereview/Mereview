@@ -235,7 +235,7 @@ class ReviewControllerTest {
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .highlight("테스트 한줄평")
-                .type(YES)
+                .type(String.valueOf(YES))
                 .memberId(1L)
                 .genreId(1L)
                 .movieId(1L)
