@@ -298,7 +298,7 @@ const isFollower = async (userId: number, loginId: number) => {
 
 let followerCountRenewaler: number = 0;
 const getFollowerCount = async (userId: number) => {
-  await searchMemberFollowInfo(
+  await searchMemberFollowerInfo(
     userId,
     ({ data }) => {
       followerCountRenewaler = data.data.length;
@@ -311,7 +311,7 @@ const getFollowerCount = async (userId: number) => {
 
 let followingCountRenewaler: number = 0;
 const getFollowingCount = async (userId: number) => {
-  await searchMemberFollowerInfo(
+  await searchMemberFollowInfo(
     userId,
     ({ data }) => {
       followingCountRenewaler = data.data.length;
