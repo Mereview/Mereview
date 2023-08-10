@@ -78,7 +78,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsWithoutSearchCondition() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "", "", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         List<Review> reviews = reviewRepository.findAll();
@@ -108,7 +108,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByTitle() {
         // given
-        SearchCondition condition = new SearchCondition("테스트", "", "", "", "", "");
+        SearchCondition condition = new SearchCondition("테스트", "", "", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -128,7 +128,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsByContent() {
         // given
-        SearchCondition condition = new SearchCondition("", "테스트", "", "", "", "");
+        SearchCondition condition = new SearchCondition("", "테스트", "", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -148,7 +148,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByHits() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "", "hits", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "", "", "hits", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -169,7 +169,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByFunCount() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "", "FUN", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "", "", "FUN", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -193,7 +193,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchReviewsOrderByUsefulCount() {
         // given
-        SearchCondition condition = new SearchCondition("", "", "", "USEFUL", "", "");
+        SearchCondition condition = new SearchCondition("", "", "", "", "", "USEFUL", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
@@ -214,7 +214,7 @@ class ReviewQueryServiceTest {
     @Test
     void searchEmptyReviews() {
         // given
-        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "", "", "", "");
+        SearchCondition condition = new SearchCondition("!1!", "!@#!#$ASFDF", "", "", "", "", "", "");
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         // when
