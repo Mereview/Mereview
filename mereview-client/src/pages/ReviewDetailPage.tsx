@@ -30,28 +30,36 @@ const ReviewDetail = () => {
 
   useEffect(() => {
     const data = { reviewId: id, loginMemberId: userId };
-    searchReview(
-      data,
-      (res) => {
-        setReview(res.data.data);
-        setLoading(true);
-      },
-      (err) => {
-        console.log("fail");
-      }
-    );
+    const getReviewHandler = () => {
+      searchReview(
+        data,
+        (res) => {
+          setReview(res.data.data);
+          setLoading(true);
+        },
+        (err) => {
+          console.log("fail");
+        }
+      );
+    };
+    getReviewHandler();
   }, []);
 
-  const backgroundImageURL = review.backgroundImage.id
-    ? `http://localhost:8080/api/image/download/backgrounds/${review.backgroundImage.id}`
-    : false;
+  const backgroundImageURL =
+    review.backgroundImage && review.backgroundImage.id
+      ? `http://localhost:8080/api/image/download/backgrounds/${review.backgroundImage.id}`
+      : false;
   const style = backgroundImageURL
     ? {
         backgroundImage: `url(${backgroundImageURL})`,
         filter: "blur(15px)",
         zIndex: "-1",
       }
-    : { backgroundColor: "black", filter: "blur(5px)", zIndex: "-1" };
+    : {
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        filter: "blur(5px)",
+        zIndex: "-1",
+      };
 
   console.log(review);
   return (
