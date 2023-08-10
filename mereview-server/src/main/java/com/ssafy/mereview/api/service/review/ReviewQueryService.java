@@ -193,6 +193,9 @@ public class ReviewQueryService {
     }
 
     private List<CommentResponse> createCommentResponses(List<Comment> comments, Long memberId) {
+        if (comments.isEmpty()) {
+            return new ArrayList<>();
+        }
         return comments.stream()
                 .map(comment ->
                         CommentResponse.builder()

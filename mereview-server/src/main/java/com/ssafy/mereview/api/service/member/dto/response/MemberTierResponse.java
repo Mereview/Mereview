@@ -29,6 +29,7 @@ public class MemberTierResponse {
 
     public static MemberTierResponse of(MemberTier memberTier){
         return MemberTierResponse.builder()
+                .id(memberTier.getId())
                 .funTier(memberTier.getFunTier())
                 .usefulTier(memberTier.getUsefulTier())
                 .funExperience(memberTier.getFunExperience())
