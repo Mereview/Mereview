@@ -11,6 +11,7 @@ import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.*;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
+import com.ssafy.mereview.domain.review.repository.query.NotificationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ import static java.util.Comparator.comparingInt;
 @Transactional(readOnly = true)
 @Service
 public class ReviewQueryService {
-
     private final ReviewQueryRepository reviewQueryRepository;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
+    private final NotificationQueryRepository notificationQueryRepository;
     private final CommentLikeQueryRepository commentLikeQueryRepository;
 
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
@@ -61,6 +62,17 @@ public class ReviewQueryService {
         }
         increaseHits(loginMemberId, review);
         return createReviewDetailResponse(review);
+    }
+
+    public List<ReviewResponse> searchNotifiedReviews(Long memberId,Pageable pageable) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+        List<Review> reviews = reviewQueryRepository.searchNotifiedReviews(reviewIds, pageable);
+        return createReviewResponses(reviews);
+    }
+
+    public int calculateNotifiedPageCount(Long memberId) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+        return ((reviewQueryRepository.getNotifiedTotalPages(reviewIds) - 1) / PAGE_SIZE) + 1;
     }
 
     /**

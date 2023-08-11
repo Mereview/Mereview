@@ -1,12 +1,20 @@
 package com.ssafy.mereview.api.controller.review;
 
 import com.ssafy.mereview.api.service.review.NotificationService;
+import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
+import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
+import com.ssafy.mereview.common.response.PageResponse;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,6 +24,20 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final ReviewQueryService reviewQueryService;
+
+    @GetMapping
+    public ApiResponse<PageResponse<List<ReviewResponse>>> searchNotifiedReviews(
+            @RequestParam Long memberId,
+            @RequestParam("1") Integer pageNumber) {
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        List<ReviewResponse> responses = reviewQueryService.searchNotifiedReviews(memberId, pageRequest);
+
+        int pageCount = reviewQueryService.calculateNotifiedPageCount(memberId);
+        PageResponse<List<ReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pageCount);
+
+        return ApiResponse.ok(pageResponse);
+    }
 
     @PutMapping("/{notificationId}")
     public ApiResponse<NotificationResponse> toggleStatus(@PathVariable Long notificationId) {

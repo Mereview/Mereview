@@ -57,4 +57,12 @@ public class NotificationQueryRepository {
                 .fetchOne();
         return result == null ? 0 : result.intValue();
     }
+
+    public List<Long> searchReviewIdsByMemberId(Long memberId) {
+        return queryFactory
+                .select(notification.review.id)
+                .from(notification)
+                .where(notification.member.id.eq(memberId))
+                .fetch();
+    }
 }
