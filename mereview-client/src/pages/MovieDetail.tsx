@@ -1,10 +1,7 @@
 import React from "react";
 
 const MovieDetail = () => {
-  return (
-    
-
-  );
+  return <div></div>;
 };
 
 export default MovieDetail;
