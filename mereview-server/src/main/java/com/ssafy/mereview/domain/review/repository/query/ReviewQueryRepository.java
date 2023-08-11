@@ -79,6 +79,42 @@ public class ReviewQueryRepository {
                 ).fetchOne();
     }
 
+    public List<Review> searchNotifiedReviews(List<Long> reviewIds, Pageable pageable) {
+        List<Long> notifiedIds = queryFactory
+                .select(review.id)
+                .from(review)
+                .where(review.id.in(reviewIds))
+                .orderBy(review.createdTime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        if (isEmpty(notifiedIds)) {
+            return new ArrayList<>();
+        }
+
+        return queryFactory
+                .select(review)
+                .from(review)
+                .where(review.id.in(notifiedIds))
+                .orderBy(review.createdTime.desc())
+                .fetch();
+    }
+
+    public int getNotifiedTotalPages(List<Long> reviewIds) {
+        List<Long> notifiedIds = queryFactory
+                .select(review.id)
+                .from(review)
+                .where(review.id.in(reviewIds))
+                .fetch();
+
+        return queryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.id.in(notifiedIds))
+                .fetchFirst().intValue();
+    }
+
     /**
      * private methods
      */
@@ -96,6 +132,8 @@ public class ReviewQueryRepository {
         return queryFactory
                 .select(review.id)
                 .from(review)
+                .join(review.member, member)
+                .join(review.movie, movie)
                 .where(
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
@@ -111,7 +149,7 @@ public class ReviewQueryRepository {
     }
 
     private BooleanExpression isTitle(String title) {
-        return hasText(title) ? review.title.like("%" + title + "%") : null;
+        return hasText(title) ? review.movie.title.like("%" + title + "%") : null;
     }
 
     private BooleanExpression isContent(String content) {

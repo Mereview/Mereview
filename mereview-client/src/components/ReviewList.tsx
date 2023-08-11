@@ -1,6 +1,7 @@
 import { Container } from "react-bootstrap";
 import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
+import Loading from "./common/Loading";
 import "../styles/css/ReviewList.css";
 
 interface ReviewListProps {
@@ -9,6 +10,7 @@ interface ReviewListProps {
 
 /* 정렬 방식에 따라 받는 reviewList가 달라질 것 */
 const ReviewList = ({ reviewList }: ReviewListProps) => {
+  if (reviewList === null || reviewList === undefined) return <Loading />;
   return (
     <>
       <div className="review-card-list-wrapper">
@@ -30,8 +32,6 @@ const ReviewList = ({ reviewList }: ReviewListProps) => {
             movieGenre={review.movieGenre}
             createDate={review.createDate}
             recommend={review.recommend}
-            onClickProfile={review.onClickProfile}
-            onClickTitle={review.onClickTitle}
           />
         ))}
       </div>

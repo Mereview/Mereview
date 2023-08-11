@@ -22,9 +22,7 @@ const ReviewDetail = () => {
   const [review, setReview] = useState({ backgroundImage: { id: null } });
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  console.log(id);
   const userId = localStorage.getItem("id");
-  console.log(userId);
   const navigate = useNavigate();
   //리뷰불러오기
 
@@ -36,6 +34,7 @@ const ReviewDetail = () => {
         (res) => {
           setReview(res.data.data);
           setLoading(true);
+          console.log("최상위 렌더링");
         },
         (err) => {
           console.log("fail");
@@ -61,14 +60,13 @@ const ReviewDetail = () => {
         zIndex: "-1",
       };
 
-  console.log(review);
   return (
     <div className="section">
       {loading ? (
         <div>
           <div className="blurred" style={style}></div>
           <Top review={review} />
-          <Detail review={review} />
+          <Detail review={review} setReview={setReview} />
           <div className="topbutton"></div>
         </div>
       ) : (

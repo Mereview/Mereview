@@ -15,10 +15,10 @@ public class ApiControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 정해줘야함
     @ExceptionHandler({BindException.class, NoSuchElementException.class, DuplicateKeyException.class, IllegalArgumentException.class})  // 처리할 예외 클래스
-    public ApiResponse<Object> bindException(Exception e) {
+    public ApiResponse<Object> bindException(Exception exception) {
         return ApiResponse.of(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage(),
-                null);
+                exception.getMessage(),
+                exception);
     }
 }

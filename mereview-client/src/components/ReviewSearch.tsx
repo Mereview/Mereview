@@ -18,27 +18,27 @@ const ReviewSearch = ({
   searchSubmit: () => void;
 }) => {
   const {
-    searchParam,
-    setSearchParam,
+    searchKeyword,
+    setSearchKeyword,
     searchCriteria,
     setSearchCriteria,
-    emptySearchParam,
-    setEmptySearchParam,
+    emptySearchKeyword,
+    setEmptySearchKeyword,
   } = searchProps;
   const paramRef = useRef(null);
 
   useEffect(() => {
-    if (emptySearchParam) {
+    if (emptySearchKeyword) {
       paramRef.current.focus();
     }
-  }, [emptySearchParam]);
+  }, [emptySearchKeyword]);
 
   const handleCriteria = (event: SelectChangeEvent) => {
     setSearchCriteria(event.target.value as string);
   };
 
   const handleSearchParam = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchParam(event.target.value as string);
+    setSearchKeyword(event.target.value as string);
   };
 
   return (
@@ -53,7 +53,7 @@ const ReviewSearch = ({
             sx={{ height: "34.25px" }}
           >
             <MenuItem value="제목">제목</MenuItem>
-            <MenuItem value="장르">장르</MenuItem>
+            {/* <MenuItem value="장르">장르</MenuItem> */}
             <MenuItem value="작성자">작성자</MenuItem>
           </Select>
           <TextField
@@ -61,7 +61,7 @@ const ReviewSearch = ({
             id="search-keyword"
             className="search-keyword"
             onChange={handleSearchParam}
-            error={emptySearchParam && searchParam === ""}
+            error={emptySearchKeyword && searchKeyword === ""}
           />
           <button
             type="submit"

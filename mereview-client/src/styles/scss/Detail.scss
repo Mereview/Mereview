@@ -66,21 +66,21 @@
     justify-content: center;
     gap: 50px;
     margin: 50px 0px;
-    #useful {
+    #USEFUL {
       background-image: url("/public/useful.png");
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
     }
-    #funny {
+    #FUN {
       background-image: url("/public/funny.png");
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
     }
-    #dislike {
+    #BAD {
       background-image: url("/public/dislike.png");
       background-size: cover;
       height: 100px;
@@ -89,7 +89,7 @@
     }
   }
 
-  .comment {
+  .bottom-detail {
     margin: 0px;
     display: grid;
     grid-template-columns: 8fr 4fr;
@@ -110,12 +110,16 @@
         font-weight: bold;
         color: white;
       }
-      #input {
+      .form-floating {
         padding: 10px;
         flex-basis: 85%;
         height: 100px;
         margin-right: 15px;
         border-radius: 12px;
+        textarea {
+          height: 100%;
+          background-color: #ffffffc0;
+        }
       }
     }
     .lst {

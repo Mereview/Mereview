@@ -10,10 +10,8 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     authorization(state, action) {
-      console.log(action.payload);
       state.isAthenticated = true;
       state.user = action.payload;
-      console.log("로그인성공");
     },
     logout(state) {
       localStorage.removeItem("token");
