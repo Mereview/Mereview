@@ -11,6 +11,7 @@ import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.*;
 import com.ssafy.mereview.domain.review.repository.dto.SearchCondition;
 import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
+import com.ssafy.mereview.domain.review.repository.query.NotificationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
 import com.ssafy.mereview.domain.review.repository.query.ReviewQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -33,9 +37,9 @@ import static java.util.Comparator.comparingInt;
 @Transactional(readOnly = true)
 @Service
 public class ReviewQueryService {
-
     private final ReviewQueryRepository reviewQueryRepository;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
+    private final NotificationQueryRepository notificationQueryRepository;
     private final CommentLikeQueryRepository commentLikeQueryRepository;
 
     public List<ReviewResponse> searchByCondition(SearchCondition condition, Pageable pageable) {
@@ -61,6 +65,17 @@ public class ReviewQueryService {
         }
         increaseHits(loginMemberId, review);
         return createReviewDetailResponse(review);
+    }
+
+    public List<ReviewResponse> searchNotifiedReviews(Long memberId,Pageable pageable) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+        List<Review> reviews = reviewQueryRepository.searchNotifiedReviews(reviewIds, pageable);
+        return createReviewResponses(reviews);
+    }
+
+    public int calculateNotifiedPageCount(Long memberId) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+        return ((reviewQueryRepository.getNotifiedTotalPages(reviewIds) - 1) / PAGE_SIZE) + 1;
     }
 
     /**
@@ -190,9 +205,6 @@ public class ReviewQueryService {
     }
 
     private List<CommentResponse> createCommentResponses(List<Comment> comments, Long memberId) {
-        if (comments.isEmpty()) {
-            return new ArrayList<>();
-        }
         return comments.stream()
                 .map(comment ->
                         CommentResponse.builder()
@@ -215,11 +227,7 @@ public class ReviewQueryService {
     }
 
     private Integer getCountByType(CommentLikeType commentLikeType, Long commentId) {
-        Map<CommentLikeType, Integer> countMap = commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId);
-        if (countMap.containsKey(commentLikeType)) {
-            return countMap.get(commentLikeType);
-        }
-        return 0;
+        return commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId).get(commentLikeType);
     }
 
     private ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {
