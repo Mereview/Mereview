@@ -7,6 +7,7 @@ import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.response.PageResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ public class NotificationController {
     private final ReviewQueryService reviewQueryService;
 
     @GetMapping
+    @ApiOperation(value = "알림 리뷰 조회")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchNotifiedReviews(
             @RequestParam Long memberId,
             @RequestParam("1") Integer pageNumber) {
@@ -40,12 +42,14 @@ public class NotificationController {
     }
 
     @PutMapping("/{notificationId}")
+    @ApiOperation(value = "알림 여부 토글")
     public ApiResponse<NotificationResponse> toggleStatus(@PathVariable Long notificationId) {
         NotificationResponse response = notificationService.toggleStatus(notificationId);
         return ApiResponse.ok(response);
     }
 
     @DeleteMapping("/{notificationId}")
+    @ApiOperation(value = "알림 삭제")
     public ApiResponse<Long> deleteNotification(@PathVariable Long notificationId) {
         Long deleteId = notificationService.delete(notificationId);
         return ApiResponse.ok(deleteId);
