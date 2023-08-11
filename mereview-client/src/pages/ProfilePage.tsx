@@ -36,82 +36,82 @@ import "../styles/css/ProfilePage.css";
 const dummyBadges: AchievedBadge[] = [
   {
     genre: "액션",
-    rank: "gold",
+    rank: "GOLD",
     achievementId: "0001",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0002",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0012",
   },
   {
     genre: "범죄",
-    rank: "silver",
+    rank: "SILVER",
     achievementId: "0043",
   },
   {
     genre: "액션",
-    rank: "gold",
+    rank: "GOLD",
     achievementId: "0041",
   },
   {
     genre: "액션",
-    rank: "gold",
+    rank: "GOLD",
     achievementId: "0231",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0072",
   },
   {
     genre: "범죄",
-    rank: "silver",
+    rank: "SILVER",
     achievementId: "0053",
   },
   {
     genre: "액션",
-    rank: "gold",
+    rank: "GOLD",
     achievementId: "0081",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0542",
   },
   {
     genre: "범죄",
-    rank: "silver",
+    rank: "SILVER",
     achievementId: "0063",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0992",
   },
   {
     genre: "범죄",
-    rank: "silver",
+    rank: "SILVER",
     achievementId: "0113",
   },
   {
     genre: "액션",
-    rank: "gold",
+    rank: "GOLD",
     achievementId: "0211",
   },
   {
     genre: "SF",
-    rank: "bronze",
+    rank: "BRONZE",
     achievementId: "0312",
   },
   {
     genre: "범죄",
-    rank: "silver",
+    rank: "SILVER",
     achievementId: "0653",
   },
 ];
@@ -144,9 +144,9 @@ const userInfo: ProfileInfoInterface = {
 
 const profileBorderColor = {
   NONE: "rgba(0, 0, 0, 1)",
-  BRONZE: "rgba(148, 97, 61, 1)", // bronze
-  SILVER: "rgba(143, 143, 143, 1)", // silver
-  GOLD: "rgba(242, 205, 92, 1)", // gold
+  BRONZE: "rgba(148, 97, 61, 1)", // BRONZE
+  SILVER: "rgba(143, 143, 143, 1)", // SILVER
+  GOLD: "rgba(242, 205, 92, 1)", // GOLD
   PLATINUM: "rgba(80, 200, 120, 1)", // platinum
   DIAMOND: "rgba(112, 209, 244, 1)", // diamond
 };

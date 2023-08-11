@@ -1,6 +1,6 @@
 export interface AchievedBadge {
   genre: string;
-  rank: "bronze" | "silver" | "gold" | null;
+  rank: "BRONZE" | "SILVER" | "GOLD" | null;
   achievementId: string;
 }
 
@@ -17,11 +17,11 @@ export interface ProfileInfoInterface {
   followingCount: number;
   followed: boolean;
   highestTier:
-    | "Bronze"
-    | "Silver"
-    | "Gold"
-    | "Platinum"
-    | "Diamond"
+    | "BRONZE"
+    | "SILVER"
+    | "GOLD"
+    | "PLATINUM"
+    | "DIAMOND"
     | "NONE"
     | null;
   badges: AchievedBadge[];
@@ -35,5 +35,5 @@ export interface Experience {
   typeName: "재밌어요" | "유용해요";
   exp: number;
   // expPercent: number;
-  tier: "Bronze" | "Silver" | "Gold" | "Platinum" | "Diamond" | "NONE";
+  tier: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND" | "NONE";
 }
