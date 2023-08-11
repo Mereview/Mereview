@@ -161,7 +161,7 @@ public class MemberQueryService {
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
-                .reviews(reviewResponses)
+                .reviews(reviewResponses.size())
                 .todayVisitCount(member.getMemberVisit().getTodayVisitCount())
                 .totalVisitCount(member.getMemberVisit().getTotalVisitCount())
                 .email(member.getEmail())
