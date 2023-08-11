@@ -11,20 +11,20 @@ import "../styles/css/ExperienceBar.css";
 
 const tierColor = {
   NONE: "rgba(0, 0, 0, 0.35)",
-  Bronze: "rgba(148, 97, 61, 0.5)", // bronze
-  Silver: "rgba(143, 143, 143, 0.5)", // silver
-  Gold: "rgba(242, 205, 92, 0.5)", // gold
-  Platinum: "rgba(80, 200, 120, 0.5)", // platinum
-  Diamond: "rgba(112, 209, 244, 0.5)", // diamond
+  BRONZE: "rgba(148, 97, 61, 0.5)", // bronze
+  SILVER: "rgba(143, 143, 143, 0.5)", // silver
+  GOLD: "rgba(242, 205, 92, 0.5)", // gold
+  PLATINUM: "rgba(80, 200, 120, 0.5)", // platinum
+  DIAMOND: "rgba(112, 209, 244, 0.5)", // diamond
 };
 
 const tierBorderColor = {
   NONE: "rgba(0, 0, 0, 1)",
-  Bronze: "rgba(148, 97, 61, 1)", // bronze
-  Silver: "rgba(143, 143, 143, 1)", // silver
-  Gold: "rgba(242, 205, 92, 1)", // gold
-  Platinum: "rgba(80, 200, 120, 1)", // platinum
-  Diamond: "rgba(112, 209, 244, 1)", // diamond
+  BRONZE: "rgba(148, 97, 61, 1)", // bronze
+  SILVER: "rgba(143, 143, 143, 1)", // silver
+  GOLD: "rgba(242, 205, 92, 1)", // gold
+  PLATINUM: "rgba(80, 200, 120, 1)", // platinum
+  DIAMOND: "rgba(112, 209, 244, 1)", // diamond
 };
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
