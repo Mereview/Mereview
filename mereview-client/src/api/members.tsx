@@ -11,12 +11,17 @@ export async function login(data: Object, success, fail) {
   await api.post(`/login`, JSON.stringify(data)).then(success).catch(fail);
 }
 
+export async function verify(data: Object, success, fail) {
+  await api.post(`/verify`, JSON.stringify(data)).then(success).catch(fail);
+}
+
 export async function updateMemberIntroduce(data: Object, success, fail) {
   api.defaults.headers["Authorization"] = localStorage.getItem("token");
   await api.post(`/introduce`, JSON.stringify(data)).then(success).catch(fail);
 }
 
 export async function deleteMember(memberId: number, success, fail) {
+  api.defaults.headers["Authorization"] = localStorage.getItem("token");
   await api.delete(`/${memberId}`).then(success).catch(fail);
 }
 

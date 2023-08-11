@@ -8,11 +8,15 @@ import MovieDetail from "./pages/MovieDetail";
 import NavigationBar from "./components/NavigationBar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import Modal from "react-modal";
 import "./styles/css/App.css";
 import axios from "axios";
 import { userActions } from "./store/user-slice";
 import PageNotFound404 from "./pages/PageNotFound404";
 import { searchMemberInfoSimple } from "./api/members";
+
+Modal.setAppElement("#root");
+
 function App() {
   const dispatch = useDispatch();
 
