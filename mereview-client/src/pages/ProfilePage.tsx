@@ -1,9 +1,14 @@
-import { useState, useEffect, MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import {
+  BsHeart,
+  BsHeartFill,
+  BsPencilSquare,
+  BsPersonFillGear,
+} from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
 import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
@@ -15,9 +20,11 @@ import {
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
+import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
 import Loading from "../components/common/Loading";
 import {
   searchMemberInfo,
+  updateMemberIntroduce,
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   follow,
@@ -137,25 +144,15 @@ const userInfo: ProfileInfoInterface = {
 
 const profileBorderColor = {
   NONE: "rgba(0, 0, 0, 1)",
-  Bronze: "rgba(148, 97, 61, 1)", // bronze
-  Silver: "rgba(143, 143, 143, 1)", // silver
-  Gold: "rgba(242, 205, 92, 1)", // gold
-  Platinum: "rgba(80, 200, 120, 1)", // platinum
-  Diamond: "rgba(112, 209, 244, 1)", // diamond
+  BRONZE: "rgba(148, 97, 61, 1)", // bronze
+  SILVER: "rgba(143, 143, 143, 1)", // silver
+  GOLD: "rgba(242, 205, 92, 1)", // gold
+  PLATINUM: "rgba(80, 200, 120, 1)", // platinum
+  DIAMOND: "rgba(112, 209, 244, 1)", // diamond
 };
 /* 유저 더미 데이터 생성 끝 */
 
 const userExpData: Experience[] = [];
-
-/* 작성 리뷰 더미 데이터 */
-const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
-  console.log("Profile Clicked");
-};
-
-const handleClickTitle = (event: React.MouseEvent<HTMLParagraphElement>) => {
-  console.log("Title Clicked");
-};
-/* 작성 리뷰 더미 데이터 끝 */
 
 /* api test start */
 let error: AxiosError | null = null;
@@ -185,26 +182,26 @@ const getMemberInfo = async (userId: number) => {
           genre: expData.genreName,
           typeName: "유용해요",
           exp: expData.usefulExperience,
-          // expPercent: expData.usefulExpPercent,
           tier: expData.usefulTier,
         };
         const funExp: Experience = {
           genre: expData.genreName,
           typeName: "재밌어요",
           exp: expData.funExperience,
-          // expPercent: expData.funExpPercent,
           tier: expData.funTier,
         };
         userExpData.push(usefulExp);
         userExpData.push(funExp);
       }
+
       userExpData.sort((a, b) => {
         if (a.exp > b.exp) return -1;
         else if (a.exp < b.exp) return 1;
         else return 0;
       });
-      userInfo.highestTier = userExpData[0].tier;
 
+      userInfo.highestTier = userExpData[0].tier;
+      console.log(response);
       // userInfo.commentCount = response.commentCount;
     },
     (e) => {
@@ -214,14 +211,15 @@ const getMemberInfo = async (userId: number) => {
   );
 };
 
-let loginNickname: string | null = null;
 let followFlag: boolean = false;
-const isFollower = async (userId: number, loginId: number) => {
-  await searchMemberFollowInfo(
+let followerCountUpdater: number = 0;
+const getFollowerCount = async (userId: number, loginId: number) => {
+  await searchMemberFollowerInfo(
     userId,
     ({ data }) => {
+      followerCountUpdater = data.data.length;
       for (const follower of data.data) {
-        if (follower["nickname"] === loginNickname) {
+        if (follower["id"] === loginId) {
           followFlag = true;
           break;
         }
@@ -233,25 +231,12 @@ const isFollower = async (userId: number, loginId: number) => {
   );
 };
 
-let followerCountRenewaler: number = 0;
-const getFollowerCount = async (userId: number) => {
-  await searchMemberFollowerInfo(
-    userId,
-    ({ data }) => {
-      followerCountRenewaler = data.data.length;
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-};
-
-let followingCountRenewaler: number = 0;
+let followingCountUpdater: number = 0;
 const getFollowingCount = async (userId: number) => {
   await searchMemberFollowInfo(
     userId,
     ({ data }) => {
-      followingCountRenewaler = data.data.length;
+      followingCountUpdater = data.data.length;
     },
     (error) => {
       console.log(error);
@@ -260,9 +245,9 @@ const getFollowingCount = async (userId: number) => {
 };
 /* api test end */
 
+let reviewListUpdater: ReviewCardInterface[] | null = null;
 const ProfilePage = () => {
   const loginId: number = useSelector((state: any) => state.user.user.id);
-  loginNickname = useSelector((state: any) => state.user.user.nickname);
   const { id } = useParams();
   const userId: number = id ? Number(id) : loginId;
 
@@ -278,6 +263,9 @@ const ProfilePage = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  const [introductionEditing, setIntroductionEditing] =
+    useState<boolean>(false);
+  const [editedIntroduction, setEditedIntroduction] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -286,87 +274,57 @@ const ProfilePage = () => {
     followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
 
   useEffect(() => {
-    if (userId === null || loginId === null || userId === undefined) return;
+    if (
+      userId === null ||
+      loginId === null ||
+      userId === undefined ||
+      loginId === undefined
+    )
+      return;
     const followCheck = async () => {
-      await isFollower(userId, loginId);
-      await getFollowerCount(userId);
+      await getFollowerCount(userId, loginId);
       await getFollowingCount(userId);
     };
 
-    followCheck();
-  }, [userId]);
-
-  useEffect(() => {
-    // 유저 정보 저장
-    if (userId === null || loginId === null || userId === undefined) return;
     const fetchData = async () => {
       await getMemberInfo(userId);
       if (error !== null) navigate(-1);
-      else {
-        if (userId !== loginId) {
-          await isFollower(userId, loginId);
-        }
-        setIsFetched(true);
-      }
+      else setIsFetched(true);
     };
 
     fetchData();
-  }, [userId]);
+    followCheck();
+  }, [userId, loginId]);
 
   useEffect(() => {
     setFollowed(followFlag);
   }, [followFlag]);
 
   useEffect(() => {
-    setFollowingCount(followingCountRenewaler);
-  }, [followingCountRenewaler]);
+    setFollowingCount(followingCountUpdater);
+  }, [followingCountUpdater]);
 
   useEffect(() => {
-    setFollowerCount(followerCountRenewaler);
-  }, [followerCountRenewaler]);
+    setFollowerCount(followerCountUpdater);
+  }, [followerCountUpdater]);
 
   useEffect(() => {
-    // reload review list
-    // 검색조건이 있다면 조건 유지
-    // 검색어 공백일땐 reload X
-    console.log(
-      `Reload!! ${sortBy} ${
-        sortBy === "date"
-          ? dateDescend
-            ? "DESC"
-            : "ASC"
-          : recommendDescend
-          ? "DESC"
-          : "ASC"
-      }, 조회기간: ${
-        searchTerm === "all" ? "전체기간" : searchTerm + "개월"
-      }, 관심사만: ${onlyInterest}, ID: ${userId}`
-    );
-
-    interface ProfilePageSortParamInterface {
-      memberId: number;
-      myInterest?: number;
-      orderBy?: string;
-      orderDir?: string;
-      term?: string;
-      pageNumber?: number;
-    }
-
-    const searchParam: ProfilePageSortParamInterface = {
+    if (!isFetched) return;
+    const searchCondition: SearchConditionInterface = {
       memberId: userId,
     };
-    if (onlyInterest) searchParam.myInterest = loginId;
+    if (onlyInterest) searchCondition.myInterest = loginId;
     if (sortBy === "recommend") {
-      searchParam.orderBy = "POSITIVE";
-      searchParam.orderDir = recommendDescend ? "DESC" : "ASC";
+      searchCondition.orderBy = "POSITIVE";
+      searchCondition.orderDir = recommendDescend ? "DESC" : "ASC";
     } else if (sortBy === "date") {
-      searchParam.orderDir = dateDescend ? "DESC" : "ASC";
+      searchCondition.orderDir = dateDescend ? "DESC" : "ASC";
     }
-    if (searchTerm !== "all") searchParam.term = searchTerm;
+    if (searchTerm !== "all") searchCondition.term = searchTerm;
 
     const getReviewList = async () => {
       await searchReviews(
-        searchParam,
+        searchCondition,
         ({ data }) => {
           const response = data.data.data;
           const reviewList: ReviewCardInterface[] = [];
@@ -387,7 +345,6 @@ const ProfilePage = () => {
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
-              onClickTitle: handleClickTitle,
             };
             if (review.profileImage?.id) {
               reviewData.profileImageId = review.profileImage?.id;
@@ -399,7 +356,6 @@ const ProfilePage = () => {
             reviewList.push(reviewData);
           }
 
-          console.log(reviewList);
           setReviewListState(reviewList);
         },
         (error) => {
@@ -409,7 +365,18 @@ const ProfilePage = () => {
     };
 
     getReviewList();
-  }, [sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
+  }, [
+    isFetched,
+    sortBy,
+    dateDescend,
+    recommendDescend,
+    onlyInterest,
+    searchTerm,
+  ]);
+
+  useEffect(() => {
+    setReviewListState(reviewListUpdater);
+  }, [reviewListUpdater]);
 
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
@@ -445,10 +412,40 @@ const ProfilePage = () => {
       }
     );
 
-    await getFollowerCount(userId);
+    await getFollowerCount(userId, loginId);
     await getFollowingCount(userId);
 
     setFollowed(!followed);
+  };
+
+  const openModify = () => {
+    console.log(userInfo.memberId);
+  };
+
+  const handleEditClick = () => {
+    setEditedIntroduction(userInfo.introduction);
+    setIntroductionEditing(true);
+  };
+
+  const handleEditSaveClick = async () => {
+    const introduceData: Object = {
+      id: loginId,
+      introduce: editedIntroduction,
+    };
+    await updateMemberIntroduce(
+      introduceData,
+      ({ data }) => {
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    setIntroductionEditing(false);
+  };
+
+  const handleEditCancelClick = () => {
+    setIntroductionEditing(false);
   };
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
@@ -478,6 +475,13 @@ const ProfilePage = () => {
             alt="프로필 이미지"
             style={{ width: "450px" }}
           />
+          {userId === loginId ? (
+            <div className="profile-modify-icon-container" onClick={openModify}>
+              <BsPersonFillGear className="modify-icon" />
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="follow-info">
             <span>팔로잉: {followingCount}</span>
             <span>팔로워: {followerCount}</span>
@@ -507,7 +511,36 @@ const ProfilePage = () => {
           </Row>
           <hr style={{ marginTop: "1px", marginBottom: "10px" }} />
           <Row>
-            <Col className="introduction">{userInfo.introduction}</Col>
+            {introductionEditing ? (
+              <>
+                <div className="introduction">
+                  <textarea
+                    className="edit-area"
+                    value={editedIntroduction}
+                    rows={10}
+                    onChange={(e) => setEditedIntroduction(e.target.value)}
+                  />
+                  <div className="edit-button">
+                    <button onClick={handleEditSaveClick}>수정</button>
+                    <button onClick={handleEditCancelClick}>취소</button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Col className="introduction">
+                  {userInfo.introduction
+                    ? userInfo.introduction
+                    : "자기소개가 없습니다."}
+                  {userId === loginId ? (
+                    <BsPencilSquare
+                      className="edit-icon"
+                      onClick={handleEditClick}
+                    />
+                  ) : null}
+                </Col>
+              </>
+            )}
           </Row>
           <div className="post-counter-join-date-container">
             <Row>

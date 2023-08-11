@@ -4,7 +4,4 @@ export interface MovieCardInterface {
   movieTitle: string;
   releaseYear: number | null;
   movieGenre: string[];
-  movieCardClickHandler: (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => void;
 }
