@@ -186,18 +186,14 @@ public class MemberService {
 
     }
 
-    public Long updateMemberIntroduce(MemberIntroduceRequest request, String token) {
+    public Long updateMemberIntroduce(MemberIntroduceRequest request) {
         log.debug("updateMemberIntroduce request = {}", request);
 
         Member member = memberRepository.findById(request.getId()).orElseThrow(NoSuchElementException::new);
-        String memberInToken = jwtUtils.getUsernameFromJwt(token);
 
         // 현재 로그인한 유저가 맞는지 확인
-        if (member.getEmail().equals(memberInToken)) {
-            member.updateIntroduce(request.getIntroduce());
-        } else {
-            throw new IllegalArgumentException("현재 로그인한 유저가 아닙니다.");
-        }
+        member.updateIntroduce(request.getIntroduce());
+
         return member.getId();
     }
 
