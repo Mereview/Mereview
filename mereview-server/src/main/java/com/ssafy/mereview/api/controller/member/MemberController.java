@@ -82,11 +82,15 @@ public class MemberController {
 
     @PostMapping("/introduce")
     @ApiOperation(value = "회원 자기소개 수정", response = Join.class)
-    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request) {
-
+    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request, HttpServletRequest httpServletRequest) {
         log.debug("MemberIntroduceRequest : {}", request);
+        String token = httpServletRequest.getHeader("Authorization");
+        log.debug("token : {}", token);
+        if(token == null){
+            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
+        }
 
-        Long memberId = memberService.updateMemberIntroduce(request);
+        Long memberId = memberService.updateMemberIntroduce(request, token);
         return ApiResponse.ok(memberId);
     }
 
