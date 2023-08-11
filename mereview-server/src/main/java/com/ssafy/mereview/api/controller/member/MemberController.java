@@ -72,17 +72,21 @@ public class MemberController {
         return ApiResponse.ok(memberLoginResponse);
     }
 
+    @GetMapping("/check")
+    @ApiOperation(value = "회원 중복 체크", response = Join.class)
+    public ApiResponse<Boolean> checkMember(@RequestBody MemberLoginRequest request) {
+        log.debug("MemberController.checkMember : {}", request);
+        Boolean isExist = memberQueryService.checkMember(request.toServiceRequest());
+        return ApiResponse.ok(isExist);
+    }
+
     @PostMapping("/introduce")
     @ApiOperation(value = "회원 자기소개 수정", response = Join.class)
-    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request, HttpServletRequest httpServletRequest) {
-        log.debug("MemberIntroduceRequest : {}", request);
-        String token = httpServletRequest.getHeader("Authorization");
-        if(token == null){
-            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
-        }
-        token = token.substring("Bearer ".length()).trim();
+    public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request) {
 
-        Long memberId = memberService.updateMemberIntroduce(request, token);
+        log.debug("MemberIntroduceRequest : {}", request);
+
+        Long memberId = memberService.updateMemberIntroduce(request);
         return ApiResponse.ok(memberId);
     }
 
