@@ -4,6 +4,7 @@ import ReviewHome from "./pages/ReviewHome";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
 import ProfilePage from "./pages/ProfilePage";
+import MovieDetail from "./pages/MovieDetail";
 import NavigationBar from "./components/NavigationBar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -45,6 +46,7 @@ function App() {
           <Route path="/profile" Component={ProfilePage}></Route>
           <Route path="/profile/:id" Component={ProfilePage}></Route>
           <Route path="/404" Component={PageNotFound404}></Route>
+          <Route path="/movie/:id" Component={MovieDetail}></Route>
         </Routes>
       </Router>
     </div>
