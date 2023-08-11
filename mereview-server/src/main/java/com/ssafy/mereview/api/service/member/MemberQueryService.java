@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberServiceLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
@@ -59,11 +60,17 @@ public class MemberQueryService {
         return createMemberLoginResponse(searchMember);
     }
 
+    public Boolean checkMember(MemberServiceLoginRequest request) {
+        Member member = memberQueryRepository.searchByEmail(request.getEmail());
+        return passwordEncoder.matches(request.getPassword(), member.getPassword());
+    }
+
     public List<MemberTierResponse> searchMemberTierByGenre(Long memberId, int genreNumber) {
         List<MemberTier> memberTiers = memberQueryRepository.searchMemberTierByGenre(memberId, genreNumber);
 
         return createMemberTierResponses(memberTiers);
     }
+
 
     private List<MemberTierResponse> createMemberTierResponses(List<MemberTier> memberTiers) {
 
@@ -109,6 +116,31 @@ public class MemberQueryService {
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
     }
 
+    public List<FollowingResponse> searchFollowingResponse(Long memberId) {
+        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollowing(memberId);
+
+        return memberFollow.stream()
+                .map(FollowingResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<FollowerResponse> searchFollowerResponse(Long memberId) {
+        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollower(memberId);
+
+        return memberFollow.stream()
+                .map(FollowerResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public MemberDataResponse searchMemberData(Long id) {
+        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
+        int count = notificationQueryRepository.countByMemberId(id);
+        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        return MemberDataResponse.of(member, notificationResponses, count);
+    }
+
+    /** private method **/
+
     private void checkAchievements(Long memberId) {
         List<MemberAchievement> memberAchievements = memberAchievementQueryRepository.searchByMemberId(memberId);
         memberAchievements.forEach(memberAchievement -> {
@@ -121,13 +153,6 @@ public class MemberQueryService {
             }
         });
 
-    }
-
-    public MemberDataResponse searchMemberData(Long id) {
-        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
-        int count = notificationQueryRepository.countByMemberId(id);
-        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        return MemberDataResponse.of(member, notificationResponses, count);
     }
 
     private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses) {
@@ -216,27 +241,6 @@ public class MemberQueryService {
                 .collect(Collectors.toList());
     }
 
-    public List<FollowingResponse> searchFollowingResponse(Long memberId) {
-        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollowing(memberId);
-
-        return memberFollow.stream()
-                .map(FollowingResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<FollowerResponse> searchFollowerResponse(Long memberId) {
-        List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollower(memberId);
-
-        return memberFollow.stream()
-                .map(FollowerResponse::of)
-                .collect(Collectors.toList());
-    }
-
-
-    /**
-     * private methods
-     */
-
     private List<ReviewResponse> createReviewResponses(List<Review> reviews) {
         return reviews.stream()
                 .map(review -> {
@@ -303,5 +307,4 @@ public class MemberQueryService {
             memberTier.checkAndPromoteFunTier();
         });
     }
-
 }

@@ -72,6 +72,14 @@ public class MemberController {
         return ApiResponse.ok(memberLoginResponse);
     }
 
+    @GetMapping("/check")
+    @ApiOperation(value = "회원 중복 체크", response = Join.class)
+    public ApiResponse<Boolean> checkMember(@RequestBody MemberLoginRequest request) {
+        log.debug("MemberController.checkMember : {}", request);
+        Boolean isExist = memberQueryService.checkMember(request.toServiceRequest());
+        return ApiResponse.ok(isExist);
+    }
+
     @PostMapping("/introduce")
     @ApiOperation(value = "회원 자기소개 수정", response = Join.class)
     public ApiResponse<Long> updateMemberIntroduce(@RequestBody MemberIntroduceRequest request, HttpServletRequest httpServletRequest) {
