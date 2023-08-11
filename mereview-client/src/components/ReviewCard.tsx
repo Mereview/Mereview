@@ -31,6 +31,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   const handleClickReviewCard = (
     event: React.MouseEvent<HTMLParagraphElement>
   ) => {
+    console.log(reviewId);
     navigate(`/review/${reviewId}`);
   };
 

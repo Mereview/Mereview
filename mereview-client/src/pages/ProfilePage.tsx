@@ -1,9 +1,14 @@
-import { useState, useEffect, MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import {
+  BsHeart,
+  BsHeartFill,
+  BsPencilSquare,
+  BsPersonFillGear,
+} from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
 import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
@@ -19,6 +24,7 @@ import { SearchConditionInterface } from "../components/interface/SearchConditio
 import Loading from "../components/common/Loading";
 import {
   searchMemberInfo,
+  updateMemberIntroduce,
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   follow,
@@ -257,6 +263,9 @@ const ProfilePage = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  const [introductionEditing, setIntroductionEditing] =
+    useState<boolean>(false);
+  const [editedIntroduction, setEditedIntroduction] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -409,6 +418,36 @@ const ProfilePage = () => {
     setFollowed(!followed);
   };
 
+  const openModify = () => {
+    console.log(userInfo.memberId);
+  };
+
+  const handleEditClick = () => {
+    setEditedIntroduction(userInfo.introduction);
+    setIntroductionEditing(true);
+  };
+
+  const handleEditSaveClick = async () => {
+    const introduceData: Object = {
+      id: loginId,
+      introduce: editedIntroduction,
+    };
+    await updateMemberIntroduce(
+      introduceData,
+      ({ data }) => {
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    setIntroductionEditing(false);
+  };
+
+  const handleEditCancelClick = () => {
+    setIntroductionEditing(false);
+  };
+
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
   const year: number = formattedCreateDate.getFullYear();
   const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
@@ -436,6 +475,13 @@ const ProfilePage = () => {
             alt="프로필 이미지"
             style={{ width: "450px" }}
           />
+          {userId === loginId ? (
+            <div className="profile-modify-icon-container" onClick={openModify}>
+              <BsPersonFillGear className="modify-icon" />
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="follow-info">
             <span>팔로잉: {followingCount}</span>
             <span>팔로워: {followerCount}</span>
@@ -465,7 +511,36 @@ const ProfilePage = () => {
           </Row>
           <hr style={{ marginTop: "1px", marginBottom: "10px" }} />
           <Row>
-            <Col className="introduction">{userInfo.introduction}</Col>
+            {introductionEditing ? (
+              <>
+                <div className="introduction">
+                  <textarea
+                    className="edit-area"
+                    value={editedIntroduction}
+                    rows={10}
+                    onChange={(e) => setEditedIntroduction(e.target.value)}
+                  />
+                  <div className="edit-button">
+                    <button onClick={handleEditSaveClick}>수정</button>
+                    <button onClick={handleEditCancelClick}>취소</button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Col className="introduction">
+                  {userInfo.introduction
+                    ? userInfo.introduction
+                    : "자기소개가 없습니다."}
+                  {userId === loginId ? (
+                    <BsPencilSquare
+                      className="edit-icon"
+                      onClick={handleEditClick}
+                    />
+                  ) : null}
+                </Col>
+              </>
+            )}
           </Row>
           <div className="post-counter-join-date-container">
             <Row>
