@@ -96,6 +96,8 @@ public class ReviewQueryRepository {
         return queryFactory
                 .select(review.id)
                 .from(review)
+                .join(review.member, member)
+                .join(review.movie, movie)
                 .where(
                         isTitle(condition.getTitle()),
                         isContent(condition.getContent()),
@@ -111,7 +113,7 @@ public class ReviewQueryRepository {
     }
 
     private BooleanExpression isTitle(String title) {
-        return hasText(title) ? review.title.like("%" + title + "%") : null;
+        return hasText(title) ? review.movie.title.like("%" + title + "%") : null;
     }
 
     private BooleanExpression isContent(String content) {

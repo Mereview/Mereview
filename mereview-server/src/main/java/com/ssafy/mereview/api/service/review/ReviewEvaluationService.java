@@ -49,15 +49,9 @@ public class ReviewEvaluationService {
             createReviewEvaluation(request);
             return true;
         }
-
         ReviewEvaluation evaluation = reviewEvaluation.orElseThrow(NoSuchElementException::new);
-        if (evaluation.getType().equals(request.getType())) {
-            deleteReviewEvaluation(request, evaluation);
-            return false;
-        } else {
-            createReviewEvaluation(request);
-            return true;
-        }
+        deleteReviewEvaluation(request, evaluation);
+        return false;
     }
 
     private void createReviewEvaluation(ReviewEvaluationServiceRequest request) {
