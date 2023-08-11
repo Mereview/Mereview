@@ -58,3 +58,7 @@ export async function deleteReviewComment(commentId: number, success, fail) {
 export async function updateCommentLike(data: Object, success, fail) {
   await api.post(`/comments/likes`, data).then(success).catch(fail);
 }
+
+export async function evaluationsReview(data: Object, success, fail) {
+  await api.post(`/evaluations`, data).then(success).catch(fail);
+}

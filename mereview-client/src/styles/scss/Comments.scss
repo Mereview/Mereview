@@ -1,33 +1,74 @@
 @import "Style";
 
 .comment {
-  display: flex;
-  width: 100%;
+  width: 600px;
   height: auto;
+  display: flex;
+  border-bottom: 2px dashed black;
+  margin: 3px 0px;
   .writer {
     display: flex;
-    flex-basis: 10%;
+    flex-basis: 15%;
     flex-direction: column;
+    height: auto;
+    align-items: center;
+
     img {
+      flex-basis: 80%;
+      border-radius: 9999px;
       width: 50px;
       height: 50px;
-      border-radius: 9999px;
+      margin: 5px 0px;
+    }
+    p {
+      flex-basis: 20%;
+      display: flex;
+      justify-content: center;
+      margin: 5px;
+      font-weight: bold;
     }
   }
 
-  .content {
-    flex-basis: 80%;
+  .all {
+    padding: 10px;
+    flex-basis: 73%;
+    width: 300px;
+    white-space: pre-line;
+    word-wrap: break-word;
   }
 
   .buttons {
+    flex-basis: 12%;
     display: flex;
-    flex-basis: 10%;
     flex-direction: column;
-    .lndl {
-      display: flex;
-      flex-direction: column;
+    justify-content: space-between;
+    font-size: 16px;
+    button {
+      margin-right: 5px;
+    }
+
+    #like {
+      background-image: url(/public/thumbUp.png);
+      width: 30px;
+      height: 30px;
+      background-color: blue;
+      border: solid blue 0.5px;
+    }
+    #dislike {
+      background-image: url(/public//thumbDown.png);
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border: solid red 0.5px;
+      padding: 5px;
     }
     .delete {
+      background-color: $magenta-6;
+      border: none;
+      color: white;
+      width: 25px;
+      height: 25px;
+      margin-top: 3px;
     }
   }
 }

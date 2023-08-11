@@ -15,6 +15,8 @@ import static com.ssafy.mereview.domain.member.entity.QMember.member;
 import static com.ssafy.mereview.domain.member.entity.QMemberAchievement.memberAchievement;
 import static com.ssafy.mereview.domain.member.entity.QMemberTier.memberTier;
 import static com.ssafy.mereview.domain.movie.entity.QGenre.genre;
+import static com.ssafy.mereview.domain.review.entity.QComment.comment;
+import static com.ssafy.mereview.domain.review.entity.QReview.review;
 
 
 @Repository
@@ -97,6 +99,23 @@ public class MemberQueryRepository{
                 .where(memberTier.member.id.eq(memberId))
                 .where(memberTier.genre.genreNumber.eq(genreNumber))
                 .fetch();
+    }
+
+    public int searchReviewCountByMemberIdAndGenreId(Long memberId, Long id) {
+        return queryFactory
+                .selectFrom(review)
+                .where(review.member.id.eq(memberId))
+                .where(review.genre.id.eq(id))
+                .fetch().size();
+    }
+
+    public int searchCommentCountByMemberIdAndGenreId(Long memberId, Long id) {
+        return queryFactory
+                .selectFrom(comment)
+                .innerJoin(comment.review, review)
+                .where(review.genre.id.eq(id))
+                .where(member.id.eq(id))
+                .fetch().size();
     }
 //
 //    public void searchFollowerByMemberId(Long currentUserId) {

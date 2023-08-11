@@ -9,14 +9,21 @@ export interface ProfileInfoInterface {
   nickname: string;
   profileImageId: number | null;
   age: number | null;
-  gender: 1 | 2 | null; // 1: male, 2: female
+  gender: "MALE" | "FEMALE" | null; // 1: male, 2: female
   introduction: string | null;
   reviewCount: number; // 리뷰 작성 수
   commentCount: number; // 댓글 작성 수
   followerCount: number;
   followingCount: number;
   followed: boolean;
-  highestTier: "bronze" | "silver" | "gold" | "platinum" | "diamond" | null;
+  highestTier:
+    | "Bronze"
+    | "Silver"
+    | "Gold"
+    | "Platinum"
+    | "Diamond"
+    | "NONE"
+    | null;
   badges: AchievedBadge[];
   joinDate: number | Date;
   todayVisitor: number; // 오늘 방문자 수
@@ -28,5 +35,5 @@ export interface Experience {
   typeName: "재밌어요" | "유용해요";
   exp: number;
   // expPercent: number;
-  tier: "Bronze" | "Silver" | "Gold" | "Platinum" | "Diamond";
+  tier: "Bronze" | "Silver" | "Gold" | "Platinum" | "Diamond" | "NONE";
 }

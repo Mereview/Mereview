@@ -11,10 +11,19 @@ import lombok.NoArgsConstructor;
 public class MemberTierResponse {
 
     private Long id;
+
     private Rank funTier;
-    private Rank usefulTier;
+
     private int funExperience;
+
+    private int funExperiencePercent;
+
+    private Rank usefulTier;
+
     private int usefulExperience;
+
+    private int usefulExperiencePercent;
+
     private String genreName;
 
     @Builder
@@ -36,6 +45,11 @@ public class MemberTierResponse {
                 .usefulExperience(memberTier.getUsefulExperience())
                 .genreName(memberTier.getGenre().getGenreName())
                 .build();
+    }
+
+    public void createExperiencePercent(int funExperiencePercent, int usefulExperiencePercent) {
+        this.funExperiencePercent = funExperiencePercent;
+        this.usefulExperiencePercent = usefulExperiencePercent;
     }
 }
 

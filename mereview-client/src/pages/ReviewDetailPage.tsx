@@ -22,45 +22,51 @@ const ReviewDetail = () => {
   const [review, setReview] = useState({ backgroundImage: { id: null } });
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  console.log(id);
   const userId = localStorage.getItem("id");
-  console.log(userId);
   const navigate = useNavigate();
   //리뷰불러오기
 
   useEffect(() => {
     const data = { reviewId: id, loginMemberId: userId };
-    searchReview(
-      data,
-      (res) => {
-        setReview(res.data.data);
-        setLoading(true);
-      },
-      (err) => {
-        console.log("fail");
-      }
-    );
+    const getReviewHandler = () => {
+      searchReview(
+        data,
+        (res) => {
+          setReview(res.data.data);
+          setLoading(true);
+          console.log("최상위 렌더링");
+        },
+        (err) => {
+          console.log("fail");
+        }
+      );
+    };
+    getReviewHandler();
   }, []);
 
-  const backgroundImageURL = review.backgroundImage.id
-    ? `http://localhost:8080/api/image/download/backgrounds/${review.backgroundImage.id}`
-    : false;
+  const backgroundImageURL =
+    review.backgroundImage && review.backgroundImage.id
+      ? `${process.env.REACT_APP_API_URL}/image/download/backgrounds/${review.backgroundImage.id}`
+      : false;
   const style = backgroundImageURL
     ? {
         backgroundImage: `url(${backgroundImageURL})`,
         filter: "blur(15px)",
         zIndex: "-1",
       }
-    : { backgroundColor: "black", filter: "blur(5px)", zIndex: "-1" };
+    : {
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        filter: "blur(5px)",
+        zIndex: "-1",
+      };
 
-  console.log(review);
   return (
     <div className="section">
       {loading ? (
         <div>
           <div className="blurred" style={style}></div>
           <Top review={review} />
-          <Detail review={review} />
+          <Detail review={review} setReview={setReview} />
           <div className="topbutton"></div>
         </div>
       ) : (

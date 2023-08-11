@@ -81,7 +81,9 @@ public class MemberService {
 
         // 회원 티어 초기화
         createTier(member);
+
         createAchievement(member);
+
         EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
 
         return savedMember.getId();
@@ -95,6 +97,13 @@ public class MemberService {
 
         if (memberQueryRepository.searchByNickname(request.getNickname()) != null) {
             throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
+    }
+
+    public void searchExistedEmailCheck(String email){
+        Member existingMember = memberQueryRepository.searchByEmail(email);
+        if (existingMember != null) {
+            throw new NoSuchElementException("이미 가입된 회원입니다.");
         }
     }
 

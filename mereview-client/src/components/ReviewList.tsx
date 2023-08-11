@@ -19,7 +19,7 @@ const ReviewList = ({ reviewList }: ReviewListProps) => {
             memberId={review.memberId}
             nickname={review.nickname}
             profileImageId={review.profileImageId}
-            backgroundImagePath={review.backgroundImagePath}
+            backgroundImageId={review.backgroundImageId}
             oneLineReview={review.oneLineReview}
             funnyCount={review.funnyCount}
             usefulCount={review.usefulCount}

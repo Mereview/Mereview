@@ -10,6 +10,7 @@ import { Experience } from "./interface/ProfilePageInterface";
 import "../styles/css/ExperienceBar.css";
 
 const tierColor = {
+  NONE: "rgba(0, 0, 0, 0.35)",
   Bronze: "rgba(148, 97, 61, 0.5)", // bronze
   Silver: "rgba(143, 143, 143, 0.5)", // silver
   Gold: "rgba(242, 205, 92, 0.5)", // gold
@@ -18,6 +19,7 @@ const tierColor = {
 };
 
 const tierBorderColor = {
+  NONE: "rgba(0, 0, 0, 1)",
   Bronze: "rgba(148, 97, 61, 1)", // bronze
   Silver: "rgba(143, 143, 143, 1)", // silver
   Gold: "rgba(242, 205, 92, 1)", // gold
@@ -29,11 +31,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 const ExperienceBar = (experienceProps: { userExpData: Experience[] }) => {
   const userData = experienceProps.userExpData;
-  userData.sort((a, b) => {
-    if (a.exp > b.exp) return -1;
-    else if (a.exp < b.exp) return 1;
-    else return 0;
-  });
 
   const labels: string[][] = [];
   const expData: number[] = [];

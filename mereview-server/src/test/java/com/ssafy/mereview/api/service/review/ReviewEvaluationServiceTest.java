@@ -1,10 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.member.MemberService;
-import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
-import com.ssafy.mereview.api.service.review.dto.request.ReviewEvaluationServiceRequest;
-import com.ssafy.mereview.api.service.review.dto.response.ReviewEvaluationResponse;
-import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.entity.MemberTier;
 import com.ssafy.mereview.domain.member.repository.MemberRepository;
@@ -20,8 +16,6 @@ import com.ssafy.mereview.domain.review.repository.command.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
@@ -30,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ssafy.mereview.domain.review.entity.MovieRecommendType.YES;
-import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.FUN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

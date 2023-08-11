@@ -6,9 +6,9 @@ import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
+import com.ssafy.mereview.domain.member.repository.MemberAchievementQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberFollowQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
-import com.ssafy.mereview.domain.member.repository.MemberVisitQueryRepository;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.review.entity.*;
 import com.ssafy.mereview.domain.review.repository.query.NotificationQueryRepository;
@@ -22,6 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ssafy.mereview.common.util.ExperienceConstants.TIER_MAX_EXP_MAP;
+import static com.ssafy.mereview.common.util.SizeConstants.COMMENT_ACHIEVEMENT_MAX_COUNT_MAP;
+import static com.ssafy.mereview.common.util.SizeConstants.REVIEW_ACHIEVEMENT_MAX_COUNT_MAP;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.COMMENT;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.REVIEW;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 
 @Service
@@ -30,7 +35,7 @@ import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 @Transactional(readOnly = true)
 public class MemberQueryService {
     private final MemberQueryRepository memberQueryRepository;
-    private final MemberVisitQueryRepository memberVisitQueryRepository;
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
     private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
@@ -61,6 +66,12 @@ public class MemberQueryService {
     }
 
     private List<MemberTierResponse> createMemberTierResponses(List<MemberTier> memberTiers) {
+
+        for (MemberTier memberTier : memberTiers) {
+            MemberTierResponse memberTierResponse = MemberTierResponse.of(memberTier);
+            createExperiencePercent(memberTierResponse);
+        }
+
         return memberTiers.stream().map(MemberTierResponse::of).collect(Collectors.toList());
     }
 
@@ -83,17 +94,33 @@ public class MemberQueryService {
     public MemberResponse searchMemberInfo(Long id) {
         Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
+        checkTiers(member);
+
+        checkAchievements(id);
+
         List<InterestResponse> interestResponses = searchInterestResponse(id);
 
         List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
-
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
 
-
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
+    }
+
+    private void checkAchievements(Long memberId) {
+        List<MemberAchievement> memberAchievements = memberAchievementQueryRepository.searchByMemberId(memberId);
+        memberAchievements.forEach(memberAchievement -> {
+            if (memberAchievement.getAchievementType().equals(REVIEW)) {
+                int reviewCount = memberQueryRepository.searchReviewCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+                memberAchievement.checkAndPromoteAchievement(reviewCount);
+            }else if(memberAchievement.getAchievementType().equals(COMMENT)){
+                int commentCount = memberQueryRepository.searchCommentCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+                memberAchievement.checkAndPromoteAchievement(commentCount);
+            }
+        });
+
     }
 
     public MemberDataResponse searchMemberData(Long id) {
@@ -134,11 +161,49 @@ public class MemberQueryService {
     private List<MemberAchievementResponse> searchMemberAchievementResponse(Long id) {
         List<MemberAchievement> memberAchievements = memberQueryRepository.searchMemberAchievementByMemberId(id);
 
-        return memberAchievements.stream().map(MemberAchievement::of).collect(Collectors.toList());
+
+        return createMemberAchievementResponse(memberAchievements);
+    }
+
+    private List<MemberAchievementResponse> createMemberAchievementResponse(List<MemberAchievement> memberAchievements) {
+        List<MemberAchievementResponse> memberAchievementResponses = new ArrayList<>();
+        memberAchievements.stream().map(MemberAchievementResponse::of).forEach(memberAchievementResponse -> {
+            updateAchievementPercent(memberAchievementResponse);
+            memberAchievementResponses.add(memberAchievementResponse);
+        });
+        return memberAchievementResponses;
+    }
+
+    private void updateAchievementPercent(MemberAchievementResponse memberAchievementResponse) {
+        AchievementType type = memberAchievementResponse.getAchievementType();
+        double achievementPercent = 0;
+        if (type == REVIEW) {
+            achievementPercent = createReviewAchievementPercent(memberAchievementResponse);
+        } else if (type == AchievementType.COMMENT) {
+            achievementPercent = createCommentAchievementPercent(memberAchievementResponse);
+
+        }
+        memberAchievementResponse.updateAchievementPercent(achievementPercent);
+
+    }
+
+    private double createCommentAchievementPercent(MemberAchievementResponse memberAchievementResponse) {
+        int achievementCount = memberAchievementResponse.getAchievementCount();
+        int maxCount = COMMENT_ACHIEVEMENT_MAX_COUNT_MAP.get(memberAchievementResponse.getAchievementRank());
+
+        return (int) ((double) achievementCount / maxCount * 10000) / 100.0;
+    }
+
+    private double createReviewAchievementPercent(MemberAchievementResponse memberAchievementResponse) {
+        int achievementCount = memberAchievementResponse.getAchievementCount();
+        int maxCount = REVIEW_ACHIEVEMENT_MAX_COUNT_MAP.get(memberAchievementResponse.getAchievementRank());
+
+        return (int) ((double) achievementCount / maxCount * 10000) / 100.0;
     }
 
     private List<MemberTierResponse> searchMemberTierResponse(Long id) {
         List<MemberTier> memberTiers = memberQueryRepository.searchUserTierByMemberId(id);
+        log.debug("memberTiers : {}", memberTiers);
         return memberTiers.stream()
                 .map(MemberTierResponse::of)
                 .collect(Collectors.toList());
@@ -223,4 +288,20 @@ public class MemberQueryService {
         }
         return ProfileImageResponse.of(profileImage);
     }
+
+    private void createExperiencePercent(MemberTierResponse memberTierResponse) {
+        int funExperiencePercent = (int) ((double) memberTierResponse.getFunExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getFunTier()) * 100);
+        int usefulExperiencePercent = (int) ((double) memberTierResponse.getUsefulExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getUsefulTier()) * 100);
+
+        memberTierResponse.createExperiencePercent(funExperiencePercent, usefulExperiencePercent);
+
+    }
+
+    private static void checkTiers(Member member) {
+        member.getMemberTiers().forEach(memberTier -> {
+            memberTier.checkAndPromoteUsefulTier();
+            memberTier.checkAndPromoteFunTier();
+        });
+    }
+
 }

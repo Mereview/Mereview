@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { AxiosError } from "axios";
@@ -15,12 +15,14 @@ import {
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewSort from "../components/ReviewSort";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
+import Loading from "../components/common/Loading";
 import {
   searchMemberInfo,
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   follow,
 } from "../api/members";
+import { searchReviews } from "../api/review";
 import "../styles/css/ProfilePage.css";
 
 /* 유저 더미 데이터 생성 시작 */
@@ -107,7 +109,7 @@ const dummyBadges: AchievedBadge[] = [
   },
 ];
 
-const defaultProfileImage = "/defaultProfile.png";
+const defaultProfileImage = "/testProfile.gif";
 
 const genderMapping = {
   MALE: "남",
@@ -132,6 +134,15 @@ const userInfo: ProfileInfoInterface = {
   todayVisitor: 0,
   totalVisitor: 0,
 };
+
+const profileBorderColor = {
+  NONE: "rgba(0, 0, 0, 1)",
+  Bronze: "rgba(148, 97, 61, 1)", // bronze
+  Silver: "rgba(143, 143, 143, 1)", // silver
+  Gold: "rgba(242, 205, 92, 1)", // gold
+  Platinum: "rgba(80, 200, 120, 1)", // platinum
+  Diamond: "rgba(112, 209, 244, 1)", // diamond
+};
 /* 유저 더미 데이터 생성 끝 */
 
 const userExpData: Experience[] = [];
@@ -144,89 +155,9 @@ const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
 const handleClickTitle = (event: React.MouseEvent<HTMLParagraphElement>) => {
   console.log("Title Clicked");
 };
-
-const someReview = {
-  reviewId: 12113,
-  memberId: "user123",
-  nickname: "JohnDoe",
-  profileImageId: null,
-  backgroundImagePath: "/ReviewCardDummy/CardBack2.jpg",
-  oneLineReview:
-    "이것은 한줄평 한줄평 영화 리뷰를 요약하는 한줄평 하지만 두줄이상이 될수도 있는...",
-  funnyCount: 10,
-  usefulCount: 15,
-  dislikeCount: 2,
-  commentCount: 5,
-  movieTitle: "Example Movie",
-  releaseYear: 2023,
-  movieGenre: ["애니메이션", "가족", "코미디"],
-  createDate: new Date("2022-06-03 07:23:53"),
-  recommend: true,
-  onClickProfile: handleClickProfile,
-  onClickTitle: handleClickTitle,
-};
-
-const otherReview = {
-  reviewId: 12333,
-  memberId: "user123",
-  nickname: "JohnDoe",
-  profileImageId: null,
-  backgroundImagePath: "/test.jpg",
-  oneLineReview: "리뷰의 내용을 요약하는 한줄평! 얘는 dislike가 99임",
-  funnyCount: 10,
-  usefulCount: 15,
-  dislikeCount: 99,
-  commentCount: 5,
-  movieTitle: "Example Movie",
-  releaseYear: 2023,
-  movieGenre: ["액션", "모험", "스릴러"],
-  createDate: Date.now(),
-  recommend: false,
-  onClickProfile: handleClickProfile,
-  onClickTitle: handleClickTitle,
-};
-const dummy = {
-  reviewId: 12223,
-  memberId: "user123",
-  nickname: "JohnD124124oe",
-  profileImageId: null,
-  backgroundImagePath: "/test.jpg",
-  oneLineReview: "리뷰의 14내용을 요약하는 한줄평!",
-  funnyCount: 10,
-  usefulCount: 15,
-  dislikeCount: 2,
-  commentCount: 5,
-  movieTitle: "Example Movie",
-  releaseYear: 2023,
-  movieGenre: ["액션"],
-  createDate: Date.now(),
-  recommend: false,
-  onClickProfile: handleClickProfile,
-  onClickTitle: handleClickTitle,
-};
-const a = {
-  reviewId: 1141223,
-  memberId: "us22er123",
-  nickname: "JohnDoe",
-  profileImageId: null,
-  backgroundImagePath: "/test.jpg",
-  oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
-  funnyCount: 10,
-  usefulCount: 15,
-  dislikeCount: 2,
-  commentCount: 5,
-  movieTitle: "Example Movie",
-  releaseYear: 2023,
-  movieGenre: ["액션", "모험"],
-  createDate: Date.now(),
-  recommend: false,
-  onClickProfile: handleClickProfile,
-  onClickTitle: handleClickTitle,
-};
-const reviewList: ReviewCardInterface[] = [someReview, otherReview, dummy, a];
 /* 작성 리뷰 더미 데이터 끝 */
 
-/* api test */
+/* api test start */
 let error: AxiosError | null = null;
 const getMemberInfo = async (userId: number) => {
   await searchMemberInfo(
@@ -239,7 +170,7 @@ const getMemberInfo = async (userId: number) => {
 
       userInfo.memberId = userId;
       userInfo.nickname = response.nickname;
-      userInfo.profileImageId = response.profileImage.id;
+      userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
       userInfo.introduction = response.introduce;
@@ -267,6 +198,12 @@ const getMemberInfo = async (userId: number) => {
         userExpData.push(usefulExp);
         userExpData.push(funExp);
       }
+      userExpData.sort((a, b) => {
+        if (a.exp > b.exp) return -1;
+        else if (a.exp < b.exp) return 1;
+        else return 0;
+      });
+      userInfo.highestTier = userExpData[0].tier;
 
       // userInfo.commentCount = response.commentCount;
     },
@@ -298,7 +235,7 @@ const isFollower = async (userId: number, loginId: number) => {
 
 let followerCountRenewaler: number = 0;
 const getFollowerCount = async (userId: number) => {
-  await searchMemberFollowInfo(
+  await searchMemberFollowerInfo(
     userId,
     ({ data }) => {
       followerCountRenewaler = data.data.length;
@@ -311,7 +248,7 @@ const getFollowerCount = async (userId: number) => {
 
 let followingCountRenewaler: number = 0;
 const getFollowingCount = async (userId: number) => {
-  await searchMemberFollowerInfo(
+  await searchMemberFollowInfo(
     userId,
     ({ data }) => {
       followingCountRenewaler = data.data.length;
@@ -321,7 +258,7 @@ const getFollowingCount = async (userId: number) => {
     }
   );
 };
-/* api test */
+/* api test end */
 
 const ProfilePage = () => {
   const loginId: number = useSelector((state: any) => state.user.user.id);
@@ -338,6 +275,10 @@ const ProfilePage = () => {
   const [followed, setFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
+    []
+  );
+
   const navigate = useNavigate();
 
   const isSelf = userId !== loginId;
@@ -399,8 +340,75 @@ const ProfilePage = () => {
           : "ASC"
       }, 조회기간: ${
         searchTerm === "all" ? "전체기간" : searchTerm + "개월"
-      }, 관심사만: ${onlyInterest}`
+      }, 관심사만: ${onlyInterest}, ID: ${userId}`
     );
+
+    interface ProfilePageSortParamInterface {
+      memberId: number;
+      myInterest?: number;
+      orderBy?: string;
+      orderDir?: string;
+      term?: string;
+      pageNumber?: number;
+    }
+
+    const searchParam: ProfilePageSortParamInterface = {
+      memberId: userId,
+    };
+    if (onlyInterest) searchParam.myInterest = loginId;
+    if (sortBy === "recommend") {
+      searchParam.orderBy = "POSITIVE";
+      searchParam.orderDir = recommendDescend ? "DESC" : "ASC";
+    } else if (sortBy === "date") {
+      searchParam.orderDir = dateDescend ? "DESC" : "ASC";
+    }
+    if (searchTerm !== "all") searchParam.term = searchTerm;
+
+    const getReviewList = async () => {
+      await searchReviews(
+        searchParam,
+        ({ data }) => {
+          const response = data.data.data;
+          const reviewList: ReviewCardInterface[] = [];
+          for (const review of response) {
+            const reviewData: ReviewCardInterface = {
+              reviewId: review.reviewId,
+              memberId: review.memberId,
+              nickname: review.nickname,
+              oneLineReview: review.highlight,
+              funnyCount: review.funCount,
+              usefulCount: review.usefulCount,
+              dislikeCount: review.badCount,
+              commentCount: review.commentCount,
+              movieTitle: review.movieTitle,
+              releaseYear: Number(
+                String(review.movieReleaseDate).substring(0, 4)
+              ),
+              movieGenre: [review.genreResponse.genreName],
+              createDate: new Date(review.createdTime),
+              recommend: review.movieRecommendType === "YES",
+              onClickTitle: handleClickTitle,
+            };
+            if (review.profileImage?.id) {
+              reviewData.profileImageId = review.profileImage?.id;
+            }
+            if (review.backgroundImageResponse?.id) {
+              reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+            }
+
+            reviewList.push(reviewData);
+          }
+
+          console.log(reviewList);
+          setReviewListState(reviewList);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    };
+
+    getReviewList();
   }, [sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
 
   const sortProps: ReviewSortInterface = {
@@ -453,15 +461,18 @@ const ProfilePage = () => {
 
   const joinDateText = `${year}-${month}-${day}`;
 
-  if (!isFetched) return <>Loading...</>;
+  if (!isFetched) return <Loading />;
   return (
     <>
       <div className="profile-image-chart-container">
-        <div className="profile-image-container">
+        <div
+          className="profile-image-container"
+          style={{ borderColor: profileBorderColor[userInfo.highestTier] }}
+        >
           <img
             src={
               userInfo.profileImageId
-                ? `http://localhost:8080/api/image/download/profiles/${userInfo.profileImageId}`
+                ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${userInfo.profileImageId}`
                 : defaultProfileImage
             }
             alt="프로필 이미지"
@@ -523,7 +534,7 @@ const ProfilePage = () => {
         <Col className="sub-title">작성한 리뷰</Col>
       </div>
       <ReviewSort sortProps={sortProps} />
-      <ReviewList reviewList={reviewList} />
+      <ReviewList reviewList={reviewListState} />
     </>
   );
 };

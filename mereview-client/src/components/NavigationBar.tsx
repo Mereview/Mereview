@@ -6,11 +6,9 @@ import { useEffect, useState } from "react";
 import ProfileModal from "./ProfileModal";
 const NavigationBar = ({ user }) => {
   const [isModal, setIsModal] = useState(false);
-  console.log(user);
-  const profilURL =
-    user.profileImage?.id
-      ? `http://localhost:8080/api/image/download/profiles/${user.profileImage.id}`
-      : "/testProfile.gif";
+  const profilURL = user.profileImage?.id
+    ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${user.profileImage.id}`
+    : "/testProfile.gif";
   const modalToggler = () => {
     setIsModal((currentState: boolean) => !currentState);
     console.log(isModal);
