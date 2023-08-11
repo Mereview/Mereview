@@ -10,6 +10,7 @@ import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRe
 import com.ssafy.mereview.domain.review.repository.command.ReviewEvaluationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +51,11 @@ public class ReviewEvaluationService {
             return true;
         }
         ReviewEvaluation evaluation = reviewEvaluation.orElseThrow(NoSuchElementException::new);
-        deleteReviewEvaluation(request, evaluation);
-        return false;
+        if (evaluation.getType().equals(request.getType())) {
+            deleteReviewEvaluation(request, evaluation);
+            return false;
+        }
+        throw new DuplicateKeyException("한번에 하나의 평가만 할 수 있습니다.");
     }
 
     private void createReviewEvaluation(ReviewEvaluationServiceRequest request) {
