@@ -33,7 +33,7 @@ public class NotificationQueryRepository {
         }
 
         return queryFactory
-                .select(Projections.fields(NotificationResponse.class,
+                .select(Projections.constructor(NotificationResponse.class,
                         notification.id,
                         notification.member.id,
                         notification.review.id,
