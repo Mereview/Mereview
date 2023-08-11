@@ -13,7 +13,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     memberId,
     nickname,
     profileImageId,
-    backgroundImagePath,
+    backgroundImageId,
     oneLineReview,
     funnyCount,
     usefulCount,
@@ -28,14 +28,16 @@ const ReviewCard = (props: ReviewCardInterface) => {
     onClickTitle,
   } = props;
 
-  const cardStyle: Style = {
-    backgroundImage: `url(${backgroundImagePath})`,
-  };
+  const cardStyle: Style = {};
+  if (backgroundImageId) {
+    cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId}})`;
+  }
 
-  const recommendStyle: Style = {
-    opacity:
-      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount),
-  };
+  const recommendStyle: Style = {};
+  if (funnyCount + usefulCount + dislikeCount > 0) {
+    recommendStyle.opacity =
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+  }
 
   const formattedCreateDate: Date = new Date(createDate);
   const year: number = formattedCreateDate.getFullYear();
@@ -50,7 +52,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     "0"
   );
   const genres: string = movieGenre.join(". ");
-  const defaultProfileImage = "/defaultProfile.png";
+  const defaultProfileImage = "/testProfile.gif";
 
   return (
     <>
@@ -79,7 +81,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
                   <img
                     src={
                       profileImageId
-                        ? `http://${process.env.REACT_APP_API_URL}/image/download/profiles/${profileImageId}`
+                        ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${profileImageId}`
                         : defaultProfileImage
                     }
                     alt="Profile"

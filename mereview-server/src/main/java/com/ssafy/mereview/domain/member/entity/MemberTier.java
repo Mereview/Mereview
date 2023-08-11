@@ -76,6 +76,22 @@ public class MemberTier extends BaseEntity {
         }
     }
 
+    public void increaseExp() {
+        funExperience += 5;
+        usefulExperience += 5;
+        checkAndPromoteFunTier();
+        checkAndPromoteUsefulTier();
+    }
+
+    public void decreaseExp(ReviewEvaluationType type) {
+        if (type.equals(FUN)) {
+            funExperience -= 5;
+        } else if (type.equals(USEFUL)) {
+            usefulExperience -= 5;
+        }
+        checkExpAndDemote();
+    }
+
     public void decreaseExp() {
         funExperience -= 5;
         usefulExperience -= 5;

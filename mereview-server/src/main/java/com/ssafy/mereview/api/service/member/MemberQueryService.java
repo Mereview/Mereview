@@ -6,6 +6,7 @@ import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
+import com.ssafy.mereview.domain.member.repository.MemberAchievementQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberFollowQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberQueryRepository;
 import com.ssafy.mereview.domain.movie.entity.Movie;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 import static com.ssafy.mereview.common.util.ExperienceConstants.TIER_MAX_EXP_MAP;
 import static com.ssafy.mereview.common.util.SizeConstants.COMMENT_ACHIEVEMENT_MAX_COUNT_MAP;
 import static com.ssafy.mereview.common.util.SizeConstants.REVIEW_ACHIEVEMENT_MAX_COUNT_MAP;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.COMMENT;
+import static com.ssafy.mereview.domain.member.entity.AchievementType.REVIEW;
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 
 @Service
@@ -32,6 +35,7 @@ import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 @Transactional(readOnly = true)
 public class MemberQueryService {
     private final MemberQueryRepository memberQueryRepository;
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
     private final NotificationQueryRepository notificationQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
@@ -92,17 +96,31 @@ public class MemberQueryService {
 
         checkTiers(member);
 
+        checkAchievements(id);
+
         List<InterestResponse> interestResponses = searchInterestResponse(id);
 
         List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
 
         List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
 
-
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
 
-
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
+    }
+
+    private void checkAchievements(Long memberId) {
+        List<MemberAchievement> memberAchievements = memberAchievementQueryRepository.searchByMemberId(memberId);
+        memberAchievements.forEach(memberAchievement -> {
+            if (memberAchievement.getAchievementType().equals(REVIEW)) {
+                int reviewCount = memberQueryRepository.searchReviewCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+                memberAchievement.checkAndPromoteAchievement(reviewCount);
+            }else if(memberAchievement.getAchievementType().equals(COMMENT)){
+                int commentCount = memberQueryRepository.searchCommentCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+                memberAchievement.checkAndPromoteAchievement(commentCount);
+            }
+        });
+
     }
 
     public MemberDataResponse searchMemberData(Long id) {
@@ -159,7 +177,7 @@ public class MemberQueryService {
     private void updateAchievementPercent(MemberAchievementResponse memberAchievementResponse) {
         AchievementType type = memberAchievementResponse.getAchievementType();
         double achievementPercent = 0;
-        if (type == AchievementType.REVIEW) {
+        if (type == REVIEW) {
             achievementPercent = createReviewAchievementPercent(memberAchievementResponse);
         } else if (type == AchievementType.COMMENT) {
             achievementPercent = createCommentAchievementPercent(memberAchievementResponse);
@@ -173,14 +191,14 @@ public class MemberQueryService {
         int achievementCount = memberAchievementResponse.getAchievementCount();
         int maxCount = COMMENT_ACHIEVEMENT_MAX_COUNT_MAP.get(memberAchievementResponse.getAchievementRank());
 
-        return (int) ((double)achievementCount / maxCount * 10000) / 100.0;
+        return (int) ((double) achievementCount / maxCount * 10000) / 100.0;
     }
 
     private double createReviewAchievementPercent(MemberAchievementResponse memberAchievementResponse) {
         int achievementCount = memberAchievementResponse.getAchievementCount();
         int maxCount = REVIEW_ACHIEVEMENT_MAX_COUNT_MAP.get(memberAchievementResponse.getAchievementRank());
 
-        return (int) ((double)achievementCount / maxCount * 10000) / 100.0;
+        return (int) ((double) achievementCount / maxCount * 10000) / 100.0;
     }
 
     private List<MemberTierResponse> searchMemberTierResponse(Long id) {

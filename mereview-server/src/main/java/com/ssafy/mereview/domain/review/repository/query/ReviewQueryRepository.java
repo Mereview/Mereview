@@ -128,7 +128,7 @@ public class ReviewQueryRepository {
 
     private BooleanExpression isTerm(String term) {
         LocalDateTime today = LocalDateTime.now();
-        return hasText(term) ? review.createdTime.between(today.minusMonths(Long.parseLong(term)), today) : null;
+        return hasText(term) ? review.createdTime.between(today.minusMonths(Long.parseLong(term)), today.plusDays(1)) : null;
     }
 
     private BooleanExpression inGenreIds(String myInterest, List<Long> genreIds) {

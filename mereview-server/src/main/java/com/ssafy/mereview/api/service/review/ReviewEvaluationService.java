@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
@@ -35,14 +36,6 @@ public class ReviewEvaluationService {
 
         Map<ReviewEvaluationType, Integer> evaluationCountsMap = evaluationQueryRepository.getCountByReviewIdGroupedByType(request.getReviewId());
 
-        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
-        log.debug("memberTier: {}", memberTier);
-        if (request.getType().equals(BAD)) {
-            memberTier.decreaseExp();
-        } else {
-            memberTier.increaseExp(request.getType());
-        }
-
         return createReviewEvaluationResponse(request, isDone, evaluationCountsMap);
 
     }
@@ -53,11 +46,48 @@ public class ReviewEvaluationService {
 
     private boolean updateReviewEvaluation(ReviewEvaluationServiceRequest request, Optional<ReviewEvaluation> reviewEvaluation) {
         if (reviewEvaluation.isEmpty()) {
-            evaluationRepository.save(request.toEntity());
+            createReviewEvaluation(request);
             return true;
         }
-        reviewEvaluation.ifPresent(evaluationRepository::delete);
-        return false;
+
+        ReviewEvaluation evaluation = reviewEvaluation.orElseThrow(NoSuchElementException::new);
+        if (evaluation.getType().equals(request.getType())) {
+            deleteReviewEvaluation(request, evaluation);
+            return false;
+        } else {
+            createReviewEvaluation(request);
+            return true;
+        }
+    }
+
+    private void createReviewEvaluation(ReviewEvaluationServiceRequest request) {
+        evaluationRepository.save(request.toEntity());
+        updateExperienceAfterEvaluation(request);
+    }
+
+    private void deleteReviewEvaluation(ReviewEvaluationServiceRequest request, ReviewEvaluation evaluation) {
+        evaluationRepository.delete(evaluation);
+        updateExperienceAfterCancelEvaluation(request);
+    }
+
+    private void updateExperienceAfterEvaluation(ReviewEvaluationServiceRequest request) {
+        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
+        log.debug("memberTier: {}", memberTier);
+        if (request.getType().equals(BAD)) {
+            memberTier.decreaseExp();
+        } else {
+            memberTier.increaseExp(request.getType());
+        }
+    }
+
+    private void updateExperienceAfterCancelEvaluation(ReviewEvaluationServiceRequest request) {
+        MemberTier memberTier = memberTierQueryRepository.searchMemberTierByMemberId(request.getMemberId(), request.getGenreId());
+        log.debug("memberTier: {}", memberTier);
+        if (request.getType().equals(BAD)) {
+            memberTier.increaseExp();
+        } else {
+            memberTier.decreaseExp(request.getType());
+        }
     }
 
     private ReviewEvaluationResponse createReviewEvaluationResponse(ReviewEvaluationServiceRequest request, boolean isDone, Map<ReviewEvaluationType, Integer> evaluationCountsMap) {

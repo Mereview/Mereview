@@ -28,7 +28,7 @@ const handleMovieCardClick = (
 
 const koficKey: string = "f22f6d4bc63521504a75ef52103c4101"; // 나중에 따로 빼기?
 const koficDailyBoxofficeURL: string =
-  "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json";
+  "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json";
 const today: Date = new Date(Date.now());
 const yesterday: string =
   today.getFullYear() +
@@ -147,7 +147,7 @@ const someReview = {
   memberId: "user123",
   nickname: "JohnDoe",
   profileImageId: null,
-  backgroundImagePath: "/ReviewCardDummy/CardBack2.jpg",
+  backgroundImageId: null,
   oneLineReview:
     "이것은 한줄평 한줄평 영화 리뷰를 요약하는 한줄평 하지만 두줄이상이 될수도 있는...",
   funnyCount: 10,
@@ -168,7 +168,7 @@ const otherReview = {
   memberId: "user123",
   nickname: "JohnDoe",
   profileImageId: null,
-  backgroundImagePath: "/test.jpg",
+  backgroundImageId: null,
   oneLineReview: "리뷰의 내용을 요약하는 한줄평! 얘는 dislike가 99임",
   funnyCount: 10,
   usefulCount: 15,
@@ -188,7 +188,7 @@ const dummy = {
   memberId: "user123",
   nickname: "JohnD124124oe",
   profileImageId: null,
-  backgroundImagePath: "/test.jpg",
+  backgroundImageId: null,
   oneLineReview: "리뷰의 14내용을 요약하는 한줄평!",
   funnyCount: 10,
   usefulCount: 15,
@@ -208,7 +208,7 @@ const a = {
   memberId: "us22er123",
   nickname: "JohnDoe",
   profileImageId: null,
-  backgroundImagePath: "/test.jpg",
+  backgroundImageId: null,
   oneLineReview: "리뷰의 내용을 요약하는33 한줄평!",
   funnyCount: 10,
   usefulCount: 15,
