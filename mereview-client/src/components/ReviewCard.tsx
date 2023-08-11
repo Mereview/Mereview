@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ReviewCardInterface } from "./interface/ReviewCardInterface";
 import "../styles/css/ReviewCard.css";
+import { useNavigate } from "react-router-dom";
 
 type Style = {
   [key: string]: string | number;
@@ -24,9 +25,26 @@ const ReviewCard = (props: ReviewCardInterface) => {
     movieGenre,
     createDate,
     recommend,
-    onClickProfile,
-    onClickTitle,
   } = props;
+  const navigate = useNavigate();
+
+  const handleClickReviewCard = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    navigate(`/review/${reviewId}`);
+  };
+
+  const handleClickProfile = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    event.stopPropagation();
+    navigate(`/profile/${memberId}`);
+  };
+
+  const handleClickMovie = (event: React.MouseEvent<HTMLParagraphElement>) => {
+    event.stopPropagation();
+    console.log("Movie Name Clicked", movieTitle);
+  };
 
   const cardStyle: Style = {};
   if (backgroundImageId) {
@@ -56,7 +74,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
 
   return (
     <>
-      <div className="card" style={cardStyle}>
+      <div className="card" style={cardStyle} onClick={handleClickReviewCard}>
         <div className="card-overlay">
           <Row>
             <Col md={"auto"} className="date">
@@ -87,12 +105,16 @@ const ReviewCard = (props: ReviewCardInterface) => {
                     alt="Profile"
                   />
                 </div>
-                <span className="nickname">{nickname}</span>
+                <span className="nickname" onClick={handleClickProfile}>
+                  {nickname}
+                </span>
               </Col>
             </Row>
             <Row>
               <Col>
-                <span className="movie-title">{movieTitle}</span>
+                <span className="movie-title" onClick={handleClickMovie}>
+                  {movieTitle}
+                </span>
               </Col>
             </Row>
             <Row>

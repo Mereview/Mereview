@@ -14,7 +14,4 @@ export interface ReviewCardInterface {
   movieGenre: string[];
   createDate: number | Date;
   recommend: boolean;
-  onClickProfile?: (event: React.MouseEvent<HTMLParagraphElement>) => void;
-  onClickMovie?: (event: React.MouseEvent<HTMLParagraphElement>) => void;
-  onClickTitle: (event: React.MouseEvent<HTMLParagraphElement>) => void;
 }
