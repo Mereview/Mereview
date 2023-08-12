@@ -47,7 +47,7 @@ public class CommentLikeService {
         }
         CommentLike like = commentLike.orElseThrow(NoSuchElementException::new);
         if (like.getType().equals(request.getType())) {
-            likeRepository.delete(request.toEntity());
+            likeRepository.delete(like);
             return false;
         }
         throw new DuplicateKeyException("한번에 하나만 할 수 있습니다.");
