@@ -232,6 +232,10 @@ public class MemberQueryService {
         log.debug("memberTiers : {}", memberTiers);
         return memberTiers.stream()
                 .map(MemberTierResponse::of)
+                .map(memberTierResponse -> {
+                    createExperiencePercent(memberTierResponse);
+                    return memberTierResponse;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -296,6 +300,7 @@ public class MemberQueryService {
 
     private void createExperiencePercent(MemberTierResponse memberTierResponse) {
         int funExperiencePercent = (int) ((double) memberTierResponse.getFunExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getFunTier()) * 100);
+        log.debug("TIER_MAX_EXP : {}",TIER_MAX_EXP_MAP.get(memberTierResponse.getFunTier()));
         int usefulExperiencePercent = (int) ((double) memberTierResponse.getUsefulExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getUsefulTier()) * 100);
 
         memberTierResponse.createExperiencePercent(funExperiencePercent, usefulExperiencePercent);
