@@ -60,12 +60,12 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
             setComments(res.data.data.comments);
           },
           (err) => {
-            alert("이미 추천/비추천을 눌렀습니다.");
+            console.log(err);
           }
         );
       },
       (err) => {
-        console.log(err);
+        alert("이미 추천/비추천을 눌렀습니다.");
       }
     );
   };
