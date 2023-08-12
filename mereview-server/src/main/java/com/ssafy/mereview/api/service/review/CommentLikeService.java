@@ -7,10 +7,12 @@ import com.ssafy.mereview.domain.review.entity.CommentLikeType;
 import com.ssafy.mereview.domain.review.repository.query.CommentLikeQueryRepository;
 import com.ssafy.mereview.domain.review.repository.command.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.ssafy.mereview.domain.review.entity.CommentLikeType.DISLIKE;
@@ -43,8 +45,12 @@ public class CommentLikeService {
             likeRepository.save(request.toEntity());
             return true;
         }
-        commentLike.ifPresent(likeRepository::delete);
-        return false;
+        CommentLike like = commentLike.orElseThrow(NoSuchElementException::new);
+        if (like.getType().equals(request.getType())) {
+            likeRepository.delete(request.toEntity());
+            return false;
+        }
+        throw new DuplicateKeyException("한번에 하나만 할 수 있습니다.");
     }
 
     private CommentLikeResponse createCommentLikeResponse(CommentLikeServiceRequest request, boolean isDone, Map<CommentLikeType, Integer> likeCountsMap) {
