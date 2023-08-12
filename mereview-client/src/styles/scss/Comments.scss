@@ -47,20 +47,27 @@
       margin-right: 5px;
     }
 
-    #like {
+    #LIKE {
       background-image: url(/public/thumbUp.png);
       width: 30px;
       height: 30px;
       background-color: blue;
       border: solid blue 0.5px;
+
+      #LIKE:disabled {
+        opacity: 20%;
+      }
     }
-    #dislike {
+    #DISLIKE {
       background-image: url(/public//thumbDown.png);
       width: 30px;
       height: 30px;
       background-color: red;
       border: solid red 0.5px;
       padding: 5px;
+      #DISLIKE:disabled {
+        opacity: 20%;
+      }
     }
     .delete {
       background-color: $magenta-6;
@@ -69,6 +76,9 @@
       width: 25px;
       height: 25px;
       margin-top: 3px;
+    }
+    .delete:disabled {
+      background-color: rgba(128, 128, 128, 0.24);
     }
   }
 }

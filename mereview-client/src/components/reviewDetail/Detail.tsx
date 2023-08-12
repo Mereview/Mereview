@@ -67,7 +67,7 @@ const Detail = ({ review, setReview }: any) => {
         }
       };
       const fail = (err) => {
-        console.log(err, event.target.id);
+        alert("이미 다른 평가를 남겼습니다.");
       };
       evaluationsReview(data, success, fail);
     }
