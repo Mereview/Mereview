@@ -33,7 +33,7 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     Member member;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", fetch = LAZY, orphanRemoval = true)
     private List<CommentLike> likes = new ArrayList<>();
 
     @Builder
