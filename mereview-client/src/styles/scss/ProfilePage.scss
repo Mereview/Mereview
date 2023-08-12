@@ -161,3 +161,50 @@ $profile-image-size: 450px;
     overflow: auto;
   }
 }
+
+@mixin modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  background-color: $white;
+  padding: 20px;
+  font-family: $BMDoHyeon;
+  border: 3px solid $black;
+  border-radius: 15px;
+
+  input {
+    color: black;
+    background-color: $white;
+  }
+
+  .modal-button-box {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+  }
+}
+
+.verify-modal {
+  @include modal;
+  height: 200px;
+
+  .verify-password {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .verify-info {
+    font-size: $font-size-lg;
+    font-family: $GowunBatang;
+    color: $magenta-5;
+    margin-left: 10px;
+  }
+}
+
+.modify-modal {
+  @include modal;
+  height: 500px;
+}

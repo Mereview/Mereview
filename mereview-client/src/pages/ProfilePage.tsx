@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { userActions } from "../store/user-slice";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
+import Modal from "react-modal";
+import { TextField } from "@mui/material";
 import {
   BsHeart,
   BsHeartFill,
@@ -28,6 +31,8 @@ import {
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   follow,
+  verify,
+  deleteMember,
 } from "../api/members";
 import { searchReviews } from "../api/review";
 import "../styles/css/ProfilePage.css";
@@ -252,26 +257,38 @@ const ProfilePage = () => {
   const userId: number = id ? Number(id) : loginId;
 
   const [isFetched, setIsFetched] = useState<boolean>(false);
+  // 검색 정렬
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  // 팔로우 팔로잉
   const [followed, setFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
+  // 리뷰리스트
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  // 자기소개
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
+  // 회원 정보 수정, 탈퇴 모달
+  const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
+  const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
+  const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
+  const [emptyInput, setEmptyInput] = useState<boolean>(false);
+  const [wrongPassword, setWrongPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isSelf = userId !== loginId;
   const followIcon =
     followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
+  const verifyRef = useRef(null);
 
   useEffect(() => {
     if (
@@ -378,6 +395,12 @@ const ProfilePage = () => {
     setReviewListState(reviewListUpdater);
   }, [reviewListUpdater]);
 
+  useEffect(() => {
+    if (emptyInput || wrongPassword) {
+      verifyRef.current.focus();
+    }
+  }, [emptyInput, wrongPassword]);
+
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
     setSortBy: setSortBy,
@@ -418,10 +441,6 @@ const ProfilePage = () => {
     setFollowed(!followed);
   };
 
-  const openModify = () => {
-    console.log(userInfo.memberId);
-  };
-
   const handleEditClick = () => {
     setEditedIntroduction(userInfo.introduction);
     setIntroductionEditing(true);
@@ -435,7 +454,7 @@ const ProfilePage = () => {
     await updateMemberIntroduce(
       introduceData,
       ({ data }) => {
-        console.log(data);
+        if (data.code === 200) userInfo.introduction = editedIntroduction;
       },
       (error) => {
         console.log(error);
@@ -446,6 +465,85 @@ const ProfilePage = () => {
 
   const handleEditCancelClick = () => {
     setIntroductionEditing(false);
+  };
+
+  const openVerifyModal = () => {
+    setVerifyPasswordInput("");
+    setVerifyModalOpen(true);
+  };
+
+  const onChangeVerfiyPasswordInput = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setEmptyInput(false);
+    setWrongPassword(false);
+    setVerifyPasswordInput(event.target.value);
+  };
+
+  const closeVerifyModal = () => {
+    setVerifyModalOpen(false);
+    setEmptyInput(false);
+    setWrongPassword(false);
+  };
+
+  const verifyPassword = async () => {
+    setEmptyInput(false);
+    setWrongPassword(false);
+    if (verifyPasswordInput === "") {
+      setEmptyInput(true);
+      return;
+    }
+
+    const verifyData: Object = {
+      id: loginId,
+      password: verifyPasswordInput,
+    };
+
+    await verify(
+      verifyData,
+      ({ data }) => {
+        if (data.data) {
+          closeVerifyModal();
+          openModifyModal();
+        } else {
+          setWrongPassword(true);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
+  const updateMemberInfo = () => {
+    console.log("수정완료");
+    setModifyModalOpen(false);
+  };
+
+  const withdrawal = async () => {
+    if (window.confirm("정말 탈퇴하시게요???? (재가입 안됨)")) {
+      await deleteMember(
+        loginId,
+        ({ data }) => {
+          dispatch(userActions.logout());
+          alert("Bye..");
+          navigate(`/`);
+        },
+        (error) => {
+          console.log(error);
+          alert("못도망가 히히");
+          closeModifyModal();
+        }
+      );
+    }
   };
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
@@ -476,7 +574,10 @@ const ProfilePage = () => {
             style={{ width: "450px" }}
           />
           {userId === loginId ? (
-            <div className="profile-modify-icon-container" onClick={openModify}>
+            <div
+              className="profile-modify-icon-container"
+              onClick={openVerifyModal}
+            >
               <BsPersonFillGear className="modify-icon" />
             </div>
           ) : (
@@ -568,6 +669,47 @@ const ProfilePage = () => {
       </div>
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
+
+      <Modal
+        isOpen={isVerifyModalOpen}
+        onRequestClose={closeVerifyModal}
+        contentLabel="Verify Modal"
+        className="verify-modal"
+      >
+        <div>비밀번호를 입력해주세요</div>
+        <TextField
+          inputRef={verifyRef}
+          id="verify-password"
+          className="verify-password"
+          placeholder="Password"
+          onChange={onChangeVerfiyPasswordInput}
+          value={verifyPasswordInput}
+          type="password"
+          error={emptyInput || wrongPassword}
+        />
+        <span className="verify-info">
+          {emptyInput
+            ? "비밀번호를 입력하세요"
+            : wrongPassword
+            ? "비밀번호가 틀렸습니다."
+            : ""}
+        </span>
+        <div className="modal-button-box">
+          <button onClick={verifyPassword}>확인</button>
+          <button onClick={closeVerifyModal}>취소</button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isModifyModalOpen}
+        onRequestClose={closeModifyModal}
+        contentLabel="Modify Modal"
+        className="modify-modal"
+      >
+        <button onClick={withdrawal}>탈퇴</button>
+        <button onClick={updateMemberInfo}>완료</button>
+        <button onClick={closeModifyModal}>취소</button>
+      </Modal>
     </>
   );
 };

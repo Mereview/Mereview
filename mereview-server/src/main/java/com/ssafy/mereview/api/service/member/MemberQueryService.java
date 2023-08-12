@@ -2,6 +2,7 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberServiceLoginRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberVerifyRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
@@ -60,8 +61,8 @@ public class MemberQueryService {
         return createMemberLoginResponse(searchMember);
     }
 
-    public Boolean checkMember(MemberServiceLoginRequest request) {
-        Member member = memberQueryRepository.searchByEmail(request.getEmail());
+    public Boolean verifyMember(MemberVerifyRequest request) {
+        Member member = memberQueryRepository.searchById(request.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         return passwordEncoder.matches(request.getPassword(), member.getPassword());
     }
 

@@ -4,6 +4,7 @@ import com.ssafy.mereview.api.controller.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.MemberQueryService;
 import com.ssafy.mereview.api.service.member.MemberService;
 import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberVerifyRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.util.file.FileExtensionFilter;
@@ -72,12 +73,12 @@ public class MemberController {
         return ApiResponse.ok(memberLoginResponse);
     }
 
-    @GetMapping("/check")
-    @ApiOperation(value = "회원 중복 체크", response = Join.class)
-    public ApiResponse<Boolean> checkMember(@RequestBody MemberLoginRequest request) {
+    @PostMapping("/verify")
+    @ApiOperation(value = "회원 비밀번호 체크", response = Join.class)
+    public ApiResponse<Boolean> verifyMember(@RequestBody MemberVerifyRequest request) {
         log.debug("MemberController.checkMember : {}", request);
-        Boolean isExist = memberQueryService.checkMember(request.toServiceRequest());
-        return ApiResponse.ok(isExist);
+        Boolean isVerified = memberQueryService.verifyMember(request);
+        return ApiResponse.ok(isVerified);
     }
 
     @PostMapping("/introduce")
@@ -98,7 +99,6 @@ public class MemberController {
     @ApiOperation(value = "회원 탈퇴", response = Join.class)
     public ApiResponse<Long> deleteMember(@PathVariable Long id, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        token = token.substring("Bearer ".length()).trim();
 
         //jwt 토큰으로 현재 접속한 유저인지 확인 후 삭제
         memberService.deleteMember(id, token);
