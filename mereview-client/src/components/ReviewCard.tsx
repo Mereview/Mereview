@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ReviewCardInterface } from "./interface/ReviewCardInterface";
 import "../styles/css/ReviewCard.css";
+import { useNavigate } from "react-router-dom";
 
 type Style = {
   [key: string]: string | number;
@@ -13,7 +14,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     memberId,
     nickname,
     profileImageId,
-    backgroundImagePath,
+    backgroundImageId,
     oneLineReview,
     funnyCount,
     usefulCount,
@@ -24,18 +25,38 @@ const ReviewCard = (props: ReviewCardInterface) => {
     movieGenre,
     createDate,
     recommend,
-    onClickProfile,
-    onClickTitle,
   } = props;
+  const navigate = useNavigate();
 
-  const cardStyle: Style = {
-    backgroundImage: `url(${backgroundImagePath})`,
+  const handleClickReviewCard = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    console.log(reviewId);
+    navigate(`/review/${reviewId}`);
   };
 
-  const recommendStyle: Style = {
-    opacity:
-      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount),
+  const handleClickProfile = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    event.stopPropagation();
+    navigate(`/profile/${memberId}`);
   };
+
+  const handleClickMovie = (event: React.MouseEvent<HTMLParagraphElement>) => {
+    event.stopPropagation();
+    console.log("Movie Name Clicked", movieTitle);
+  };
+
+  const cardStyle: Style = {};
+  if (backgroundImageId) {
+    cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
+  }
+
+  const recommendStyle: Style = {};
+  if (funnyCount + usefulCount + dislikeCount > 0) {
+    recommendStyle.opacity =
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+  }
 
   const formattedCreateDate: Date = new Date(createDate);
   const year: number = formattedCreateDate.getFullYear();
@@ -50,11 +71,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
     "0"
   );
   const genres: string = movieGenre.join(". ");
-  const defaultProfileImage = "/defaultProfile.png";
+  const defaultProfileImage = "/testProfile.gif";
 
   return (
     <>
-      <div className="card" style={cardStyle}>
+      <div className="card" style={cardStyle} onClick={handleClickReviewCard}>
         <div className="card-overlay">
           <Row>
             <Col md={"auto"} className="date">
@@ -79,18 +100,22 @@ const ReviewCard = (props: ReviewCardInterface) => {
                   <img
                     src={
                       profileImageId
-                        ? `http://${process.env.REACT_APP_API_URL}/image/download/profiles/${profileImageId}`
+                        ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${profileImageId}`
                         : defaultProfileImage
                     }
                     alt="Profile"
                   />
                 </div>
-                <span className="nickname">{nickname}</span>
+                <span className="nickname" onClick={handleClickProfile}>
+                  {nickname}
+                </span>
               </Col>
             </Row>
             <Row>
               <Col>
-                <span className="movie-title">{movieTitle}</span>
+                <span className="movie-title" onClick={handleClickMovie}>
+                  {movieTitle}
+                </span>
               </Col>
             </Row>
             <Row>

@@ -2,8 +2,8 @@ export interface ReviewCardInterface {
   reviewId: number;
   memberId: string;
   nickname: string;
-  profileImageId: number | null;
-  backgroundImagePath: string;
+  profileImageId?: number;
+  backgroundImageId?: number;
   oneLineReview: string;
   funnyCount: number;
   usefulCount: number;
@@ -14,6 +14,4 @@ export interface ReviewCardInterface {
   movieGenre: string[];
   createDate: number | Date;
   recommend: boolean;
-  onClickProfile: (event: React.MouseEvent<HTMLParagraphElement>) => void;
-  onClickTitle: (event: React.MouseEvent<HTMLParagraphElement>) => void;
 }

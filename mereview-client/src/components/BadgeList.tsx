@@ -21,9 +21,9 @@ const BadgeComponent = ({ badgeInfo }: BadgeInfo) => {
     <div className="achieved-badge">
       <img
         src={
-          badgeInfo.rank === "gold"
+          badgeInfo.rank === "GOLD"
             ? goldBadge
-            : badgeInfo.rank === "silver"
+            : badgeInfo.rank === "SILVER"
             ? silverBadge
             : bronzeBadge
         }

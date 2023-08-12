@@ -4,20 +4,20 @@ import { MovieCardInterface } from "./interface/MovieCardInterface";
 import "../styles/css/MovieCard.css";
 
 const MovieCard = (props: MovieCardInterface) => {
-  const {
-    movieId,
-    posterImagePath,
-    movieTitle,
-    releaseYear,
-    movieGenre,
-    movieCardClickHandler,
-  } = props;
+  const { movieId, posterImagePath, movieTitle, releaseYear, movieGenre } =
+    props;
 
   const genres: string = movieGenre.join(". ");
 
+  const handleMovieCardClick = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    console.log("Movie Card Clicked", movieId);
+  };
+
   return (
     <>
-      <div className="movie-card" onClick={movieCardClickHandler}>
+      <div className="movie-card" onClick={handleMovieCardClick}>
         <div className="poster-image">
           <img src={posterImagePath} alt={movieTitle} />
         </div>

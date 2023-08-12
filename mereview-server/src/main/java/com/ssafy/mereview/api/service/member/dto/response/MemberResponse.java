@@ -21,7 +21,7 @@ public class MemberResponse {
     private List<InterestResponse> interests;
     private List<MemberTierResponse> tiers;
     private List<MemberAchievementResponse> achievements;
-    private List<ReviewResponse> reviews;
+    private int reviews;
     private int following;
     private int follower;
     private ProfileImageResponse profileImage;
@@ -29,7 +29,7 @@ public class MemberResponse {
     private int totalVisitCount;
 
     @Builder
-    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, LocalDateTime createdTime, String introduce, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, List<ReviewResponse> reviews, int following, int follower, ProfileImageResponse profileImage, int todayVisitCount, int totalVisitCount) {
+    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, LocalDateTime createdTime, String introduce, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, int reviews, int following, int follower, ProfileImageResponse profileImage, int todayVisitCount, int totalVisitCount) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;

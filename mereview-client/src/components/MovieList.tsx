@@ -72,7 +72,6 @@ const MovieList = ({ movieList }: MovieListProps) => {
             movieTitle={movie.movieTitle}
             releaseYear={movie.releaseYear}
             movieGenre={movie.movieGenre}
-            movieCardClickHandler={movie.movieCardClickHandler}
           />
         ))}
       </div>

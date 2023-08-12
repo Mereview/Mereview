@@ -81,7 +81,9 @@ public class MemberService {
 
         // 회원 티어 초기화
         createTier(member);
+
         createAchievement(member);
+
         EMAIL_CHECK_CODE_HASH_MAP.remove(request.getEmail());
 
         return savedMember.getId();

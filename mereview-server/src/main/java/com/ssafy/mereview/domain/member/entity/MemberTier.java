@@ -74,7 +74,22 @@ public class MemberTier extends BaseEntity {
             usefulExperience += 5;
             checkAndPromoteUsefulTier();
         }
+    }
 
+    public void increaseExp() {
+        funExperience += 5;
+        usefulExperience += 5;
+        checkAndPromoteFunTier();
+        checkAndPromoteUsefulTier();
+    }
+
+    public void decreaseExp(ReviewEvaluationType type) {
+        if (type.equals(FUN)) {
+            funExperience -= 5;
+        } else if (type.equals(USEFUL)) {
+            usefulExperience -= 5;
+        }
+        checkExpAndDemote();
     }
 
     public void decreaseExp() {
@@ -83,16 +98,14 @@ public class MemberTier extends BaseEntity {
         checkExpAndDemote();
     }
 
-    /** private methods **/
-
-    private void checkAndPromoteFunTier() {
+    public void checkAndPromoteFunTier() {
         if (checkFunTierPromotionEligibility()) {
             funTier = promote(funTier);
             funExperience = 0;
         }
     }
 
-    private void checkAndPromoteUsefulTier() {
+    public void checkAndPromoteUsefulTier() {
         if (checkUsefulTierPromotionEligibility()) {
             usefulTier = promote(usefulTier);
             usefulExperience = 0;
@@ -102,8 +115,10 @@ public class MemberTier extends BaseEntity {
     private void checkExpAndDemote() {
         if (checkDemotionEligibility(funExperience)) {
             funTier = demote(funTier);
+            funExperience = 0;
         } else if (checkDemotionEligibility(usefulExperience)) {
             usefulTier = demote(usefulTier);
+            usefulExperience = 0;
         }
     }
 
@@ -150,6 +165,5 @@ public class MemberTier extends BaseEntity {
     private boolean checkDemotionEligibility(int experience) {
         return experience <= 0;
     }
-
 }
 

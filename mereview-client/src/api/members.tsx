@@ -12,7 +12,8 @@ export async function login(data: Object, success, fail) {
 }
 
 export async function updateMemberIntroduce(data: Object, success, fail) {
-  await api.post(`/introduce`, data).then(success).catch(fail);
+  api.defaults.headers["Authorization"] = localStorage.getItem("token");
+  await api.post(`/introduce`, JSON.stringify(data)).then(success).catch(fail);
 }
 
 export async function deleteMember(memberId: number, success, fail) {

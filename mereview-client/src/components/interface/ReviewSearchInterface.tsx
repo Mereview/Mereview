@@ -1,8 +1,8 @@
 export interface ReviewSearchInterface {
-  searchParam: string;
-  setSearchParam: React.Dispatch<React.SetStateAction<string>>;
+  searchKeyword: string;
+  setSearchKeyword: React.Dispatch<React.SetStateAction<string>>;
   searchCriteria: string;
   setSearchCriteria: React.Dispatch<React.SetStateAction<string>>;
-  emptySearchParam: boolean;
-  setEmptySearchParam: React.Dispatch<React.SetStateAction<boolean>>;
+  emptySearchKeyword: boolean;
+  setEmptySearchKeyword: React.Dispatch<React.SetStateAction<boolean>>;
 }

@@ -28,8 +28,8 @@ public class ReviewCreateRequest {
     @NotBlank
     private String highlight;
 
-    @NotNull
-    private MovieRecommendType type;
+    @NotBlank
+    private String type;
 
     @NotNull
     private Long memberId;
@@ -44,7 +44,7 @@ public class ReviewCreateRequest {
     private List<KeywordCreateRequest> keywordRequests;
 
     @Builder
-    public ReviewCreateRequest(String title, String content, String highlight, MovieRecommendType type, Long memberId, Long movieId, Long genreId, List<KeywordCreateRequest> keywordRequests) {
+    public ReviewCreateRequest(String title, String content, String highlight, String type, Long memberId, Long movieId, Long genreId, List<KeywordCreateRequest> keywordRequests) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;
@@ -60,7 +60,7 @@ public class ReviewCreateRequest {
                 .title(title)
                 .content(content)
                 .highlight(highlight)
-                .type(type)
+                .type(MovieRecommendType.valueOf(type))
                 .memberId(memberId)
                 .movieId(movieId)
                 .genreId(genreId)

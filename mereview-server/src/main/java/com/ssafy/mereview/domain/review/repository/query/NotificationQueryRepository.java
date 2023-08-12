@@ -33,7 +33,7 @@ public class NotificationQueryRepository {
         }
 
         return queryFactory
-                .select(Projections.fields(NotificationResponse.class,
+                .select(Projections.constructor(NotificationResponse.class,
                         notification.id,
                         notification.member.id,
                         notification.review.id,
@@ -56,5 +56,13 @@ public class NotificationQueryRepository {
                 .where(notification.member.id.eq(memberId))
                 .fetchOne();
         return result == null ? 0 : result.intValue();
+    }
+
+    public List<Long> searchReviewIdsByMemberId(Long memberId) {
+        return queryFactory
+                .select(notification.review.id)
+                .from(notification)
+                .where(notification.member.id.eq(memberId))
+                .fetch();
     }
 }
