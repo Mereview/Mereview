@@ -99,22 +99,22 @@ public class MemberQueryService {
                 .build();
     }
 
-    public MemberResponse searchMemberInfo(Long id) {
-        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public MemberResponse searchMemberInfo(Long memberId) {
+        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         checkTiers(member);
 
-        checkAchievements(id);
+        checkAchievements(memberId);
 
-        List<InterestResponse> interestResponses = searchInterestResponse(id);
+        List<InterestResponse> interestResponses = searchInterestResponse(memberId);
 
-        List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
+        List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(memberId);
 
-        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
+        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(memberId);
 
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
-
-        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
+        Long commentCount = memberQueryRepository.searchCommnetCountByMemberId(memberId);
+        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses, commentCount);
     }
 
     public List<FollowingResponse> searchFollowingResponse(Long memberId) {
@@ -156,13 +156,14 @@ public class MemberQueryService {
 
     }
 
-    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses) {
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses, Long commentCount) {
         ProfileImage profileImage = member.getProfileImage();
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
                 .reviews(reviewResponses.size())
+                .commentCount(commentCount)
                 .todayVisitCount(member.getMemberVisit().getTodayVisitCount())
                 .totalVisitCount(member.getMemberVisit().getTotalVisitCount())
                 .email(member.getEmail())

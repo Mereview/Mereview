@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
 import ReviewHome from "./pages/ReviewHome";
+import NotificationHome from "./pages/NotificationHome";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetailPage from "./pages/ReviewDetailPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -51,6 +52,7 @@ function App() {
           <Route path="/profile/:id" Component={ProfilePage}></Route>
           <Route path="/404" Component={PageNotFound404}></Route>
           <Route path="/movie/:id" Component={MovieDetail}></Route>
+          <Route path="/notification" Component={NotificationHome}></Route>
         </Routes>
       </Router>
     </div>
