@@ -2,6 +2,7 @@ package com.ssafy.mereview.domain.review.repository.query;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.member.entity.QMember;
@@ -63,6 +64,7 @@ public class ReviewQueryRepository {
                         isTerm(condition.getTerm()),
                         isNickname(condition.getNickname()),
                         isMember(condition.getMemberId()),
+                        isGenreId(condition.getGenreId()),
                         inGenreIds(condition.getMyInterest(), genreIds)
                 )
                 .fetchFirst().intValue();
@@ -140,12 +142,17 @@ public class ReviewQueryRepository {
                         isTerm(condition.getTerm()),
                         isNickname(condition.getNickname()),
                         isMember(condition.getMemberId()),
+                        isGenreId(condition.getGenreId()),
                         inGenreIds(condition.getMyInterest(), genreIds)
                 )
                 .orderBy(sortByField(condition.getOrderBy(), condition.getOrderDir()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    private BooleanExpression isGenreId(String genreId) {
+        return hasText(genreId) ? review.genre.id.eq(Long.parseLong(genreId)) : null;
     }
 
     private BooleanExpression isTitle(String title) {
