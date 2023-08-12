@@ -61,6 +61,9 @@ const SignUp = () => {
       alert("정보를 정확하게 입력해주세요!");
       return;
     }
+    if (!checkEmail) {
+      alert("메일 인증을 진행해주세요!");
+    }
 
     dispatch(userActions.modal_toggler());
   };
