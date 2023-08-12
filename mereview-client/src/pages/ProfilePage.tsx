@@ -155,11 +155,20 @@ const profileBorderColor = {
   PLATINUM: "rgba(80, 200, 120, 1)", // platinum
   DIAMOND: "rgba(112, 209, 244, 1)", // diamond
 };
+
+const profileTier = {
+  NONE: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PALTINUM: 4,
+  DIAMOND: 5,
+};
 /* 유저 더미 데이터 생성 끝 */
 
 const userExpData: Experience[] = [];
 
-/* api test start */
+/* api start */
 let error: AxiosError | null = null;
 const getMemberInfo = async (userId: number) => {
   await searchMemberInfo(
@@ -175,24 +184,27 @@ const getMemberInfo = async (userId: number) => {
       userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
-      userInfo.introduction = response.introduce;
+      userInfo.introduction = response.introduce ? "" : response.introduce;
       userInfo.followerCount = response.follower;
       userInfo.followingCount = response.following;
       userInfo.todayVisitor = response.todayVisitCount;
       userInfo.totalVisitor = response.totalVisitCount;
       userInfo.joinDate = response.createdTime;
-      userInfo.reviewCount = response.reviews.length;
+      userInfo.reviewCount = response.reviews;
+      userInfo.commentCount = response.commentCount;
       for (const expData of response.tiers) {
         const usefulExp: Experience = {
           genre: expData.genreName,
           typeName: "유용해요",
           exp: expData.usefulExperience,
+          expPercent: expData.usefulExperiencePercent,
           tier: expData.usefulTier,
         };
         const funExp: Experience = {
           genre: expData.genreName,
           typeName: "재밌어요",
           exp: expData.funExperience,
+          expPercent: expData.funExperiencePercent,
           tier: expData.funTier,
         };
         userExpData.push(usefulExp);
@@ -200,14 +212,14 @@ const getMemberInfo = async (userId: number) => {
       }
 
       userExpData.sort((a, b) => {
-        if (a.exp > b.exp) return -1;
-        else if (a.exp < b.exp) return 1;
-        else return 0;
+        if (a.tier === b.tier) {
+          if (a.expPercent === b.expPercent) return b.exp - a.exp;
+          return b.expPercent - a.expPercent;
+        }
+        return profileTier[b.tier] - profileTier[a.tier];
       });
 
       userInfo.highestTier = userExpData[0].tier;
-      console.log(response);
-      // userInfo.commentCount = response.commentCount;
     },
     (e) => {
       error = e;
@@ -248,9 +260,9 @@ const getFollowingCount = async (userId: number) => {
     }
   );
 };
-/* api test end */
+/* api end */
 
-let reviewListUpdater: ReviewCardInterface[] | null = null;
+const reviewList: ReviewCardInterface[] = [];
 const ProfilePage = () => {
   const loginId: number = useSelector((state: any) => state.user.user.id);
   const { id } = useParams();
@@ -271,10 +283,15 @@ const ProfilePage = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  const [reviewListLoading, setReviewListLoading] = useState<boolean>(true);
   // 자기소개
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
+  // 무한 스크롤
+  const [infScrollPage, setInfScrollPage] = useState<number>(1);
+  const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
+
   // 회원 정보 수정, 탈퇴 모달
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
@@ -289,7 +306,95 @@ const ProfilePage = () => {
   const followIcon =
     followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
   const verifyRef = useRef(null);
+  const infScrollTargetRef = useRef(null);
 
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 1,
+  };
+
+  const infScrollLoadMore = async () => {
+    if (infScrollLoading) return;
+
+    setInfScrollPage(infScrollPage + 1);
+
+    const searchCondition: SearchConditionInterface = {
+      memberId: userId,
+      pageNumber: infScrollPage,
+    };
+    if (onlyInterest) searchCondition.myInterest = loginId;
+    if (sortBy === "recommend") {
+      searchCondition.orderBy = "POSITIVE";
+      searchCondition.orderDir = recommendDescend ? "DESC" : "ASC";
+    } else if (sortBy === "date") {
+      searchCondition.orderDir = dateDescend ? "DESC" : "ASC";
+    }
+    if (searchTerm !== "all") searchCondition.term = searchTerm;
+
+    await searchReviews(
+      searchCondition,
+      ({ data }) => {
+        const response = data.data.data;
+        for (const review of response) {
+          const reviewData: ReviewCardInterface = {
+            reviewId: review.reviewId,
+            memberId: review.memberId,
+            nickname: review.nickname,
+            oneLineReview: review.highlight,
+            funnyCount: review.funCount,
+            usefulCount: review.usefulCount,
+            dislikeCount: review.badCount,
+            commentCount: review.commentCount,
+            movieTitle: review.movieTitle,
+            releaseYear: Number(
+              String(review.movieReleaseDate).substring(0, 4)
+            ),
+            movieGenre: [review.genreResponse.genreName],
+            createDate: new Date(review.createdTime),
+            recommend: review.movieRecommendType === "YES",
+          };
+          if (review.profileImage?.id) {
+            reviewData.profileImageId = review.profileImage?.id;
+          }
+          if (review.backgroundImageResponse?.id) {
+            reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+          }
+          reviewList.push(reviewData);
+        }
+        setReviewListState(reviewList);
+        setInfScrollLoading(false);
+      },
+      (error) => {
+        setInfScrollLoading(false);
+        console.log(error);
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!isFetched) return;
+
+    const infScrollReloadCallback = async (entries) => {
+      if (!infScrollLoading && entries[0].isIntersecting) {
+        setInfScrollLoading(true);
+        await infScrollLoadMore();
+      }
+    };
+
+    const infScrollObserver = new IntersectionObserver(
+      infScrollReloadCallback,
+      observerOptions
+    );
+
+    infScrollObserver.observe(infScrollTargetRef.current);
+
+    return () => {
+      infScrollObserver.disconnect();
+    };
+  }, [isFetched, infScrollLoading]);
+
+  // useEffect
   useEffect(() => {
     if (
       userId === null ||
@@ -327,6 +432,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!isFetched) return;
+    setReviewListLoading(true);
     const searchCondition: SearchConditionInterface = {
       memberId: userId,
     };
@@ -344,7 +450,6 @@ const ProfilePage = () => {
         searchCondition,
         ({ data }) => {
           const response = data.data.data;
-          const reviewList: ReviewCardInterface[] = [];
           for (const review of response) {
             const reviewData: ReviewCardInterface = {
               reviewId: review.reviewId,
@@ -374,6 +479,8 @@ const ProfilePage = () => {
           }
 
           setReviewListState(reviewList);
+          setInfScrollPage(1);
+          setReviewListLoading(false);
         },
         (error) => {
           console.log(error);
@@ -392,15 +499,12 @@ const ProfilePage = () => {
   ]);
 
   useEffect(() => {
-    setReviewListState(reviewListUpdater);
-  }, [reviewListUpdater]);
-
-  useEffect(() => {
     if (emptyInput || wrongPassword) {
       verifyRef.current.focus();
     }
   }, [emptyInput, wrongPassword]);
 
+  // 인터페이스
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
     setSortBy: setSortBy,
@@ -414,6 +518,7 @@ const ProfilePage = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
+  // 함수
   const followClicked = async () => {
     if (loginId === userId) return;
     const data: Object = {
@@ -669,6 +774,14 @@ const ProfilePage = () => {
       </div>
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
+      {infScrollLoading ? (
+        <Loading />
+      ) : (
+        <div
+          style={{ height: "100px", backgroundColor: "white" }}
+          ref={infScrollTargetRef}
+        ></div>
+      )}
 
       <Modal
         isOpen={isVerifyModalOpen}

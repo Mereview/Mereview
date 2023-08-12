@@ -9,6 +9,15 @@ import { Bar } from "react-chartjs-2";
 import { Experience } from "./interface/ProfilePageInterface";
 import "../styles/css/ExperienceBar.css";
 
+const tierBackgroundColor = {
+  NONE: "rgba(0, 0, 0, 0)",
+  BRONZE: "rgba(148, 97, 61, 0.2)", // bronze
+  SILVER: "rgba(143, 143, 143, 0.2)", // silver
+  GOLD: "rgba(242, 205, 92, 0.2)", // gold
+  PLATINUM: "rgba(80, 200, 120, 0.2)", // platinum
+  DIAMOND: "rgba(112, 209, 244, 0.2)", // diamond
+};
+
 const tierColor = {
   NONE: "rgba(0, 0, 0, 0.35)",
   BRONZE: "rgba(148, 97, 61, 0.5)", // bronze
@@ -29,39 +38,86 @@ const tierBorderColor = {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
+interface chartDataInterface {
+  data: number[];
+  backgroundColor: string[];
+  borderColor?: string[];
+  borderWidth?: number;
+  categoryPercentage: number;
+  barPercentage: number;
+}
+
 const ExperienceBar = (experienceProps: { userExpData: Experience[] }) => {
   const userData = experienceProps.userExpData;
 
   const labels: string[][] = [];
-  const expData: number[] = [];
-  const backgroundColor: string[] = [];
-  const borderColor: string[] = [];
+  const expData: chartDataInterface = {
+    data: [],
+    backgroundColor: [],
+    borderColor: [],
+    borderWidth: 1,
+    categoryPercentage: 1,
+    barPercentage: 0.33,
+  };
+  const backgournd: chartDataInterface = {
+    data: [],
+    backgroundColor: [],
+    categoryPercentage: 1,
+    barPercentage: 0.33,
+  };
+  const minimunVisible: chartDataInterface = {
+    data: [],
+    backgroundColor: [],
+    borderColor: [],
+    borderWidth: 1,
+    categoryPercentage: 1,
+    barPercentage: 0.33,
+  };
+
   for (const data of userData) {
     labels.push([data.genre, data.typeName]);
-    expData.push(data.exp);
-    // expData.push(data.expPercent);
-    backgroundColor.push(tierColor[data.tier]);
-    borderColor.push(tierBorderColor[data.tier]);
+    expData.data.push(data.expPercent);
+    expData.backgroundColor.push(tierColor[data.tier]);
+    expData.borderColor.push(tierBorderColor[data.tier]);
+    backgournd.data.push(100);
+    backgournd.backgroundColor.push(tierBackgroundColor[data.tier]);
+    if (data.expPercent < 2.5) {
+      minimunVisible.data.push(2.5 - data.expPercent);
+      minimunVisible.borderColor.push(tierBorderColor[data.tier]);
+      minimunVisible.backgroundColor.push(tierColor[data.tier]);
+    } else {
+      minimunVisible.data.push(null);
+      minimunVisible.borderColor.push(null);
+      minimunVisible.backgroundColor.push(null);
+    }
   }
 
   const chartData = {
     labels: labels,
-    datasets: [
-      {
-        data: expData,
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-        borderWidth: 1,
-        categoryPercentage: 1,
-        barPercentage: 0.33,
+    datasets: [expData, backgournd, minimunVisible],
+  };
+
+  const chartOption = {
+    scales: {
+      x: {
+        stacked: true,
       },
-    ],
+      y: {
+        min: 0,
+        max: 100,
+      },
+    },
+    plugins: {
+      tooltip: {
+        enabled: false,
+      },
+    },
   };
 
   return (
     <>
       <div className="experience-bar-container">
-        <Bar data={chartData} width={4000} height={500} />
+        <Bar data={chartData} options={chartOption} width={4000} height={500} />
       </div>
     </>
   );
