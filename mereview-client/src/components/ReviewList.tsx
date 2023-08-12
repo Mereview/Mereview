@@ -11,8 +11,6 @@ interface ReviewListProps {
 /* 정렬 방식에 따라 받는 reviewList가 달라질 것 */
 const ReviewList = ({ reviewList }: ReviewListProps) => {
   if (reviewList === null || reviewList === undefined) return <Loading />;
-  else if (reviewList.length === 0)
-    return <div className="empty-review-list-info">리뷰가 없습니다.</div>;
   return (
     <>
       <div className="review-card-list-wrapper">

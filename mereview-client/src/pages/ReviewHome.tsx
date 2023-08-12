@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Loading from "../components/common/Loading";
@@ -152,15 +152,124 @@ const ReviewHome = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  // 무한 스크롤
+  const [infScrollPage, setInfScrollPage] = useState<number>(2);
+  const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
+  const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
+
+  const infScrollTargetRef = useRef(null);
+
+  const observerOptions = {
+    root: null,
+    rootMargin: "5px",
+    threshold: 0.8,
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const movieNames = await getBoxOfficeMovieNames();
       const movies = await searchMovieOnTmdb(movieNames);
       setMovieList(movies);
+      setIsFetched(true);
     };
     fetchData();
   }, []);
+
+  const infScrollLoadMore = async () => {
+    if (infScrollLoading) return;
+
+    setInfScrollPage((prevPage) => ++prevPage);
+
+    const searchCondition: SearchConditionInterface = {
+      pageNumber: infScrollPage,
+    };
+
+    if (searchCriteria === "제목") searchCondition.title = searchKeyword;
+    else if (searchCriteria === "작성자")
+      searchCondition.nickname = searchKeyword;
+    else {
+      console.log("검색 기준 에러!!");
+      return;
+    }
+
+    if (onlyInterest) searchCondition.myInterest = loginId;
+    if (sortBy === "recommend") {
+      searchCondition.orderBy = "POSITIVE";
+      searchCondition.orderDir = recommendDescend ? "DESC" : "ASC";
+    } else if (sortBy === "date") {
+      searchCondition.orderDir = dateDescend ? "DESC" : "ASC";
+    }
+    if (searchTerm !== "all") searchCondition.term = searchTerm;
+
+    await searchReviews(
+      searchCondition,
+      ({ data }) => {
+        const response = data.data.data;
+        if (response.length === 0) {
+          setInfScrollDone(true);
+          return;
+        }
+        const newReviewList = [];
+        for (const review of response) {
+          const reviewData: ReviewCardInterface = {
+            reviewId: review.reviewId,
+            memberId: review.memberId,
+            nickname: review.nickname,
+            oneLineReview: review.highlight,
+            funnyCount: review.funCount,
+            usefulCount: review.usefulCount,
+            dislikeCount: review.badCount,
+            commentCount: review.commentCount,
+            movieTitle: review.movieTitle,
+            releaseYear: Number(
+              String(review.movieReleaseDate).substring(0, 4)
+            ),
+            movieGenre: [review.genreResponse.genreName],
+            createDate: new Date(review.createdTime),
+            recommend: review.movieRecommendType === "YES",
+          };
+          if (review.profileImage?.id) {
+            reviewData.profileImageId = review.profileImage?.id;
+          }
+          if (review.backgroundImageResponse?.id) {
+            reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+          }
+          newReviewList.push(reviewData);
+        }
+        setReviewListState((prevReviewList) => [
+          ...prevReviewList,
+          ...newReviewList,
+        ]);
+        setInfScrollLoading(false);
+      },
+      (error) => {
+        setInfScrollLoading(false);
+        console.log(error);
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!isFetched || infScrollDone) return;
+
+    const infScrollReloadCallback = async (entries) => {
+      if (!infScrollLoading && entries[0].isIntersecting) {
+        setInfScrollLoading(true);
+        await infScrollLoadMore();
+      }
+    };
+
+    const infScrollObserver = new IntersectionObserver(
+      infScrollReloadCallback,
+      observerOptions
+    );
+
+    infScrollObserver.observe(infScrollTargetRef.current);
+
+    return () => {
+      infScrollObserver.disconnect();
+    };
+  }, [isFetched, infScrollLoading]);
 
   const searchSubmit = () => {
     if (searchKeyword === "") {
@@ -223,8 +332,10 @@ const ReviewHome = () => {
             reviewList.push(reviewData);
           }
 
-          console.log(reviewList);
+          setInfScrollDone(false);
           setReviewListState(reviewList);
+          setInfScrollPage(2);
+          setInfScrollLoading(false);
         },
         (error) => {
           console.log(error);
@@ -290,6 +401,9 @@ const ReviewHome = () => {
           }
 
           setReviewListState(reviewList);
+          setInfScrollDone(false);
+          setInfScrollLoading(false);
+          setInfScrollPage(2);
         },
         (error) => {
           console.log(error);
@@ -322,6 +436,7 @@ const ReviewHome = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
+  if (!isFetched) return <Loading />;
   return (
     <>
       <MovieList movieList={movieList} />
@@ -329,6 +444,14 @@ const ReviewHome = () => {
       <ReviewSearch searchProps={searchProps} searchSubmit={searchSubmit} />
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
+      {!infScrollDone ? (
+        <div
+          style={{ height: "100px", backgroundColor: "white" }}
+          ref={infScrollTargetRef}
+        ></div>
+      ) : (
+        <div className="empty-review-list-info">리뷰가 없습니다.</div>
+      )}
     </>
   );
 };
