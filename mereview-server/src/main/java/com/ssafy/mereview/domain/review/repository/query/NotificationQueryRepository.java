@@ -25,7 +25,7 @@ public class NotificationQueryRepository {
                 .from(notification)
                 .join(notification.member, member)
                 .join(notification.review, review)
-                .where(notification.id.eq(memberId))
+                .where(notification.member.id.eq(memberId))
                 .fetch();
 
         if (ids.isEmpty()) {
