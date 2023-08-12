@@ -13,9 +13,10 @@ public class SearchCondition {
     private String orderBy;
     private String orderDir;
     private String term;
+    private String genreId;
 
     @Builder
-    public SearchCondition(String title, String content, String memberId, String myInterest, String nickname, String orderBy, String orderDir, String term) {
+    public SearchCondition(String title, String content, String memberId, String myInterest, String nickname, String orderBy, String orderDir, String term, String genreId) {
         this.title = title;
         this.content = content;
         this.memberId = memberId;
@@ -24,5 +25,6 @@ public class SearchCondition {
         this.orderBy = orderBy;
         this.orderDir = orderDir;
         this.term = term;
+        this.genreId = genreId;
     }
 }
