@@ -1,13 +1,16 @@
 package com.ssafy.mereview.domain.review.repository.query;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
+import com.ssafy.mereview.domain.review.entity.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ssafy.mereview.domain.member.entity.QMember.member;
 import static com.ssafy.mereview.domain.review.entity.QNotification.notification;
@@ -25,7 +28,7 @@ public class NotificationQueryRepository {
                 .from(notification)
                 .join(notification.member, member)
                 .join(notification.review, review)
-                .where(notification.member.id.eq(memberId))
+                .where(isMember(memberId))
                 .fetch();
 
         if (ids.isEmpty()) {
@@ -53,7 +56,7 @@ public class NotificationQueryRepository {
                 .from(notification)
                 .join(notification.member, member)
                 .join(notification.review, review)
-                .where(notification.member.id.eq(memberId))
+                .where(isMember(memberId))
                 .fetchOne();
         return result == null ? 0 : result.intValue();
     }
@@ -62,7 +65,26 @@ public class NotificationQueryRepository {
         return queryFactory
                 .select(notification.review.id)
                 .from(notification)
-                .where(notification.member.id.eq(memberId))
+                .where(isMember(memberId))
                 .fetch();
+    }
+
+    public Optional<Notification> searchByReviewIdAndMemberId(Long memberId, Long reviewId) {
+        return Optional.ofNullable(queryFactory
+                .select(notification)
+                .from(notification)
+                .where(
+                        isMember(memberId),
+                        isReview(reviewId)
+                )
+                .fetchOne());
+    }
+
+    private BooleanExpression isMember(Long memberId) {
+        return notification.member.id.eq(memberId);
+    }
+
+    private BooleanExpression isReview(Long reviewId) {
+        return notification.review.id.eq(reviewId);
     }
 }
