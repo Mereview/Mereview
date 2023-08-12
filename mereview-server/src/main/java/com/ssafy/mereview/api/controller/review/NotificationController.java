@@ -33,7 +33,7 @@ public class NotificationController {
     @ApiOperation(value = "알림 리뷰 조회")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchNotifiedReviews(
             @RequestParam Long memberId,
-            @RequestParam("1") Integer pageNumber) {
+            @RequestParam(defaultValue = "1") Integer pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchNotifiedReviews(memberId, pageRequest);
 

@@ -55,6 +55,13 @@ public class MemberQueryRepository{
                 .fetch();
     }
 
+    public long searchCommnetCountByMemberId(Long memberId){
+        return queryFactory
+                .selectFrom(comment)
+                .where(comment.member.id.eq(memberId))
+                .fetchCount();
+    }
+
     public List<Interest> searchInterestByMemberId(Long memberId) {
 
         return queryFactory.select(interest)
