@@ -2,17 +2,14 @@ import "../../styles/css/Top.css";
 import WordCloud from "react-d3-cloud";
 
 const Top = ({ review }: any) => {
-  console.log(review.keywords);
   const words = review.keywords.map((word) => ({
     text: word.keywordName,
     value: word.keywordWeight / 20,
   }));
-  console.log(words);
-  const profileImageURL = review.profileImage.id
+  const profileImageURL = review.profileImage?.id
     ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${review.profileImage.id}`
     : "/testProfile.gif";
 
-  console.log(words);
   return (
     <div className="total">
       <div className="leftInfo">
