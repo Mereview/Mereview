@@ -11,20 +11,20 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class NotificationUpdateRequest {
     @NotNull
-    private Long memberId;
+    private Long loginMemberId;
 
     @NotNull
     private Long reviewId;
 
     @Builder
     public NotificationUpdateRequest(Long memberId, Long reviewId) {
-        this.memberId = memberId;
+        this.loginMemberId = memberId;
         this.reviewId = reviewId;
     }
 
     public NotificationUpdateServiceRequest toServiceRequest() {
         return NotificationUpdateServiceRequest.builder()
-                .memberId(memberId)
+                .memberId(loginMemberId)
                 .reviewId(reviewId)
                 .build();
     }
