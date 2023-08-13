@@ -283,15 +283,14 @@ const ProfilePage = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
-  const [reviewListLoading, setReviewListLoading] = useState<boolean>(true);
   // 자기소개
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
   // 무한 스크롤
-  const [infScrollPage, setInfScrollPage] = useState<number>(1);
+  const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
-
+  const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
   // 회원 정보 수정, 탈퇴 모달
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
@@ -310,14 +309,14 @@ const ProfilePage = () => {
 
   const observerOptions = {
     root: null,
-    rootMargin: "0px",
-    threshold: 1,
+    rootMargin: "5px",
+    threshold: 0.8,
   };
 
   const infScrollLoadMore = async () => {
     if (infScrollLoading) return;
 
-    setInfScrollPage(infScrollPage + 1);
+    setInfScrollPage((prevPage) => ++prevPage);
 
     const searchCondition: SearchConditionInterface = {
       memberId: userId,
@@ -336,6 +335,11 @@ const ProfilePage = () => {
       searchCondition,
       ({ data }) => {
         const response = data.data.data;
+        if (response.length === 0) {
+          setInfScrollDone(true);
+          return;
+        }
+        const newReviewList = [];
         for (const review of response) {
           const reviewData: ReviewCardInterface = {
             reviewId: review.reviewId,
@@ -360,9 +364,12 @@ const ProfilePage = () => {
           if (review.backgroundImageResponse?.id) {
             reviewData.backgroundImageId = review.backgroundImageResponse?.id;
           }
-          reviewList.push(reviewData);
+          newReviewList.push(reviewData);
         }
-        setReviewListState(reviewList);
+        setReviewListState((prevReviewList) => [
+          ...prevReviewList,
+          ...newReviewList,
+        ]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -373,7 +380,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    if (!isFetched) return;
+    if (!isFetched || infScrollDone) return;
 
     const infScrollReloadCallback = async (entries) => {
       if (!infScrollLoading && entries[0].isIntersecting) {
@@ -432,7 +439,6 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!isFetched) return;
-    setReviewListLoading(true);
     const searchCondition: SearchConditionInterface = {
       memberId: userId,
     };
@@ -479,8 +485,7 @@ const ProfilePage = () => {
           }
 
           setReviewListState(reviewList);
-          setInfScrollPage(1);
-          setReviewListLoading(false);
+          setInfScrollPage(2);
         },
         (error) => {
           console.log(error);
@@ -774,13 +779,13 @@ const ProfilePage = () => {
       </div>
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
-      {infScrollLoading ? (
-        <Loading />
-      ) : (
+      {!infScrollDone ? (
         <div
           style={{ height: "100px", backgroundColor: "white" }}
           ref={infScrollTargetRef}
         ></div>
+      ) : (
+        <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}
 
       <Modal
