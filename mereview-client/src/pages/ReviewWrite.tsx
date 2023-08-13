@@ -18,6 +18,9 @@ const ReviewWrite = () => {
   //유저 정보 받아오기
   const userid = useSelector((state: any) => state.user.user.id);
 
+  //배경이미지
+  const frameImg = "/filmframe.png";
+
   //서버로 보낼 리뷰 데이터
   const inputData = useRef<ReviewDataInterface>({
     title: null,
@@ -215,25 +218,42 @@ const ReviewWrite = () => {
   return (
     <div
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+        // backgroundImage: `url(${topImg})`,
         position: "absolute",
-        backgroundSize: "cover",
+        backgroundSize: "fill",
         height: "auto",
         width: "100vw",
       }}
       className="align-items-center"
     >
+      <img
+        src={frameImg}
+        style={{
+          width: "100%",
+          height: "120px",
+          objectFit: "fill",
+        }}
+      />
+      {/* <div
+        style={{
+          width: "100%",
+          backgroundImage: `url(${topImg})`,
+        }}
+      ></div> */}
       <Container
-        className="mx-auto my-5 border border-5 border-dark rounded-5"
+        // className="mx-auto border border-5 border-dark rounded-5"
+        id="reviewContainer"
+        className="mx-auto"
         style={{
           position: "relative",
           height: "auto",
           flex: "1",
-          // backgroundColor: `${
-          //   selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
-          // }`,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+          backgroundColor: `${
+            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
+          }`,
+          // backgroundColor: "rgba(0, 0, 0, 0.5)",
+          // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
       >
         <div
@@ -242,8 +262,12 @@ const ReviewWrite = () => {
             backgroundImage: `url(${selectedImage})`,
           }}
         ></div>
+        <Row />
         <Row className="top mx-2">
-          <Col lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
+          <Col
+            md-lg={7}
+            className="frame me-4 p-4 rounded-3 d-flex flex-column"
+          >
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -297,17 +321,15 @@ const ReviewWrite = () => {
           </Col>
           <Col lg={4} className="ms-5 p-4 rounded-2 frame">
             <Row className="align-items-center justify-content-center mb-3">
-              <Col lg={5}>
+              <Col md-lg={6} className="p-0">
                 <Form.Control
                   className="text-center border border-5 rounded-2"
                   value={imgName}
                   readOnly
-                  style={{
-                    width: "110%",
-                  }}
+                  placeholder="배경 이미지를 첨부해주세요"
                 ></Form.Control>
               </Col>
-              <Col>
+              <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
                   <Button
@@ -341,7 +363,7 @@ const ReviewWrite = () => {
           <Col lg={3}>
             <button
               id="type"
-              className="bg-danger feed-btn mx-1 my-1"
+              className="bg-danger feed-btn mx-1 mt-1"
               type="button"
               style={{
                 backgroundImage: "url(/thumbDown.png)",
@@ -363,8 +385,6 @@ const ReviewWrite = () => {
               onClick={feedbackHandler}
               value={"YES"}
             ></button>
-            {/* </Col>
-        <Col lg={2}> */}
             <Button
               styles="btn-primary"
               text="등록"
@@ -372,7 +392,16 @@ const ReviewWrite = () => {
             ></Button>
           </Col>
         </Row>
+        <Row />
       </Container>
+      <img
+        src={frameImg}
+        style={{
+          width: "100%",
+          height: "120px",
+          objectFit: "fill",
+        }}
+      />
     </div>
   );
 };
