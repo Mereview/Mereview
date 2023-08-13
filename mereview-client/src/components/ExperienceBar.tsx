@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -47,80 +48,87 @@ interface chartDataInterface {
   barPercentage: number;
 }
 
-const ExperienceBar = (experienceProps: { userExpData: Experience[] }) => {
-  const userData = experienceProps.userExpData;
+const ExperienceBar = React.memo(
+  (experienceProps: { userExpData: Experience[] }) => {
+    const userData = experienceProps.userExpData;
 
-  const labels: string[][] = [];
-  const expData: chartDataInterface = {
-    data: [],
-    backgroundColor: [],
-    borderColor: [],
-    borderWidth: 1,
-    categoryPercentage: 1,
-    barPercentage: 0.33,
-  };
-  const backgournd: chartDataInterface = {
-    data: [],
-    backgroundColor: [],
-    categoryPercentage: 1,
-    barPercentage: 0.33,
-  };
-  const minimunVisible: chartDataInterface = {
-    data: [],
-    backgroundColor: [],
-    borderColor: [],
-    borderWidth: 1,
-    categoryPercentage: 1,
-    barPercentage: 0.33,
-  };
+    const labels: string[][] = [];
+    const expData: chartDataInterface = {
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1,
+      categoryPercentage: 1,
+      barPercentage: 0.33,
+    };
+    const backgournd: chartDataInterface = {
+      data: [],
+      backgroundColor: [],
+      categoryPercentage: 1,
+      barPercentage: 0.33,
+    };
+    const minimunVisible: chartDataInterface = {
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1,
+      categoryPercentage: 1,
+      barPercentage: 0.33,
+    };
 
-  for (const data of userData) {
-    labels.push([data.genre, data.typeName]);
-    expData.data.push(data.expPercent);
-    expData.backgroundColor.push(tierColor[data.tier]);
-    expData.borderColor.push(tierBorderColor[data.tier]);
-    backgournd.data.push(100);
-    backgournd.backgroundColor.push(tierBackgroundColor[data.tier]);
-    if (data.expPercent < 2.5) {
-      minimunVisible.data.push(2.5 - data.expPercent);
-      minimunVisible.borderColor.push(tierBorderColor[data.tier]);
-      minimunVisible.backgroundColor.push(tierColor[data.tier]);
-    } else {
-      minimunVisible.data.push(null);
-      minimunVisible.borderColor.push(null);
-      minimunVisible.backgroundColor.push(null);
+    const chartData = {
+      labels: labels,
+      datasets: [expData, backgournd, minimunVisible],
+    };
+
+    const chartOption = {
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          min: 0,
+          max: 100,
+        },
+      },
+      plugins: {
+        tooltip: {
+          enabled: false,
+        },
+      },
+    };
+
+    for (const data of userData) {
+      labels.push([data.genre, data.typeName]);
+      expData.data.push(data.expPercent);
+      expData.backgroundColor.push(tierColor[data.tier]);
+      expData.borderColor.push(tierBorderColor[data.tier]);
+      backgournd.data.push(100);
+      backgournd.backgroundColor.push(tierBackgroundColor[data.tier]);
+      if (data.expPercent < 2.5) {
+        minimunVisible.data.push(2.5 - data.expPercent);
+        minimunVisible.borderColor.push(tierBorderColor[data.tier]);
+        minimunVisible.backgroundColor.push(tierColor[data.tier]);
+      } else {
+        minimunVisible.data.push(null);
+        minimunVisible.borderColor.push(null);
+        minimunVisible.backgroundColor.push(null);
+      }
     }
+
+    return (
+      <>
+        <div className="experience-bar-container">
+          <Bar
+            data={chartData}
+            options={chartOption}
+            width={4000}
+            height={500}
+          />
+        </div>
+      </>
+    );
   }
-
-  const chartData = {
-    labels: labels,
-    datasets: [expData, backgournd, minimunVisible],
-  };
-
-  const chartOption = {
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        min: 0,
-        max: 100,
-      },
-    },
-    plugins: {
-      tooltip: {
-        enabled: false,
-      },
-    },
-  };
-
-  return (
-    <>
-      <div className="experience-bar-container">
-        <Bar data={chartData} options={chartOption} width={4000} height={500} />
-      </div>
-    </>
-  );
-};
+);
 
 export default ExperienceBar;

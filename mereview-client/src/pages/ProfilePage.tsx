@@ -283,7 +283,9 @@ const ProfilePage = () => {
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
-  // 자기소개
+  // 자기소개, 프로필 이미지
+  const [profileImageHovered, setProfileImageHovered] =
+    useState<boolean>(false);
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
@@ -292,6 +294,8 @@ const ProfilePage = () => {
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
   const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
   // 회원 정보 수정, 탈퇴 모달
+  const [isProfileImageModalOpen, setProfileImageModalOpen] =
+    useState<boolean>(false);
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
   const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
@@ -551,6 +555,10 @@ const ProfilePage = () => {
     setFollowed(!followed);
   };
 
+  const handelProfileImageSelect = (e) => {
+    console.log(e.target.files[0]);
+  };
+
   const handleEditClick = () => {
     setEditedIntroduction(userInfo.introduction);
     setIntroductionEditing(true);
@@ -575,6 +583,18 @@ const ProfilePage = () => {
 
   const handleEditCancelClick = () => {
     setIntroductionEditing(false);
+  };
+
+  const openProfileImageModal = () => {
+    setProfileImageModalOpen(true);
+  };
+
+  const closeProfileImageModal = () => {
+    setProfileImageModalOpen(false);
+  };
+
+  const updateProfileImage = () => {
+    console.log("update profile image");
   };
 
   const openVerifyModal = () => {
@@ -681,8 +701,18 @@ const ProfilePage = () => {
                 : defaultProfileImage
             }
             alt="프로필 이미지"
-            style={{ width: "450px" }}
+            style={{ width: "450px", opacity: profileImageHovered ? 0.45 : 1 }}
+            onMouseEnter={() => setProfileImageHovered(true)}
+            onMouseLeave={() => setProfileImageHovered(false)}
           />
+          {profileImageHovered && (
+            <BsPencilSquare
+              className="profile-image-edit-icon"
+              onClick={openProfileImageModal}
+              onMouseEnter={() => setProfileImageHovered(true)}
+              onMouseLeave={() => setProfileImageHovered(false)}
+            />
+          )}
           {userId === loginId ? (
             <div
               className="profile-modify-icon-container"
@@ -789,6 +819,40 @@ const ProfilePage = () => {
       )}
 
       <Modal
+        isOpen={isProfileImageModalOpen}
+        onRequestClose={closeProfileImageModal}
+        contentLabel="Profile Modal"
+        className="profile-modal"
+      >
+        <div
+          className="profile-image-edit-container"
+          style={{ borderColor: profileBorderColor[userInfo.highestTier] }}
+        >
+          <img
+            src={
+              userInfo.profileImageId
+                ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${userInfo.profileImageId}`
+                : defaultProfileImage
+            }
+            alt="프로필 이미지"
+            style={{ width: "250px" }}
+          />
+        </div>
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            className="profile-image-input"
+            onChange={handelProfileImageSelect}
+          />
+        </div>
+        <div className="modal-button-box">
+          <button onClick={updateProfileImage}>변경</button>
+          <button onClick={closeProfileImageModal}>취소</button>
+        </div>
+      </Modal>
+
+      <Modal
         isOpen={isVerifyModalOpen}
         onRequestClose={closeVerifyModal}
         contentLabel="Verify Modal"
@@ -824,9 +888,12 @@ const ProfilePage = () => {
         contentLabel="Modify Modal"
         className="modify-modal"
       >
-        <button onClick={withdrawal}>탈퇴</button>
-        <button onClick={updateMemberInfo}>완료</button>
-        <button onClick={closeModifyModal}>취소</button>
+        <div></div>
+        <div className="modal-button-box">
+          <button onClick={withdrawal}>탈퇴</button>
+          <button onClick={updateMemberInfo}>완료</button>
+          <button onClick={closeModifyModal}>취소</button>
+        </div>
       </Modal>
     </>
   );
