@@ -35,7 +35,6 @@ const ReviewDetail = () => {
               console.log("토글 불가능", toggleErr);
             }
           );
-        
         },
         (err) => {
           navigate("/404");
@@ -58,7 +57,6 @@ const ReviewDetail = () => {
     : {
         backgroundColor: "black",
         opacity: "82%",
-        filter: "blur(5px)",
         zIndex: "-1",
       };
 
