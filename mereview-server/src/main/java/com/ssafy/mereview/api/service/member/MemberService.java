@@ -12,7 +12,7 @@ import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
-import com.ssafy.mereview.domain.movie.repository.GenreRepository;
+import com.ssafy.mereview.domain.movie.repository.command.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;

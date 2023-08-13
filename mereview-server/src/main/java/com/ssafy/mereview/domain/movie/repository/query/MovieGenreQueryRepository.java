@@ -1,4 +1,4 @@
-package com.ssafy.mereview.domain.movie.repository;
+package com.ssafy.mereview.domain.movie.repository.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.mereview.domain.movie.entity.MovieGenre;
