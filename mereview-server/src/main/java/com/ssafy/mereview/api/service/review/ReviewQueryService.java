@@ -227,7 +227,7 @@ public class ReviewQueryService {
     }
 
     private Integer getCountByType(CommentLikeType commentLikeType, Long commentId) {
-        return commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId).get(commentLikeType);
+        return commentLikeQueryRepository.getCountByCommentIdGroupByType(commentId).getOrDefault(commentLikeType, 0);
     }
 
     private ProfileImageResponse getProfileImageResponse(ProfileImage profileImage) {

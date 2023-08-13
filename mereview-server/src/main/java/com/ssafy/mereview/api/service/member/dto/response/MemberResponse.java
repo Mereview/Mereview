@@ -27,9 +27,10 @@ public class MemberResponse {
     private ProfileImageResponse profileImage;
     private int todayVisitCount;
     private int totalVisitCount;
+    private Long commentCount;
 
     @Builder
-    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, LocalDateTime createdTime, String introduce, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, int reviews, int following, int follower, ProfileImageResponse profileImage, int todayVisitCount, int totalVisitCount) {
+    public MemberResponse(Long id, String email, String nickname, String gender, String birthDate, Role role, LocalDateTime createdTime, String introduce, List<InterestResponse> interests, List<MemberTierResponse> tiers, List<MemberAchievementResponse> achievements, int reviews, int following, int follower, ProfileImageResponse profileImage, int todayVisitCount, int totalVisitCount, Long commentCount) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
@@ -47,5 +48,6 @@ public class MemberResponse {
         this.profileImage = profileImage;
         this.todayVisitCount = todayVisitCount;
         this.totalVisitCount = totalVisitCount;
+        this.commentCount = commentCount;
     }
 }

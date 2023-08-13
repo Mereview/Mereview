@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -33,7 +34,7 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     Member member;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = ALL, orphanRemoval = true)
     private List<CommentLike> likes = new ArrayList<>();
 
     @Builder

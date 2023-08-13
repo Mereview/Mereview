@@ -25,6 +25,7 @@ const Detail = ({ review, setReview }: any) => {
     USEFUL: review.usefulCount,
     BAD: review.badCount,
   });
+  console.log(userId, review.reviewId);
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
@@ -67,7 +68,7 @@ const Detail = ({ review, setReview }: any) => {
         }
       };
       const fail = (err) => {
-        console.log(err, event.target.id);
+        alert("이미 다른 평가를 남겼습니다.");
       };
       evaluationsReview(data, success, fail);
     }
@@ -145,9 +146,21 @@ const Detail = ({ review, setReview }: any) => {
       ></div>
 
       <div className="ratingbuttons">
-        <button id="USEFUL" onClick={onClick}></button>
-        <button id="FUN" onClick={onClick}></button>
-        <button id="BAD" onClick={onClick}></button>
+        <button
+          id="USEFUL"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="FUN"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="BAD"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
       </div>
       {userId === review.memberId ? (
         <div className="edit">

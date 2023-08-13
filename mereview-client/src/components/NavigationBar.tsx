@@ -6,13 +6,26 @@ import { useEffect, useState } from "react";
 import ProfileModal from "./ProfileModal";
 const NavigationBar = ({ user }) => {
   const [isModal, setIsModal] = useState(false);
+  
+  const [notification, setNotification] = useState(false);
+
   const profilURL = user.profileImage?.id
     ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${user.profileImage.id}`
     : "/testProfile.gif";
-  const modalToggler = () => {
+  
+    const modalToggler = () => {
     setIsModal((currentState: boolean) => !currentState);
     console.log(isModal);
   };
+  const checkNotifications = ():boolean =>{
+    return user.notifications?.some(notification => notification.status === "UNCONFIRMED");
+  }
+  useEffect(()=>{
+      console.log("알람 확인")
+      checkNotifications() ? setNotification(true) : setNotification(false)
+      console.log(checkNotifications())
+  })
+
 
   return (
     <div>
@@ -35,6 +48,12 @@ const NavigationBar = ({ user }) => {
             </Nav.Link>
             <Nav.Link href="/profile" className="text-white fs-4">
               프로필
+            </Nav.Link>
+            <Nav.Link href="/notification" className="text-white fs-4">
+              <div className="notification-container">
+            <span className="material-symbols-outlined">notifications</span>
+            <div className="alarm" style={{visibility : notification ? 'visible' : 'hidden'}}></div>
+              </div>
             </Nav.Link>
             <Nav.Item>
               <div

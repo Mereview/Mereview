@@ -9,6 +9,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     : "/testProfile.gif";
   const userId = localStorage.getItem("id");
   const { id } = useParams();
+  const [evCnt, setEvCnt] = useState({
+    likeCount: comment.likeCount,
+    dislikeCount: comment.disLikeCount,
+  });
+  console.log(comment.memberId, userId);
   const onClick = () => {
     deleteReviewComment(
       comment.commentId,
@@ -35,8 +40,35 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-
-  const likeDislike = () => {};
+  const likeDislike = (event: any) => {
+    const data = {
+      commentId: comment.commentId,
+      memberId: userId,
+      type: event.target.id,
+    };
+    updateCommentLike(
+      data,
+      (res) => {
+        console.log(res);
+        const data = {
+          reviewId: id,
+          loginMemberId: Number(userId),
+        };
+        searchReview(
+          data,
+          (res) => {
+            setComments(res.data.data.comments);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      },
+      (err) => {
+        alert("이미 추천/비추천을 눌렀습니다.");
+      }
+    );
+  };
   return (
     <div className="comment">
       <div className="writer">
@@ -51,20 +83,25 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       <div className="buttons">
         <div className="lndl">
           <div>
-            <button id="like" disabled={comment.memberId !== userId}></button>
+            <button
+              id="LIKE"
+              disabled={comment.memberId === Number(userId)}
+              onClick={likeDislike}
+            ></button>
             {comment.likeCount}
           </div>
           <div>
             <button
-              id="dislike"
-              disabled={comment.memberId !== userId}
+              id="DISLIKE"
+              disabled={comment.memberId === Number(userId)}
+              onClick={likeDislike}
             ></button>
             {comment.dislikeCount}
           </div>
           <button
             className="delete"
             onClick={onClick}
-            disabled={comment.memberId === userId}
+            disabled={comment.memberId !== Number(userId)}
           >
             X
           </button>

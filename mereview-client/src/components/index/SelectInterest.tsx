@@ -47,7 +47,6 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
     interests: interest,
     verificationCode: verificationCode,
   };
-  console.log(step2);
   const data = new FormData();
   data.append("file", step2);
   data.append(
@@ -63,10 +62,7 @@ const SelectInterest = ({ step1, step2, verificationCode }) => {
         dispatch(uiActions.tabChange("signUpCompleted"));
       },
       (err) => {
-        console.log(data.get("file"));
-        console.log(data.get("request"));
-        console.log(err.message);
-        console.log(err.data);
+        alert(err.response.data.message);
       }
     );
   };

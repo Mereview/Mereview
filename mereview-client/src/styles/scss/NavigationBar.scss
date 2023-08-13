@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 9999;
 
   /* 내부 Link 컴포넌트에 적용할 스타일입니다. */
   .nav-link {

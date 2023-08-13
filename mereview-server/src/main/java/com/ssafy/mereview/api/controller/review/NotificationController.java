@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.controller.review;
 
+import com.ssafy.mereview.api.controller.review.dto.NotificationUpdateRequest;
 import com.ssafy.mereview.api.service.review.NotificationService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -31,7 +33,7 @@ public class NotificationController {
     @ApiOperation(value = "알림 리뷰 조회")
     public ApiResponse<PageResponse<List<ReviewResponse>>> searchNotifiedReviews(
             @RequestParam Long memberId,
-            @RequestParam("1") Integer pageNumber) {
+            @RequestParam(defaultValue = "1") Integer pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchNotifiedReviews(memberId, pageRequest);
 
@@ -41,10 +43,10 @@ public class NotificationController {
         return ApiResponse.ok(pageResponse);
     }
 
-    @PutMapping("/{notificationId}")
+    @PutMapping
     @ApiOperation(value = "알림 여부 토글")
-    public ApiResponse<NotificationResponse> toggleStatus(@PathVariable Long notificationId) {
-        NotificationResponse response = notificationService.toggleStatus(notificationId);
+    public ApiResponse<NotificationResponse> toggleStatus(@Valid @RequestBody NotificationUpdateRequest request) {
+        NotificationResponse response = notificationService.toggleStatus(request.toServiceRequest());
         return ApiResponse.ok(response);
     }
 

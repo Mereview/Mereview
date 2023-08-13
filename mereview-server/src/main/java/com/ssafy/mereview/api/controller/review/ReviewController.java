@@ -64,8 +64,9 @@ public class ReviewController {
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "DESC") String orderDir,
             @RequestParam(defaultValue = "") String term,
+            @RequestParam(defaultValue = "") String genreId,
             @RequestParam(defaultValue = "1") Integer pageNumber) {
-        SearchCondition condition = createCondition(title, content, memberId, nickname, myInterest, orderBy, orderDir, term);
+        SearchCondition condition = createCondition(title, content, memberId, nickname, myInterest, orderBy, orderDir, term, genreId);
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         List<ReviewResponse> responses = reviewQueryService.searchByCondition(condition, pageRequest);
 
@@ -117,7 +118,7 @@ public class ReviewController {
         return uploadFile;
     }
 
-    private SearchCondition createCondition(String title, String content, String memberId, String nickname, String myInterest, String orderBy, String orderDir, String term) {
+    private SearchCondition createCondition(String title, String content, String memberId, String nickname, String myInterest, String orderBy, String orderDir, String term, String genreId) {
         return SearchCondition.builder()
                 .title(title)
                 .content(content)
@@ -127,6 +128,7 @@ public class ReviewController {
                 .term(term)
                 .orderBy(orderBy)
                 .orderDir(orderDir)
+                .genreId(genreId)
                 .build();
     }
 }

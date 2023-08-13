@@ -4,20 +4,9 @@ import Detail from "../components/reviewDetail/Detail";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { searchReview } from "../api/review";
+import { searchReview, toggleNotificationStatus } from "../api/review";
 import Loading from "../components/common/Loading";
-// export interface DummyRev {
-//   title: string;
-//   oneLine: string;
-//   content: string;
-//   keyword: { [key: string]: string }; // 키와 값의 타입을 모두 문자열로 정의
-//   memberId: number;
-// }
-// export interface DummyMov {
-//   title: string;
-//   released_date: string;
-//   genres: string[];
-// }
+
 const ReviewDetail = () => {
   const [review, setReview] = useState({ backgroundImage: { id: null } });
   const [loading, setLoading] = useState(false);
@@ -35,14 +24,26 @@ const ReviewDetail = () => {
           setReview(res.data.data);
           setLoading(true);
           console.log("최상위 렌더링");
+          console.log("putMapping에 보낼 데이터 ", data);
+
+          toggleNotificationStatus(
+            data,
+            (toggleRes) => {
+              console.log("토글 완료", toggleRes);
+            },
+            (toggleErr) => {
+              console.log("토글 불가능", toggleErr);
+            }
+          );
+        
         },
         (err) => {
-          console.log("fail");
+          navigate("/404");
         }
       );
     };
     getReviewHandler();
-  }, []);
+  }, [id]);
 
   const backgroundImageURL =
     review.backgroundImage && review.backgroundImage.id

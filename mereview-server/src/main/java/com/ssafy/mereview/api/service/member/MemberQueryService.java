@@ -2,6 +2,7 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberServiceLoginRequest;
+import com.ssafy.mereview.api.service.member.dto.request.MemberVerifyRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
 import com.ssafy.mereview.api.service.review.dto.response.*;
@@ -60,8 +61,8 @@ public class MemberQueryService {
         return createMemberLoginResponse(searchMember);
     }
 
-    public Boolean checkMember(MemberServiceLoginRequest request) {
-        Member member = memberQueryRepository.searchByEmail(request.getEmail());
+    public Boolean verifyMember(MemberVerifyRequest request) {
+        Member member = memberQueryRepository.searchById(request.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         return passwordEncoder.matches(request.getPassword(), member.getPassword());
     }
 
@@ -98,22 +99,22 @@ public class MemberQueryService {
                 .build();
     }
 
-    public MemberResponse searchMemberInfo(Long id) {
-        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public MemberResponse searchMemberInfo(Long memberId) {
+        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         checkTiers(member);
 
-        checkAchievements(id);
+        checkAchievements(memberId);
 
-        List<InterestResponse> interestResponses = searchInterestResponse(id);
+        List<InterestResponse> interestResponses = searchInterestResponse(memberId);
 
-        List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(id);
+        List<MemberTierResponse> memberTierResponses = searchMemberTierResponse(memberId);
 
-        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(id);
+        List<MemberAchievementResponse> memberAchievementResponses = searchMemberAchievementResponse(memberId);
 
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
-
-        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses);
+        Long commentCount = memberQueryRepository.searchCommnetCountByMemberId(memberId);
+        return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses, commentCount);
     }
 
     public List<FollowingResponse> searchFollowingResponse(Long memberId) {
@@ -155,13 +156,14 @@ public class MemberQueryService {
 
     }
 
-    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses) {
+    private MemberResponse createMemberResponse(Member member, List<InterestResponse> interestResponses, List<MemberTierResponse> memberTierResponses, List<MemberAchievementResponse> memberAchievementResponses, List<ReviewResponse> reviewResponses, Long commentCount) {
         ProfileImage profileImage = member.getProfileImage();
         return MemberResponse.builder()
                 .id(member.getId())
                 .following(member.getFollowing().size())
                 .follower(member.getFollowers().size())
                 .reviews(reviewResponses.size())
+                .commentCount(commentCount)
                 .todayVisitCount(member.getMemberVisit().getTodayVisitCount())
                 .totalVisitCount(member.getMemberVisit().getTotalVisitCount())
                 .email(member.getEmail())
@@ -231,6 +233,10 @@ public class MemberQueryService {
         log.debug("memberTiers : {}", memberTiers);
         return memberTiers.stream()
                 .map(MemberTierResponse::of)
+                .map(memberTierResponse -> {
+                    createExperiencePercent(memberTierResponse);
+                    return memberTierResponse;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -295,6 +301,7 @@ public class MemberQueryService {
 
     private void createExperiencePercent(MemberTierResponse memberTierResponse) {
         int funExperiencePercent = (int) ((double) memberTierResponse.getFunExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getFunTier()) * 100);
+        log.debug("TIER_MAX_EXP : {}",TIER_MAX_EXP_MAP.get(memberTierResponse.getFunTier()));
         int usefulExperiencePercent = (int) ((double) memberTierResponse.getUsefulExperience() / TIER_MAX_EXP_MAP.get(memberTierResponse.getUsefulTier()) * 100);
 
         memberTierResponse.createExperiencePercent(funExperiencePercent, usefulExperiencePercent);

@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { userActions } from "../store/user-slice";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
+import Modal from "react-modal";
+import { TextField } from "@mui/material";
 import {
   BsHeart,
   BsHeartFill,
@@ -28,6 +31,8 @@ import {
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   follow,
+  verify,
+  deleteMember,
 } from "../api/members";
 import { searchReviews } from "../api/review";
 import "../styles/css/ProfilePage.css";
@@ -150,11 +155,20 @@ const profileBorderColor = {
   PLATINUM: "rgba(80, 200, 120, 1)", // platinum
   DIAMOND: "rgba(112, 209, 244, 1)", // diamond
 };
+
+const profileTier = {
+  NONE: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PALTINUM: 4,
+  DIAMOND: 5,
+};
 /* 유저 더미 데이터 생성 끝 */
 
 const userExpData: Experience[] = [];
 
-/* api test start */
+/* api start */
 let error: AxiosError | null = null;
 const getMemberInfo = async (userId: number) => {
   await searchMemberInfo(
@@ -170,24 +184,27 @@ const getMemberInfo = async (userId: number) => {
       userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
-      userInfo.introduction = response.introduce;
+      userInfo.introduction = response.introduce ? "" : response.introduce;
       userInfo.followerCount = response.follower;
       userInfo.followingCount = response.following;
       userInfo.todayVisitor = response.todayVisitCount;
       userInfo.totalVisitor = response.totalVisitCount;
       userInfo.joinDate = response.createdTime;
-      userInfo.reviewCount = response.reviews.length;
+      userInfo.reviewCount = response.reviews;
+      userInfo.commentCount = response.commentCount;
       for (const expData of response.tiers) {
         const usefulExp: Experience = {
           genre: expData.genreName,
           typeName: "유용해요",
           exp: expData.usefulExperience,
+          expPercent: expData.usefulExperiencePercent,
           tier: expData.usefulTier,
         };
         const funExp: Experience = {
           genre: expData.genreName,
           typeName: "재밌어요",
           exp: expData.funExperience,
+          expPercent: expData.funExperiencePercent,
           tier: expData.funTier,
         };
         userExpData.push(usefulExp);
@@ -195,14 +212,14 @@ const getMemberInfo = async (userId: number) => {
       }
 
       userExpData.sort((a, b) => {
-        if (a.exp > b.exp) return -1;
-        else if (a.exp < b.exp) return 1;
-        else return 0;
+        if (a.tier === b.tier) {
+          if (a.expPercent === b.expPercent) return b.exp - a.exp;
+          return b.expPercent - a.expPercent;
+        }
+        return profileTier[b.tier] - profileTier[a.tier];
       });
 
       userInfo.highestTier = userExpData[0].tier;
-      console.log(response);
-      // userInfo.commentCount = response.commentCount;
     },
     (e) => {
       error = e;
@@ -243,36 +260,148 @@ const getFollowingCount = async (userId: number) => {
     }
   );
 };
-/* api test end */
+/* api end */
 
-let reviewListUpdater: ReviewCardInterface[] | null = null;
+const reviewList: ReviewCardInterface[] = [];
 const ProfilePage = () => {
   const loginId: number = useSelector((state: any) => state.user.user.id);
   const { id } = useParams();
   const userId: number = id ? Number(id) : loginId;
 
   const [isFetched, setIsFetched] = useState<boolean>(false);
+  // 검색 정렬
   const [sortBy, setSortBy] = useState<string>("date");
   const [dateDescend, setDateDescend] = useState<boolean>(true);
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  // 팔로우 팔로잉
   const [followed, setFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
+  // 리뷰리스트
   const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
     []
   );
+  // 자기소개
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
+  // 무한 스크롤
+  const [infScrollPage, setInfScrollPage] = useState<number>(2);
+  const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
+  const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
+  // 회원 정보 수정, 탈퇴 모달
+  const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
+  const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
+  const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
+  const [emptyInput, setEmptyInput] = useState<boolean>(false);
+  const [wrongPassword, setWrongPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isSelf = userId !== loginId;
   const followIcon =
     followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
+  const verifyRef = useRef(null);
+  const infScrollTargetRef = useRef(null);
 
+  const observerOptions = {
+    root: null,
+    rootMargin: "5px",
+    threshold: 0.8,
+  };
+
+  const infScrollLoadMore = async () => {
+    if (infScrollLoading) return;
+
+    setInfScrollPage((prevPage) => ++prevPage);
+
+    const searchCondition: SearchConditionInterface = {
+      memberId: userId,
+      pageNumber: infScrollPage,
+    };
+    if (onlyInterest) searchCondition.myInterest = loginId;
+    if (sortBy === "recommend") {
+      searchCondition.orderBy = "POSITIVE";
+      searchCondition.orderDir = recommendDescend ? "DESC" : "ASC";
+    } else if (sortBy === "date") {
+      searchCondition.orderDir = dateDescend ? "DESC" : "ASC";
+    }
+    if (searchTerm !== "all") searchCondition.term = searchTerm;
+
+    await searchReviews(
+      searchCondition,
+      ({ data }) => {
+        const response = data.data.data;
+        if (response.length === 0) {
+          setInfScrollDone(true);
+          return;
+        }
+        const newReviewList = [];
+        for (const review of response) {
+          const reviewData: ReviewCardInterface = {
+            reviewId: review.reviewId,
+            memberId: review.memberId,
+            nickname: review.nickname,
+            oneLineReview: review.highlight,
+            funnyCount: review.funCount,
+            usefulCount: review.usefulCount,
+            dislikeCount: review.badCount,
+            commentCount: review.commentCount,
+            movieTitle: review.movieTitle,
+            releaseYear: Number(
+              String(review.movieReleaseDate).substring(0, 4)
+            ),
+            movieGenre: [review.genreResponse.genreName],
+            createDate: new Date(review.createdTime),
+            recommend: review.movieRecommendType === "YES",
+          };
+          if (review.profileImage?.id) {
+            reviewData.profileImageId = review.profileImage?.id;
+          }
+          if (review.backgroundImageResponse?.id) {
+            reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+          }
+          newReviewList.push(reviewData);
+        }
+        setReviewListState((prevReviewList) => [
+          ...prevReviewList,
+          ...newReviewList,
+        ]);
+        setInfScrollLoading(false);
+      },
+      (error) => {
+        setInfScrollLoading(false);
+        console.log(error);
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!isFetched || infScrollDone) return;
+
+    const infScrollReloadCallback = async (entries) => {
+      if (!infScrollLoading && entries[0].isIntersecting) {
+        setInfScrollLoading(true);
+        await infScrollLoadMore();
+      }
+    };
+
+    const infScrollObserver = new IntersectionObserver(
+      infScrollReloadCallback,
+      observerOptions
+    );
+
+    infScrollObserver.observe(infScrollTargetRef.current);
+
+    return () => {
+      infScrollObserver.disconnect();
+    };
+  }, [isFetched, infScrollLoading]);
+
+  // useEffect
   useEffect(() => {
     if (
       userId === null ||
@@ -327,7 +456,6 @@ const ProfilePage = () => {
         searchCondition,
         ({ data }) => {
           const response = data.data.data;
-          const reviewList: ReviewCardInterface[] = [];
           for (const review of response) {
             const reviewData: ReviewCardInterface = {
               reviewId: review.reviewId,
@@ -357,6 +485,7 @@ const ProfilePage = () => {
           }
 
           setReviewListState(reviewList);
+          setInfScrollPage(2);
         },
         (error) => {
           console.log(error);
@@ -375,9 +504,12 @@ const ProfilePage = () => {
   ]);
 
   useEffect(() => {
-    setReviewListState(reviewListUpdater);
-  }, [reviewListUpdater]);
+    if (emptyInput || wrongPassword) {
+      verifyRef.current.focus();
+    }
+  }, [emptyInput, wrongPassword]);
 
+  // 인터페이스
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
     setSortBy: setSortBy,
@@ -391,6 +523,7 @@ const ProfilePage = () => {
     setOnlyInterest: setOnlyInterest,
   };
 
+  // 함수
   const followClicked = async () => {
     if (loginId === userId) return;
     const data: Object = {
@@ -418,10 +551,6 @@ const ProfilePage = () => {
     setFollowed(!followed);
   };
 
-  const openModify = () => {
-    console.log(userInfo.memberId);
-  };
-
   const handleEditClick = () => {
     setEditedIntroduction(userInfo.introduction);
     setIntroductionEditing(true);
@@ -435,7 +564,7 @@ const ProfilePage = () => {
     await updateMemberIntroduce(
       introduceData,
       ({ data }) => {
-        console.log(data);
+        if (data.code === 200) userInfo.introduction = editedIntroduction;
       },
       (error) => {
         console.log(error);
@@ -446,6 +575,85 @@ const ProfilePage = () => {
 
   const handleEditCancelClick = () => {
     setIntroductionEditing(false);
+  };
+
+  const openVerifyModal = () => {
+    setVerifyPasswordInput("");
+    setVerifyModalOpen(true);
+  };
+
+  const onChangeVerfiyPasswordInput = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setEmptyInput(false);
+    setWrongPassword(false);
+    setVerifyPasswordInput(event.target.value);
+  };
+
+  const closeVerifyModal = () => {
+    setVerifyModalOpen(false);
+    setEmptyInput(false);
+    setWrongPassword(false);
+  };
+
+  const verifyPassword = async () => {
+    setEmptyInput(false);
+    setWrongPassword(false);
+    if (verifyPasswordInput === "") {
+      setEmptyInput(true);
+      return;
+    }
+
+    const verifyData: Object = {
+      id: loginId,
+      password: verifyPasswordInput,
+    };
+
+    await verify(
+      verifyData,
+      ({ data }) => {
+        if (data.data) {
+          closeVerifyModal();
+          openModifyModal();
+        } else {
+          setWrongPassword(true);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
+  const updateMemberInfo = () => {
+    console.log("수정완료");
+    setModifyModalOpen(false);
+  };
+
+  const withdrawal = async () => {
+    if (window.confirm("정말 탈퇴하시게요???? (재가입 안됨)")) {
+      await deleteMember(
+        loginId,
+        ({ data }) => {
+          dispatch(userActions.logout());
+          alert("Bye..");
+          navigate(`/`);
+        },
+        (error) => {
+          console.log(error);
+          alert("못도망가 히히");
+          closeModifyModal();
+        }
+      );
+    }
   };
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
@@ -476,7 +684,10 @@ const ProfilePage = () => {
             style={{ width: "450px" }}
           />
           {userId === loginId ? (
-            <div className="profile-modify-icon-container" onClick={openModify}>
+            <div
+              className="profile-modify-icon-container"
+              onClick={openVerifyModal}
+            >
               <BsPersonFillGear className="modify-icon" />
             </div>
           ) : (
@@ -568,6 +779,55 @@ const ProfilePage = () => {
       </div>
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
+      {!infScrollDone ? (
+        <div
+          style={{ height: "100px", backgroundColor: "white" }}
+          ref={infScrollTargetRef}
+        ></div>
+      ) : (
+        <div className="empty-review-list-info">리뷰가 없습니다.</div>
+      )}
+
+      <Modal
+        isOpen={isVerifyModalOpen}
+        onRequestClose={closeVerifyModal}
+        contentLabel="Verify Modal"
+        className="verify-modal"
+      >
+        <div>비밀번호를 입력해주세요</div>
+        <TextField
+          inputRef={verifyRef}
+          id="verify-password"
+          className="verify-password"
+          placeholder="Password"
+          onChange={onChangeVerfiyPasswordInput}
+          value={verifyPasswordInput}
+          type="password"
+          error={emptyInput || wrongPassword}
+        />
+        <span className="verify-info">
+          {emptyInput
+            ? "비밀번호를 입력하세요"
+            : wrongPassword
+            ? "비밀번호가 틀렸습니다."
+            : ""}
+        </span>
+        <div className="modal-button-box">
+          <button onClick={verifyPassword}>확인</button>
+          <button onClick={closeVerifyModal}>취소</button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isModifyModalOpen}
+        onRequestClose={closeModifyModal}
+        contentLabel="Modify Modal"
+        className="modify-modal"
+      >
+        <button onClick={withdrawal}>탈퇴</button>
+        <button onClick={updateMemberInfo}>완료</button>
+        <button onClick={closeModifyModal}>취소</button>
+      </Modal>
     </>
   );
 };
