@@ -435,7 +435,7 @@ const ReviewHome = () => {
     onlyInterest: onlyInterest,
     setOnlyInterest: setOnlyInterest,
   };
-
+  console.log(reviewListState);
   if (!isFetched) return <Loading />;
   return (
     <>

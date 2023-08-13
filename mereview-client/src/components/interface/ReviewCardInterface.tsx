@@ -1,4 +1,5 @@
 export interface ReviewCardInterface {
+  className?: string;
   reviewId: number;
   memberId: string;
   nickname: string;
