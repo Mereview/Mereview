@@ -217,6 +217,7 @@ public class ReviewQueryService {
                                 .likeCount(getCountByType(LIKE, comment.getId()))
                                 .dislikeCount(getCountByType(DISLIKE, comment.getId()))
                                 .profileImage(getProfileImageResponse(comment.getMember().getProfileImage()))
+                                .createdTime(comment.getCreatedTime())
                                 .build()
                 )
                 .collect(Collectors.toList());
