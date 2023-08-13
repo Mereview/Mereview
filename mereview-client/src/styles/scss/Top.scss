@@ -81,7 +81,7 @@
 
 .openModal {
   position: fixed;
-  left: 1890px;
+  left: 1867px;
   bottom: 0px;
   z-index: 90;
   display: flex;
@@ -170,16 +170,16 @@
 }
 @keyframes slideIn {
   0% {
-    transform: translateX(100%);
+    transform: translateX(0%);
   }
   15% {
     transform: translateX(-90%);
   }
   20% {
-    transform: translateX(-94%);
+    transform: translateX(-90%);
   }
   100% {
-    transform: translateX(-94%);
+    transform: translateX(-90%);
   }
 }
 @keyframes slideOut {
@@ -190,6 +190,9 @@
     transform: translateX(0%);
   }
   20% {
+    transform: translateX(0%);
+  }
+  100% {
     transform: translateX(0%);
   }
 }

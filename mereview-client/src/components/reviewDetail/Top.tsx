@@ -21,7 +21,7 @@ interface MovieInterface {
 }
 
 const Top = ({ review }: any) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<string>("none");
   const [movie, setMovie] = useState<MovieInterface>({
     id: null,
     overview: null,
@@ -32,7 +32,6 @@ const Top = ({ review }: any) => {
     genres: null,
   });
   const [loading, setLoading] = useState(false);
-  const [animate, setAnimate] = useState(false);
   const words = review.keywords.map((word) => ({
     text: word.keywordName,
     value: word.keywordWeight / 20,
@@ -41,17 +40,17 @@ const Top = ({ review }: any) => {
     ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${review.profileImage.id}`
     : "/testProfile.gif";
   const modalHandler = (event: any) => {
-    if (!isOpen) {
-      setIsOpen(true);
+    if (isOpen === "true") {
+      setIsOpen("false");
+    } else if (isOpen === "none") {
+      setIsOpen("true");
     } else {
-      setIsOpen(false);
+      setIsOpen("true");
     }
-    setAnimate(true);
   };
   useEffect(() => {
     const movieId = review.movieId;
     const getMovieDetail = () => {
-      console.log(movieId);
       searchMovieDetail(
         movieId,
         (res) => {
@@ -66,7 +65,6 @@ const Top = ({ review }: any) => {
     };
     getMovieDetail();
   }, []);
-  console.log(movie);
   return (
     <div className="total">
       <div className="leftInfo">
@@ -113,10 +111,16 @@ const Top = ({ review }: any) => {
           }}
         />
       </div>
-      {loading && animate && (
-        <div className={`openModal ${isOpen ? "open" : "close"}`}>
+      {loading && (
+        <div
+          className={`openModal ${
+            isOpen === "none" ? "" : isOpen === "true" ? "open" : "close"
+          }`}
+        >
           <div className="closebutton">
-            <button onClick={modalHandler}>{">>"}</button>
+            <button onClick={modalHandler}>
+              {isOpen === "true" ? ">>" : "<<"}
+            </button>
           </div>
           <div className="Modal">
             <div className="blank"></div>

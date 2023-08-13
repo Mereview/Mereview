@@ -44,7 +44,8 @@ const ReviewDetail = () => {
         zIndex: "-1",
       }
     : {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: "black",
+        opacity: "82%",
         filter: "blur(5px)",
         zIndex: "-1",
       };
