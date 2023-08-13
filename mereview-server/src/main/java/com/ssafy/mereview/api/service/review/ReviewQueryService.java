@@ -119,7 +119,7 @@ public class ReviewQueryService {
                 .reviewId(review.getId())
                 .reviewTitle(review.getTitle())
                 .reviewContent(review.getContent())
-                .movieEvaluatedType(review.getType().getText())
+                .movieEvaluatedType(String.valueOf(review.getType()))
                 .hits(review.getHits())
                 .backgroundImage(createBackgroundImageResponse(review.getBackgroundImage()))
                 .reviewHighlight(review.getHighlight())
