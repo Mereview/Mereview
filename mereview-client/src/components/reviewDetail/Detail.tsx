@@ -187,7 +187,7 @@ const Detail = ({ review, setReview }: any) => {
                 } `}
                 htmlFor="input"
               >
-                {inputComment.length}자 / 300bytes
+                {inputComment.length} / 300bytes
               </label>
             </div>
 

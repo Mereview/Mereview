@@ -75,3 +75,12 @@ export async function getNotifications(memberId, success, fail) {
     .then(success)
     .catch(fail);
 }
+
+export async function toggleNotificationStatus(request, success, fail) {
+  try {
+    const response = await api.put("/notifications/", request);
+    success(response.data);
+  } catch (error) {
+    fail(error);
+  }
+}
