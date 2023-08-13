@@ -20,12 +20,13 @@ public class ReviewDetailResponse {
     private Long reviewId;
     private String reviewTitle;
     private String reviewContent;
+    private String movieEvaluatedType;
     private int hits;
     private BackgroundImageResponse backgroundImage;
     private String reviewHighlight;
-    private LocalDateTime reviewCreatedTime;
+    private LocalDateTime createdTime;
     private List<KeywordResponse> keywords;
-    private boolean evaluated;
+    private boolean isEvaluated;
     private int positiveCount;
     private int funCount;
     private int usefulCount;
@@ -41,16 +42,17 @@ public class ReviewDetailResponse {
     private List<CommentResponse> comments = new ArrayList<>();
 
     @Builder
-    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime reviewCreatedTime, List<KeywordResponse> keywords, boolean evaluated, int positiveCount, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
+    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, String movieEvaluatedType, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime createdTime, List<KeywordResponse> keywords, boolean isEvaluated, int positiveCount, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
+        this.movieEvaluatedType = movieEvaluatedType;
         this.hits = hits;
         this.backgroundImage = backgroundImage;
         this.reviewHighlight = reviewHighlight;
-        this.reviewCreatedTime = reviewCreatedTime;
+        this.createdTime = createdTime;
         this.keywords = keywords;
-        this.evaluated = evaluated;
+        this.isEvaluated = isEvaluated;
         this.positiveCount = positiveCount;
         this.funCount = funCount;
         this.usefulCount = usefulCount;
