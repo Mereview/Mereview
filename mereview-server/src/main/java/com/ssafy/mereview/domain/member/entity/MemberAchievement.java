@@ -71,6 +71,7 @@ public class MemberAchievement extends BaseEntity {
     }
 
     public void updateAchievementCount() {
+
         this.achievementCount++;
     }
 

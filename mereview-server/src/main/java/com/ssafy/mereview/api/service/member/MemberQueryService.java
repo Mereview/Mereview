@@ -114,6 +114,7 @@ public class MemberQueryService {
 
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
         Long commentCount = memberQueryRepository.searchCommnetCountByMemberId(memberId);
+        checkAchievements(memberId);
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses, commentCount);
     }
 
@@ -144,12 +145,16 @@ public class MemberQueryService {
 
     private void checkAchievements(Long memberId) {
         List<MemberAchievement> memberAchievements = memberAchievementQueryRepository.searchByMemberId(memberId);
+        log.debug("memberAchievements : {}", memberAchievements.size());
         memberAchievements.forEach(memberAchievement -> {
+            log.debug("memberAchievement의 타입 : {}", memberAchievement.getAchievementType());
             if (memberAchievement.getAchievementType().equals(REVIEW)) {
                 int reviewCount = memberQueryRepository.searchReviewCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+
                 memberAchievement.checkAndPromoteAchievement(reviewCount);
             }else if(memberAchievement.getAchievementType().equals(COMMENT)){
                 int commentCount = memberQueryRepository.searchCommentCountByMemberIdAndGenreId(memberId, memberAchievement.getGenre().getId());
+                log.debug("commentCount : {}", commentCount);
                 memberAchievement.checkAndPromoteAchievement(commentCount);
             }
         });
