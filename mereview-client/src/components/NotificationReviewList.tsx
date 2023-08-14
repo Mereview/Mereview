@@ -1,7 +1,10 @@
 import { Container } from "react-bootstrap";
 import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css'
 import Loading from "./common/Loading";
+
 import "../styles/css/ReviewList.css";
 
 interface ReviewListProps {
@@ -13,8 +16,16 @@ const NotificationList = ({ reviewList }: ReviewListProps) => {
   if (reviewList === null || reviewList === undefined) return <Loading />;
   return (
     <>
+     <Swiper
+      spaceBetween={50}
+      slidesPerView={3}
+      onSlideChange={() => console.log('slide change')}
+      onSwiper={(swiper) => console.log(swiper)}
+    ></Swiper>
+
       <div className="review-card-list-wrapper">
         {reviewList.map((review: ReviewCardInterface, index: number) => (
+          <SwiperSlide>
           <ReviewCard
             key={review.reviewId}
             reviewId={review.reviewId}
@@ -33,6 +44,7 @@ const NotificationList = ({ reviewList }: ReviewListProps) => {
             createDate={review.createDate}
             recommend={review.recommend}
           />
+          </SwiperSlide>
         ))}
       </div>
     </>
