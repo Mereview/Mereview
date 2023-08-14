@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.review.entity;
 
-import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
@@ -12,10 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -89,11 +86,13 @@ public class Review extends BaseEntity {
         this.content = request.getContent();
         this.highlight = request.getHighlight();
         this.type = request.getType();
-        this.backgroundImage = createUpdateBackgroundImage(request.getUploadFile());
+        updateBackGround(request);
     }
 
-    public void increaseHits() {
-        this.hits++;
+    private void updateBackGround(ReviewUpdateServiceRequest request) {
+        if (request.getUpdateBackGround()) {
+            this.backgroundImage = createUpdateBackgroundImage(request.getUploadFile());
+        }
     }
 
     private BackgroundImage createUpdateBackgroundImage(UploadFile uploadFile) {
@@ -101,5 +100,9 @@ public class Review extends BaseEntity {
                 .review(Review.builder().id(id).build())
                 .uploadFile(uploadFile)
                 .build();
+    }
+
+    public void increaseHits() {
+        this.hits++;
     }
 }

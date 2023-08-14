@@ -18,16 +18,18 @@ public class ReviewUpdateServiceRequest {
     private String highlight;
     private MovieRecommendType type;
     private List<KeywordUpdateServiceRequest> keywordServiceRequests;
+    private Boolean updateBackGround;
     private UploadFile uploadFile;
 
     @Builder
-    public ReviewUpdateServiceRequest(Long reviewId, String title, String content, String highlight, MovieRecommendType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, UploadFile uploadFile) {
+    public ReviewUpdateServiceRequest(Long reviewId, String title, String content, String highlight, MovieRecommendType type, List<KeywordUpdateServiceRequest> keywordServiceRequests, Boolean updateBackGround, UploadFile uploadFile) {
         this.reviewId = reviewId;
         this.title = title;
         this.content = content;
         this.highlight = highlight;
         this.type = type;
         this.keywordServiceRequests = keywordServiceRequests;
+        this.updateBackGround = updateBackGround;
         this.uploadFile = uploadFile;
     }
 }
