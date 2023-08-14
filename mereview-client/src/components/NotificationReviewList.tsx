@@ -1,10 +1,11 @@
 import { Container } from "react-bootstrap";
 import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css'
+import NotificationReviewCard from "./NotificationReviewCard";
 import Loading from "./common/Loading";
-
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import "../styles/css/ReviewList.css";
 
 interface ReviewListProps {
@@ -12,21 +13,52 @@ interface ReviewListProps {
 }
 
 /* 정렬 방식에 따라 받는 reviewList가 달라질 것 */
-const NotificationList = ({ reviewList }: ReviewListProps) => {
+const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
   if (reviewList === null || reviewList === undefined) return <Loading />;
+  
+  const settings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
+
+  
+  
   return (
     <>
-     <Swiper
-      spaceBetween={50}
-      slidesPerView={3}
-      onSlideChange={() => console.log('slide change')}
-      onSwiper={(swiper) => console.log(swiper)}
-    ></Swiper>
-
-      <div className="review-card-list-wrapper">
-        {reviewList.map((review: ReviewCardInterface, index: number) => (
-          <SwiperSlide>
-          <ReviewCard
+    <Slider {...settings}>
+        {reviewList.map((review: ReviewCardInterface) => (
+            
+          <NotificationReviewCard
             key={review.reviewId}
             reviewId={review.reviewId}
             memberId={review.memberId}
@@ -44,11 +76,14 @@ const NotificationList = ({ reviewList }: ReviewListProps) => {
             createDate={review.createDate}
             recommend={review.recommend}
           />
-          </SwiperSlide>
+
         ))}
-      </div>
+        
+
+    </Slider>
+
     </>
   );
 };
 
-export default NotificationList;
+export default NotificationReviewList;

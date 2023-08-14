@@ -76,7 +76,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   return (
     <>
       <div
-        className={`card ${className}`}
+        className={`review-card ${className}`}
         style={cardStyle}
         onClick={handleClickReviewCard}
       >

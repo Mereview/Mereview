@@ -6,8 +6,119 @@
   font-size: $font-size-sm;
   color: $gray-2;
 }
+.notiification-review-card {
+  position: relative;
+  display: inline-block;
+  border: solid 2px $black;
+  flex-basis: 31%;
+  width: 550px;
+  height: 300px;
+  padding: 10px;
+  padding-bottom: 17%;
+  min-width: 250px;
+  min-height: 142px;
+  margin: 10px 10px;
+  background-size: cover;
+  font-family: $BMDoHyeon;
+  font-size: $font-size-md;
+  color: $white;
 
-.card {
+  .card-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+  }
+
+  .date {
+    @include gray-info;
+  }
+
+  .evaluation {
+    text-align: right;
+    // font-size 나중에 지울것
+    font-size: $font-size-xs;
+  }
+
+  .one-line-review {
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-justify: center;
+  }
+
+  .profile-container {
+    display: flex;
+    align-items: center;
+
+    $profile-img-size: 28px;
+    .profile-img {
+      width: $profile-img-size;
+      height: $profile-img-size;
+      border: solid 2px gold; // 가장 높은 티어의 색깔 표시
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      margin-right: 8px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .nickname {
+      @include gray-info;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    }
+  }
+
+  .movie-title {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  .year-genres {
+    @include gray-info;
+  }
+
+  .recommend {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 10px;
+    bottom: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+.review-card {
   position: relative;
   display: inline-block;
   border: solid 2px $black;
