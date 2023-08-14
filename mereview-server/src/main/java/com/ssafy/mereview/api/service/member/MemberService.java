@@ -222,6 +222,11 @@ public class MemberService {
 
     public void updateProfileImage(Long memberId, UploadFile uploadFile) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+        ProfileImage profileImage = member.getProfileImage();
+        if (profileImage == null){
+            createProfileImage(uploadFile, memberId);
+            return;
+        }
         member.updateProfileImage(uploadFile);
     }
 
