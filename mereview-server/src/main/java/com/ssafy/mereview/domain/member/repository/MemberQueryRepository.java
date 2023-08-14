@@ -121,7 +121,7 @@ public class MemberQueryRepository{
                 .selectFrom(comment)
                 .innerJoin(comment.review, review)
                 .where(review.genre.id.eq(id))
-                .where(member.id.eq(id))
+                .where(comment.member.id.eq(memberId))
                 .fetch().size();
     }
 //
