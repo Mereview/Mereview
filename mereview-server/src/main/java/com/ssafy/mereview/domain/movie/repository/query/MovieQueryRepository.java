@@ -35,7 +35,7 @@ public class MovieQueryRepository {
         return queryFactory
                 .select(movie)
                 .from(movie)
-                .leftJoin(movie.reviews, review).fetchJoin()
+                .where(movie.id.eq(movieId))
                 .fetchOne();
     }
 
