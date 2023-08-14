@@ -271,10 +271,23 @@ public class MemberService {
         // TODO: 2023-08-03 장르 레포지토리로 바꾸기
         List<Genre> genres = genreRepository.findAll();
 
-        List<MemberAchievement> memberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
+        List<MemberAchievement> commentMemberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
                 .member(member)
                 .genre(genre)
+                .achievementType(AchievementType.COMMENT)
                 .build()).collect(Collectors.toList());
+
+        List<MemberAchievement> reviewMemberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
+                .member(member)
+                .genre(genre)
+                .achievementType(AchievementType.COMMENT)
+                .build()).collect(Collectors.toList());
+
+        List<MemberAchievement> memberAchievements = new ArrayList<>();
+
+        memberAchievements.addAll(commentMemberAchievements);
+        memberAchievements.addAll(reviewMemberAchievements);
+
         log.debug("memberAchievements = " + memberAchievements.size());
 
         memberAchievementRepository.saveAll(memberAchievements);
