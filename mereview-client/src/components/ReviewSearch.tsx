@@ -26,7 +26,7 @@ const ReviewSearch = ({
     setEmptySearchKeyword,
   } = searchProps;
   const paramRef = useRef(null);
-
+  console.log(searchProps);
   useEffect(() => {
     if (emptySearchKeyword) {
       paramRef.current.focus();

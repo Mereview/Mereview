@@ -140,18 +140,21 @@
     }
     .vertical {
       border-radius: 12px;
-      background-color: #c2c0bf80;
+      background-color: #00000060;
       padding: 5px;
+      border: white 1px solid !important;
       overflow-y: scroll;
       &::-webkit-scrollbar {
         display: none;
       }
       .header {
         color: white;
+        margin: 10px 0px 0px 15px;
       }
       .reviewCard-wrapper {
         display: flex;
         flex-direction: column;
+        align-items: center;
         .detailCard {
           width: 320px;
           position: relative;
