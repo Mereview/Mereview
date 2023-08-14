@@ -22,7 +22,6 @@ public class MemberAchievementQueryRepository {
                 .select(memberAchievement)
                 .from(memberAchievement)
                 .innerJoin(memberAchievement.member, member)
-                .innerJoin(memberAchievement.achievement, achievement)
                 .where(member.id.eq(memberId))
                 .fetch();
     }

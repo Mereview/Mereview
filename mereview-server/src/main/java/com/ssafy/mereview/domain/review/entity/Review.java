@@ -89,7 +89,13 @@ public class Review extends BaseEntity {
         this.content = request.getContent();
         this.highlight = request.getHighlight();
         this.type = request.getType();
+
+        /**
+         * orphanRemoval = true 에러 해결
+         */
+        this.keywords.clear();
         this.keywords = createUpdateKeywords(request.getKeywordServiceRequests());
+
         this.backgroundImage = createUpdateBackgroundImage(request.getUploadFile());
     }
 

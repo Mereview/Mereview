@@ -67,14 +67,14 @@ public class ReviewQueryService {
         return createReviewDetailResponse(review);
     }
 
-    public List<ReviewResponse> searchNotifiedReviews(Long memberId,Pageable pageable) {
-        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+    public List<ReviewResponse> searchNotifiedReviews(Long memberId, String status, Pageable pageable) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberIdAndStatus(memberId, status);
         List<Review> reviews = reviewQueryRepository.searchNotifiedReviews(reviewIds, pageable);
         return createReviewResponses(reviews);
     }
 
-    public int calculateNotifiedPageCount(Long memberId) {
-        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberId(memberId);
+    public int calculateNotifiedPageCount(Long memberId, String status) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberIdAndStatus(memberId, status);
         return ((reviewQueryRepository.getNotifiedTotalPages(reviewIds) - 1) / PAGE_SIZE) + 1;
     }
 

@@ -2,6 +2,7 @@ import "../../styles/css/Detail.css";
 import ReviewCard from "../ReviewCard";
 import { Button } from "../common";
 import { useState, useEffect } from "react";
+import { updateAchievementCount } from "../../api/members";
 import {
   createReviewComment,
   searchReview,
@@ -50,6 +51,18 @@ const Detail = ({ review, setReview }: any) => {
         data,
         (res) => {
           setReview(res.data.data);
+          const achievementUpdate = {
+            achievementType: 2,
+            genreId: res.data.data.genre.genreId,
+            memberId: userId,
+          };
+          updateAchievementCount(
+            achievementUpdate,
+            (res) => {},
+            (err) => {
+              console.log(err);
+            }
+          );
         },
         (err) => {
           console.log(err);
@@ -326,7 +339,7 @@ const Detail = ({ review, setReview }: any) => {
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}
                 createDate={review.createdTime.substring(0, 10)}
-                recommend={review.movieRecommendType === "YES" ? true : false}
+                recommend={review.movieEvaluatedType === "YES" ? true : false}
               />
             ))}
           </div>

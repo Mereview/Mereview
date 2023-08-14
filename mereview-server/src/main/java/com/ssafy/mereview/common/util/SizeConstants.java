@@ -15,7 +15,7 @@ public class SizeConstants {
     public static final int REVIEW_DIAMOND_MAX_COUNT = 10000;
 
     public static final Map<Rank, Integer> REVIEW_ACHIEVEMENT_MAX_COUNT_MAP = Map.of(
-            NONE, 0,
+            NONE, 1,
             BRONZE, REVIEW_BRONZE_MAX_COUNT,
             SILVER, REVIEW_SILVER_MAX_COUNT,
             GOLD, REVIEW_GOLD_MAX_COUNT,
@@ -30,7 +30,7 @@ public class SizeConstants {
     public static final int COMMENT_DIAMOND_MAX_COUNT = 10000;
 
     public static final Map<Rank, Integer> COMMENT_ACHIEVEMENT_MAX_COUNT_MAP = Map.of(
-            NONE, 0,
+            NONE, 1,
             BRONZE, COMMENT_BRONZE_MAX_COUNT,
             SILVER, COMMENT_SILVER_MAX_COUNT,
             GOLD, COMMENT_GOLD_MAX_COUNT,
