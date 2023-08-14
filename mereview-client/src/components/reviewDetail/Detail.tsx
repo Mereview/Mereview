@@ -1,7 +1,5 @@
 import "../../styles/css/Detail.css";
 import ReviewCard from "../ReviewCard";
-import { ReviewCardInterface } from "../interface/ReviewCardInterface";
-import { useSelector } from "react-redux";
 import { Button } from "../common";
 import { useState, useEffect } from "react";
 import {
@@ -166,11 +164,7 @@ const Detail = ({ review, setReview }: any) => {
     getRecommendReview();
   }, []);
   const editHandler = () => {};
-  const 추천해줄리뷰 = [
-    {
-      id: "bye",
-    },
-  ];
+  console.log(typeof userId, typeof review.memberId);
   console.log(recommendReview);
   return (
     <div className="detail">
@@ -208,7 +202,7 @@ const Detail = ({ review, setReview }: any) => {
           disabled={userId === review.reviewId}
         ></button>
       </div>
-      {userId === review.memberId ? (
+      {Number(userId) === review.memberId ? (
         <div className="edit">
           <Button text="수정" styles="btn-primary" onClick={onClick} />
           <Button text="삭제" styles="btn-secondary" onClick={onClick} />
@@ -288,6 +282,7 @@ const Detail = ({ review, setReview }: any) => {
                 <Switch
                   checked={switchToggler}
                   onChange={switchToggleHandler}
+                  color="default"
                 />
               }
               label={switchToggler ? "유용해요 기준" : "재밌어요 기준"}
@@ -313,7 +308,7 @@ const Detail = ({ review, setReview }: any) => {
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}
                 createDate={review.createdTime.substring(0, 10)}
-                recommend={review.movieRecommendType}
+                recommend={review.movieRecommendType === "YES" ? true : false}
               />
             ))}
           </div>
