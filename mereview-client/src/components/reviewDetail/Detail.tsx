@@ -127,37 +127,51 @@ const Detail = ({ review, setReview }: any) => {
     setSwitchToggler((prev) => !prev);
     const data = { myInterest: userId, orderBy: "" };
     if (!switchToggler) {
-      data.orderBy = "funCount";
+      data.orderBy = "FUN";
     } else {
-      data.orderBy = "usefulCount";
+      data.orderBy = "USEFUL";
     }
     console.log(data);
 
     searchReviews(
       data,
       (res) => {
-        console.log("토글 성공, 데이터 정렬 성공", res.data.data);
-        setRecommendReview(res.data.data.data);
+        const data = res.data.data.data;
+        const filterdReviewList = data.filter((rr) => {
+          return (
+            rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+          );
+        });
+        console.log(filterdReviewList);
+        setRecommendReview(filterdReviewList);
       },
       (err) => {
-        console.log("토글 성공, 데이터 정렬 실패", data);
+        console.log("err:", err);
       }
     );
   };
   useEffect(() => {
+    //memberId, reviewId
     const getRecommendReview = () => {
-      const userId = localStorage.getItem("id");
       const data = {
         myInterest: userId,
-        orderBy: "usefulCount",
+        orderBy: "POSITIVE",
       };
+      console.log(data);
       searchReviews(
         data,
         (res) => {
-          setRecommendReview(res.data.data.data);
+          const data = res.data.data.data;
+          const filterdReviewList = data.filter((rr) => {
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
+          });
+          console.log(filterdReviewList);
+          setRecommendReview(filterdReviewList);
         },
         (err) => {
-          console.log("err:", data);
+          console.log("err:", err);
         }
       );
     };
@@ -282,7 +296,7 @@ const Detail = ({ review, setReview }: any) => {
                 <Switch
                   checked={switchToggler}
                   onChange={switchToggleHandler}
-                  color="default"
+                  color="warning"
                 />
               }
               label={switchToggler ? "유용해요 기준" : "재밌어요 기준"}
@@ -298,7 +312,11 @@ const Detail = ({ review, setReview }: any) => {
                 memberId={review.memberId}
                 nickname={review.nickname}
                 profileImageId={review.profileImage}
-                backgroundImageId={review.backgroundImageResponse}
+                backgroundImageId={
+                  review.backgroundImageResponse
+                    ? review.backgroundImageResponse.id
+                    : null
+                }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}
                 usefulCount={review.usefulCount}
