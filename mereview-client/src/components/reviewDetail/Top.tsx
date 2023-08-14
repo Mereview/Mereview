@@ -89,7 +89,7 @@ const Top = ({ review }: any) => {
       <div className="rightInfo">
         <img
           src={`${
-            review.movieRecommendType === "YES"
+            review.movieEvaluatedType === "YES"
               ? "/ddabong.png"
               : "/reverseDdabong.png"
           }`}

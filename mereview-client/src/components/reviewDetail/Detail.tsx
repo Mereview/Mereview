@@ -326,7 +326,7 @@ const Detail = ({ review, setReview }: any) => {
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}
                 createDate={review.createdTime.substring(0, 10)}
-                recommend={review.movieRecommendType === "YES" ? true : false}
+                recommend={review.movieEvaluatedType === "YES" ? true : false}
               />
             ))}
           </div>
