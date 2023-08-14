@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.mereview.domain.movie.entity.Movie;
 import com.ssafy.mereview.domain.movie.entity.MovieGenre;
-import com.ssafy.mereview.domain.movie.repository.GenreRepository;
-import com.ssafy.mereview.domain.movie.repository.MovieGenreRepository;
-import com.ssafy.mereview.domain.movie.repository.MovieRepository;
+import com.ssafy.mereview.domain.movie.repository.command.GenreRepository;
+import com.ssafy.mereview.domain.movie.repository.command.MovieGenreRepository;
+import com.ssafy.mereview.domain.movie.repository.command.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
