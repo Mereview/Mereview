@@ -1,6 +1,7 @@
 package com.ssafy.mereview.domain.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.mereview.domain.member.entity.AchievementType;
 import com.ssafy.mereview.domain.member.entity.MemberAchievement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,23 @@ public class MemberAchievementQueryRepository {
                 .fetch();
     }
 
+    public MemberAchievement searchReviewAchievementByMemberIdAndGenreId(Long memberId, Long genreId){
+        return queryFactory
+                .select(memberAchievement)
+                .from(memberAchievement)
+                .where(memberAchievement.member.id.eq(memberId)
+                        .and(memberAchievement.genre.id.eq(genreId))
+                        .and(memberAchievement.achievementType.eq(AchievementType.REVIEW)))
+                .fetchOne();
+    }
+
+    public MemberAchievement searchCommentAchievementByMemberIdAndGenreId(Long memberId, Long genreId) {
+        return queryFactory
+                .select(memberAchievement)
+                .from(memberAchievement)
+                .where(memberAchievement.member.id.eq(memberId)
+                        .and(memberAchievement.genre.id.eq(genreId))
+                        .and(memberAchievement.achievementType.eq(AchievementType.COMMENT)))
+                .fetchOne();
+    }
 }

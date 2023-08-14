@@ -3,6 +3,7 @@ package com.ssafy.mereview.domain.member.entity;
 import com.ssafy.mereview.api.service.member.dto.response.MemberResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
+import com.ssafy.mereview.domain.review.entity.Comment;
 import com.ssafy.mereview.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "targetMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFollow> following = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
 
     @Builder
