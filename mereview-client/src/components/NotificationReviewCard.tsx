@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import { Container, Row, Col } from "react-bootstrap";
+
 import { ReviewCardInterface } from "./interface/ReviewCardInterface";
 import "../styles/css/ReviewCard.css";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ type Style = {
   [key: string]: string | number;
 };
 
-const ReviewCard = (props: ReviewCardInterface) => {
+const NotificationReviewCard = (props: ReviewCardInterface) => {
   const {
     className,
     reviewId,
@@ -28,13 +29,22 @@ const ReviewCard = (props: ReviewCardInterface) => {
     recommend,
   } = props;
   const navigate = useNavigate();
-
-  const handleClickReviewCard = (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => {
-    navigate(`/review/${reviewId}`);
+  const [pressStartTime, setPressStartTime] = useState(0);
+  const [isPressing, setIsPressing] = useState(false);
+  const pressThreshold = 100; 
+  const handlePressStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    setPressStartTime(Date.now());
+    setIsPressing(true);
   };
 
+  const handlePressEnd = (event: React.MouseEvent<HTMLDivElement>) => {
+    setIsPressing(false);
+
+    // 길게 누르기가 1초 이상인 경우에만 이벤트 처리
+    if (Date.now() - pressStartTime < pressThreshold) {
+        navigate(`/review/${reviewId}`);
+}
+}
   const handleClickProfile = (
     event: React.MouseEvent<HTMLParagraphElement>
   ) => {
@@ -76,9 +86,10 @@ const ReviewCard = (props: ReviewCardInterface) => {
   return (
     <>
       <div
-        className={`review-card ${className}`}
+        className={`notiification-review-card ${className}`}
         style={cardStyle}
-        onClick={handleClickReviewCard}
+        onMouseDown={handlePressStart}
+        onMouseUp={handlePressEnd}
       >
         <div className="card-overlay">
           <Row>
@@ -143,4 +154,4 @@ const ReviewCard = (props: ReviewCardInterface) => {
   );
 };
 
-export default ReviewCard;
+export default NotificationReviewCard;

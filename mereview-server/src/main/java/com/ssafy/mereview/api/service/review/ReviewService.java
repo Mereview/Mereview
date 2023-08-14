@@ -1,6 +1,7 @@
 package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.request.KeywordCreateServiceRequest;
+import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
@@ -57,6 +58,7 @@ public class ReviewService {
                 .orElseThrow(NoSuchElementException::new);
 
         review.update(request);
+        updateKeywords(request.getKeywordServiceRequests());
 
         return request.getReviewId();
     }
@@ -76,6 +78,14 @@ public class ReviewService {
         return keywordServiceRequests.stream()
                 .map(request -> request.toEntity(saveId))
                 .collect(Collectors.toList());
+    }
+
+    private void updateKeywords(List<KeywordUpdateServiceRequest> keywordRequests) {
+        keywordRequests.forEach(keywordRequest ->
+                keywordRepository.findById(keywordRequest.getKeywordId())
+                        .orElseThrow(NoSuchElementException::new)
+                        .update(keywordRequest.getName(), keywordRequest.getWeight())
+        );
     }
 
     private void createBackgroundImage(Long reviewId, UploadFile uploadFile) {

@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeywordUpdateServiceRequest {
 
+    private Long keywordId;
     private String name;
     private int weight;
 
     @Builder
-    public KeywordUpdateServiceRequest(String name, int weight) {
+    public KeywordUpdateServiceRequest(Long keywordId, String name, int weight) {
+        this.keywordId = keywordId;
         this.name = name;
         this.weight = weight;
     }

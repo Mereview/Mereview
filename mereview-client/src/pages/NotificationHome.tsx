@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import NotificationReviewList from '../components/NotificationReviewList';
 import axios from "axios";
 import Loading from "../components/common/Loading";
-import { getNotifications, searchReviews } from "../api/review";
+import { getConfirmedNotifications, searchReviews, getUnConfirmedNotifications } from "../api/review";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
@@ -12,6 +13,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
+
 
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
@@ -73,6 +75,9 @@ const NotificationHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [confirmedReviewList, setConfirmedReviewList] = useState<Array<ReviewCardInterface>>([])
+  const [unconfirmedReviewList, setUnonfirmedReviewList] = useState<Array<ReviewCardInterface>>([])
+
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
@@ -84,7 +89,7 @@ const NotificationHome = () => {
 
   // useSelector를 통해 loginId 값을 가져오기 위한 코드
   const reduxLoginId: number = useSelector((state: any) => state.user.user.id);
-
+  const user = useSelector((state:any) => state.user.user)
   // 로그인 상태에 따라 loginId 값을 설정
   useEffect(() => {
     setLoginId(reduxLoginId);
@@ -93,11 +98,11 @@ const NotificationHome = () => {
   useEffect(() => {
     const getReviewList = async () => {
       if(loginId != null){
-        await getNotifications(
+        await getConfirmedNotifications(
             loginId,
             ({ data }) => {
               const response = data.data.data;
-              const reviewList: ReviewCardInterface[] = [];
+              const confirmedReviewList: ReviewCardInterface[] = [];
               for (const review of response) {
                 const reviewData: ReviewCardInterface = {
                   reviewId: review.reviewId,
@@ -123,15 +128,61 @@ const NotificationHome = () => {
                   reviewData.backgroundImageId = review.backgroundImageResponse?.id;
                 }
     
-                reviewList.push(reviewData);
+                confirmedReviewList.push(reviewData);
               }
-    
-              setReviewListState(reviewList);
+
+              console.log(confirmedReviewList)
+              setConfirmedReviewList(confirmedReviewList);
+
             },
             (error) => {
               console.log(error);
             }
           );
+
+          await getUnConfirmedNotifications(
+            loginId,
+            ({ data }) => {
+              const response = data.data.data;
+              const unconfirmedReviewList: ReviewCardInterface[] = [];
+              for (const review of response) {
+                const reviewData: ReviewCardInterface = {
+                  reviewId: review.reviewId,
+                  memberId: review.memberId,
+                  nickname: review.nickname,
+                  oneLineReview: review.highlight,
+                  funnyCount: review.funCount,
+                  usefulCount: review.usefulCount,
+                  dislikeCount: review.badCount,
+                  commentCount: review.commentCount,
+                  movieTitle: review.movieTitle,
+                  releaseYear: Number(
+                    String(review.movieReleaseDate).substring(0, 4)
+                  ),
+                  movieGenre: [review.genreResponse.genreName],
+                  createDate: new Date(review.createdTime),
+                  recommend: review.movieRecommendType === "YES",
+                };
+                if (review.profileImage?.id) {
+                  reviewData.profileImageId = review.profileImage?.id;
+                }
+                if (review.backgroundImageResponse?.id) {
+                  reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+                }
+    
+                unconfirmedReviewList.push(reviewData);
+              }
+
+              console.log(unconfirmedReviewList.length)
+              setUnonfirmedReviewList(unconfirmedReviewList);
+
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+
+          
       }
      
     };
@@ -150,20 +201,38 @@ const NotificationHome = () => {
 
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
+
     setSortBy: setSortBy,
+    
     dateDescend: dateDescend,
+    
     setDateDescend: setDateDescend,
+    
     recommendDescend: recommendDescend,
+    
     setRecommendDescend: setRecommendDescend,
+    
     searchTerm: searchTerm,
+    
     setSearchTerm: setSearchTerm,
+    
     onlyInterest: onlyInterest,
+    
     setOnlyInterest: setOnlyInterest,
   };
 
   return (
     <>
-      <ReviewList reviewList={reviewListState} />
+      
+      {unconfirmedReviewList.length != 0 && (
+  <span className="display-1 fw-bold ms-3">UNCONFIRMED</span>
+)}      <NotificationReviewList reviewList={unconfirmedReviewList} /> 
+      <hr />
+      {confirmedReviewList.length != 0 && (
+       <span className="display-1 fw-bold ms-3">CONFIRMED</span>
+
+)}      
+      <NotificationReviewList reviewList={confirmedReviewList}/>
     </>
   );
 };

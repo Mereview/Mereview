@@ -11,17 +11,21 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class KeywordUpdateRequest {
     @NotBlank
+    private Long keywordId;
+    @NotBlank
     private String name;
     private int weight;
 
     @Builder
-    public KeywordUpdateRequest(String name, int weight) {
+    public KeywordUpdateRequest(Long keywordId, String name, int weight) {
+        this.keywordId = keywordId;
         this.name = name;
         this.weight = weight;
     }
 
     public KeywordUpdateServiceRequest toServiceRequest() {
         return KeywordUpdateServiceRequest.builder()
+                .keywordId(keywordId)
                 .name(name)
                 .weight(weight)
                 .build();
