@@ -1,6 +1,7 @@
 import { Container } from "react-bootstrap";
 import ReviewCard from "../components/ReviewCard";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
+import NotificationReviewCard from "./NotificationReviewCard";
 import Loading from "./common/Loading";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -16,7 +17,7 @@ const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
   if (reviewList === null || reviewList === undefined) return <Loading />;
   
   const settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 3,
@@ -24,20 +25,20 @@ const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
     initialSlide: 0,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1600,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
           infinite: true,
           dots: true
         }
       },
       {
-        breakpoint: 600,
+        breakpoint: 1200,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1
         }
       },
       {
@@ -57,7 +58,7 @@ const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
     <Slider {...settings}>
         {reviewList.map((review: ReviewCardInterface) => (
             
-          <ReviewCard
+          <NotificationReviewCard
             key={review.reviewId}
             reviewId={review.reviewId}
             memberId={review.memberId}
