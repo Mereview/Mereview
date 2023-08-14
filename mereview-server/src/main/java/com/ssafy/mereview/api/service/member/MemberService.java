@@ -2,10 +2,7 @@ package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.EmailCheckCode;
-import com.ssafy.mereview.api.service.member.dto.request.InterestServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
@@ -57,6 +54,8 @@ public class MemberService {
 
     private final MemberFollowQueryRepository memberFollowQueryRepository;
 
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
+
     public Long createMember(MemberCreateServiceRequest request, UploadFile uploadFile) {
         EmailCheckCode emailCheckCode = EMAIL_CHECK_CODE_HASH_MAP.getOrDefault(request.getEmail(), null);
 
@@ -105,6 +104,25 @@ public class MemberService {
         if (existingMember != null) {
             throw new NoSuchElementException("이미 가입된 회원입니다.");
         }
+    }
+
+    public int updateAchievementCount(AchievementCountUpdateServiceRequest request) {
+        MemberAchievement memberAchievement;
+        if(request.getAchievementType() == 1){
+            memberAchievement = memberAchievementQueryRepository.searchReviewAchievementByMemberIdAndGenreId(request.getMemberId(), request.getGenreId());
+        }else{
+            memberAchievement = memberAchievementQueryRepository.searchCommentAchievementByMemberIdAndGenreId(request.getMemberId(), request.getGenreId());
+        }
+        if(memberAchievement == null){
+            throw new NoSuchElementException("존재하지 않는 업적입니다.");
+        }
+        memberAchievement.updateAchievementCount();
+
+
+        return memberAchievement.getAchievementCount();
+
+
+
     }
 
     private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
@@ -280,7 +298,7 @@ public class MemberService {
         List<MemberAchievement> reviewMemberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
                 .member(member)
                 .genre(genre)
-                .achievementType(AchievementType.COMMENT)
+                .achievementType(AchievementType.REVIEW)
                 .build()).collect(Collectors.toList());
 
         List<MemberAchievement> memberAchievements = new ArrayList<>();
@@ -311,4 +329,6 @@ public class MemberService {
 
         return MemberFollowResponse.of(memberFollow, "follow");
     }
+
+
 }
