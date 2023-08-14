@@ -34,7 +34,7 @@ $profile-image-size: 450px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: $font-size-h1;
+      font-size: $font-size-h1 * 1.25;
 
       &:hover {
         cursor: pointer;
@@ -109,6 +109,37 @@ $profile-image-size: 450px;
 
     .nickname {
       font-size: $font-size-xl * 1.5;
+
+      .edit-icon {
+        font-size: $font-size-h3;
+        color: $gray-5;
+        margin-left: 10px;
+
+        &:hover {
+          color: $gray-8;
+          background-color: $gray-3;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .nickname-edit-container {
+      display: flex;
+      font-size: $font-size-xl * 1.5;
+      flex-direction: row;
+      justify-content: space-around;
+      margin-bottom: 10px;
+
+      .edit-input {
+        font-size: $font-size-xl;
+        width: 300px;
+      }
+
+      .edit-button {
+        font-size: $font-size-md;
+        display: flex;
+        justify-content: right;
+      }
     }
 
     .age-gender {

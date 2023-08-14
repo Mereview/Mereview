@@ -28,8 +28,10 @@ import Loading from "../components/common/Loading";
 import {
   searchMemberInfo,
   updateMemberIntroduce,
+  updateMemberNickname,
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
+  updateProfilePic,
   follow,
   verify,
   deleteMember,
@@ -184,7 +186,7 @@ const getMemberInfo = async (userId: number) => {
       userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
-      userInfo.introduction = response.introduce ? "" : response.introduce;
+      userInfo.introduction = response.introduce ? response.introduce : "";
       userInfo.followerCount = response.follower;
       userInfo.followingCount = response.following;
       userInfo.todayVisitor = response.todayVisitCount;
@@ -262,7 +264,6 @@ const getFollowingCount = async (userId: number) => {
 };
 /* api end */
 
-const reviewList: ReviewCardInterface[] = [];
 const ProfilePage = () => {
   const loginId: number = useSelector((state: any) => state.user.user.id);
   const { id } = useParams();
@@ -286,6 +287,10 @@ const ProfilePage = () => {
   // 자기소개, 프로필 이미지
   const [profileImageHovered, setProfileImageHovered] =
     useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFileData, setSelectedFileData] = useState<File>(null);
+  const [nicknameEditing, setNicknameEditing] = useState<boolean>(false);
+  const [editedNickname, setEditedNickname] = useState<string>("");
   const [introductionEditing, setIntroductionEditing] =
     useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
@@ -455,6 +460,7 @@ const ProfilePage = () => {
     }
     if (searchTerm !== "all") searchCondition.term = searchTerm;
 
+    const reviewList: ReviewCardInterface[] = [];
     const getReviewList = async () => {
       await searchReviews(
         searchCondition,
@@ -556,19 +562,50 @@ const ProfilePage = () => {
   };
 
   const handelProfileImageSelect = (e) => {
-    console.log(e.target.files[0]);
+    const file = e.target.files[0];
+    const objectURL = URL.createObjectURL(file);
+    setSelectedImage(objectURL);
+    setSelectedFileData(file);
   };
 
-  const handleEditClick = () => {
+  const handleEditNicknameClick = () => {
+    setEditedNickname(userInfo.nickname);
+    setNicknameEditing(true);
+  };
+
+  const handleEditNicknameSaveClick = async () => {
+    const nicknameData: Object = {
+      id: loginId,
+      nickname: editedNickname,
+    };
+
+    await updateMemberNickname(
+      nicknameData,
+      ({ data }) => {
+        if (data.code === 200) userInfo.nickname = editedNickname;
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const handleEditNicknameCancelClick = () => {
+    setNicknameEditing(false);
+  };
+
+  const handleEditIntroductionClick = () => {
     setEditedIntroduction(userInfo.introduction);
     setIntroductionEditing(true);
   };
 
-  const handleEditSaveClick = async () => {
+  const handleEditIntroductionSaveClick = async () => {
     const introduceData: Object = {
       id: loginId,
       introduce: editedIntroduction,
     };
+
     await updateMemberIntroduce(
       introduceData,
       ({ data }) => {
@@ -581,7 +618,7 @@ const ProfilePage = () => {
     setIntroductionEditing(false);
   };
 
-  const handleEditCancelClick = () => {
+  const handleEditIntroductionCancelClick = () => {
     setIntroductionEditing(false);
   };
 
@@ -593,8 +630,23 @@ const ProfilePage = () => {
     setProfileImageModalOpen(false);
   };
 
-  const updateProfileImage = () => {
-    console.log("update profile image");
+  const updateProfileImage = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedFileData);
+    formData.append("memberId", String(loginId));
+
+    await updateProfilePic(
+      formData,
+      ({ data }) => {
+        if (data.code === 200) {
+          navigate(0);
+          closeProfileImageModal();
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   const openVerifyModal = () => {
@@ -701,11 +753,14 @@ const ProfilePage = () => {
                 : defaultProfileImage
             }
             alt="프로필 이미지"
-            style={{ width: "450px", opacity: profileImageHovered ? 0.45 : 1 }}
+            style={{
+              width: "450px",
+              opacity: userId === loginId && profileImageHovered ? 0.45 : 1,
+            }}
             onMouseEnter={() => setProfileImageHovered(true)}
             onMouseLeave={() => setProfileImageHovered(false)}
           />
-          {profileImageHovered && (
+          {userId === loginId && profileImageHovered && (
             <BsPencilSquare
               className="profile-image-edit-icon"
               onClick={openProfileImageModal}
@@ -744,7 +799,32 @@ const ProfilePage = () => {
       <div className="profile-info-badge-container">
         <div className="user-info">
           <Row>
-            <Col className="nickname">{userInfo.nickname}</Col>
+            {nicknameEditing ? (
+              <div className="nickname-edit-container">
+                <input
+                  className="edit-input"
+                  value={editedNickname}
+                  onChange={(e) => setEditedNickname(e.target.value)}
+                  type="text"
+                />
+                <div className="edit-button">
+                  <button onClick={handleEditNicknameSaveClick}>수정</button>
+                  <button onClick={handleEditNicknameCancelClick}>취소</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Col className="nickname">
+                  {userInfo.nickname}
+                  {userId === loginId ? (
+                    <BsPencilSquare
+                      className="edit-icon"
+                      onClick={handleEditNicknameClick}
+                    />
+                  ) : null}
+                </Col>
+              </>
+            )}
             <Col className="age-gender">
               {userInfo.age && userInfo.age + " "}
               {genderMapping[userInfo.gender] || null}
@@ -762,8 +842,12 @@ const ProfilePage = () => {
                     onChange={(e) => setEditedIntroduction(e.target.value)}
                   />
                   <div className="edit-button">
-                    <button onClick={handleEditSaveClick}>수정</button>
-                    <button onClick={handleEditCancelClick}>취소</button>
+                    <button onClick={handleEditIntroductionSaveClick}>
+                      수정
+                    </button>
+                    <button onClick={handleEditIntroductionCancelClick}>
+                      취소
+                    </button>
                   </div>
                 </div>
               </>
@@ -776,7 +860,7 @@ const ProfilePage = () => {
                   {userId === loginId ? (
                     <BsPencilSquare
                       className="edit-icon"
-                      onClick={handleEditClick}
+                      onClick={handleEditIntroductionClick}
                     />
                   ) : null}
                 </Col>
@@ -830,7 +914,9 @@ const ProfilePage = () => {
         >
           <img
             src={
-              userInfo.profileImageId
+              selectedImage
+                ? selectedImage
+                : userInfo.profileImageId
                 ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${userInfo.profileImageId}`
                 : defaultProfileImage
             }
@@ -860,7 +946,6 @@ const ProfilePage = () => {
       >
         <div>비밀번호를 입력해주세요</div>
         <TextField
-          inputRef={verifyRef}
           id="verify-password"
           className="verify-password"
           placeholder="Password"
@@ -888,7 +973,19 @@ const ProfilePage = () => {
         contentLabel="Modify Modal"
         className="modify-modal"
       >
-        <div></div>
+        <div>
+          <div>비밀번호를 입력해주세요</div>
+          <TextField
+            inputRef={verifyRef}
+            id="verify-password"
+            className="verify-password"
+            placeholder="Password"
+            onChange={onChangeVerfiyPasswordInput}
+            value={verifyPasswordInput}
+            type="password"
+            error={emptyInput || wrongPassword}
+          />
+        </div>
         <div className="modal-button-box">
           <button onClick={withdrawal}>탈퇴</button>
           <button onClick={updateMemberInfo}>완료</button>

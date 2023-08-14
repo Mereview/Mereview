@@ -2,6 +2,7 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { updateAchievementCount } from "../api/members";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
@@ -204,6 +205,18 @@ const ReviewWrite = () => {
       .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
+        const achievementUpdate = {
+          achievementType: 2,
+          genreId: selectGenre,
+          memberId: userid,
+        };
+        updateAchievementCount(
+          achievementUpdate,
+          () => {},
+          (err) => {
+            console.log(err);
+          }
+        );
         navigate("/review");
       })
       .catch(() => {
