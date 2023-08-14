@@ -58,7 +58,7 @@ public class ReviewService {
                 .orElseThrow(NoSuchElementException::new);
 
         review.update(request);
-        updateKeywords(request, review);
+        updateKeywords(request.getKeywordServiceRequests());
 
         return request.getReviewId();
     }
@@ -80,13 +80,11 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    private void updateKeywords(ReviewUpdateServiceRequest request, Review review) {
-        List<KeywordUpdateServiceRequest> keywordRequests = request.getKeywordServiceRequests();
-        keywordRequests.forEach(
-                keywordRequest -> review.getKeywords()
-                        .forEach(
-                                keyword -> keyword.update(keywordRequest.getName(), keywordRequest.getWeight())
-                        )
+    private void updateKeywords(List<KeywordUpdateServiceRequest> keywordRequests) {
+        keywordRequests.forEach(keywordRequest ->
+                keywordRepository.findById(keywordRequest.getKeywordId())
+                        .orElseThrow(NoSuchElementException::new)
+                        .update(keywordRequest.getName(), keywordRequest.getWeight())
         );
     }
 
