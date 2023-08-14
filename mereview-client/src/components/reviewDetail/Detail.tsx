@@ -1,14 +1,24 @@
 import "../../styles/css/Detail.css";
 import ReviewCard from "../ReviewCard";
-import { ReviewCardInterface } from "../interface/ReviewCardInterface";
-import { useSelector } from "react-redux";
 import { Button } from "../common";
 import { useState, useEffect } from "react";
-import { createReviewComment, searchReview } from "../../api/review";
+import { updateAchievementCount } from "../../api/members";
+import {
+  createReviewComment,
+  searchReview,
+  deleteReview,
+  evaluationsReview,
+  searchReviews,
+} from "../../api/review";
 import Comments from "./Comments";
 import { useNavigate } from "react-router-dom";
-import { deleteReview, evaluationsReview } from "../../api/review";
-
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 interface evInterface {
   FUN: number;
   USEFUL: number;
@@ -16,10 +26,57 @@ interface evInterface {
 }
 
 const Detail = ({ review, setReview }: any) => {
-  const userId = useSelector((state: any) => state.user.user.id);
+  const navigate = useNavigate();
+  // 유저아이디 받아오기
+  const userId = localStorage.getItem("id");
+  // 댓글 관련
   const [comments, setComments] = useState(review.comments);
   const [inputComment, setInputComment] = useState("");
   const [commentCNT, setcommentCNT] = useState(comments.length);
+  const inputCommentHandler = (event: any) => {
+    setInputComment(event.target.value);
+  };
+  const submitComment = (event: any) => {
+    event.preventDefault();
+    const data = {
+      content: inputComment,
+      memberId: userId,
+      reviewId: review.reviewId,
+    };
+    const success = (res) => {
+      console.log("success");
+      setcommentCNT((cur) => ++cur);
+      const data = { reviewId: review.reviewId, loginMemberId: userId };
+      searchReview(
+        data,
+        (res) => {
+          setReview(res.data.data);
+          const achievementUpdate = {
+            achievementType: 2,
+            genreId: res.data.data.genre.genreId,
+            memberId: userId,
+          };
+          updateAchievementCount(
+            achievementUpdate,
+            (res) => {},
+            (err) => {
+              console.log(err);
+            }
+          );
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+      setInputComment("");
+    };
+    const fail = () => {
+      console.log("fail");
+    };
+    console.log(review);
+    createReviewComment(data, success, fail);
+  };
+  // 리뷰 평가 받아오기
   const [ev, setEv] = useState<evInterface>({
     FUN: review.funCount,
     USEFUL: review.usefulCount,
@@ -30,7 +87,9 @@ const Detail = ({ review, setReview }: any) => {
     setComments(review.comments);
   }, [review]);
 
+  // 모든 버튼 동작함수
   const onClick = (event: any) => {
+    // 리뷰 수정 / 삭제 동작
     if (event.target.innerText === "수정") {
       navigate(`/review/${review.reviewId}/edit`);
     } else if (event.target.innerText === "삭제") {
@@ -44,6 +103,7 @@ const Detail = ({ review, setReview }: any) => {
           console.log(err);
         }
       );
+      // 리뷰 평가 재미, 유용, 별로에요 동작
     } else {
       const data = {
         genreId: review.genre.genreId,
@@ -73,59 +133,66 @@ const Detail = ({ review, setReview }: any) => {
       evaluationsReview(data, success, fail);
     }
   };
-  const inputCommentHandler = (event: any) => {
-    setInputComment(event.target.value);
+  // 동일키워드 추천 리뷰 불러오기
+  const [switchToggler, setSwitchToggler] = useState(true);
+  const [recommendReview, setRecommendReview] = useState([]);
+  const switchToggleHandler = () => {
+    setSwitchToggler((prev) => !prev);
+    const data = { myInterest: userId, orderBy: "" };
+    if (!switchToggler) {
+      data.orderBy = "FUN";
+    } else {
+      data.orderBy = "USEFUL";
+    }
+    console.log(data);
+
+    searchReviews(
+      data,
+      (res) => {
+        const data = res.data.data.data;
+        const filterdReviewList = data.filter((rr) => {
+          return (
+            rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+          );
+        });
+        console.log(filterdReviewList);
+        setRecommendReview(filterdReviewList);
+      },
+      (err) => {
+        console.log("err:", err);
+      }
+    );
   };
-  const navigate = useNavigate();
-  const submitComment = (event: any) => {
-    event.preventDefault();
-    const data = {
-      content: inputComment,
-      memberId: userId,
-      reviewId: review.reviewId,
-    };
-    const success = (res) => {
-      console.log("success");
-      setcommentCNT((cur) => ++cur);
-      const data = { reviewId: review.reviewId, loginMemberId: userId };
-      searchReview(
+  useEffect(() => {
+    //memberId, reviewId
+    const getRecommendReview = () => {
+      const data = {
+        myInterest: userId,
+        orderBy: "POSITIVE",
+      };
+      console.log(data);
+      searchReviews(
         data,
         (res) => {
-          setReview(res.data.data);
+          const data = res.data.data.data;
+          const filterdReviewList = data.filter((rr) => {
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
+          });
+          console.log(filterdReviewList);
+          setRecommendReview(filterdReviewList);
         },
         (err) => {
-          console.log(err);
+          console.log("err:", err);
         }
       );
-      setInputComment("");
     };
-    const fail = () => {
-      console.log("fail");
-    };
-    console.log(review);
-    createReviewComment(data, success, fail);
-  };
-  const 추천해줄리뷰 = [
-    {
-      id: 1,
-    },
-    {
-      id: 2,
-    },
-    {
-      id: 3,
-    },
-    {
-      id: 4,
-    },
-    {
-      id: 5,
-    },
-    {
-      id: 6,
-    },
-  ];
+    getRecommendReview();
+  }, []);
   const editHandler = () => {};
+  console.log(typeof userId, typeof review.memberId);
+  console.log(recommendReview);
   return (
     <div className="detail">
       <div className="first-line">
@@ -162,7 +229,7 @@ const Detail = ({ review, setReview }: any) => {
           disabled={userId === review.reviewId}
         ></button>
       </div>
-      {userId === review.memberId ? (
+      {Number(userId) === review.memberId ? (
         <div className="edit">
           <Button text="수정" styles="btn-primary" onClick={onClick} />
           <Button text="삭제" styles="btn-secondary" onClick={onClick} />
@@ -234,9 +301,48 @@ const Detail = ({ review, setReview }: any) => {
             height: "103vh",
           }}
         >
-          {추천해줄리뷰.map((review) => (
-            <div key={review.id}></div>
-          ))}
+          <div className="header">
+            <h5>관심장르 리뷰 추천</h5>
+            <FormControlLabel
+              className="useful-fun-switch"
+              control={
+                <Switch
+                  checked={switchToggler}
+                  onChange={switchToggleHandler}
+                  color="warning"
+                />
+              }
+              label={switchToggler ? "유용해요 기준" : "재밌어요 기준"}
+              labelPlacement="end"
+            />
+          </div>
+          <div className="reviewCard-wrapper">
+            {recommendReview.map((review) => (
+              <ReviewCard
+                className="detailCard"
+                key={review.reviewId}
+                reviewId={review.reviewId}
+                memberId={review.memberId}
+                nickname={review.nickname}
+                profileImageId={review.profileImage}
+                backgroundImageId={
+                  review.backgroundImageResponse
+                    ? review.backgroundImageResponse.id
+                    : null
+                }
+                oneLineReview={review.highlight}
+                funnyCount={review.funCount}
+                usefulCount={review.usefulCount}
+                dislikeCount={review.badCount}
+                commentCount={review.commentCount}
+                movieTitle={review.movieTitle}
+                releaseYear={review.releaseYear}
+                movieGenre={[review.genreResponse.genreName]}
+                createDate={review.createdTime.substring(0, 10)}
+                recommend={review.movieEvaluatedType === "YES" ? true : false}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

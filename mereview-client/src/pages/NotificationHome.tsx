@@ -12,6 +12,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
+import NotificationReviewList from '../components/NotificationReviewList'
 
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
@@ -73,6 +74,7 @@ const NotificationHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [confirmedList, setConfirmedList] = useState<Array<ReviewCardInterface>>([])
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
@@ -84,7 +86,7 @@ const NotificationHome = () => {
 
   // useSelector를 통해 loginId 값을 가져오기 위한 코드
   const reduxLoginId: number = useSelector((state: any) => state.user.user.id);
-
+  const user = useSelector((state:any) => state.user.user)
   // 로그인 상태에 따라 loginId 값을 설정
   useEffect(() => {
     setLoginId(reduxLoginId);
@@ -125,8 +127,10 @@ const NotificationHome = () => {
     
                 reviewList.push(reviewData);
               }
-    
+
+           
               setReviewListState(reviewList);
+
             },
             (error) => {
               console.log(error);
@@ -150,20 +154,34 @@ const NotificationHome = () => {
 
   const sortProps: ReviewSortInterface = {
     sortBy: sortBy,
+
     setSortBy: setSortBy,
+    
     dateDescend: dateDescend,
+    
     setDateDescend: setDateDescend,
+    
     recommendDescend: recommendDescend,
+    
     setRecommendDescend: setRecommendDescend,
+    
     searchTerm: searchTerm,
+    
     setSearchTerm: setSearchTerm,
+    
     onlyInterest: onlyInterest,
+    
     setOnlyInterest: setOnlyInterest,
   };
 
   return (
     <>
-      <ReviewList reviewList={reviewListState} />
+      
+      <span className="display-1 fw-bold ms-3">UNCONFIRMED</span>
+      <NotificationReviewList reviewList={reviewListState} /> 
+      <hr />
+      <span className="display-1 fw-bold ms-3">CONFIRMED</span>
+      <NotificationReviewList reviewList={reviewListState} />
     </>
   );
 };

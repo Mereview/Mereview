@@ -446,7 +446,7 @@ const ReviewHome = () => {
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
         <div
-          style={{ height: "100px", backgroundColor: "white" }}
+          style={{ height: "200px", backgroundColor: "white" }}
           ref={infScrollTargetRef}
         ></div>
       ) : (

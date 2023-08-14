@@ -13,7 +13,31 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     likeCount: comment.likeCount,
     dislikeCount: comment.disLikeCount,
   });
-  console.log(comment.memberId, userId);
+
+  // 댓글작성 시간 계산
+  const now = new Date();
+  const createdTime = new Date(comment.createdTime);
+  const diffTime = now.getTime() - createdTime.getTime();
+  let presentTime = null;
+
+  // 하루지났을때
+  if (Math.floor(diffTime / (1000 * 60 * 60 * 24))) {
+    presentTime = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + "일";
+  } // 시간 지났을때
+  else if (Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))) {
+    presentTime =
+      Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) +
+      "시간";
+  } // 1분이상 지났을 때
+  else if (Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60))) {
+    presentTime =
+      Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)) + "분";
+  } // 1초이상 지났을 때
+  else {
+    presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
+  }
+
+  console.log(presentTime);
   const onClick = () => {
     deleteReviewComment(
       comment.commentId,
@@ -69,6 +93,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
+  console.log(comment);
   return (
     <div className="comment">
       <div className="writer">
@@ -78,7 +103,10 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
         <p>{comment.nickname}</p>
       </div>
 
-      <div className="all">{comment.content}</div>
+      <div className="all">
+        <p className="content">{comment.content}</p>
+        <p className="createdDate">{presentTime} 전</p>
+      </div>
 
       <div className="buttons">
         <div className="lndl">

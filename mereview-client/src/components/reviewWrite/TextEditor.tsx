@@ -33,8 +33,12 @@ const TextEditor = forwardRef((props, ref) => {
   const getContent = () => {
     return content;
   };
+  const setCont = (setValue) => {
+    setContent(setValue);
+  };
   useImperativeHandle(ref, () => ({
     getContent,
+    setCont,
   }));
   const contentHandler = (value) => {
     setContent(value);

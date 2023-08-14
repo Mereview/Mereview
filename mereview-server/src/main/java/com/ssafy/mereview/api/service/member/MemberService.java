@@ -1,18 +1,14 @@
 package com.ssafy.mereview.api.service.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.EmailCheckCode;
-import com.ssafy.mereview.api.service.member.dto.request.InterestServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.MemberCreateServiceRequest;
-import com.ssafy.mereview.api.service.member.dto.request.MemberUpdateServiceRequest;
+import com.ssafy.mereview.api.service.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.common.util.jwt.JwtUtils;
 import com.ssafy.mereview.domain.member.entity.*;
 import com.ssafy.mereview.domain.member.repository.*;
 import com.ssafy.mereview.domain.movie.entity.Genre;
-import com.ssafy.mereview.domain.movie.repository.GenreRepository;
+import com.ssafy.mereview.domain.movie.repository.command.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -56,6 +52,8 @@ public class MemberService {
     private final MemberFollowRepository memberFollowRepository;
 
     private final MemberFollowQueryRepository memberFollowQueryRepository;
+
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
 
     public Long createMember(MemberCreateServiceRequest request, UploadFile uploadFile) {
         EmailCheckCode emailCheckCode = EMAIL_CHECK_CODE_HASH_MAP.getOrDefault(request.getEmail(), null);
@@ -107,6 +105,25 @@ public class MemberService {
         }
     }
 
+    public int updateAchievementCount(AchievementCountUpdateServiceRequest request) {
+        MemberAchievement memberAchievement;
+        if(request.getAchievementType() == 1){
+            memberAchievement = memberAchievementQueryRepository.searchReviewAchievementByMemberIdAndGenreId(request.getMemberId(), request.getGenreId());
+        }else{
+            memberAchievement = memberAchievementQueryRepository.searchCommentAchievementByMemberIdAndGenreId(request.getMemberId(), request.getGenreId());
+        }
+        if(memberAchievement == null){
+            throw new NoSuchElementException("존재하지 않는 업적입니다.");
+        }
+        memberAchievement.updateAchievementCount();
+
+
+        return memberAchievement.getAchievementCount();
+
+
+
+    }
+
     private void emailCheck(MemberCreateServiceRequest request, EmailCheckCode emailCheckCode) {
         if (emailCheckCode == null) {
             throw new IllegalArgumentException("인증 코드가 존재하지 않습니다.");
@@ -122,17 +139,22 @@ public class MemberService {
 
     }
 
-    public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
+    public Long updateMemberInterest(Long memberId, MemberUpdateServiceRequest request) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         log.debug("update request : {}", request);
 
-        List<InterestRequest> interestRequests = request.getInterestRequests();
-        log.debug("interestRequests = " + interestRequests);
 
-        member.updateNickname(request.getNickname());
-        log.debug("Member nickname 확인 : {}", member.getNickname());
-        updateInterests(interestRequests, member);
+        List<InterestServiceRequest> interestServiceRequests = request.getInterests();
+        log.debug("interestServiceRequests : {}", interestServiceRequests);
+
+        if (interestServiceRequests != null) {
+            member.getInterests().clear();
+            updateInterests(interestServiceRequests, member);
+        }else{
+            member.getInterests().clear();
+            createInterests(request.getInterests(), member);
+        }
         log.debug("Member interest 확인 : {}", member.getInterests());
         return member.getId();
     }
@@ -204,6 +226,11 @@ public class MemberService {
 
     public void updateProfileImage(Long memberId, UploadFile uploadFile) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+        ProfileImage profileImage = member.getProfileImage();
+        if (profileImage == null){
+            createProfileImage(uploadFile, memberId);
+            return;
+        }
         member.updateProfileImage(uploadFile);
     }
 
@@ -231,14 +258,14 @@ public class MemberService {
 
     }
 
-    public void updateInterests(List<InterestRequest> requests, Member member) {
+    public void updateInterests(List<InterestServiceRequest> requests, Member member) {
 
         Member updateMember = memberRepository.findById(member.getId()).orElseThrow(NoSuchElementException::new);
         List<Interest> interests = updateMember.getInterests();
         interests.clear();
         log.debug("member interests : {}", requests);
-        for (InterestRequest interestRequest : requests) {
-            Genre genre = genreRepository.findById(interestRequest.getGenreId()).orElseThrow(NoSuchElementException::new);
+        for (InterestServiceRequest request : requests) {
+            Genre genre = genreRepository.findById(request.getGenreId()).orElseThrow(NoSuchElementException::new);
             Interest interest = Interest.builder().member(Member.builder().id(updateMember.getId()).build())
                     .genre(genre).build();
             interests.add(interest);
@@ -271,10 +298,23 @@ public class MemberService {
         // TODO: 2023-08-03 장르 레포지토리로 바꾸기
         List<Genre> genres = genreRepository.findAll();
 
-        List<MemberAchievement> memberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
+        List<MemberAchievement> commentMemberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
                 .member(member)
                 .genre(genre)
+                .achievementType(AchievementType.COMMENT)
                 .build()).collect(Collectors.toList());
+
+        List<MemberAchievement> reviewMemberAchievements = genres.stream().map(genre -> MemberAchievement.builder()
+                .member(member)
+                .genre(genre)
+                .achievementType(AchievementType.REVIEW)
+                .build()).collect(Collectors.toList());
+
+        List<MemberAchievement> memberAchievements = new ArrayList<>();
+
+        memberAchievements.addAll(commentMemberAchievements);
+        memberAchievements.addAll(reviewMemberAchievements);
+
         log.debug("memberAchievements = " + memberAchievements.size());
 
         memberAchievementRepository.saveAll(memberAchievements);
@@ -297,5 +337,12 @@ public class MemberService {
         memberFollowRepository.save(memberFollow);
 
         return MemberFollowResponse.of(memberFollow, "follow");
+    }
+
+
+    public Long updateMemberNickname(Long id, MemberNicknameUpdateServiceRequest serviceRequest) {
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        member.updateNickname(serviceRequest.getNickname());
+        return member.getId();
     }
 }
