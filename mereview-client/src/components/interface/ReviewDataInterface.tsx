@@ -3,8 +3,8 @@ export interface ReviewDataInterface {
   content: string | null;
   highlight: string | null;
   type: string | null;
-  memberId: number | null;
-  movieId: number | null;
-  genreId: number | null;
+  memberId?: number | null;
+  movieId?: number | null;
+  genreId?: number | null;
   keywordRequests: any[];
 }

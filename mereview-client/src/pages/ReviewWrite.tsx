@@ -7,7 +7,7 @@ import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
-import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
+import { ReviewDataInterface } from "../components/interface/ReviewDataInterface";
 import axios from "axios";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +44,8 @@ const ReviewWrite = () => {
     const file = acceptedFiles[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
+      console.log("file: " + file);
+      console.log("objectURL : " + objectURL);
       setSelectedImage(objectURL);
       setImgName(file.name);
       fileDataRef.current = file;

@@ -6,7 +6,7 @@ import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
-import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
+import { ReviewDataInterface } from "../components/interface/ReviewDataInterface";
 import axios from "axios";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
@@ -30,8 +30,20 @@ const ReviewWrite = () => {
         data,
         (res) => {
           const review = res.data.data;
+          console.log(review);
+          const image = review.backgroundImage;
+          setImgName(image.fileName);
+          setSelectedImage(`${url}/image/download/backgrounds/${image.id}`);
+          fileDataRef.current = new File([selectedImage], imgName);
           setReviewName(review.reviewTitle);
           setOneSentance(review.reviewHighlight);
+          movieName.current = review.movieTitle;
+          genreName.current = review.genre.genreName;
+          keywordId1.current = review.keywords[0].keywordId;
+          keywordId2.current = review.keywords[1].keywordId;
+          keywordId3.current = review.keywords[2].keywordId;
+          keywordId4.current = review.keywords[3].keywordId;
+          keywordId5.current = review.keywords[4].keywordId;
           childRef1.current.setKey(review.keywords[0]);
           childRef2.current.setKey(review.keywords[1]);
           childRef3.current.setKey(review.keywords[2]);
@@ -52,8 +64,8 @@ const ReviewWrite = () => {
             value: review.genre.genreId,
             label: review.genre.genreName,
           });
-          inputData.current.title = reviewName;
-          inputData.current.highlight = oneSentance;
+          inputData.current.title = review.reviewTitle;
+          inputData.current.highlight = review.reviewHighlight;
           inputData.current.movieId = review.movieId;
           inputData.current.genreId = review.genreId;
         },
@@ -76,6 +88,11 @@ const ReviewWrite = () => {
   const childRef3 = useRef(null);
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
+  const keywordId1 = useRef(null);
+  const keywordId2 = useRef(null);
+  const keywordId3 = useRef(null);
+  const keywordId4 = useRef(null);
+  const keywordId5 = useRef(null);
   //리뷰의 배경이미지 정보(선택한 이미지 url, 이미지 이름, 서버로 보낼 이미지 파일)
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
@@ -83,6 +100,7 @@ const ReviewWrite = () => {
   //영화이름에 따른 자동완성과 해당 영화의 장르 저장을 위한 변수
   const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
   const movieName = useRef("");
+  const genreName = useRef("");
   const [movieList, setMovieList] = useState([]);
   const [genreList, setGenreList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
@@ -146,20 +164,15 @@ const ReviewWrite = () => {
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
     movieName.current = input;
-    console.log(input);
-    console.log(url);
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
     const timeout = setTimeout(() => {
       const encodedKeyword = encodeURIComponent(movieName.current);
-
       axios
         .get(url + `/movies?keyword=${encodedKeyword}`)
         .then((res) => {
-          console.log(res);
-          console.log(res.data.data[0].genres);
-          setMovieList(res.data.data[0].genres);
+          setMovieList(res.data.data);
         })
         .catch(() => {
           console.log("error");
@@ -206,27 +219,27 @@ const ReviewWrite = () => {
     }
     const keywordList = [];
     keywordList.push({
-      movieId: inputData.current.movieId,
+      keywordId: keywordId1.current,
       name: childRef1.current.getKeyInfo().name,
       weight: childRef1.current.getKeyInfo().weight,
     });
     keywordList.push({
-      movieId: inputData.current.movieId,
+      keywordId: keywordId2.current,
       name: childRef2.current.getKeyInfo().name,
       weight: childRef2.current.getKeyInfo().weight,
     });
     keywordList.push({
-      movieId: inputData.current.movieId,
+      keywordId: keywordId3.current,
       name: childRef3.current.getKeyInfo().name,
       weight: childRef3.current.getKeyInfo().weight,
     });
     keywordList.push({
-      movieId: inputData.current.movieId,
+      keywordId: keywordId4.current,
       name: childRef4.current.getKeyInfo().name,
       weight: childRef4.current.getKeyInfo().weight,
     });
     keywordList.push({
-      movieId: inputData.current.movieId,
+      keywordId: keywordId5.current,
       name: childRef5.current.getKeyInfo().name,
       weight: childRef5.current.getKeyInfo().weight,
     });
@@ -236,6 +249,7 @@ const ReviewWrite = () => {
       return;
     }
     const reviewContent = contentRef.current.getContent();
+    console.log(reviewContent);
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
@@ -244,19 +258,38 @@ const ReviewWrite = () => {
       return;
     }
     const formData = new FormData();
-    formData.append(
-      "reviewId",
-      new Blob([JSON.stringify(reviewId)], {
-        type: "application/json",
-      })
-    );
+    // formData.append(
+    //   "reviewId",
+    //   new Blob([JSON.stringify(reviewId)], {
+    //     type: "application/json",
+    //   })
+    // );
+    console.log(inputData.current.title);
+    console.log(inputData.current.highlight);
+    console.log(inputData.current.content);
+    console.log(inputData.current.keywordRequests);
+    console.log(inputData.current.type);
     formData.append(
       "request",
-      new Blob([JSON.stringify(inputData.current)], {
-        type: "application/json",
-      })
+      new Blob(
+        [
+          JSON.stringify({
+            title: inputData.current.title,
+            highlight: inputData.current.highlight,
+            content: inputData.current.content,
+            keywordRequests: inputData.current.keywordRequests,
+            type: inputData.current.type,
+          }),
+        ],
+        {
+          type: "application/json",
+        }
+      )
     );
-    formData.append("file", fileDataRef.current);
+    console.log(fileDataRef.current);
+    if (fileDataRef.current != null) {
+      formData.append("file", fileDataRef.current);
+    }
     axios
       .put(url + `/reviews/${reviewId}`, formData)
       .then(() => {
@@ -334,7 +367,8 @@ const ReviewWrite = () => {
             </Row>
             <Row className="justify-content-start my-5">
               <Col lg={6} className="p-0">
-                <Select
+                <Form.Control value={movieName.current} readOnly></Form.Control>
+                {/* <Select
                   value={selectMovie}
                   className="inputBox"
                   options={movieList.map((option) => ({
@@ -345,10 +379,11 @@ const ReviewWrite = () => {
                   onInputChange={movieNameHandler}
                   onChange={selectMovieHandler}
                   placeholder="영화 제목을 입력하세요"
-                ></Select>
+                ></Select> */}
               </Col>
               <Col lg={6}>
-                <Select
+                <Form.Control value={genreName.current} readOnly></Form.Control>
+                {/* <Select
                   value={selectGenre}
                   className="inputBox"
                   options={genreList.map((option) => ({
@@ -357,7 +392,7 @@ const ReviewWrite = () => {
                   }))}
                   onChange={selectGenreHandler}
                   placeholder="장르를 선택하세요"
-                ></Select>
+                ></Select> */}
               </Col>
             </Row>
             <Row className="mt-5">
