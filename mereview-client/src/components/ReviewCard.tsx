@@ -10,6 +10,7 @@ type Style = {
 
 const ReviewCard = (props: ReviewCardInterface) => {
   const {
+    className,
     reviewId,
     memberId,
     nickname,
@@ -31,7 +32,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   const handleClickReviewCard = (
     event: React.MouseEvent<HTMLParagraphElement>
   ) => {
-    console.log(reviewId);
+    console.log("hi");
     navigate(`/review/${reviewId}`);
   };
 
@@ -75,7 +76,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
 
   return (
     <>
-      <div className="card" style={cardStyle} onClick={handleClickReviewCard}>
+      <div
+        className={`card ${className}`}
+        style={cardStyle}
+        onClick={handleClickReviewCard}
+      >
         <div className="card-overlay">
           <Row>
             <Col md={"auto"} className="date">

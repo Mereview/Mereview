@@ -4,7 +4,7 @@ import Detail from "../components/reviewDetail/Detail";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { searchReview } from "../api/review";
+import { searchReview, toggleNotificationStatus } from "../api/review";
 import Loading from "../components/common/Loading";
 
 const ReviewDetail = () => {
@@ -24,6 +24,17 @@ const ReviewDetail = () => {
           setReview(res.data.data);
           setLoading(true);
           console.log("최상위 렌더링");
+          console.log("putMapping에 보낼 데이터 ", data);
+
+          toggleNotificationStatus(
+            data,
+            (toggleRes) => {
+              console.log("토글 완료", toggleRes);
+            },
+            (toggleErr) => {
+              console.log("토글 불가능", toggleErr);
+            }
+          );
         },
         (err) => {
           navigate("/404");
@@ -44,13 +55,12 @@ const ReviewDetail = () => {
         zIndex: "-1",
       }
     : {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        filter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
         zIndex: "-1",
       };
-
+  console.log(style);
   return (
-    <div className="section">
+    <div className="section" style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}>
       {loading ? (
         <div>
           <div className="blurred" style={style}></div>

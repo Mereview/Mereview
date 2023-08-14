@@ -21,11 +21,11 @@
 
 .maincpnt.animate {
   opacity: 100%;
-  animation-name: slideIn;
+  animation-name: mainMove;
   animation-duration: 3s;
 }
 
-@keyframes slideIn {
+@keyframes mainMove {
   0% {
     transform: translateX(100%);
   }

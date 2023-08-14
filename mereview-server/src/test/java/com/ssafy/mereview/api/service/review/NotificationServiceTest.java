@@ -1,5 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
+import com.ssafy.mereview.api.service.review.dto.request.NotificationUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.domain.member.entity.Interest;
 import com.ssafy.mereview.domain.member.entity.Member;
@@ -83,15 +84,20 @@ class NotificationServiceTest {
     @Test
     void toggleStatus() {
         // given
-        Long notificationId = notificationRepository.findAll().stream()
-                .findAny().orElseThrow().getId();
+        Long memberId = memberRepository.findAll().stream().findAny().orElseThrow().getId();
+        Long reviewId = reviewRepository.findAll().stream().findAny().orElseThrow().getId();
+
+        NotificationUpdateServiceRequest request = NotificationUpdateServiceRequest.builder()
+                .memberId(memberId)
+                .reviewId(reviewId)
+                .build();
 
         // when
-        NotificationResponse response = notificationService.toggleStatus(notificationId);
+        NotificationResponse response = notificationService.toggleStatus(request);
 
         // then
-        assertThat(response).extracting("notificationId", "status")
-                .containsExactly(notificationId, CONFIRMED);
+        assertThat(response).extracting("memberId", "reviewId", "status")
+                .containsExactly(memberId, reviewId, CONFIRMED);
     }
 
     @DisplayName("2. 알림을 삭제한다.")

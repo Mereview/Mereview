@@ -27,7 +27,7 @@
     }
   }
   .first {
-    background-color: $blue-5;
+    background-color: #212529;
     border: solid white 1px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -39,11 +39,11 @@
     border-top-style: solid;
     opacity: 0%;
     &:hover {
-      background-color: $blue-7;
+      background-color: #5f5e6e;
     }
   }
   .last {
-    background-color: $blue-5;
+    background-color: #212529;
     border: solid white 1px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -54,11 +54,11 @@
     border-top: solid 1px white;
     opacity: 0%;
     &:hover {
-      background-color: $blue-7;
+      background-color: #5f5e6e;
     }
   }
   .second {
-    background-color: $blue-5;
+    background-color: #212529;
     border: solid white 1px;
     border-bottom: none;
     border-top: none;
@@ -68,7 +68,7 @@
     justify-content: center;
     opacity: 0%;
     &:hover {
-      background-color: $blue-7;
+      background-color: #5f5e6e;
     }
   }
 }

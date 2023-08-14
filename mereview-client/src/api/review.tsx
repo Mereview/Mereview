@@ -62,3 +62,25 @@ export async function updateCommentLike(data: Object, success, fail) {
 export async function evaluationsReview(data: Object, success, fail) {
   await api.post(`/evaluations`, data).then(success).catch(fail);
 }
+
+/** Notification 온 리뷰들 가져오는 API */
+export async function getNotifications(memberId, success, fail) {
+  const queryParams = {
+    memberId: memberId
+  };
+
+  const queryString = new URLSearchParams(queryParams).toString();
+
+  await api.get(`/notifications?${queryString}`)
+    .then(success)
+    .catch(fail);
+}
+
+export async function toggleNotificationStatus(request, success, fail) {
+  try {
+    const response = await api.put("/notifications/", request);
+    success(response.data);
+  } catch (error) {
+    fail(error);
+  }
+}

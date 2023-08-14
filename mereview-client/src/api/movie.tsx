@@ -8,3 +8,7 @@ export async function searchMovies(keyword: string, success, fail) {
     .then(success)
     .catch(fail);
 }
+
+export async function searchMovieDetail(movieId: number, success, fail) {
+  await api.get(`/${movieId}`).then(success).catch(fail);
+}
