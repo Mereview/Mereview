@@ -4,7 +4,6 @@ import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceReq
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.review.entity.MovieRecommendType;
-import com.ssafy.mereview.domain.review.entity.ReviewEvaluationType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,15 +30,19 @@ public class ReviewUpdateRequest {
     @NotBlank
     private String type;
 
+    @NotNull
+    private Boolean updateBackGround;
+
     @NotEmpty
     private List<KeywordUpdateRequest> keywordRequests;
 
     @Builder
-    public ReviewUpdateRequest(String title, String content, String highlight, String type, List<KeywordUpdateRequest> keywordRequests) {
+    public ReviewUpdateRequest(String title, String content, String highlight, String type, Boolean updateBackGround, List<KeywordUpdateRequest> keywordRequests) {
         this.title = title;
         this.content = content;
         this.highlight = highlight;
         this.type = type;
+        this.updateBackGround = updateBackGround;
         this.keywordRequests = keywordRequests;
     }
 
@@ -51,6 +54,7 @@ public class ReviewUpdateRequest {
                 .highlight(highlight)
                 .type(MovieRecommendType.valueOf(type))
                 .keywordServiceRequests(toKeywordServiceRequests())
+                .updateBackGround(updateBackGround)
                 .uploadFile(uploadFile)
                 .build();
     }
