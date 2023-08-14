@@ -6,7 +6,7 @@ import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
-import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
+import { ReviewDataInterface } from "../components/interface/ReviewDataInterface";
 import axios from "axios";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
