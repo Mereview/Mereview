@@ -43,4 +43,8 @@ public class Keyword extends BaseEntity {
         this.movie = movie;
     }
 
+    public void update(String name, int weight) {
+        this.name = name;
+        this.weight = weight;
+    }
 }
