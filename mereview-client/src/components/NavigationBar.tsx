@@ -23,7 +23,6 @@ const NavigationBar = ({ user }) => {
   useEffect(()=>{
       console.log("알람 확인")
       checkNotifications() ? setNotification(true) : setNotification(false)
-      console.log(checkNotifications())
   })
 
 
@@ -46,13 +45,10 @@ const NavigationBar = ({ user }) => {
             <Nav.Link href="/review/write" className="text-white fs-4">
               리뷰 작성하기
             </Nav.Link>
-            <Nav.Link href="/profile" className="text-white fs-4">
-              프로필
-            </Nav.Link>
             <Nav.Link href="/notification" className="text-white fs-4">
-              <div className="notification-container">
+              <div className="notification-container" style={{position:'relative'}}>
             <span className="material-symbols-outlined">notifications</span>
-            <div className="alarm" style={{visibility : notification ? 'visible' : 'hidden'}}></div>
+            <div className="alarm" style={{visibility : notification ? 'visible' : 'hidden',}}></div>
               </div>
             </Nav.Link>
             <Nav.Item>
