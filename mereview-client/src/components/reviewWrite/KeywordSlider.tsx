@@ -10,6 +10,9 @@ const KeywordSlider = forwardRef((props, ref) => {
   const getKeyInfo = () => {
     return keyInfo;
   };
+  const setKey = (setValue) => {
+    setKeyInfo({ name: setValue.keywordName, weight: setValue.keywordWeight });
+  };
   const infoHandler = (e) => {
     // console.log(e.target);
     let { id, value } = e.target;
@@ -23,6 +26,7 @@ const KeywordSlider = forwardRef((props, ref) => {
   };
   useImperativeHandle(ref, () => ({
     getKeyInfo,
+    setKey,
   }));
   return (
     // <div>

@@ -9,36 +9,53 @@ import { useSelector } from "react-redux";
 import { ReviewDataInterface } from "../components/interface/ReviewWriteInterface";
 import axios from "axios";
 import Select from "react-select";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { positions } from "@mui/system";
+import { useParams } from "react-router-dom";
 import { searchReview } from "../api/review";
 const ReviewWrite = () => {
   const url = `${process.env.REACT_APP_API_URL}`;
   const navigate = useNavigate();
   //유저 정보 받아오기
-  const userId = useSelector((state: any) => state.user.user.id);
-  // 리뷰 정보 받아오기
-  const reviewId = useParams();
-  const [editReview, setEditReview] = useState({
-    title: null,
-    content: null,
-    highlight: null,
-    type: null,
-    memberId: null,
-    movieId: 0,
-    genreId: 0,
-    keywords: [],
-    movieTitle: null,
-  });
+  const userid = useSelector((state: any) => state.user.user.id);
+  const { id } = useParams();
+  const reviewId = Number(id);
+  const data = { loginMemberId: userid, reviewId: reviewId };
+  // const [reviewData, setReviewData] = useState(null);
   useEffect(() => {
     const getEditRiview = () => {
-      console.log(userId, reviewId);
-      const data = { loginMemberId: userId, reviewId: reviewId };
+      console.log(userid, reviewId);
+      const data = { loginMemberId: userid, reviewId: reviewId };
       searchReview(
         data,
         (res) => {
-          console.log(res.data.data);
-          setEditReview(res.data.data);
+          const review = res.data.data;
+          setReviewName(review.reviewTitle);
+          setOneSentance(review.reviewHighlight);
+          childRef1.current.setKey(review.keywords[0]);
+          childRef2.current.setKey(review.keywords[1]);
+          childRef3.current.setKey(review.keywords[2]);
+          childRef4.current.setKey(review.keywords[3]);
+          childRef5.current.setKey(review.keywords[4]);
+          contentRef.current.setCont(review.reviewContent);
+          if (review.movieEvaluatedType === "YES") {
+            setGoodBtn(true);
+            setBadBtn(false);
+            inputData.current.type = "YES";
+          } else {
+            setGoodBtn(false);
+            setBadBtn(true);
+            inputData.current.type = "NO";
+          }
+          setSelectMovie({ value: review.movieId, label: review.movieTitle });
+          setSelectGenre({
+            value: review.genre.genreId,
+            label: review.genre.genreName,
+          });
+          inputData.current.title = reviewName;
+          inputData.current.highlight = oneSentance;
+          inputData.current.movieId = review.movieId;
+          inputData.current.genreId = review.genreId;
         },
         (err) => {
           console.log("err: ", err);
@@ -47,23 +64,46 @@ const ReviewWrite = () => {
     };
     getEditRiview();
   }, []);
-
-  //서버로 보낼 리뷰 데이터
-  const inputData = useRef<ReviewDataInterface>({
-    title: editReview.title,
-    content: editReview.content,
-    highlight: editReview.highlight,
-    type: editReview.type,
-    memberId: editReview.memberId,
-    movieId: editReview.movieId,
-    genreId: editReview.genreId,
-    keywordRequests: editReview.keywords,
-  });
-
+  //리뷰 정보
+  const [reviewName, setReviewName] = useState<string | null>();
+  const [oneSentance, setOneSentance] = useState<string | null>("");
+  //영화에 대한 평가 버튼
+  const [badBtn, setBadBtn] = useState<boolean | null>(false);
+  const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
+  //키워드 정보 저장 변수
+  const childRef1 = useRef(null);
+  const childRef2 = useRef(null);
+  const childRef3 = useRef(null);
+  const childRef4 = useRef(null);
+  const childRef5 = useRef(null);
   //리뷰의 배경이미지 정보(선택한 이미지 url, 이미지 이름, 서버로 보낼 이미지 파일)
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const fileDataRef = useRef<File>(null);
+  //영화이름에 따른 자동완성과 해당 영화의 장르 저장을 위한 변수
+  const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
+  const movieName = useRef("");
+  const [movieList, setMovieList] = useState([]);
+  const [genreList, setGenreList] = useState([]);
+  const [selectMovie, setSelectMovie] = useState(null);
+  const [selectGenre, setSelectGenre] = useState(null);
+  //상세리뷰 저장 변수
+  const contentRef = useRef(null);
+
+  //배경이미지
+  const frameImg = "/filmframe.png";
+
+  //서버로 보낼 리뷰 데이터
+  const inputData = useRef<ReviewDataInterface>({
+    title: null,
+    content: null,
+    highlight: null,
+    type: null,
+    memberId: null,
+    movieId: 0,
+    genreId: 0,
+    keywordRequests: [],
+  });
 
   //배경이미지 첨부 함수
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -84,18 +124,12 @@ const ReviewWrite = () => {
   });
 
   //리뷰 정보를 넘길 데이터들(리뷰 제목, 한줄평) : useState를 사용하지만 input 내에 값을 넣는용도로만 사용
-  const [reviewName, setReviewName] = useState<string | null>(editReview.title);
-  const [oneSentance, setOneSentance] = useState<string | null>(
-    editReview.highlight
-  );
+
   const onChangeHandler = (event) => {
     let { id, value } = event.target;
     inputData.current[id] = value;
   };
 
-  //영화에 대한 평가 버튼
-  const [badBtn, setBadBtn] = useState<boolean | null>(false);
-  const [goodBtn, setGoodBtn] = useState<boolean | null>(false);
   //영화에 대한 반응을 저장하는 함수
   const feedbackHandler = (e) => {
     if (e.target.value === "NO") {
@@ -108,24 +142,6 @@ const ReviewWrite = () => {
     let { id, value } = e.target;
     inputData.current[id] = value;
   };
-
-  //키워드 정보 저장 변수
-  const childRef1 = useRef(editReview.keywords[0]);
-  const childRef2 = useRef(null);
-  const childRef3 = useRef(null);
-  const childRef4 = useRef(null);
-  const childRef5 = useRef(null);
-
-  //상세리뷰 저장 변수
-  const contentRef = useRef(null);
-
-  //영화이름에 따른 자동완성과 해당 영화의 장르 저장을 위한 변수
-  const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
-  const movieName = useRef(editReview.movieTitle);
-  const [movieList, setMovieList] = useState([]);
-  const [genreList, setGenreList] = useState([]);
-  const [selectMovie, setSelectMovie] = useState(null);
-  const [selectGenre, setSelectGenre] = useState(null);
 
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
@@ -141,7 +157,9 @@ const ReviewWrite = () => {
       axios
         .get(url + `/movies?keyword=${encodedKeyword}`)
         .then((res) => {
-          setMovieList(res.data.data);
+          console.log(res);
+          console.log(res.data.data[0].genres);
+          setMovieList(res.data.data[0].genres);
         })
         .catch(() => {
           console.log("error");
@@ -167,21 +185,22 @@ const ReviewWrite = () => {
 
   //장르 리스트 중 선택한 장르를 inputData에 저장
   const selectGenreHandler = (selected) => {
+    console.log(selected.value);
     setSelectGenre(selected);
     inputData.current.genreId = selected.value;
   };
 
   //리뷰 정보를 서버에 보내기 위한 함수
   const reviewCreateHandler = () => {
-    if (inputData.current.title == null) {
+    if (inputData.current.title === null) {
       alert("제목을 입력해주세요");
       return;
     }
-    if (inputData.current.movieId == null) {
+    if (inputData.current.movieId === null) {
       alert("영화 제목을 입려해주세요");
       return;
     }
-    if (inputData.current.highlight == null) {
+    if (inputData.current.highlight === null) {
       alert("한줄평을 입력해주세요");
       return;
     }
@@ -211,20 +230,26 @@ const ReviewWrite = () => {
       name: childRef5.current.getKeyInfo().name,
       weight: childRef5.current.getKeyInfo().weight,
     });
+    console.log(keywordList);
     if (keywordList == null) {
       alert("키워드 목록을 입력해주세요");
       return;
     }
     const reviewContent = contentRef.current.getContent();
-    inputData.current.memberId = userId;
+    inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
     if (inputData.current.content == null) {
       alert("리뷰 내용을 입력해주세요");
       return;
     }
-    console.log(fileDataRef.current);
     const formData = new FormData();
+    formData.append(
+      "reviewId",
+      new Blob([JSON.stringify(reviewId)], {
+        type: "application/json",
+      })
+    );
     formData.append(
       "request",
       new Blob([JSON.stringify(inputData.current)], {
@@ -233,7 +258,7 @@ const ReviewWrite = () => {
     );
     formData.append("file", fileDataRef.current);
     axios
-      .post(url + "/reviews", formData)
+      .put(url + `/reviews/${reviewId}`, formData)
       .then(() => {
         console.log("success");
         navigate("/review");
@@ -246,25 +271,42 @@ const ReviewWrite = () => {
   return (
     <div
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+        // backgroundImage: `url(${topImg})`,
         position: "absolute",
-        backgroundSize: "cover",
+        backgroundSize: "fill",
         height: "auto",
         width: "100vw",
       }}
       className="align-items-center"
     >
+      <img
+        src={frameImg}
+        style={{
+          width: "100%",
+          height: "120px",
+          objectFit: "fill",
+        }}
+      />
+      {/* <div
+        style={{
+          width: "100%",
+          backgroundImage: `url(${topImg})`,
+        }}
+      ></div> */}
       <Container
-        className="mx-auto my-5 border border-5 border-dark rounded-5"
+        // className="mx-auto border border-5 border-dark rounded-5"
+        id="reviewContainer"
+        className="mx-auto"
         style={{
           position: "relative",
           height: "auto",
           flex: "1",
-          // backgroundColor: `${
-          //   selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
-          // }`,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+          backgroundColor: `${
+            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
+          }`,
+          // backgroundColor: "rgba(0, 0, 0, 0.5)",
+          // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
       >
         <div
@@ -273,8 +315,12 @@ const ReviewWrite = () => {
             backgroundImage: `url(${selectedImage})`,
           }}
         ></div>
+        <Row />
         <Row className="top mx-2">
-          <Col lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
+          <Col
+            md-lg={7}
+            className="frame me-4 p-4 rounded-3 d-flex flex-column"
+          >
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -328,17 +374,15 @@ const ReviewWrite = () => {
           </Col>
           <Col lg={4} className="ms-5 p-4 rounded-2 frame">
             <Row className="align-items-center justify-content-center mb-3">
-              <Col lg={5}>
+              <Col md-lg={6} className="p-0">
                 <Form.Control
                   className="text-center border border-5 rounded-2"
                   value={imgName}
                   readOnly
-                  style={{
-                    width: "110%",
-                  }}
+                  placeholder="배경 이미지를 첨부해주세요"
                 ></Form.Control>
               </Col>
-              <Col>
+              <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
                   <Button
@@ -372,7 +416,7 @@ const ReviewWrite = () => {
           <Col lg={3}>
             <button
               id="type"
-              className="bg-danger feed-btn mx-1 my-1"
+              className="bg-danger feed-btn mx-1 mt-1"
               type="button"
               style={{
                 backgroundImage: "url(/thumbDown.png)",
@@ -394,8 +438,6 @@ const ReviewWrite = () => {
               onClick={feedbackHandler}
               value={"YES"}
             ></button>
-            {/* </Col>
-        <Col lg={2}> */}
             <Button
               styles="btn-primary"
               text="등록"
@@ -403,7 +445,16 @@ const ReviewWrite = () => {
             ></Button>
           </Col>
         </Row>
+        <Row />
       </Container>
+      <img
+        src={frameImg}
+        style={{
+          width: "100%",
+          height: "120px",
+          objectFit: "fill",
+        }}
+      />
     </div>
   );
 };
