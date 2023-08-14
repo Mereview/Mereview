@@ -20,6 +20,18 @@ export async function updateMemberIntroduce(data: Object, success, fail) {
   await api.post(`/introduce`, JSON.stringify(data)).then(success).catch(fail);
 }
 
+// 임시
+export async function updateMemberNickname(data: Object, success, fail) {
+  api.defaults.headers["Authorization"] = localStorage.getItem("token");
+  await api.post(`/nickname`, JSON.stringify(data)).then(success).catch(fail);
+}
+
+// 임시
+export async function updateMemberInterest(data: Object, success, fail) {
+  api.defaults.headers["Authorization"] = localStorage.getItem("token");
+  await api.post(`/interest`, JSON.stringify(data)).then(success).catch(fail);
+}
+
 export async function deleteMember(memberId: number, success, fail) {
   api.defaults.headers["Authorization"] = localStorage.getItem("token");
   await api.delete(`/${memberId}`).then(success).catch(fail);
@@ -69,4 +81,8 @@ export async function updateProfilePic(data: FormData, success, fail) {
 
 export async function follow(data: Object, success, fail) {
   await api.post(`/follow`, data).then(success).catch(fail);
+}
+
+export async function updateAchievementCount(data: Object, success, fail) {
+  await api.put(`/count`, data).then(success).catch(fail);
 }
