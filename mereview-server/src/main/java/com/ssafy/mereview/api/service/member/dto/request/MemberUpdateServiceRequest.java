@@ -12,19 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberUpdateServiceRequest {
 
-    private String nickname;
 
     private String gender;
 
     private String birthDate;
 
-    private List<InterestRequest> interestRequests = new ArrayList<>();
+    private List<InterestServiceRequest> interests = new ArrayList<>();
 
     @Builder
-    public MemberUpdateServiceRequest(String nickname, String gender, String birthDate, List<InterestRequest> interestRequests) {
-        this.nickname = nickname;
+    public MemberUpdateServiceRequest(String gender, String birthDate, List<InterestServiceRequest> interests) {
         this.gender = gender;
         this.birthDate = birthDate;
-        this.interestRequests = interestRequests;
+        this.interests = interests;
     }
 }

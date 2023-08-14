@@ -1,6 +1,5 @@
 package com.ssafy.mereview.api.service.member;
 
-import com.ssafy.mereview.api.controller.member.dto.request.InterestRequest;
 import com.ssafy.mereview.api.controller.member.dto.request.MemberIntroduceRequest;
 import com.ssafy.mereview.api.service.member.dto.request.*;
 import com.ssafy.mereview.api.service.member.dto.response.MemberFollowResponse;
@@ -140,17 +139,22 @@ public class MemberService {
 
     }
 
-    public Long updateMember(Long memberId, MemberUpdateServiceRequest request) {
+    public Long updateMemberInterest(Long memberId, MemberUpdateServiceRequest request) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         log.debug("update request : {}", request);
 
-        List<InterestRequest> interestRequests = request.getInterestRequests();
-        log.debug("interestRequests = " + interestRequests);
 
-        member.updateNickname(request.getNickname());
-        log.debug("Member nickname 확인 : {}", member.getNickname());
-        updateInterests(interestRequests, member);
+        List<InterestServiceRequest> interestServiceRequests = request.getInterests();
+        log.debug("interestServiceRequests : {}", interestServiceRequests);
+
+        if (interestServiceRequests != null) {
+            member.getInterests().clear();
+            updateInterests(interestServiceRequests, member);
+        }else{
+            member.getInterests().clear();
+            createInterests(request.getInterests(), member);
+        }
         log.debug("Member interest 확인 : {}", member.getInterests());
         return member.getId();
     }
@@ -254,14 +258,14 @@ public class MemberService {
 
     }
 
-    public void updateInterests(List<InterestRequest> requests, Member member) {
+    public void updateInterests(List<InterestServiceRequest> requests, Member member) {
 
         Member updateMember = memberRepository.findById(member.getId()).orElseThrow(NoSuchElementException::new);
         List<Interest> interests = updateMember.getInterests();
         interests.clear();
         log.debug("member interests : {}", requests);
-        for (InterestRequest interestRequest : requests) {
-            Genre genre = genreRepository.findById(interestRequest.getGenreId()).orElseThrow(NoSuchElementException::new);
+        for (InterestServiceRequest request : requests) {
+            Genre genre = genreRepository.findById(request.getGenreId()).orElseThrow(NoSuchElementException::new);
             Interest interest = Interest.builder().member(Member.builder().id(updateMember.getId()).build())
                     .genre(genre).build();
             interests.add(interest);
@@ -336,4 +340,9 @@ public class MemberService {
     }
 
 
+    public Long updateMemberNickname(Long id, MemberNicknameUpdateServiceRequest serviceRequest) {
+        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        member.updateNickname(serviceRequest.getNickname());
+        return member.getId();
+    }
 }
