@@ -91,6 +91,7 @@
   animation-fill-mode: backwards;
 }
 .last.animate {
+  color: red;
   opacity: 100%;
   animation-name: slideInY;
   animation-duration: 2s;
