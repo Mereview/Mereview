@@ -44,6 +44,8 @@ const ReviewWrite = () => {
     const file = acceptedFiles[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
+      console.log("file: " + file);
+      console.log("objectURL : " + objectURL);
       setSelectedImage(objectURL);
       setImgName(file.name);
       fileDataRef.current = file;
