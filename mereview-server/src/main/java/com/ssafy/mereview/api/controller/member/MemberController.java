@@ -147,19 +147,19 @@ public class MemberController {
         return ApiResponse.ok(memberQueryService.searchMemberTierByGenre(memberId, genreNumber));
     }
 
-    @PutMapping("/{id}/interests")
+    @PutMapping("/interests")
     @ApiOperation(value = "회원 정보 수정", response = Join.class)
-    public ApiResponse<Long> updateMemberInfo(@PathVariable Long id,@RequestBody MemberInterestUpdateRequest request) {
+    public ApiResponse<Long> updateMemberInfo(@RequestBody MemberInterestUpdateRequest request) {
         log.debug("MemberController.updateMemberInfo : {}", request);
-        Long memberId = memberService.updateMemberInterest(id, request.toServiceRequest());
+        Long memberId = memberService.updateMemberInterest(request.getId(), request.toServiceRequest());
         return ApiResponse.ok(memberId);
     }
 
-    @PutMapping("/{id}/nickname")
+    @PutMapping("/nickname")
     @ApiOperation(value = "회원 정보 수정", response = Join.class)
-    public ApiResponse<Long> updateMemberNickname(@PathVariable Long id,@RequestBody MemberNicknameUpdateRequest request) {
+    public ApiResponse<Long> updateMemberNickname(@RequestBody MemberNicknameUpdateRequest request) {
         log.debug("MemberController.updateMemberInfo : {}", request);
-        Long memberId = memberService.updateMemberNickname(id, request.toServiceRequest());
+        Long memberId = memberService.updateMemberNickname(request.getId(), request.toServiceRequest());
         return ApiResponse.ok(memberId);
     }
 

@@ -13,13 +13,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class MemberInterestUpdateRequest {
 
-    private String nickname;
+    Long id;
 
     List<InterestRequest> interests = new ArrayList<>();
 
     @Builder
     public MemberInterestUpdateRequest(String nickname, List<InterestRequest> interests) {
-        this.nickname = nickname;
         this.interests = interests;
     }
 
