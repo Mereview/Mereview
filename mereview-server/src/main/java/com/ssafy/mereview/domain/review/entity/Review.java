@@ -94,7 +94,7 @@ public class Review extends BaseEntity {
          * orphanRemoval = true 에러 해결
          */
         this.keywords.clear();
-        this.keywords = createUpdateKeywords(request.getKeywordServiceRequests());
+        this.keywords.addAll(createUpdateKeywords(request.getKeywordServiceRequests()));
 
         this.backgroundImage = createUpdateBackgroundImage(request.getUploadFile());
     }
