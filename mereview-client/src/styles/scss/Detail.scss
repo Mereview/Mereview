@@ -140,7 +140,36 @@
     }
     .vertical {
       border-radius: 12px;
-      background-color: #c2c0bf80;
+      background-color: #00000060;
+      padding: 5px;
+      border: white 1px solid !important;
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .header {
+        color: white;
+        margin: 10px 0px 0px 15px;
+      }
+      .reviewCard-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .detailCard {
+          width: 320px;
+          position: relative;
+          overflow: hidden;
+          padding-bottom: 55%;
+          overflow: hidden;
+          .card-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+        }
+      }
     }
   }
 }

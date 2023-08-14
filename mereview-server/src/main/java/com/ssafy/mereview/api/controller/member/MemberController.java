@@ -147,22 +147,31 @@ public class MemberController {
         return ApiResponse.ok(memberQueryService.searchMemberTierByGenre(memberId, genreNumber));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/interests")
     @ApiOperation(value = "회원 정보 수정", response = Join.class)
-    public ApiResponse<Long> updateMemberInfo(@PathVariable Long id,@RequestBody MemberUpdateRequest request) {
+    public ApiResponse<Long> updateMemberInfo(@RequestBody MemberInterestUpdateRequest request) {
         log.debug("MemberController.updateMemberInfo : {}", request);
-        Long memberId = memberService.updateMember(id, request.toMemberCreateServiceRequest());
+        Long memberId = memberService.updateMemberInterest(request.getId(), request.toServiceRequest());
+        return ApiResponse.ok(memberId);
+    }
+
+    @PutMapping("/nickname")
+    @ApiOperation(value = "회원 정보 수정", response = Join.class)
+    public ApiResponse<Long> updateMemberNickname(@RequestBody MemberNicknameUpdateRequest request) {
+        log.debug("MemberController.updateMemberInfo : {}", request);
+        Long memberId = memberService.updateMemberNickname(request.getId(), request.toServiceRequest());
         return ApiResponse.ok(memberId);
     }
 
     @PutMapping("/profile-image")
     @ApiOperation(value = "프로필 사진 업데이트", response = Join.class)
     public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
-                                                @RequestPart(name = "memberId") Long memberId) throws IOException {
+                                                @RequestPart(name = "memberId") String memberId) throws IOException {
+        Long memberLong = Long.valueOf(memberId);
         log.debug("MemberController.updateProfilePic : {}", memberId);
 
         UploadFile uploadFile = createUploadFile(file);
-        memberService.updateProfileImage(memberId, uploadFile);
+        memberService.updateProfileImage(memberLong, uploadFile);
         return ApiResponse.ok("프로필 사진 업데이트 성공");
     }
 
@@ -172,6 +181,14 @@ public class MemberController {
         log.debug("MemberController.follow : {}", followRequest);
         MemberFollowResponse response = memberService.createFollow(followRequest.getTargetId(), followRequest.getMemberId());
         return ApiResponse.ok(response);
+    }
+
+    @PutMapping("/count")
+    @ApiOperation(value = "업적 카운트 증가", response = Join.class)
+    public ApiResponse<Integer> updateCount(@RequestBody AchievementCountUpdateRequest request) {
+        log.debug("MemberController.updateCount : {}", request);
+        int achievementCount = memberService.updateAchievementCount(request.toServiceRequest());
+        return ApiResponse.ok(achievementCount);
     }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {

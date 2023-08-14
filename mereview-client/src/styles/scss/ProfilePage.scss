@@ -29,6 +29,19 @@ $profile-image-size: 450px;
       border-radius: 50%;
     }
 
+    .profile-image-edit-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: $font-size-h1 * 1.25;
+
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.15);
+      }
+    }
+
     .profile-modify-icon-container {
       display: flex;
       justify-content: center;
@@ -96,6 +109,37 @@ $profile-image-size: 450px;
 
     .nickname {
       font-size: $font-size-xl * 1.5;
+
+      .edit-icon {
+        font-size: $font-size-h3;
+        color: $gray-5;
+        margin-left: 10px;
+
+        &:hover {
+          color: $gray-8;
+          background-color: $gray-3;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .nickname-edit-container {
+      display: flex;
+      font-size: $font-size-xl * 1.5;
+      flex-direction: row;
+      justify-content: space-around;
+      margin-bottom: 10px;
+
+      .edit-input {
+        font-size: $font-size-xl;
+        width: 300px;
+      }
+
+      .edit-button {
+        font-size: $font-size-md;
+        display: flex;
+        justify-content: right;
+      }
     }
 
     .age-gender {
@@ -183,7 +227,49 @@ $profile-image-size: 450px;
     position: absolute;
     right: 20px;
     bottom: 20px;
+
+    button {
+      border: solid 1px $black;
+
+      &:hover {
+        background-color: $gray-8;
+      }
+    }
   }
+}
+
+.profile-modal {
+  @include modal;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .profile-image-edit-container {
+    position: relative;
+    height: 275px;
+    border: solid 5px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  }
+
+  .profile-image-input {
+    &:hover {
+      cursor: pointer;
+      background-color: $gray-2;
+    }
+  }
+}
+
+::-webkit-file-upload-button {
+  cursor: pointer;
 }
 
 .verify-modal {

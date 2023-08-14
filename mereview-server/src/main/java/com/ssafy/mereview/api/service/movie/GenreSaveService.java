@@ -3,7 +3,7 @@ package com.ssafy.mereview.api.service.movie;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.mereview.domain.movie.entity.Genre;
-import com.ssafy.mereview.domain.movie.repository.GenreRepository;
+import com.ssafy.mereview.domain.movie.repository.command.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

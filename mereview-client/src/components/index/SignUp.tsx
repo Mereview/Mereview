@@ -63,6 +63,7 @@ const SignUp = () => {
     }
     if (!checkEmail) {
       alert("메일 인증을 진행해주세요!");
+      return;
     }
 
     dispatch(userActions.modal_toggler());

@@ -31,10 +31,21 @@
 
   .all {
     padding: 10px;
+    flex-direction: column;
     flex-basis: 73%;
     width: 300px;
     white-space: pre-line;
     word-wrap: break-word;
+    justify-content: space-between;
+    .content {
+      flex-grow: 11;
+      min-height: 60px;
+    }
+    .createdDate {
+      color: $blue-5;
+      flex-grow: 1;
+      margin-bottom: 0px;
+    }
   }
 
   .buttons {

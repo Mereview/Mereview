@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.member.entity;
 
-import com.ssafy.mereview.api.service.member.dto.response.MemberAchievementResponse;
 import com.ssafy.mereview.domain.BaseEntity;
 import com.ssafy.mereview.domain.movie.entity.Genre;
 import lombok.Builder;
@@ -69,6 +68,11 @@ public class MemberAchievement extends BaseEntity {
                 achievementType.equals(COMMENT) && checkCommentAchievementEligibility()) {
             achievementRank = promote(achievementRank);
         }
+    }
+
+    public void updateAchievementCount() {
+
+        this.achievementCount++;
     }
 
     private boolean checkReviewAchievementEligibility() {

@@ -35,7 +35,6 @@ const ReviewDetail = () => {
               console.log("토글 불가능", toggleErr);
             }
           );
-        
         },
         (err) => {
           navigate("/404");
@@ -56,14 +55,12 @@ const ReviewDetail = () => {
         zIndex: "-1",
       }
     : {
-        backgroundColor: "black",
-        opacity: "82%",
-        filter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
         zIndex: "-1",
       };
-
+  console.log(style);
   return (
-    <div className="section">
+    <div className="section" style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}>
       {loading ? (
         <div>
           <div className="blurred" style={style}></div>

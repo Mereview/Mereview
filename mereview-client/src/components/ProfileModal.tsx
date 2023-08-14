@@ -24,7 +24,9 @@ const ProfileModal = () => {
         반갑다 {userNickname}
       </div>
       <div className={`second ${animate ? "animate" : ""}`}>
-        <Link to={"/profile"}>MY PAGE</Link>
+        <Link to={"/profile"} style={{ color: "white" }}>
+          MY PAGE
+        </Link>
       </div>
       <div className={`last ${animate ? "animate" : ""}`} onClick={logout}>
         LOG OUT

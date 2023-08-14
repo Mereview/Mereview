@@ -2,6 +2,7 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { updateAchievementCount } from "../api/members";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
@@ -102,14 +103,11 @@ const ReviewWrite = () => {
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
     movieName.current = input;
-    console.log(input);
-    console.log(url);
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
     const timeout = setTimeout(() => {
       const encodedKeyword = encodeURIComponent(movieName.current);
-
       axios
         .get(url + `/movies?keyword=${encodedKeyword}`)
         .then((res) => {
@@ -128,9 +126,7 @@ const ReviewWrite = () => {
       .then((res) => {
         const movie = res.data.data;
         inputData.current.movieId = movie.id;
-        console.log(movie.genres);
         setGenreList(movie.genres);
-        console.log(genreList);
       })
       .catch(() => {
         console.log("error");
@@ -139,6 +135,7 @@ const ReviewWrite = () => {
 
   //장르 리스트 중 선택한 장르를 inputData에 저장
   const selectGenreHandler = (selected) => {
+    console.log(selected);
     setSelectGenre(selected);
     inputData.current.genreId = selected.value;
   };
@@ -208,6 +205,18 @@ const ReviewWrite = () => {
       .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
+        const achievementUpdate = {
+          achievementType: 1,
+          genreId: selectGenre,
+          memberId: userid,
+        };
+        updateAchievementCount(
+          achievementUpdate,
+          () => {},
+          (err) => {
+            console.log(err);
+          }
+        );
         navigate("/review");
       })
       .catch(() => {
