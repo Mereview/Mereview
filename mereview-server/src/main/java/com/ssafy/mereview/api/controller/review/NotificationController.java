@@ -1,6 +1,6 @@
 package com.ssafy.mereview.api.controller.review;
 
-import com.ssafy.mereview.api.controller.review.dto.NotificationUpdateRequest;
+import com.ssafy.mereview.api.controller.review.dto.request.NotificationUpdateRequest;
 import com.ssafy.mereview.api.service.review.NotificationService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
