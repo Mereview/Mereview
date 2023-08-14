@@ -81,17 +81,18 @@
 
 .openModal {
   position: fixed;
-  left: 1867px;
+  left: 1888px;
   bottom: 0px;
   z-index: 90;
   display: flex;
   height: 100vh;
   width: 30vw;
+  max-width: 30vw;
 
   .closebutton {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    // width: 590px;
     background-color: transparent;
     justify-content: center;
     button {
@@ -138,10 +139,12 @@
     .overview {
       overflow-y: scroll;
       height: 300px;
-      margin: 15px;
+      margin: 15px 15px 15px 0px;
     }
     .overview::-webkit-scrollbar {
-      width: 10px;
+      width: 5px;
+      margin: 0px;
+      padding: 0px;
     }
     .overview::-webkit-scrollbar-track {
       background: transparent; /* 스크롤바 트랙 배경색 */
@@ -173,18 +176,18 @@
     transform: translateX(0%);
   }
   15% {
-    transform: translateX(-90%);
+    transform: translateX(-94%);
   }
   20% {
-    transform: translateX(-90%);
+    transform: translateX(-94%);
   }
   100% {
-    transform: translateX(-90%);
+    transform: translateX(-94%);
   }
 }
 @keyframes slideOut {
   0% {
-    transform: translateX(-90%);
+    transform: translateX(-94%);
   }
   15% {
     transform: translateX(0%);

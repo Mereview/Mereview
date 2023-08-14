@@ -3,6 +3,7 @@ import WordCloud from "react-d3-cloud";
 import { Button } from "../common/index";
 import { useState, useEffect } from "react";
 import { searchMovieDetail } from "../../api/movie";
+import { reverse } from "dns";
 
 interface MovieInterface {
   id: number | null;
@@ -65,6 +66,7 @@ const Top = ({ review }: any) => {
     };
     getMovieDetail();
   }, []);
+  console.log(review);
   return (
     <div className="total">
       <div className="leftInfo">
@@ -85,7 +87,14 @@ const Top = ({ review }: any) => {
         </div>
       </div>
       <div className="rightInfo">
-        <img src="/ddabong.png" alt="따봉" />
+        <img
+          src={`${
+            review.movieRecommendType === "YES"
+              ? "/ddabong.png"
+              : "/reverseDdabong.png"
+          }`}
+          alt="따봉"
+        />
 
         <WordCloud
           data={words}
@@ -117,11 +126,12 @@ const Top = ({ review }: any) => {
             isOpen === "none" ? "" : isOpen === "true" ? "open" : "close"
           }`}
         >
-          <div className="closebutton">
+          <div className="closebutton col-1">
             <button onClick={modalHandler}>
               {isOpen === "true" ? ">>" : "<<"}
             </button>
           </div>
+
           <div className="Modal">
             <div className="blank"></div>
             <div className="image">
