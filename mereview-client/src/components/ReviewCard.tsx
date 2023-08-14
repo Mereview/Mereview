@@ -27,6 +27,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     createDate,
     recommend,
   } = props;
+  console.log(props);
   const navigate = useNavigate();
 
   const handleClickReviewCard = (
