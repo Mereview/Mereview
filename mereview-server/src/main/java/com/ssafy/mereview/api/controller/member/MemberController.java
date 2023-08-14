@@ -158,11 +158,12 @@ public class MemberController {
     @PutMapping("/profile-image")
     @ApiOperation(value = "프로필 사진 업데이트", response = Join.class)
     public ApiResponse<String> updateProfilePic(@RequestPart(name = "file") MultipartFile file,
-                                                @RequestPart(name = "memberId") Long memberId) throws IOException {
+                                                @RequestPart(name = "memberId") String memberId) throws IOException {
+        Long memberLong = Long.valueOf(memberId);
         log.debug("MemberController.updateProfilePic : {}", memberId);
 
         UploadFile uploadFile = createUploadFile(file);
-        memberService.updateProfileImage(memberId, uploadFile);
+        memberService.updateProfileImage(memberLong, uploadFile);
         return ApiResponse.ok("프로필 사진 업데이트 성공");
     }
 
