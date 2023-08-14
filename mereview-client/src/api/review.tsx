@@ -66,7 +66,8 @@ export async function evaluationsReview(data: Object, success, fail) {
 /** Notification 온 리뷰들 가져오는 API */
 export async function getNotifications(memberId, success, fail) {
   const queryParams = {
-    memberId: memberId
+    memberId: memberId,
+    status : "UNCONFIRMED"
   };
 
   const queryString = new URLSearchParams(queryParams).toString();

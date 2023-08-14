@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import NotificationReviewList from '../components/NotificationReviewList';
 import axios from "axios";
 import Loading from "../components/common/Loading";
 import { getNotifications, searchReviews } from "../api/review";
@@ -12,7 +13,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
-import NotificationReviewList from '../components/NotificationReviewList'
+
 
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
@@ -128,7 +129,7 @@ const NotificationHome = () => {
                 reviewList.push(reviewData);
               }
 
-           
+              console.log(reviewList)
               setReviewListState(reviewList);
 
             },
@@ -178,10 +179,10 @@ const NotificationHome = () => {
     <>
       
       <span className="display-1 fw-bold ms-3">UNCONFIRMED</span>
-      <NotificationReviewList reviewList={reviewListState} /> 
+      <ReviewList reviewList={reviewListState} /> 
       <hr />
       <span className="display-1 fw-bold ms-3">CONFIRMED</span>
-      <NotificationReviewList reviewList={reviewListState} />
+      <NotificationReviewList reviewList={reviewListState}/>
     </>
   );
 };
