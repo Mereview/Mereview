@@ -206,7 +206,7 @@ const ReviewWrite = () => {
       .then(() => {
         console.log("success");
         const achievementUpdate = {
-          achievementType: 2,
+          achievementType: 1,
           genreId: selectGenre,
           memberId: userid,
         };
