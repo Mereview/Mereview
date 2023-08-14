@@ -102,19 +102,15 @@ const ReviewWrite = () => {
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
     movieName.current = input;
-    // console.log(input);
-    // console.log(url);
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
     const timeout = setTimeout(() => {
       const encodedKeyword = encodeURIComponent(movieName.current);
-
       axios
         .get(url + `/movies?keyword=${encodedKeyword}`)
         .then((res) => {
           setMovieList(res.data.data);
-          console.log(movieList);
         })
         .catch(() => {
           console.log("error");
@@ -123,15 +119,13 @@ const ReviewWrite = () => {
     setTypingTimeout(timeout);
   };
   const selectMovieHandler = (selected) => {
+    setSelectMovie(selected);
     axios
       .get(url + `/movies/${selected.value}`)
       .then((res) => {
-        console.log(res);
         const movie = res.data.data;
         inputData.current.movieId = movie.id;
-        console.log(movie.genres);
         setGenreList(movie.genres);
-        console.log(genreList);
       })
       .catch(() => {
         console.log("error");
