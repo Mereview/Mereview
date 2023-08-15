@@ -35,6 +35,14 @@ export const movieApi = axios.create({
   },
 });
 
+export const tmdbApi = axios.create({
+  baseURL: "https://api.themoviedb.org/3",
+  headers: {
+    "Content-type": "application/json",
+    Authorization: `${process.env.REACT_APP_TMBD_KEY}`,
+  },
+});
+
 export const emailApi = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL}/email`,
   headers: {

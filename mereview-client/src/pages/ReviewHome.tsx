@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Loading from "../components/common/Loading";
 import { searchReviews } from "../api/review";
+import { getPopularMovies } from "../api/movie";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
@@ -26,36 +27,18 @@ const yesterday: string =
   String(today.getMonth() + 1).padStart(2, "0") +
   String(today.getDate() - 1).padStart(2, "0");
 
-const tmdbSearchMovieURL: string = "https://api.themoviedb.org/3/search/movie";
-// 토큰 나중에 따로 빼기?
-const tmdbAuthToken: string =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjOGI5YmMyNTI5YTg1OTQ2ZTIyYTI4YTE4ZTYxYjc0YyIsInN1YiI6IjY0YWU1ZDA5M2UyZWM4MDBjYmQwMzI0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GFs7ms-36oYPWK7JmBviACJHmAoSyRO0txStPCAtMZM";
+const getPopularMovieIds = async (page: number) => {
+  const popularMovieIds: number[] = [];
 
-type koficMovie = {
-  [key: string]: string;
-};
-
-const getBoxOfficeMovieNames = async () => {
-  const boxOfficeMovieNames: string[] = [];
-
-  try {
-    const koficResponse = await axios.get(koficDailyBoxofficeURL, {
-      params: {
-        key: koficKey,
-        targetDt: yesterday,
-      },
-    });
-
-    const data: koficMovie[] =
-      koficResponse.data.boxOfficeResult.dailyBoxOfficeList;
-    for (let i = 0; i < 10; i++) {
-      boxOfficeMovieNames.push(data[i].movieNm);
+  await getPopularMovies(
+    page,
+    ({ data }) => {
+      console.log(data);
+    },
+    (error) => {
+      console.log(error);
     }
-    return boxOfficeMovieNames;
-  } catch (error) {
-    console.log(`Failed to fetch from KOFIC: ${error}`);
-    return [];
-  }
+  );
 };
 
 // Use API later
@@ -81,52 +64,52 @@ const genres: Record<string, string> = {
   "37": "서부",
 };
 
-const searchMovieOnTmdb = async (movieNames: string[]) => {
-  const boxOffices: MovieCardInterface[] = [];
+// const searchMovieOnTmdb = async (movieNames: string[]) => {
+//   const boxOffices: MovieCardInterface[] = [];
 
-  try {
-    for (const movieName of movieNames) {
-      const tmdbResponse = await axios.get(tmdbSearchMovieURL, {
-        headers: { Authorization: `Bearer ${tmdbAuthToken}` },
-        params: { query: movieName, language: "ko", page: 1 },
-      });
+//   try {
+//     for (const movieName of movieNames) {
+//       const tmdbResponse = await axios.get(tmdbSearchMovieURL, {
+//         headers: { Authorization: `Bearer ${tmdbAuthToken}` },
+//         params: { query: movieName, language: "ko", page: 1 },
+//       });
 
-      const data = tmdbResponse.data.results[0];
-      if (typeof data === "undefined") {
-        const movie: MovieCardInterface = {
-          movieId: null,
-          posterImagePath:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019",
-          movieTitle: movieName,
-          releaseYear: null,
-          movieGenre: [],
-        };
-        boxOffices.push(movie);
-        continue;
-      }
-      const genre: string[] = [];
-      for (const id of data.genre_ids) {
-        genre.push(genres[id]);
-        if (genre.length === 3) break;
-      }
+//       const data = tmdbResponse.data.results[0];
+//       if (typeof data === "undefined") {
+//         const movie: MovieCardInterface = {
+//           movieId: null,
+//           posterImagePath:
+//             "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019",
+//           movieTitle: movieName,
+//           releaseYear: null,
+//           movieGenre: [],
+//         };
+//         boxOffices.push(movie);
+//         continue;
+//       }
+//       const genre: string[] = [];
+//       for (const id of data.genre_ids) {
+//         genre.push(genres[id]);
+//         if (genre.length === 3) break;
+//       }
 
-      const movie: MovieCardInterface = {
-        movieId: data.id,
-        posterImagePath: `https://image.tmdb.org/t/p/w300/${data.poster_path}`,
-        movieTitle: data.title,
-        releaseYear: data.release_date.substring(0, 4),
-        movieGenre: genre,
-      };
+//       const movie: MovieCardInterface = {
+//         movieId: data.id,
+//         posterImagePath: `https://image.tmdb.org/t/p/w300/${data.poster_path}`,
+//         movieTitle: data.title,
+//         releaseYear: data.release_date.substring(0, 4),
+//         movieGenre: genre,
+//       };
 
-      boxOffices.push(movie);
-    }
+//       boxOffices.push(movie);
+//     }
 
-    return boxOffices;
-  } catch (error) {
-    console.log(`Faild to fetch from TMDB: ${error}`);
-    return [];
-  }
-};
+//     return boxOffices;
+//   } catch (error) {
+//     console.log(`Faild to fetch from TMDB: ${error}`);
+//     return [];
+//   }
+// };
 /* 박스오피스 데이터 생성 끝*/
 
 const enterSearch = (e) => {
