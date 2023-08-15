@@ -88,6 +88,7 @@ public class MemberQueryRepository{
                 .selectFrom(memberAchievement)
                 .innerJoin(memberAchievement.genre, genre)
                 .on(genre.id.eq(memberAchievement.genre.id))
+                .where(memberAchievement.member.id.eq(memberId))
                 .fetch();
     }
 

@@ -118,6 +118,13 @@ public class MemberQueryService {
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses, commentCount);
     }
 
+    public MemberDataResponse searchMemberData(Long id) {
+        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
+        int count = notificationQueryRepository.countByMemberId(id);
+        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        return MemberDataResponse.of(member, notificationResponses, count);
+    }
+
     public List<FollowingResponse> searchFollowingResponse(Long memberId) {
         List<MemberFollow> memberFollow = memberFollowQueryRepository.searchFollowing(memberId);
 
@@ -134,12 +141,6 @@ public class MemberQueryService {
                 .collect(Collectors.toList());
     }
 
-    public MemberDataResponse searchMemberData(Long id) {
-        List<NotificationResponse> notificationResponses = notificationQueryRepository.searchByMemberId(id);
-        int count = notificationQueryRepository.countByMemberId(id);
-        Member member = memberQueryRepository.searchById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        return MemberDataResponse.of(member, notificationResponses, count);
-    }
 
     /** private method **/
 
