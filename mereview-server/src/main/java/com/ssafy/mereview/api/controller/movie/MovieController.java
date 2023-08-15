@@ -35,18 +35,18 @@ public class MovieController {
         return ApiResponse.ok(movieService.searchMovies(keyword));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{movieId}")
     @ApiOperation(value = "영화 아이디로 상세조회")
-    public ApiResponse<MovieResponse> searchMovieById(@PathVariable Long id) {
-        return ApiResponse.ok(movieService.searchMovieById(id));
+    public ApiResponse<MovieResponse> searchMovieById(@PathVariable Long movieId) {
+        return ApiResponse.ok(movieService.searchMovieById(movieId));
     }
 
-    @GetMapping("detail/{movieId}")
-    @ApiOperation(value = "영화 상세 검색")
-    public ApiResponse<MovieDetailResponse> searchMovie(@PathVariable Long movieId){
-        log.debug("movieId = {}", movieId);
-        MovieDetailResponse response = movieQueryService.searchById(movieId);
+    @GetMapping("/content/{contentId}")
+    @ApiOperation(value = "영화 id 검색")
+    public ApiResponse<Long> searchMovieIdByContentId(@PathVariable Integer contentId){
+        log.debug("contentId = {}", contentId);
+        Long movieId = movieQueryService.searchMovieIdByContentId(contentId);
 
-        return ApiResponse.ok(response);
+        return ApiResponse.ok(movieId);
     }
 }
