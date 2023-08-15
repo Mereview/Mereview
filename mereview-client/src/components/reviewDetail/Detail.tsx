@@ -37,6 +37,7 @@ const Detail = ({ review, setReview }: any) => {
       content: inputComment,
       memberId: userId,
       reviewId: review.reviewId,
+      genreId: review.genre.genreId,
     };
     const success = (res) => {
       console.log("success");
