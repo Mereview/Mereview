@@ -184,7 +184,7 @@ public class MemberService {
     public void updateViewCount(Long id, String token) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         log.debug("조회수 : {}", member.getMemberVisit());
-        if(!jwtUtils.getUsernameFromJwt(token).equals(member.getEmail())){
+        if(token != null && !jwtUtils.getUsernameFromJwt(token).equals(member.getEmail())){
             member.getMemberVisit().updateVisitCount();
         }
     }
