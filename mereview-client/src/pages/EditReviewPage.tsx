@@ -333,14 +333,7 @@ const ReviewWrite = () => {
           objectFit: "fill",
         }}
       />
-      {/* <div
-        style={{
-          width: "100%",
-          backgroundImage: `url(${topImg})`,
-        }}
-      ></div> */}
       <Container
-        // className="mx-auto border border-5 border-dark rounded-5"
         id="reviewContainer"
         className="mx-auto"
         style={{
@@ -377,37 +370,15 @@ const ReviewWrite = () => {
                 style={{ width: "100%" }}
               ></Form.Control>
             </Row>
-            <Row className="justify-content-start my-5">
+            <Row className="justify-content-start mt-5 mb-2">
               <Col lg={6} className="p-0">
                 <Form.Control value={movieName.current} readOnly></Form.Control>
-                {/* <Select
-                  value={selectMovie}
-                  className="inputBox"
-                  options={movieList.map((option) => ({
-                    value: option.id,
-                    label: option.title,
-                  }))}
-                  inputValue={movieName.current}
-                  onInputChange={movieNameHandler}
-                  onChange={selectMovieHandler}
-                  placeholder="영화 제목을 입력하세요"
-                ></Select> */}
               </Col>
               <Col lg={6}>
                 <Form.Control value={genreName.current} readOnly></Form.Control>
-                {/* <Select
-                  value={selectGenre}
-                  className="inputBox"
-                  options={genreList.map((option) => ({
-                    value: option.genreId,
-                    label: option.genreName,
-                  }))}
-                  onChange={selectGenreHandler}
-                  placeholder="장르를 선택하세요"
-                ></Select> */}
               </Col>
             </Row>
-            <Row className="mt-5">
+            <Row className="mt-5 mb-2">
               <Col lg={11} className="p-1">
                 <Form.Control
                   placeholder="한줄평을 입력하세요"
@@ -416,6 +387,37 @@ const ReviewWrite = () => {
                   onChange={onChangeHandler}
                   defaultValue={oneSentance}
                 ></Form.Control>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="rounded-2 text-white t-right  d-flex justify-content-start p-2">
+                <p className="my-auto me-3" style={{ fontSize: "20px" }}>
+                  이 영화를 추천하시나요?
+                </p>
+                <button
+                  id="type"
+                  className="bg-primary feed-btn me-1 my-auto"
+                  type="button"
+                  style={{
+                    backgroundImage: "url(/thumbUp.png)",
+                    boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+                    transform: goodBtn ? "scale(0.95)" : "",
+                  }}
+                  onClick={feedbackHandler}
+                  value={"YES"}
+                ></button>
+                <button
+                  id="type"
+                  className="bg-danger feed-btn ms-1 my-auto"
+                  type="button"
+                  style={{
+                    backgroundImage: "url(/thumbDown.png)",
+                    boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
+                    transform: badBtn ? "scale(0.95)" : "",
+                  }}
+                  onClick={feedbackHandler}
+                  value={"NO"}
+                ></button>
               </Col>
             </Row>
           </Col>
@@ -467,39 +469,12 @@ const ReviewWrite = () => {
         <Row className="mx-2 my-4">
           <TextEditor ref={contentRef}></TextEditor>
         </Row>
-        <Row className="align-items-center justify-content-end mb-3">
-          <Col lg={7} />
-          <Col lg={3}>
-            <button
-              id="type"
-              className="bg-danger feed-btn mx-1 mt-1"
-              type="button"
-              style={{
-                backgroundImage: "url(/thumbDown.png)",
-                boxShadow: badBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-                transform: badBtn ? "scale(0.95)" : "",
-              }}
-              onClick={feedbackHandler}
-              value={"NO"}
-            ></button>
-            <button
-              id="type"
-              className="bg-primary feed-btn ms-1 me-5 my-1"
-              type="button"
-              style={{
-                backgroundImage: "url(/thumbUp.png)",
-                boxShadow: goodBtn ? "2px 2px 4px rgba(0, 0, 0, 0.5)" : "",
-                transform: goodBtn ? "scale(0.95)" : "",
-              }}
-              onClick={feedbackHandler}
-              value={"YES"}
-            ></button>
-            <Button
-              styles="btn-primary"
-              text="등록"
-              onClick={reviewCreateHandler}
-            ></Button>
-          </Col>
+        <Row className="align-items-center d-flex justify-content-end mb-3 me-1">
+          <Button
+            styles="btn-primary"
+            text="등록"
+            onClick={reviewCreateHandler}
+          ></Button>
         </Row>
         <Row />
       </Container>

@@ -153,6 +153,7 @@ const getMemberInfo = async (userId: number) => {
         };
         userAchievementData.push(achievementTemp);
       }
+      console.log(userAchievementData);
       userAchievementData.sort((a, b) => {
         if (a.rank === b.rank) {
           return b.count - a.count;
@@ -169,7 +170,6 @@ const getMemberInfo = async (userId: number) => {
       userInfo.joinDate = response.createdTime;
       userInfo.reviewCount = response.reviews;
       userInfo.commentCount = response.commentCount;
-      console.log(response);
       for (const expData of response.tiers) {
         const usefulExp: Experience = {
           genre: expData.genreName,
@@ -201,7 +201,7 @@ const getMemberInfo = async (userId: number) => {
     },
     (e) => {
       error = e;
-      alert(e.response.data.message);
+      console.log(e);
     }
   );
 };
@@ -389,9 +389,9 @@ const ProfilePage = () => {
       if (error !== null) navigate(-1);
       else setIsFetched(true);
     };
-
-    fetchData();
+    setFollowed(false);
     followCheck();
+    fetchData();
   }, [userId, loginId]);
 
   useEffect(() => {

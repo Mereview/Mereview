@@ -38,7 +38,7 @@ const genreMapper: Object = {
 
 const genreColor: Object = {
   NONE: null,
-  BRONZE: "rgb(205, 127, 50)",
+  BRONZE: "rgb(138, 110, 37)",
   SILVER: "rgb(170, 169, 173)",
   GOLD: "rgb(212, 175, 55)",
 };
