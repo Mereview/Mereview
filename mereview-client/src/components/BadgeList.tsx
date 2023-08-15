@@ -69,6 +69,12 @@ const BadgeComponent = ({ badgeInfo }: BadgeInfo) => {
 };
 
 const BadgeList = ({ badgeListProps }: BadgeListInterface) => {
+  if (badgeListProps.length === 0)
+    return (
+      <>
+        <div className="empty-badge-info">획득한 뱃지가 없습니다.</div>
+      </>
+    );
   return (
     <>
       <div>

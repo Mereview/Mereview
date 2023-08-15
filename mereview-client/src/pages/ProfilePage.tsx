@@ -159,8 +159,6 @@ const getMemberInfo = async (userId: number) => {
         }
         return profileTier[b.rank] - profileTier[a.rank];
       });
-      console.log(userAchievementData);
-      console.log(response);
       userInfo.interests = userInterestData;
       userInfo.achievements = userAchievementData;
       userInfo.introduction = response.introduce ? response.introduce : "";
