@@ -94,6 +94,24 @@ public class MemberController {
         Long memberId = memberService.updateMemberIntroduce(request, token);
         return ApiResponse.ok(memberId);
     }
+    @GetMapping("/{id}")
+    @ApiOperation(value = "회원 정보 조회", response = Join.class)
+    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId, HttpServletRequest request) {
+        log.debug("MemberController.getMemberInfo : {}", memberId);
+
+        String token = request.getHeader("Authorization");
+        log.debug("token : {}", token);
+        if(token == null){
+            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
+        }
+
+
+
+        MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
+        memberService.updateViewCount(memberId, token);
+
+        return ApiResponse.ok(memberResponse);
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "회원 탈퇴", response = Join.class)
@@ -104,15 +122,6 @@ public class MemberController {
         memberService.deleteMember(id, token);
 
         return ApiResponse.ok(id);
-    }
-
-    @GetMapping("/{id}")
-    @ApiOperation(value = "회원 정보 조회", response = Join.class)
-    public ApiResponse<MemberResponse> searchMemberInfo(@PathVariable(name = "id") Long memberId) {
-        log.debug("MemberController.getMemberInfo : {}", memberId);
-        MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
-        memberService.updateViewCount(memberId);
-        return ApiResponse.ok(memberResponse);
     }
 
     @GetMapping("/{id}/info")

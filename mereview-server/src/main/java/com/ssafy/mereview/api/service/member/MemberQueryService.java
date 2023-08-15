@@ -1,7 +1,6 @@
 package com.ssafy.mereview.api.service.member;
 
 import com.ssafy.mereview.api.controller.member.dto.request.MemberLoginRequest;
-import com.ssafy.mereview.api.service.member.dto.request.MemberServiceLoginRequest;
 import com.ssafy.mereview.api.service.member.dto.request.MemberVerifyRequest;
 import com.ssafy.mereview.api.service.member.dto.response.*;
 import com.ssafy.mereview.api.service.movie.dto.response.GenreResponse;
@@ -100,8 +99,9 @@ public class MemberQueryService {
     }
 
     public MemberResponse searchMemberInfo(Long memberId) {
-        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
+
+        Member member = memberQueryRepository.searchById(memberId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         checkTiers(member);
 
         checkAchievements(memberId);
@@ -114,7 +114,9 @@ public class MemberQueryService {
 
         List<ReviewResponse> reviewResponses = createReviewResponses(member.getReviews());
         Long commentCount = memberQueryRepository.searchCommnetCountByMemberId(memberId);
-        checkAchievements(memberId);
+
+
+            checkAchievements(memberId);
         return createMemberResponse(member, interestResponses, memberTierResponses, memberAchievementResponses, reviewResponses, commentCount);
     }
 
