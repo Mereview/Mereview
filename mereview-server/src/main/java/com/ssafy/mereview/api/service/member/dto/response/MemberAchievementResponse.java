@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class MemberAchievementResponse {
     private String genreName;
 
-
     private Rank achievementRank;
 
     private double achievementPercent;
