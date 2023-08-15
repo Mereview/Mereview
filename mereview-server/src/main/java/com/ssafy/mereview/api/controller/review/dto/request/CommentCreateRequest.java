@@ -18,12 +18,16 @@ public class CommentCreateRequest {
     private Long reviewId;
     @NotNull
     private Long memberId;
+    @NotNull
+    private Long genreId;
+
 
     @Builder
-    public CommentCreateRequest(String content, Long reviewId, Long memberId) {
+    public CommentCreateRequest(String content, Long reviewId, Long memberId, Long genreId) {
         this.content = content;
         this.reviewId = reviewId;
         this.memberId = memberId;
+        this.genreId = genreId;
     }
 
     public CommentCreateServiceRequest toServiceRequest() {
@@ -31,6 +35,7 @@ public class CommentCreateRequest {
                 .reviewId(reviewId)
                 .memberId(memberId)
                 .content(content)
+                .genreId(genreId)
                 .build();
     }
 }
