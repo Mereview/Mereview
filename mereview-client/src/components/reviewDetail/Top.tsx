@@ -151,7 +151,7 @@ const Top = ({ review }: any) => {
             <div className="modalSubTitle">
               <div>
                 {movie.genres.map((item) => (
-                  <span>{item.genreName}, </span>
+                  <span key={item.genreId}>{item.genreName}, </span>
                 ))}
               </div>
               <h5>개봉일: {movie.releaseDate}</h5>
