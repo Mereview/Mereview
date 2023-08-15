@@ -18,7 +18,7 @@ const ProfileModal = () => {
     navigate("/");
   };
   return (
-    <div className="toplevel">
+    <div className="toplevel mt-3">
       <div className={`arrow ${animate ? "animate" : ""}`}></div>
       <div className={`first ${animate ? "animate" : ""}`}>
         반갑다 {userNickname}

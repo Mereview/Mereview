@@ -1,11 +1,11 @@
 // MovieList
 @import "Style";
 
-.sub-title {
+.movie-list-sub-title {
   font-family: $BMDoHyeon;
-  font-size: $font-size-lg;
+  font-size: 40px;
   margin-top: 10px;
-  margin-left: 15px;
+  margin-left: 30px;
 }
 
 .movie-card-list-wrapper {
@@ -18,16 +18,60 @@
 }
 
 .controls {
-  display: flex;
-  align-items: center;
-  justify-items: center;
-  margin-left: 10px;
+
+  text-align: center;
+  margin-bottom: 40px;
 
   .slide-button {
+    width: 130px;
+    height: 40px;
+    border: 2px solid #000;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+  .slide-button:hover {
+    background: #000;
+    color: #fff;
+  }
+  .slide-button:before {
+    position: absolute;
+    content: "";
+    display: inline-block;
+    top: -180px;
+    left: 0;
     width: 30px;
-    height: 30px;
-    background-color: $gray-1;
-    border-radius: 2%;
-    font-size: $font-size-md;
+    height: 100%;
+    background-color: #fff;
+    animation: shiny-btn1 3s ease-in-out infinite;
+  }
+  .slide-button:active {
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
+      -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
+      inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
+      inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  @-webkit-keyframes shiny-btn1 {
+    0% {
+      -webkit-transform: scale(0) rotate(45deg);
+      opacity: 0;
+    }
+    80% {
+      -webkit-transform: scale(0) rotate(45deg);
+      opacity: 0.5;
+    }
+    81% {
+      -webkit-transform: scale(4) rotate(45deg);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scale(50) rotate(45deg);
+      opacity: 0;
+    }
   }
 }
