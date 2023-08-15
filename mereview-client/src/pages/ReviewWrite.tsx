@@ -239,7 +239,7 @@ const ReviewWrite = () => {
   return (
     <div
       style={{
-        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+         backgroundColor: "rgb(255, 243, 243)",
         // backgroundImage: `url(${topImg})`,
         position: "absolute",
         backgroundSize: "fill",

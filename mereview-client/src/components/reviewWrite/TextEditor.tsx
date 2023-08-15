@@ -50,7 +50,7 @@ const TextEditor = forwardRef((props, ref) => {
       style={{
         border: "gray solid",
         overflow: "hidden",
-        height: "100vh",
+        height: "50vh",
         borderRadius: "5px",
         backgroundColor: "white",
         boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
