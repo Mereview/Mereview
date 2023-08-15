@@ -1,7 +1,8 @@
 export interface AchievedBadge {
-  genre: string;
-  rank: "BRONZE" | "SILVER" | "GOLD" | null;
-  achievementId: string;
+  genreName: string;
+  rank: "BRONZE" | "SILVER" | "GOLD" | "NONE";
+  type: "REVIEW" | "COMMENT";
+  count: number;
 }
 
 interface InterestInterface {
@@ -22,15 +23,8 @@ export interface ProfileInfoInterface {
   followerCount: number;
   followingCount: number;
   followed: boolean;
-  highestTier:
-    | "BRONZE"
-    | "SILVER"
-    | "GOLD"
-    | "PLATINUM"
-    | "DIAMOND"
-    | "NONE"
-    | null;
-  badges: AchievedBadge[];
+  highestTier: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND" | "NONE" | null;
+  achievements: AchievedBadge[];
   joinDate: number | Date;
   todayVisitor: number; // 오늘 방문자 수
   totalVisitor: number; // 총 방문자 수

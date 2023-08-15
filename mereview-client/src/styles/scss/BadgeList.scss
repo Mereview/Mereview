@@ -5,10 +5,26 @@ $badge-size: 150px;
   width: $badge-size;
   height: $badge-size;
   display: inline-block;
+  margin: 10px;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .badge-info {
+    text-align: center;
+
+    .badge-genre {
+      font-size: $font-size-lg;
+      font-family: $BMDoHyeon;
+    }
+
+    .badge-type {
+      font-size: $font-size-xs;
+      font-family: $GowunDodum;
+      color: $gray-5;
+    }
   }
 }

@@ -6,12 +6,7 @@ import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
 import { TextField } from "@mui/material";
-import {
-  BsHeart,
-  BsHeartFill,
-  BsPencilSquare,
-  BsPersonFillGear,
-} from "react-icons/bs";
+import { BsHeart, BsHeartFill, BsPencilSquare, BsPersonFillGear } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
 import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
@@ -49,90 +44,7 @@ interface InterestInterface {
   genreName: string;
 }
 
-/* 유저 더미 데이터 생성 시작 */
-const dummyBadges: AchievedBadge[] = [
-  {
-    genre: "액션",
-    rank: "GOLD",
-    achievementId: "0001",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0002",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0012",
-  },
-  {
-    genre: "범죄",
-    rank: "SILVER",
-    achievementId: "0043",
-  },
-  {
-    genre: "액션",
-    rank: "GOLD",
-    achievementId: "0041",
-  },
-  {
-    genre: "액션",
-    rank: "GOLD",
-    achievementId: "0231",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0072",
-  },
-  {
-    genre: "범죄",
-    rank: "SILVER",
-    achievementId: "0053",
-  },
-  {
-    genre: "액션",
-    rank: "GOLD",
-    achievementId: "0081",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0542",
-  },
-  {
-    genre: "범죄",
-    rank: "SILVER",
-    achievementId: "0063",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0992",
-  },
-  {
-    genre: "범죄",
-    rank: "SILVER",
-    achievementId: "0113",
-  },
-  {
-    genre: "액션",
-    rank: "GOLD",
-    achievementId: "0211",
-  },
-  {
-    genre: "SF",
-    rank: "BRONZE",
-    achievementId: "0312",
-  },
-  {
-    genre: "범죄",
-    rank: "SILVER",
-    achievementId: "0653",
-  },
-];
-
+/* 유저 데이터 생성 시작 */
 const defaultProfileImage = "/testProfile.gif";
 
 const genderMapping = {
@@ -154,7 +66,7 @@ const userInfo: ProfileInfoInterface = {
   followingCount: 0,
   followed: false,
   highestTier: null,
-  badges: dummyBadges,
+  achievements: [],
   joinDate: new Date(""),
   todayVisitor: 0,
   totalVisitor: 0,
@@ -202,7 +114,8 @@ const genre: GenreInfo = {
 
 const userExpData: Experience[] = [];
 const userInterestData: InterestInterface[] = [];
-/* 유저 더미 데이터 생성 끝 */
+const userAchievementData: AchievedBadge[] = [];
+/* 유저 데이터 생성 끝 */
 
 /* api start */
 let error: AxiosError | null = null;
@@ -216,6 +129,7 @@ const getMemberInfo = async (userId: number) => {
       const ageDate = new Date(ageDiff);
       userExpData.length = 0;
       userInterestData.length = 0;
+      userAchievementData.length = 0;
 
       userInfo.memberId = userId;
       userInfo.nickname = response.nickname;
@@ -229,7 +143,26 @@ const getMemberInfo = async (userId: number) => {
         };
         userInterestData.push(interestTemp);
       }
+      for (const achievement of response.achievements) {
+        if (achievement.achievementRank === "NONE") continue;
+        const achievementTemp: AchievedBadge = {
+          genreName: achievement.genreName,
+          rank: achievement.achievementRank,
+          type: achievement.achievementType,
+          count: achievement.achievementCount,
+        };
+        userAchievementData.push(achievementTemp);
+      }
+      userAchievementData.sort((a, b) => {
+        if (a.rank === b.rank) {
+          return b.count - a.count;
+        }
+        return profileTier[b.rank] - profileTier[a.rank];
+      });
+      console.log(userAchievementData);
+      console.log(response);
       userInfo.interests = userInterestData;
+      userInfo.achievements = userAchievementData;
       userInfo.introduction = response.introduce ? response.introduce : "";
       userInfo.followerCount = response.follower;
       userInfo.followingCount = response.following;
@@ -238,6 +171,7 @@ const getMemberInfo = async (userId: number) => {
       userInfo.joinDate = response.createdTime;
       userInfo.reviewCount = response.reviews;
       userInfo.commentCount = response.commentCount;
+      console.log(response);
       for (const expData of response.tiers) {
         const usefulExp: Experience = {
           genre: expData.genreName,
@@ -325,32 +259,25 @@ const ProfilePage = () => {
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
   // 리뷰리스트
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
-    []
-  );
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
   // 자기소개, 프로필 이미지
-  const [profileImageHovered, setProfileImageHovered] =
-    useState<boolean>(false);
+  const [profileImageHovered, setProfileImageHovered] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<File>(null);
   const [nicknameEditing, setNicknameEditing] = useState<boolean>(false);
   const [editedNickname, setEditedNickname] = useState<string>("");
-  const [introductionEditing, setIntroductionEditing] =
-    useState<boolean>(false);
+  const [introductionEditing, setIntroductionEditing] = useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
   // 무한 스크롤
   const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
   const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
   // 회원 정보 수정, 탈퇴 모달
-  const [isProfileImageModalOpen, setProfileImageModalOpen] =
-    useState<boolean>(false);
+  const [isProfileImageModalOpen, setProfileImageModalOpen] = useState<boolean>(false);
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
-  const [isInterestModifyModalLoading, setInterestModifyModalLoading] =
-    useState<boolean>(false);
-  const [isInterestModifyModalOpen, setInterestModifyModalOpen] =
-    useState<boolean>(false);
+  const [isInterestModifyModalLoading, setInterestModifyModalLoading] = useState<boolean>(false);
+  const [isInterestModifyModalOpen, setInterestModifyModalOpen] = useState<boolean>(false);
   const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
   const [emptyInput, setEmptyInput] = useState<boolean>(false);
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
@@ -360,8 +287,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
 
   const isSelf = userId !== loginId;
-  const followIcon =
-    followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
+  const followIcon = followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
   const verifyRef = useRef(null);
   const infScrollTargetRef = useRef(null);
 
@@ -409,9 +335,7 @@ const ProfilePage = () => {
             dislikeCount: review.badCount,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
-            releaseYear: Number(
-              String(review.movieReleaseDate).substring(0, 4)
-            ),
+            releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
             movieGenre: [review.genreResponse.genreName],
             createDate: new Date(review.createdTime),
             recommend: review.movieRecommendType === "YES",
@@ -424,10 +348,7 @@ const ProfilePage = () => {
           }
           newReviewList.push(reviewData);
         }
-        setReviewListState((prevReviewList) => [
-          ...prevReviewList,
-          ...newReviewList,
-        ]);
+        setReviewListState((prevReviewList) => [...prevReviewList, ...newReviewList]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -447,10 +368,7 @@ const ProfilePage = () => {
       }
     };
 
-    const infScrollObserver = new IntersectionObserver(
-      infScrollReloadCallback,
-      observerOptions
-    );
+    const infScrollObserver = new IntersectionObserver(infScrollReloadCallback, observerOptions);
 
     infScrollObserver.observe(infScrollTargetRef.current);
 
@@ -461,12 +379,7 @@ const ProfilePage = () => {
 
   // useEffect
   useEffect(() => {
-    if (
-      userId === null ||
-      loginId === null ||
-      userId === undefined ||
-      loginId === undefined
-    )
+    if (userId === null || loginId === null || userId === undefined || loginId === undefined)
       return;
     const followCheck = async () => {
       await getFollowerCount(userId, loginId);
@@ -526,9 +439,7 @@ const ProfilePage = () => {
               dislikeCount: review.badCount,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -553,14 +464,7 @@ const ProfilePage = () => {
     };
 
     getReviewList();
-  }, [
-    isFetched,
-    sortBy,
-    dateDescend,
-    recommendDescend,
-    onlyInterest,
-    searchTerm,
-  ]);
+  }, [isFetched, sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
 
   useEffect(() => {
     if (emptyInput || wrongPassword) {
@@ -709,9 +613,7 @@ const ProfilePage = () => {
     setVerifyModalOpen(true);
   };
 
-  const onChangeVerfiyPasswordInput = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
+  const onChangeVerfiyPasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
     setEmptyInput(false);
     setWrongPassword(false);
     setVerifyPasswordInput(event.target.value);
@@ -811,16 +713,12 @@ const ProfilePage = () => {
     setInterestModifyModalOpen(false);
   };
 
-  const onClickInterest = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const onClickInterest = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const genreId = event.currentTarget.id;
     const genreName = event.currentTarget.textContent || "";
 
     setInterestModify((prevInterest: InterestInterface[]) => {
-      const isGenreExist = prevInterest.some(
-        (item) => item.genreId === genreId
-      );
+      const isGenreExist = prevInterest.some((item) => item.genreId === genreId);
       if (isGenreExist) {
         return prevInterest.filter((item) => item.genreId !== genreId);
       } else {
@@ -851,10 +749,7 @@ const ProfilePage = () => {
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
-    2,
-    "0"
-  );
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
 
   const joinDateText = `${year}-${month}-${day}`;
@@ -890,10 +785,7 @@ const ProfilePage = () => {
             />
           )}
           {userId === loginId ? (
-            <div
-              className="profile-modify-icon-container"
-              onClick={openVerifyModal}
-            >
+            <div className="profile-modify-icon-container" onClick={openVerifyModal}>
               <BsPersonFillGear className="modify-icon" />
             </div>
           ) : (
@@ -938,10 +830,7 @@ const ProfilePage = () => {
                 <Col className="nickname">
                   {userInfo.nickname}
                   {userId === loginId ? (
-                    <BsPencilSquare
-                      className="edit-icon"
-                      onClick={handleEditNicknameClick}
-                    />
+                    <BsPencilSquare className="edit-icon" onClick={handleEditNicknameClick} />
                   ) : null}
                 </Col>
               </>
@@ -963,26 +852,17 @@ const ProfilePage = () => {
                     onChange={(e) => setEditedIntroduction(e.target.value)}
                   />
                   <div className="edit-button">
-                    <button onClick={handleEditIntroductionSaveClick}>
-                      수정
-                    </button>
-                    <button onClick={handleEditIntroductionCancelClick}>
-                      취소
-                    </button>
+                    <button onClick={handleEditIntroductionSaveClick}>수정</button>
+                    <button onClick={handleEditIntroductionCancelClick}>취소</button>
                   </div>
                 </div>
               </>
             ) : (
               <>
                 <Col className="introduction">
-                  {userInfo.introduction
-                    ? userInfo.introduction
-                    : "자기소개가 없습니다."}
+                  {userInfo.introduction ? userInfo.introduction : "자기소개가 없습니다."}
                   {userId === loginId ? (
-                    <BsPencilSquare
-                      className="edit-icon"
-                      onClick={handleEditIntroductionClick}
-                    />
+                    <BsPencilSquare className="edit-icon" onClick={handleEditIntroductionClick} />
                   ) : null}
                 </Col>
               </>
@@ -991,21 +871,19 @@ const ProfilePage = () => {
           <div className="post-counter-join-date-container">
             <Row>
               <Col className="post-counter">
-                작성 리뷰: {userInfo.reviewCount} / 작성 댓글:{" "}
-                {userInfo.commentCount}
+                작성 리뷰: {userInfo.reviewCount} / 작성 댓글: {userInfo.commentCount}
               </Col>
             </Row>
             <Row>
               <Col className="visitors">
-                방문자) 오늘: {userInfo.todayVisitor} / 전체:{" "}
-                {userInfo.totalVisitor}
+                방문자) 오늘: {userInfo.todayVisitor} / 전체: {userInfo.totalVisitor}
               </Col>
               <Col className="join-date">가입일: {joinDateText}</Col>
             </Row>
           </div>
         </div>
         <div className="profile-badge-container">
-          <BadgeList badgeListProps={userInfo.badges} />
+          <BadgeList badgeListProps={userInfo.achievements} />
         </div>
       </div>
       <hr />
@@ -1015,10 +893,7 @@ const ProfilePage = () => {
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
-        <div
-          style={{ height: "100px", backgroundColor: "white" }}
-          ref={infScrollTargetRef}
-        ></div>
+        <div style={{ height: "100px", backgroundColor: "white" }} ref={infScrollTargetRef}></div>
       ) : (
         <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}
@@ -1078,11 +953,7 @@ const ProfilePage = () => {
           onKeyUp={verifyOnKeyUp}
         />
         <span className="verify-info">
-          {emptyInput
-            ? "비밀번호를 입력하세요"
-            : wrongPassword
-            ? "비밀번호가 틀렸습니다."
-            : ""}
+          {emptyInput ? "비밀번호를 입력하세요" : wrongPassword ? "비밀번호가 틀렸습니다." : ""}
         </span>
         <div className="modal-button-box">
           <button onClick={verifyPassword}>확인</button>
@@ -1096,11 +967,13 @@ const ProfilePage = () => {
         contentLabel="Modify Modal"
         className="modify-modal"
       >
-        <div className="modal-button-box">
+        <div className="modify-button-box">
           <button onClick={openInterestModifyModal}>관심장르수정</button>
+          <button onClick={withdrawal}>탈퇴</button>
+        </div>
+        <div className="modal-button-box">
           <button onClick={closeModifyModal}>취소</button>
         </div>
-        <button onClick={withdrawal}>탈퇴</button>
       </Modal>
 
       <Modal
@@ -1120,9 +993,7 @@ const ProfilePage = () => {
               <div
                 id={id}
                 className={`small-box ${
-                  interestModify.some((item) => item.genreId === id)
-                    ? "selected"
-                    : ""
+                  interestModify.some((item) => item.genreId === id) ? "selected" : ""
                 }`}
                 key={id}
                 style={{ backgroundImage: `url(${genre[id][1]}.png)` }}
