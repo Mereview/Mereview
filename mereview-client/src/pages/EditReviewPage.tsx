@@ -33,9 +33,11 @@ const ReviewWrite = () => {
           const review = res.data.data;
           console.log(review);
           const image = review.backgroundImage;
-          setImgName(image.fileName);
-          setSelectedImage(`${url}/image/download/backgrounds/${image.id}`);
-          fileDataRef.current = new File([selectedImage], imgName);
+          if (image !== null) {
+            setImgName(image.fileName);
+            setSelectedImage(`${url}/image/download/backgrounds/${image.id}`);
+            fileDataRef.current = new File([selectedImage], imgName);
+          }
           setReviewName(review.reviewTitle);
           setOneSentance(review.reviewHighlight);
           movieName.current = review.movieTitle;
