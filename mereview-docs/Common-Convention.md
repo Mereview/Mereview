@@ -95,6 +95,7 @@ MR/S09P12C211-120/FEAT-MOVIE/feat:영화 Entity 개발
 | 스토리 이슈타입 | issuetype = Story | 
 | 나or미할당 이슈만 | issuetype in (Bug, Story, Epic, Task) AND assignee in (currentUser(), EMPTY) |
 | 최근 업데이트됨 | updatedDate >= -3d |
+| 이번주 작업 | project = S09P12C211 AND issuetype = Task AND reporter in (currentUser()) And created >= startOfWeek() AND created <= endOfWeek() order by created DESC |
 
 
 <br>
