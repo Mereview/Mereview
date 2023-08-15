@@ -326,6 +326,7 @@ const ProfilePage = () => {
           const reviewData: ReviewCardInterface = {
             reviewId: review.reviewId,
             memberId: review.memberId,
+            movieId: review.movieId,
             nickname: review.nickname,
             oneLineReview: review.highlight,
             funnyCount: review.funCount,
@@ -430,6 +431,7 @@ const ProfilePage = () => {
             const reviewData: ReviewCardInterface = {
               reviewId: review.reviewId,
               memberId: review.memberId,
+              movieId: review.movieId,
               nickname: review.nickname,
               oneLineReview: review.highlight,
               funnyCount: review.funCount,
@@ -826,7 +828,7 @@ const ProfilePage = () => {
             ) : (
               <>
                 <Col className="nickname">
-                  {userInfo.nickname}
+                  <span className="nickname-text">{userInfo.nickname}</span>
                   {userId === loginId ? (
                     <BsPencilSquare className="edit-icon" onClick={handleEditNicknameClick} />
                   ) : null}

@@ -162,6 +162,7 @@ const ReviewHome = () => {
           const reviewData: ReviewCardInterface = {
             reviewId: review.reviewId,
             memberId: review.memberId,
+            movieId: review.movieId,
             nickname: review.nickname,
             oneLineReview: review.highlight,
             funnyCount: review.funCount,
@@ -247,6 +248,7 @@ const ReviewHome = () => {
             const reviewData: ReviewCardInterface = {
               reviewId: review.reviewId,
               memberId: review.memberId,
+              movieId: review.movieId,
               nickname: review.nickname,
               oneLineReview: review.highlight,
               funnyCount: review.funCount,
@@ -312,6 +314,7 @@ const ReviewHome = () => {
             const reviewData: ReviewCardInterface = {
               reviewId: review.reviewId,
               memberId: review.memberId,
+              movieId: review.movieId,
               nickname: review.nickname,
               oneLineReview: review.highlight,
               funnyCount: review.funCount,

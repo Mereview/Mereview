@@ -21,6 +21,7 @@ public class MovieDetailResponse {
     private Double voteAverage;
     private String posterImg;
     private String releaseDate;
+    private List<GenreResponse> genres;
 
     //evaluation
     private Double evaluation;
@@ -33,30 +34,33 @@ public class MovieDetailResponse {
     private List<ReviewResponse> recentReviews;
 
     @Builder
-    public MovieDetailResponse(String title, String overview, Double voteAverage, String posterImg, String releaseDate, Double evaluation, List<MovieKeywordResponse> movieKeyword, List<ReviewResponse> topReviews, List<ReviewResponse> recentReviews) {
+    public MovieDetailResponse(String title, String overview, Double voteAverage, String posterImg, String releaseDate, List<GenreResponse> genres, Double evaluation, List<MovieKeywordResponse> movieKeyword, List<ReviewResponse> topReviews, List<ReviewResponse> recentReviews) {
         this.title = title;
         this.overview = overview;
         this.voteAverage = voteAverage;
         this.posterImg = posterImg;
         this.releaseDate = releaseDate;
+        this.genres = genres;
         this.evaluation = evaluation;
         this.movieKeyword = movieKeyword;
         this.topReviews = topReviews;
         this.recentReviews = recentReviews;
     }
 
-    public static MovieDetailResponse of(Movie movie, Double evaluation, List<MovieKeywordResponse> movieKeywordResponses, List<ReviewResponse> topReviewResponses, List<ReviewResponse> recentReviewResponses) {
+    public static MovieDetailResponse of(Movie movie, List<GenreResponse> genreResponses, Double evaluation, List<MovieKeywordResponse> movieKeywordResponses, List<ReviewResponse> topReviewResponses, List<ReviewResponse> recentReviewResponses) {
         return MovieDetailResponse.builder()
                 .title(movie.getTitle())
                 .overview(movie.getOverview())
                 .voteAverage(movie.getVoteAverage())
                 .posterImg(movie.getPosterImg())
                 .releaseDate(movie.getReleaseDate())
+                .genres(genreResponses)
                 .evaluation(evaluation)
                 .movieKeyword(movieKeywordResponses)
                 .topReviews(topReviewResponses)
                 .recentReviews(recentReviewResponses)
                 .build();
     }
+
 
 }

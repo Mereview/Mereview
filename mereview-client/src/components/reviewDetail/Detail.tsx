@@ -283,6 +283,7 @@ const Detail = ({ review, setReview }: any) => {
                 key={review.reviewId}
                 reviewId={review.reviewId}
                 memberId={review.memberId}
+                movieId={review.movieId}
                 nickname={review.nickname}
                 profileImageId={review.profileImage ? review.profileImage.id : undefined}
                 backgroundImageId={
