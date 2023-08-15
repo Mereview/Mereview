@@ -160,6 +160,7 @@ $profile-image-size: 450px;
       }
 
       .edit-button {
+        z-index: 1;
         display: flex;
         justify-content: right;
       }
@@ -183,6 +184,7 @@ $profile-image-size: 450px;
       bottom: 10px;
       right: 0px;
       font-size: $font-size-sm;
+      pointer-events: none;
 
       .post-counter {
         text-align: center;

@@ -41,6 +41,14 @@ public class MovieController {
         return ApiResponse.ok(movieService.searchMovieById(movieId));
     }
 
+    @GetMapping("detail/{movieId}")
+    @ApiOperation(value = "영화 상세 검색")
+    public ApiResponse<MovieDetailResponse> searchMovie(@PathVariable Long movieId){
+        log.debug("movieId = {}", movieId);
+        MovieDetailResponse response = movieQueryService.searchById(movieId);
+        return ApiResponse.ok(response);
+    }
+
     @GetMapping("/content/{contentId}")
     @ApiOperation(value = "영화 id 검색")
     public ApiResponse<Long> searchMovieIdByContentId(@PathVariable Integer contentId){
