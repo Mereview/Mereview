@@ -29,15 +29,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
   } = props;
   const navigate = useNavigate();
 
-  const handleClickReviewCard = (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => {
+  const handleClickReviewCard = (event: React.MouseEvent<HTMLParagraphElement>) => {
     navigate(`/review/${reviewId}`);
   };
 
-  const handleClickProfile = (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => {
+  const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
     event.stopPropagation();
     navigate(`/profile/${memberId}`);
   };
@@ -54,42 +50,29 @@ const ReviewCard = (props: ReviewCardInterface) => {
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
-    recommendStyle.opacity =
-      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    recommendStyle.opacity = (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
   }
 
   const formattedCreateDate: Date = new Date(createDate);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
-    2,
-    "0"
-  );
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
   const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
-  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
-    2,
-    "0"
-  );
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(2, "0");
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
 
   return (
     <>
-      <div
-        className={`review-card ${className}`}
-        style={cardStyle}
-        onClick={handleClickReviewCard}
-      >
+      <div className={`review-card ${className}`} style={cardStyle} onClick={handleClickReviewCard}>
         <div className="card-overlay">
           <Row>
             <Col md={"auto"} className="date">
               {year}-{month}-{day} {hour}:{minute}
             </Col>
             <Col className="evaluation">
-              <span>재밌어요: {funnyCount}</span> |{" "}
-              <span>유용해요: {usefulCount}</span> |{" "}
-              <span>별로에요: {dislikeCount}</span> |{" "}
-              <span>Comment: {commentCount}</span>
+              <span>재밌어요: {funnyCount}</span> | <span>유용해요: {usefulCount}</span> |{" "}
+              <span>별로에요: {dislikeCount}</span> | <span>Comment: {commentCount}</span>
             </Col>
           </Row>
           <Row>

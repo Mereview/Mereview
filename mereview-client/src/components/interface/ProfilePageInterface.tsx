@@ -4,12 +4,18 @@ export interface AchievedBadge {
   achievementId: string;
 }
 
+interface InterestInterface {
+  genreId: string;
+  genreName: string;
+}
+
 export interface ProfileInfoInterface {
   memberId: number | null;
   nickname: string;
   profileImageId: number | null;
   age: number | null;
   gender: "MALE" | "FEMALE" | null; // 1: male, 2: female
+  interests: InterestInterface[];
   introduction: string | null;
   reviewCount: number; // 리뷰 작성 수
   commentCount: number; // 댓글 작성 수

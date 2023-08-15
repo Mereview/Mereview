@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Loading from "../components/common/Loading";
 import { searchReviews } from "../api/review";
+import { getPopularMovies } from "../api/movie";
 import { ReviewCardInterface } from "../components/interface/ReviewCardInterface";
 import ReviewList from "../components/ReviewList";
 import { MovieCardInterface } from "../components/interface/MovieCardInterface";
@@ -26,39 +27,6 @@ const yesterday: string =
   String(today.getMonth() + 1).padStart(2, "0") +
   String(today.getDate() - 1).padStart(2, "0");
 
-const tmdbSearchMovieURL: string = "https://api.themoviedb.org/3/search/movie";
-// 토큰 나중에 따로 빼기?
-const tmdbAuthToken: string =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjOGI5YmMyNTI5YTg1OTQ2ZTIyYTI4YTE4ZTYxYjc0YyIsInN1YiI6IjY0YWU1ZDA5M2UyZWM4MDBjYmQwMzI0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GFs7ms-36oYPWK7JmBviACJHmAoSyRO0txStPCAtMZM";
-
-type koficMovie = {
-  [key: string]: string;
-};
-
-const getBoxOfficeMovieNames = async () => {
-  const boxOfficeMovieNames: string[] = [];
-
-  try {
-    const koficResponse = await axios.get(koficDailyBoxofficeURL, {
-      params: {
-        key: koficKey,
-        targetDt: yesterday,
-      },
-    });
-
-    const data: koficMovie[] =
-      koficResponse.data.boxOfficeResult.dailyBoxOfficeList;
-    for (let i = 0; i < 10; i++) {
-      boxOfficeMovieNames.push(data[i].movieNm);
-    }
-    return boxOfficeMovieNames;
-  } catch (error) {
-    console.log(`Failed to fetch from KOFIC: ${error}`);
-    return [];
-  }
-};
-
-// Use API later
 const genres: Record<string, string> = {
   "28": "액션",
   "12": "모험",
@@ -81,53 +49,37 @@ const genres: Record<string, string> = {
   "37": "서부",
 };
 
-const searchMovieOnTmdb = async (movieNames: string[]) => {
-  const boxOffices: MovieCardInterface[] = [];
+const popularMovies: MovieCardInterface[] = [];
+const getPopularMovieIds = async (page: number) => {
+  popularMovies.length = 0;
+  await getPopularMovies(
+    page,
+    ({ data }) => {
+      const results = data.results;
+      for (const movieData of results) {
+        const genre: string[] = [];
+        for (const id of movieData.genre_ids) {
+          genre.push(genres[id]);
+          if (genre.length === 3) break;
+        }
 
-  try {
-    for (const movieName of movieNames) {
-      const tmdbResponse = await axios.get(tmdbSearchMovieURL, {
-        headers: { Authorization: `Bearer ${tmdbAuthToken}` },
-        params: { query: movieName, language: "ko", page: 1 },
-      });
-
-      const data = tmdbResponse.data.results[0];
-      if (typeof data === "undefined") {
         const movie: MovieCardInterface = {
-          movieId: null,
-          posterImagePath:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019",
-          movieTitle: movieName,
-          releaseYear: null,
-          movieGenre: [],
+          movieId: movieData.id,
+          posterImagePath: `https://image.tmdb.org/t/p/w300/${movieData.poster_path}`,
+          movieTitle: movieData.title,
+          releaseYear: movieData.release_date.substring(0, 4),
+          movieGenre: genre,
         };
-        boxOffices.push(movie);
-        continue;
-      }
-      const genre: string[] = [];
-      for (const id of data.genre_ids) {
-        genre.push(genres[id]);
-        if (genre.length === 3) break;
-      }
 
-      const movie: MovieCardInterface = {
-        movieId: data.id,
-        posterImagePath: `https://image.tmdb.org/t/p/w300/${data.poster_path}`,
-        movieTitle: data.title,
-        releaseYear: data.release_date.substring(0, 4),
-        movieGenre: genre,
-      };
-
-      boxOffices.push(movie);
+        popularMovies.push(movie);
+      }
+    },
+    (error) => {
+      console.log(error);
     }
-
-    return boxOffices;
-  } catch (error) {
-    console.log(`Faild to fetch from TMDB: ${error}`);
-    return [];
-  }
+  );
 };
-/* 박스오피스 데이터 생성 끝*/
+/* 트렌딩 무비 데이터 생성 끝*/
 
 const enterSearch = (e) => {
   console.log(e);
@@ -149,9 +101,7 @@ const ReviewHome = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
   const [emptySearchKeyword, setEmptySearchKeyword] = useState<boolean>(false);
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
-    []
-  );
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
   // 무한 스크롤
   const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
@@ -167,9 +117,8 @@ const ReviewHome = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const movieNames = await getBoxOfficeMovieNames();
-      const movies = await searchMovieOnTmdb(movieNames);
-      setMovieList(movies);
+      await getPopularMovieIds(1);
+      setMovieList(popularMovies);
       setIsFetched(true);
     };
     fetchData();
@@ -185,8 +134,7 @@ const ReviewHome = () => {
     };
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -221,9 +169,7 @@ const ReviewHome = () => {
             dislikeCount: review.badCount,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
-            releaseYear: Number(
-              String(review.movieReleaseDate).substring(0, 4)
-            ),
+            releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
             movieGenre: [review.genreResponse.genreName],
             createDate: new Date(review.createdTime),
             recommend: review.movieRecommendType === "YES",
@@ -236,10 +182,7 @@ const ReviewHome = () => {
           }
           newReviewList.push(reviewData);
         }
-        setReviewListState((prevReviewList) => [
-          ...prevReviewList,
-          ...newReviewList,
-        ]);
+        setReviewListState((prevReviewList) => [...prevReviewList, ...newReviewList]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -259,10 +202,7 @@ const ReviewHome = () => {
       }
     };
 
-    const infScrollObserver = new IntersectionObserver(
-      infScrollReloadCallback,
-      observerOptions
-    );
+    const infScrollObserver = new IntersectionObserver(infScrollReloadCallback, observerOptions);
 
     infScrollObserver.observe(infScrollTargetRef.current);
 
@@ -285,8 +225,7 @@ const ReviewHome = () => {
     const searchCondition: ReviewHomePageSearchParamInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -315,9 +254,7 @@ const ReviewHome = () => {
               dislikeCount: review.badCount,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -350,8 +287,7 @@ const ReviewHome = () => {
     const searchCondition: SearchConditionInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -383,9 +319,7 @@ const ReviewHome = () => {
               dislikeCount: review.badCount,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -445,10 +379,7 @@ const ReviewHome = () => {
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
-        <div
-          style={{ height: "200px", backgroundColor: "white" }}
-          ref={infScrollTargetRef}
-        ></div>
+        <div style={{ height: "200px", backgroundColor: "white" }} ref={infScrollTargetRef}></div>
       ) : (
         <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}

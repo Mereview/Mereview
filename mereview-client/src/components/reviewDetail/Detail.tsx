@@ -12,13 +12,8 @@ import {
 } from "../../api/review";
 import Comments from "./Comments";
 import { useNavigate } from "react-router-dom";
-import {
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import { Select, MenuItem, SelectChangeEvent, FormControlLabel, Switch } from "@mui/material";
+import Loading from "../common/Loading";
 interface evInterface {
   FUN: number;
   USEFUL: number;
@@ -30,6 +25,7 @@ const Detail = ({ review, setReview }: any) => {
   // 유저아이디 받아오기
   const userId = localStorage.getItem("id");
   // 댓글 관련
+  const [isFetched, setFetched] = useState(false);
   const [comments, setComments] = useState(review.comments);
   const [inputComment, setInputComment] = useState("");
   const [commentCNT, setcommentCNT] = useState(comments.length);
@@ -82,7 +78,6 @@ const Detail = ({ review, setReview }: any) => {
     USEFUL: review.usefulCount,
     BAD: review.badCount,
   });
-  console.log(userId, review.reviewId);
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
@@ -134,53 +129,33 @@ const Detail = ({ review, setReview }: any) => {
     }
   };
   // 동일키워드 추천 리뷰 불러오기
-  const [switchToggler, setSwitchToggler] = useState(true);
+  const [switchToggler, setSwitchToggler] = useState(false);
   const [recommendReview, setRecommendReview] = useState([]);
+  const [positiveReview, setPositiveReview] = useState([]);
+  const [interestReview, setInterestReview] = useState([]);
   const switchToggleHandler = () => {
     setSwitchToggler((prev) => !prev);
-    const data = { myInterest: userId, orderBy: "" };
-    if (!switchToggler) {
-      data.orderBy = "FUN";
+    if (switchToggler) {
+      setRecommendReview(positiveReview);
     } else {
-      data.orderBy = "USEFUL";
+      setRecommendReview(interestReview);
+      console.log("!!", interestReview);
     }
-    console.log(data);
-
-    searchReviews(
-      data,
-      (res) => {
-        const data = res.data.data.data;
-        const filterdReviewList = data.filter((rr) => {
-          return (
-            rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
-          );
-        });
-        console.log(filterdReviewList);
-        setRecommendReview(filterdReviewList);
-      },
-      (err) => {
-        console.log("err:", err);
-      }
-    );
   };
   useEffect(() => {
     //memberId, reviewId
-    const getRecommendReview = () => {
+    const getPositiveReview = () => {
       const data = {
-        myInterest: userId,
         orderBy: "POSITIVE",
       };
-      console.log(data);
       searchReviews(
         data,
         (res) => {
           const data = res.data.data.data;
           const filterdReviewList = data.filter((rr) => {
-            return (
-              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
-            );
+            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
           });
-          console.log(filterdReviewList);
+          setPositiveReview(filterdReviewList);
           setRecommendReview(filterdReviewList);
         },
         (err) => {
@@ -188,11 +163,31 @@ const Detail = ({ review, setReview }: any) => {
         }
       );
     };
-    getRecommendReview();
+    const getInterestReview = () => {
+      const data = {
+        orderBy: "POSITIVE",
+        myInterest: userId,
+      };
+      searchReviews(
+        data,
+        (res) => {
+          const data = res.data.data.data;
+          const filterdReviewList = data.filter((rr) => {
+            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
+          });
+          setInterestReview(filterdReviewList);
+        },
+        (err) => {
+          console.log("err:", err);
+        }
+      );
+    };
+    getPositiveReview();
+    getInterestReview();
+    setFetched(true);
   }, []);
   const editHandler = () => {};
-  console.log(typeof userId, typeof review.memberId);
-  console.log(recommendReview);
+  if (!isFetched) return <Loading />;
   return (
     <div className="detail">
       <div className="first-line">
@@ -207,27 +202,12 @@ const Detail = ({ review, setReview }: any) => {
         </div>
       </div>
       <hr />
-      <div
-        className="content"
-        dangerouslySetInnerHTML={{ __html: review.reviewContent }}
-      ></div>
+      <div className="content" dangerouslySetInnerHTML={{ __html: review.reviewContent }}></div>
 
       <div className="ratingbuttons">
-        <button
-          id="USEFUL"
-          onClick={onClick}
-          disabled={userId === review.reviewId}
-        ></button>
-        <button
-          id="FUN"
-          onClick={onClick}
-          disabled={userId === review.reviewId}
-        ></button>
-        <button
-          id="BAD"
-          onClick={onClick}
-          disabled={userId === review.reviewId}
-        ></button>
+        <button id="USEFUL" onClick={onClick} disabled={userId === review.reviewId}></button>
+        <button id="FUN" onClick={onClick} disabled={userId === review.reviewId}></button>
+        <button id="BAD" onClick={onClick} disabled={userId === review.reviewId}></button>
       </div>
       {Number(userId) === review.memberId ? (
         <div className="edit">
@@ -249,9 +229,7 @@ const Detail = ({ review, setReview }: any) => {
                 onChange={inputCommentHandler}
               ></textarea>
               <label
-                className={`fw-bold ${
-                  inputComment.length > 300 && "text-danger"
-                } `}
+                className={`fw-bold ${inputComment.length > 300 && "text-danger"} `}
                 htmlFor="input"
               >
                 {inputComment.length} / 300bytes
@@ -283,10 +261,7 @@ const Detail = ({ review, setReview }: any) => {
                 />
               ))
             ) : (
-              <div
-                className="nocoment"
-                style={{ width: "100%", height: "auto" }}
-              >
+              <div className="nocoment" style={{ width: "100%", height: "auto" }}>
                 No Coments 댓글좀 주세요 ㅋ
               </div>
             )}
@@ -302,17 +277,13 @@ const Detail = ({ review, setReview }: any) => {
           }}
         >
           <div className="header">
-            <h5>관심장르 리뷰 추천</h5>
+            <h5>이런 리뷰는 어떠세요?</h5>
             <FormControlLabel
               className="useful-fun-switch"
               control={
-                <Switch
-                  checked={switchToggler}
-                  onChange={switchToggleHandler}
-                  color="warning"
-                />
+                <Switch checked={switchToggler} onChange={switchToggleHandler} color="warning" />
               }
-              label={switchToggler ? "유용해요 기준" : "재밌어요 기준"}
+              label="관심 장르만 보기"
               labelPlacement="end"
             />
           </div>
@@ -324,11 +295,9 @@ const Detail = ({ review, setReview }: any) => {
                 reviewId={review.reviewId}
                 memberId={review.memberId}
                 nickname={review.nickname}
-                profileImageId={review.profileImage}
+                profileImageId={review.profileImage.id}
                 backgroundImageId={
-                  review.backgroundImageResponse
-                    ? review.backgroundImageResponse.id
-                    : null
+                  review.backgroundImageResponse ? review.backgroundImageResponse.id : null
                 }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}
@@ -339,7 +308,7 @@ const Detail = ({ review, setReview }: any) => {
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}
                 createDate={review.createdTime.substring(0, 10)}
-                recommend={review.movieEvaluatedType === "YES" ? true : false}
+                recommend={review.movieRecommendType === "YES"}
               />
             ))}
           </div>

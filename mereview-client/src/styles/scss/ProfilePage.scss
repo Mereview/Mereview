@@ -109,6 +109,7 @@ $profile-image-size: 450px;
 
     .nickname {
       font-size: $font-size-xl * 1.5;
+      text-overflow: ellipsis;
 
       .edit-icon {
         font-size: $font-size-h3;
@@ -146,6 +147,7 @@ $profile-image-size: 450px;
       font-size: $font-size-xl;
       text-align: right;
       margin-top: auto;
+      width: auto;
     }
 
     .introduction {
@@ -292,5 +294,72 @@ $profile-image-size: 450px;
 
 .modify-modal {
   @include modal;
+  height: 300px;
+}
+
+.interest-modify-modal {
+  @include modal;
+  width: 50%;
   height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .middle-box {
+    display: flex;
+    flex-wrap: wrap; /* 줄바꿈 설정 */
+    align-items: flex-start; /* 맨 위로 정렬 */
+    justify-content: center;
+    width: 100%;
+    height: 80%;
+    background-color: white;
+    overflow-y: auto; /* 세로 스크롤 생성 */
+    margin-top: 20px;
+    margin-bottom: 25px;
+    border: 1px solid $black;
+    border-radius: 3px;
+
+    .small-box {
+      width: 150px;
+      height: 150px;
+      border: 0.5px solid gray;
+      border-radius: 12px;
+      margin: 10px;
+      cursor: pointer;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+      &.selected {
+        // .selected 클래스 추가
+        border: 7px solid green;
+      }
+      #title {
+        background-color: beige;
+        color: black;
+        font-weight: bold;
+        border-radius: 7px;
+      }
+    }
+  }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
 }
