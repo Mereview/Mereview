@@ -6,6 +6,7 @@ import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequ
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.member.entity.Member;
+import com.ssafy.mereview.domain.member.repository.MemberAchievementQueryRepository;
 import com.ssafy.mereview.domain.member.repository.MemberInterestQueryRepository;
 import com.ssafy.mereview.domain.review.entity.BackgroundImage;
 import com.ssafy.mereview.domain.review.entity.Keyword;
@@ -34,11 +35,14 @@ public class ReviewService {
     private final BackgroundImageRepository backgroundImageRepository;
     private final MemberInterestQueryRepository interestQueryRepository;
     private final NotificationRepository notificationRepository;
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
 
     private static final int MEMBER_LIMIT_COUNT = 100;
 
     public Long create(ReviewCreateServiceRequest request, UploadFile uploadFile) {
         Long saveId = reviewRepository.save(request.toEntity()).getId();
+
+        updateReviewAchievementCount(request);
 
         List<Keyword> keywords = createKeywords(saveId, request.getKeywordServiceRequests());
         keywordRepository.saveAll(keywords);
@@ -68,6 +72,10 @@ public class ReviewService {
                 .orElseThrow(NoSuchElementException::new);
         reviewRepository.delete(review);
         return reviewId;
+    }
+
+    private void updateReviewAchievementCount(ReviewCreateServiceRequest serviceRequest) {
+        memberAchievementQueryRepository.searchReviewAchievementByMemberIdAndGenreId(serviceRequest.getMemberId(), serviceRequest.getGenreId());
     }
 
     /**
@@ -106,4 +114,6 @@ public class ReviewService {
                 .member(Member.builder().id(memberId).build())
                 .build()).collect(Collectors.toList());
     }
+
+
 }

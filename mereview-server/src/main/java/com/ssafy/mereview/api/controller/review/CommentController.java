@@ -7,6 +7,7 @@ import com.ssafy.mereview.api.service.review.CommentLikeService;
 import com.ssafy.mereview.api.service.review.CommentService;
 import com.ssafy.mereview.api.service.review.dto.response.CommentLikeResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
+import com.ssafy.mereview.domain.member.repository.MemberAchievementQueryRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
