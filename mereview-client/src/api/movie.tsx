@@ -15,8 +15,5 @@ export async function searchMovieDetail(movieId: number, success, fail) {
 }
 
 export async function getPopularMovies(page: number, success, fail) {
-  await tmdb
-    .get(`/movie/popular?language=ko-KR&page=${page}&region=KR`)
-    .then(success)
-    .catch(fail);
+  await tmdb.get(`/movie/popular?language=ko-KR&page=${page}&region=KR`).then(success).catch(fail);
 }

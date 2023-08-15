@@ -1,10 +1,4 @@
-import {
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import { Select, MenuItem, SelectChangeEvent, FormControlLabel, Switch } from "@mui/material";
 import { BsSortDown, BsSortUpAlt } from "react-icons/bs";
 import { ReviewSortInterface } from "./interface/ReviewSortInterface";
 import "../styles/css/ReviewSort.css";
@@ -49,22 +43,15 @@ const ReviewSort = ({ sortProps }: { sortProps: ReviewSortInterface }) => {
   return (
     <>
       <div className="sort-container">
-        <button
-          className={sortBy === "date" ? "selected" : ""}
-          onClick={() => handleSortByDate()}
-        >
-          <span className="sort-icon">
-            {dateDescend ? <BsSortDown /> : <BsSortUpAlt />}
-          </span>
+        <button className={sortBy === "date" ? "selected" : ""} onClick={() => handleSortByDate()}>
+          <span className="sort-icon">{dateDescend ? <BsSortDown /> : <BsSortUpAlt />}</span>
           최신순
         </button>
         <button
           className={sortBy === "recommend" ? "selected" : ""}
           onClick={() => handleSortByRecommend()}
         >
-          <span className="sort-icon">
-            {recommendDescend ? <BsSortDown /> : <BsSortUpAlt />}
-          </span>
+          <span className="sort-icon">{recommendDescend ? <BsSortDown /> : <BsSortUpAlt />}</span>
           추천순
         </button>
         <span className="term-select">
@@ -83,9 +70,7 @@ const ReviewSort = ({ sortProps }: { sortProps: ReviewSortInterface }) => {
         {/* <button onClick={() => handleSortByRandom()}>무작위</button> */}
         <FormControlLabel
           className="only-interest-switch"
-          control={
-            <Switch checked={onlyInterest} onChange={handleOnlyInterest} />
-          }
+          control={<Switch checked={onlyInterest} onChange={handleOnlyInterest} />}
           label="관심 장르만 보기"
           labelPlacement="end"
         />
