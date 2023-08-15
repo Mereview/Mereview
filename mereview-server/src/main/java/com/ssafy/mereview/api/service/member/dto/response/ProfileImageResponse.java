@@ -4,9 +4,11 @@ import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+@ToString
 @Getter
 @NoArgsConstructor
 public class ProfileImageResponse {
