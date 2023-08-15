@@ -60,9 +60,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
 
   return (
     <>
-      <div>
-        <Col className="sub-title">유행하는 영화</Col>
-      </div>
+      <div className="movie-list-sub-title">유행하는 영화</div>
       <div className="movie-card-list-wrapper">
         {visibleMovies.map((movie: MovieCardInterface) => (
           <MovieCard
@@ -75,15 +73,13 @@ const MovieList = ({ movieList }: MovieListProps) => {
           />
         ))}
       </div>
-      <div>
-        <Col className="controls">
-          <button className="slide-button left" onClick={handleSlideLeft}>
-            &lt;
-          </button>
-          <button className="slide-button right" onClick={handleSlideRight}>
-            &gt;
-          </button>
-        </Col>
+      <div className="controls">
+        <button className="slide-button" onClick={handleSlideLeft}>
+          이전
+        </button>
+        <button className="slide-button" onClick={handleSlideRight}>
+          다음
+        </button>
       </div>
     </>
   );
