@@ -441,7 +441,7 @@ const ReviewWrite = () => {
                 </div>
               </Col>
               <FormControlLabel
-                className="i-box"
+                className="mx-auto bg-white border border-5 rounded-2"
                 control={
                   <Switch checked={changeImg} onChange={changeImgHandler} />
                 }
