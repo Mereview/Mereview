@@ -16,25 +16,19 @@ const MovieCard = (props: MovieCardInterface) => {
   };
 
   return (
-    <>
+   
       <div className="movie-card" onClick={handleMovieCardClick}>
         <div className="poster-image">
           <img src={posterImagePath} alt={movieTitle} />
         </div>
-        <Row>
-          <Col md={12} className="movie-title">
-            {movieTitle}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <span className="year-genres">
-              {releaseYear} {genres && `| ${genres}`}
-            </span>
-          </Col>
-        </Row>
+        <div className="movie-info">
+          <div className="movie-title">{movieTitle}</div>
+          <div>
+            {releaseYear} {genres && `| ${genres}`}
+          </div>
+        </div>
       </div>
-    </>
+
   );
 };
 
