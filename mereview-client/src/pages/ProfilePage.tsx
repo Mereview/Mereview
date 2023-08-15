@@ -201,7 +201,7 @@ const getMemberInfo = async (userId: number) => {
     },
     (e) => {
       error = e;
-      alert(e.response.data.message);
+      console.log(e);
     }
   );
 };
@@ -389,9 +389,9 @@ const ProfilePage = () => {
       if (error !== null) navigate(-1);
       else setIsFetched(true);
     };
-
-    fetchData();
+    setFollowed(false);
     followCheck();
+    fetchData();
   }, [userId, loginId]);
 
   useEffect(() => {
