@@ -3,14 +3,14 @@
 .movie-card {
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
-  width: 350px;
+  width: 18%;
   margin-top: 30px;
   margin-left: 5px;
   margin-right: 5px;
   margin-bottom: 40px;
 
   &:hover {
-    box-shadow: 4px 4px 8px #000000 ;
+    box-shadow: 4px 4px 8px #000000;
   }
 
   .movie-info {
@@ -18,7 +18,7 @@
     background-color: antiquewhite;
   }
 
-  .movie-title{
+  .movie-title {
     margin-bottom: 15px;
     font-size: 28px;
     white-space: nowrap;
@@ -43,5 +43,29 @@
     font-family: $NanumGothic;
     font-size: $font-size-sm;
     color: $gray-8;
+  }
+
+  @media (max-width: 1500px) {
+    width: 30%;
+    margin: 10px;
+  }
+
+  @media (max-width: 1140px) {
+    width: 45%;
+    margin: 10px;
+  }
+
+  @media (max-width: 780px) {
+    width: 100%;
+    margin: 10px;
+  }
+
+  @media (max-width: 576px) {
+    .movie-title {
+      font-size: 24px;
+    }
+    .poster-image {
+      height: 250px;
+    }
   }
 }

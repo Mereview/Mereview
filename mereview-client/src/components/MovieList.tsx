@@ -17,18 +17,16 @@ const MovieList = ({ movieList }: MovieListProps) => {
   const calculateVisibleMovies = () => {
     const screenWidth = window.innerWidth;
     // 반응형, 나중에 카드 크기에 맞춰 좀 더 상세하게 고치기
-    if (screenWidth >= 1370) setNumberOfMoviesToShow(5);
-    else if (screenWidth >= 1120) setNumberOfMoviesToShow(4);
-    else if (screenWidth >= 860) setNumberOfMoviesToShow(3);
-    else setNumberOfMoviesToShow(2);
+    if (screenWidth >= 1860) setNumberOfMoviesToShow(5);
+    else if (screenWidth >= 1500) setNumberOfMoviesToShow(4);
+    else if (screenWidth >= 1140) setNumberOfMoviesToShow(3);
+    else if (screenWidth >= 780) setNumberOfMoviesToShow(2);
+    else setNumberOfMoviesToShow(1);
   };
 
   useEffect(() => {
     calculateVisibleMovies();
-    if (
-      movieList.length != 0 &&
-      startIndex + numberOfMoviesToShow > movieList.length
-    ) {
+    if (movieList.length != 0 && startIndex + numberOfMoviesToShow > movieList.length) {
       setStartIndex(movieList.length - numberOfMoviesToShow);
     }
     const endIndex = startIndex + numberOfMoviesToShow;
@@ -42,9 +40,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
 
   const handleSlideLeft = () => {
     const leftStartIndex =
-      startIndex - numberOfMoviesToShow > 0
-        ? startIndex - numberOfMoviesToShow
-        : 0;
+      startIndex - numberOfMoviesToShow > 0 ? startIndex - numberOfMoviesToShow : 0;
 
     setStartIndex(leftStartIndex);
   };
