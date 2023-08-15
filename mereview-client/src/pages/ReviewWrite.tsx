@@ -2,7 +2,6 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { updateAchievementCount } from "../api/members";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
@@ -207,18 +206,6 @@ const ReviewWrite = () => {
       .post(url + "/reviews", formData)
       .then(() => {
         console.log("success");
-        const achievementUpdate = {
-          achievementType: 1,
-          genreId: selectGenre,
-          memberId: userid,
-        };
-        updateAchievementCount(
-          achievementUpdate,
-          () => {},
-          (err) => {
-            console.log(err);
-          }
-        );
         navigate("/review");
       })
       .catch(() => {
@@ -260,9 +247,7 @@ const ReviewWrite = () => {
           position: "relative",
           height: "auto",
           flex: "1",
-          backgroundColor: `${
-            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
-          }`,
+          backgroundColor: `${selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"}`,
           // backgroundColor: "rgba(0, 0, 0, 0.5)",
           // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
@@ -275,10 +260,7 @@ const ReviewWrite = () => {
         ></div>
         <Row />
         <Row className="top mx-2">
-          <Col
-            md-lg={7}
-            className="frame me-4 p-4 rounded-3 d-flex flex-column"
-          >
+          <Col md-lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -374,11 +356,7 @@ const ReviewWrite = () => {
               <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <Button
-                    styles="btn-fourth"
-                    btnType="button"
-                    text="첨부"
-                  ></Button>
+                  <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
                 </div>
               </Col>
             </Row>
@@ -401,11 +379,7 @@ const ReviewWrite = () => {
           <TextEditor ref={contentRef}></TextEditor>
         </Row>
         <Row className="align-items-center d-flex justify-content-end mb-3 me-1">
-          <Button
-            styles="btn-primary"
-            text="등록"
-            onClick={reviewCreateHandler}
-          ></Button>
+          <Button styles="btn-primary" text="등록" onClick={reviewCreateHandler}></Button>
         </Row>
         <Row />
       </Container>

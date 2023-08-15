@@ -36,6 +36,7 @@ export async function deleteMember(memberId: number, success, fail) {
 }
 
 export async function searchMemberInfo(memberId: number, success, fail) {
+  api.defaults.headers["Authorization"] = localStorage.getItem("token");
   await api.get(`/${memberId}`).then(success).catch(fail);
 }
 
@@ -47,29 +48,15 @@ export async function searchMemberFollowInfo(memberId: number, success, fail) {
   await api.get(`/${memberId}/following`).then(success).catch(fail);
 }
 
-export async function searchMemberFollowerInfo(
-  memberId: number,
-  success,
-  fail
-) {
+export async function searchMemberFollowerInfo(memberId: number, success, fail) {
   await api.get(`/${memberId}/follower`).then(success).catch(fail);
 }
 
-export async function searchInfoByGenre(
-  memberId: number,
-  genreNumber: number,
-  success,
-  fail
-) {
+export async function searchInfoByGenre(memberId: number, genreNumber: number, success, fail) {
   await api.get(`/${memberId}/genre/${genreNumber}`).then(success).catch(fail);
 }
 
-export async function updateMemberInfo(
-  memberId: number,
-  data: Object,
-  success,
-  fail
-) {
+export async function updateMemberInfo(memberId: number, data: Object, success, fail) {
   await api.post(`/${memberId}`, data).then(success).catch(fail);
 }
 
@@ -79,8 +66,4 @@ export async function updateProfilePic(data: FormData, success, fail) {
 
 export async function follow(data: Object, success, fail) {
   await api.post(`/follow`, data).then(success).catch(fail);
-}
-
-export async function updateAchievementCount(data: Object, success, fail) {
-  await api.put(`/count`, data).then(success).catch(fail);
 }
