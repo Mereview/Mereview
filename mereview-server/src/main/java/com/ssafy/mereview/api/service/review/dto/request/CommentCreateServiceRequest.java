@@ -14,12 +14,14 @@ public class CommentCreateServiceRequest {
     private String content;
     private Long reviewId;
     private Long memberId;
+    private Long genreId;
 
     @Builder
-    public CommentCreateServiceRequest(String content, Long reviewId, Long memberId) {
+    public CommentCreateServiceRequest(String content, Long reviewId, Long memberId, Long genreId) {
         this.content = content;
         this.reviewId = reviewId;
         this.memberId = memberId;
+        this.genreId = genreId;
     }
 
     public Comment toEntity() {

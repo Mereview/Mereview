@@ -192,13 +192,13 @@ public class MemberController {
         return ApiResponse.ok(response);
     }
 
-    @PutMapping("/count")
-    @ApiOperation(value = "업적 카운트 증가", response = Join.class)
-    public ApiResponse<Integer> updateCount(@RequestBody AchievementCountUpdateRequest request) {
-        log.debug("MemberController.updateCount : {}", request);
-        int achievementCount = memberService.updateAchievementCount(request.toServiceRequest());
-        return ApiResponse.ok(achievementCount);
-    }
+//    @PutMapping("/count")
+//    @ApiOperation(value = "업적 카운트 증가", response = Join.class)
+//    public ApiResponse<Integer> updateCount(@RequestBody AchievementCountUpdateRequest request) {
+//        log.debug("MemberController.updateCount : {}", request);
+//        int achievementCount = memberService.updateAchievementCount(request.toServiceRequest());
+//        return ApiResponse.ok(achievementCount);
+//    }
 
     private UploadFile createUploadFile(MultipartFile file) throws IOException {
         UploadFile uploadFile = null;

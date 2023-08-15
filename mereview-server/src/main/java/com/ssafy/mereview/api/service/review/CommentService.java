@@ -2,6 +2,8 @@ package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.request.CommentUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.CommentCreateServiceRequest;
+import com.ssafy.mereview.domain.member.entity.MemberAchievement;
+import com.ssafy.mereview.domain.member.repository.MemberAchievementQueryRepository;
 import com.ssafy.mereview.domain.review.entity.Comment;
 import com.ssafy.mereview.domain.review.repository.command.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +18,20 @@ import java.util.NoSuchElementException;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final MemberAchievementQueryRepository memberAchievementQueryRepository;
+
 
     public Long save(CommentCreateServiceRequest request) {
-        return commentRepository.save(request.toEntity()).getId();
+        Comment savedComment = commentRepository.save(request.toEntity());
+
+        updateCommentAchievementCount(request);
+
+        return savedComment.getId();
+    }
+
+    public void updateCommentAchievementCount(CommentCreateServiceRequest request) {
+        MemberAchievement memberAchievement = memberAchievementQueryRepository.searchCommentAchievementByMemberIdAndGenreId(request.getMemberId(), request.getGenreId());
+        memberAchievement.updateAchievementCount();
     }
 
     public Long update(CommentUpdateServiceRequest request) {
