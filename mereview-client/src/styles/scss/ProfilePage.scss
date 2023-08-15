@@ -295,6 +295,11 @@ $profile-image-size: 450px;
 .modify-modal {
   @include modal;
   height: 300px;
+  align-items: center;
+
+  .modify-button-box button {
+    width: 100%;
+  }
 }
 
 .interest-modify-modal {
