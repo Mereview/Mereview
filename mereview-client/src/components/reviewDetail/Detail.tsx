@@ -12,7 +12,13 @@ import {
 } from "../../api/review";
 import Comments from "./Comments";
 import { useNavigate } from "react-router-dom";
-import { Select, MenuItem, SelectChangeEvent, FormControlLabel, Switch } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import Loading from "../common/Loading";
 interface evInterface {
   FUN: number;
@@ -153,7 +159,9 @@ const Detail = ({ review, setReview }: any) => {
         (res) => {
           const data = res.data.data.data;
           const filterdReviewList = data.filter((rr) => {
-            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
           });
           setPositiveReview(filterdReviewList);
           setRecommendReview(filterdReviewList);
@@ -173,7 +181,9 @@ const Detail = ({ review, setReview }: any) => {
         (res) => {
           const data = res.data.data.data;
           const filterdReviewList = data.filter((rr) => {
-            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
           });
           setInterestReview(filterdReviewList);
         },
@@ -197,17 +207,32 @@ const Detail = ({ review, setReview }: any) => {
           <span>{ev.USEFUL}</span>
           <img src="/smile.png" alt="유용해요" />
           <span>{ev.FUN}</span>
-          <img src="/thumbdown.png" alt="싫어요" />
+          <img src="/thumbDown.png" alt="싫어요" />
           <span>{ev.BAD}</span>
         </div>
       </div>
       <hr />
-      <div className="content" dangerouslySetInnerHTML={{ __html: review.reviewContent }}></div>
+      <div
+        className="content"
+        dangerouslySetInnerHTML={{ __html: review.reviewContent }}
+      ></div>
 
       <div className="ratingbuttons">
-        <button id="USEFUL" onClick={onClick} disabled={userId === review.reviewId}></button>
-        <button id="FUN" onClick={onClick} disabled={userId === review.reviewId}></button>
-        <button id="BAD" onClick={onClick} disabled={userId === review.reviewId}></button>
+        <button
+          id="USEFUL"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="FUN"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="BAD"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
       </div>
       {Number(userId) === review.memberId ? (
         <div className="edit">
@@ -229,7 +254,9 @@ const Detail = ({ review, setReview }: any) => {
                 onChange={inputCommentHandler}
               ></textarea>
               <label
-                className={`fw-bold ${inputComment.length > 300 && "text-danger"} `}
+                className={`fw-bold ${
+                  inputComment.length > 300 && "text-danger"
+                } `}
                 htmlFor="input"
               >
                 {inputComment.length} / 300bytes
@@ -261,7 +288,10 @@ const Detail = ({ review, setReview }: any) => {
                 />
               ))
             ) : (
-              <div className="nocoment" style={{ width: "100%", height: "auto" }}>
+              <div
+                className="nocoment"
+                style={{ width: "100%", height: "auto" }}
+              >
                 No Coments 댓글좀 주세요 ㅋ
               </div>
             )}
@@ -281,7 +311,11 @@ const Detail = ({ review, setReview }: any) => {
             <FormControlLabel
               className="useful-fun-switch"
               control={
-                <Switch checked={switchToggler} onChange={switchToggleHandler} color="warning" />
+                <Switch
+                  checked={switchToggler}
+                  onChange={switchToggleHandler}
+                  color="warning"
+                />
               }
               label="관심 장르만 보기"
               labelPlacement="end"
@@ -297,7 +331,9 @@ const Detail = ({ review, setReview }: any) => {
                 nickname={review.nickname}
                 profileImageId={review.profileImage.id}
                 backgroundImageId={
-                  review.backgroundImageResponse ? review.backgroundImageResponse.id : null
+                  review.backgroundImageResponse
+                    ? review.backgroundImageResponse.id
+                    : null
                 }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}

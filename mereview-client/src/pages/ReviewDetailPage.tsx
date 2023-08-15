@@ -13,8 +13,15 @@ const ReviewDetail = () => {
   const { id } = useParams();
   const userId = localStorage.getItem("id");
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
+  // 스크롤 이벤트 핸들러
+  const scrolltoTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   //리뷰불러오기
-
   useEffect(() => {
     const data = { reviewId: id, loginMemberId: userId };
     const getReviewHandler = () => {
@@ -66,7 +73,8 @@ const ReviewDetail = () => {
           <div className="blurred" style={style}></div>
           <Top review={review} />
           <Detail review={review} setReview={setReview} />
-          <div className="topbutton"></div>
+
+          <button className="topbutton" onClick={scrolltoTop}></button>
         </div>
       ) : (
         <Loading />
