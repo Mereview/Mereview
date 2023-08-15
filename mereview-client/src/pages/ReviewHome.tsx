@@ -13,19 +13,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
-
-//import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
-
-/* BoxOffice 데이터 생성 시작 */
-
-const koficKey: string = "f22f6d4bc63521504a75ef52103c4101"; // 나중에 따로 빼기?
-const koficDailyBoxofficeURL: string =
-  "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json";
-const today: Date = new Date(Date.now());
-const yesterday: string =
-  today.getFullYear() +
-  String(today.getMonth() + 1).padStart(2, "0") +
-  String(today.getDate() - 1).padStart(2, "0");
+import "../styles/css/ReviewHome.css";
 
 const genres: Record<string, string> = {
   "28": "액션",
@@ -376,8 +364,10 @@ const ReviewHome = () => {
   if (!isFetched) return <Loading />;
   return (
     <>
-      <MovieList movieList={movieList} />
-      <hr />
+      <div className="movieList-section">
+        <MovieList movieList={movieList} />
+      </div>
+
       <ReviewSearch searchProps={searchProps} searchSubmit={searchSubmit} />
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />

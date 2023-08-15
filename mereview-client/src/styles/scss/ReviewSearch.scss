@@ -1,11 +1,23 @@
 @import "Style";
 
+.reviewSearch-section{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 100px 0 30px;
+  padding: 10px;
+  border-bottom: 2px solid;
+
+  .reviewSearch-title{
+    font-size: 48px;
+    font-weight: 900;
+  }
+}
+
 .search-form {
   $form-size: 34.25px;
-  margin-bottom: 10px;
 
   .search-container {
-    margin-left: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,16 +25,17 @@
     .criteria-select {
       font-family: $NanumGothic;
       width: 95px;
+      height: 48px;
       border-radius: 0;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
     }
 
     .search-keyword {
-      height: $form-size;
+      height: 48px;
 
       .MuiInputBase-root {
-        height: $form-size;
+        height: 48px;
         border-radius: 0;
       }
 
@@ -32,8 +45,8 @@
     }
 
     .search-button {
-      width: $form-size;
-      height: $form-size;
+      width: 48px;
+      height: 48px;
       background-color: $gray-1;
       border: 1px solid $gray-4;
       border-top-right-radius: 10px;

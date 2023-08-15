@@ -28,7 +28,7 @@ const NavigationBar = ({ user }) => {
 
   return (
     <div>
-      <Navbar bg="dark" className="mb-5 p-2" expand="lg">
+      <Navbar bg="dark" className="p-2" expand="lg">
         {/* 로고 */}
         <Navbar.Brand href="/review" className="ms-4">
           <img src={"/logo1.png"} height="60"></img>
