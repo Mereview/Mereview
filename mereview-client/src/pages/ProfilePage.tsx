@@ -811,7 +811,7 @@ const ProfilePage = () => {
       </div>
       <div className="profile-info-badge-container">
         <div className="user-info">
-          <Row>
+          <Row className="nickname-row">
             {nicknameEditing ? (
               <div className="nickname-edit-container">
                 <input
@@ -840,7 +840,6 @@ const ProfilePage = () => {
               {genderMapping[userInfo.gender] || null}
             </div>
           </Row>
-          <hr style={{ marginTop: "1px", marginBottom: "10px" }} />
           <Row>
             {introductionEditing ? (
               <>
@@ -870,15 +869,10 @@ const ProfilePage = () => {
           </Row>
           <div className="post-counter-join-date-container">
             <Row>
-              <Col className="post-counter">
-                작성 리뷰: {userInfo.reviewCount} / 작성 댓글: {userInfo.commentCount}
-              </Col>
-            </Row>
-            <Row>
               <Col className="visitors">
-                방문자) 오늘: {userInfo.todayVisitor} / 전체: {userInfo.totalVisitor}
+                Visitors: {userInfo.todayVisitor} / {userInfo.totalVisitor}
               </Col>
-              <Col className="join-date">가입일: {joinDateText}</Col>
+              <Col className="join-date">Join Date: {joinDateText}</Col>
             </Row>
           </div>
         </div>
@@ -886,10 +880,12 @@ const ProfilePage = () => {
           <BadgeList badgeListProps={userInfo.achievements} />
         </div>
       </div>
-      <hr />
       <div>
-        <Col className="sub-title">작성한 리뷰</Col>
+        <Col className="profile-review-sub-title">
+          {userInfo.nickname}님이 작성한 리뷰 (총 {userInfo.reviewCount}개){" "}
+        </Col>
       </div>
+      <hr className="review-hr" />
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
