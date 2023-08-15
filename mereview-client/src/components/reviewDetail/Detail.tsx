@@ -283,9 +283,9 @@ const Detail = ({ review, setReview }: any) => {
                 reviewId={review.reviewId}
                 memberId={review.memberId}
                 nickname={review.nickname}
-                profileImageId={review.profileImage.id}
+                profileImageId={review.profileImage ? review.profileImage.id : undefined}
                 backgroundImageId={
-                  review.backgroundImageResponse ? review.backgroundImageResponse.id : null
+                  review.backgroundImageResponse ? review.backgroundImageResponse.id : undefined
                 }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}
