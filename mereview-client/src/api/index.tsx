@@ -39,7 +39,7 @@ export const tmdbApi = axios.create({
   baseURL: "https://api.themoviedb.org/3",
   headers: {
     "Content-type": "application/json",
-    Authorization: `${process.env.REACT_APP_TMBD_KEY}`,
+    "Authorization": `Bearer ${process.env.REACT_APP_TMDB_KEY}`,
   },
 });
 

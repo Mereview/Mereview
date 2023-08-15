@@ -27,21 +27,6 @@ const yesterday: string =
   String(today.getMonth() + 1).padStart(2, "0") +
   String(today.getDate() - 1).padStart(2, "0");
 
-const getPopularMovieIds = async (page: number) => {
-  const popularMovieIds: number[] = [];
-
-  await getPopularMovies(
-    page,
-    ({ data }) => {
-      console.log(data);
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-};
-
-// Use API later
 const genres: Record<string, string> = {
   "28": "액션",
   "12": "모험",
@@ -64,53 +49,38 @@ const genres: Record<string, string> = {
   "37": "서부",
 };
 
-// const searchMovieOnTmdb = async (movieNames: string[]) => {
-//   const boxOffices: MovieCardInterface[] = [];
+const popularMovies: MovieCardInterface[] = [];
+const getPopularMovieIds = async (page: number) => {
+  popularMovies.length = 0;
+  await getPopularMovies(
+    page,
+    ({ data }) => {
+      const results = data.results
+      for (const movieData of results) {
+        const genre: string[] = [];
+        for (const id of movieData.genre_ids) {
+          genre.push(genres[id]);
+          if (genre.length === 3) break;
+        }
+  
+        const movie: MovieCardInterface = {
+          movieId: movieData.id,
+          posterImagePath: `https://image.tmdb.org/t/p/w300/${movieData.poster_path}`,
+          movieTitle: movieData.title,
+          releaseYear: movieData.release_date.substring(0, 4),
+          movieGenre: genre,
+        };
+  
+        popularMovies.push(movie);
+      }
 
-//   try {
-//     for (const movieName of movieNames) {
-//       const tmdbResponse = await axios.get(tmdbSearchMovieURL, {
-//         headers: { Authorization: `Bearer ${tmdbAuthToken}` },
-//         params: { query: movieName, language: "ko", page: 1 },
-//       });
-
-//       const data = tmdbResponse.data.results[0];
-//       if (typeof data === "undefined") {
-//         const movie: MovieCardInterface = {
-//           movieId: null,
-//           posterImagePath:
-//             "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019",
-//           movieTitle: movieName,
-//           releaseYear: null,
-//           movieGenre: [],
-//         };
-//         boxOffices.push(movie);
-//         continue;
-//       }
-//       const genre: string[] = [];
-//       for (const id of data.genre_ids) {
-//         genre.push(genres[id]);
-//         if (genre.length === 3) break;
-//       }
-
-//       const movie: MovieCardInterface = {
-//         movieId: data.id,
-//         posterImagePath: `https://image.tmdb.org/t/p/w300/${data.poster_path}`,
-//         movieTitle: data.title,
-//         releaseYear: data.release_date.substring(0, 4),
-//         movieGenre: genre,
-//       };
-
-//       boxOffices.push(movie);
-//     }
-
-//     return boxOffices;
-//   } catch (error) {
-//     console.log(`Faild to fetch from TMDB: ${error}`);
-//     return [];
-//   }
-// };
-/* 박스오피스 데이터 생성 끝*/
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+/* 트렌딩 무비 데이터 생성 끝*/
 
 const enterSearch = (e) => {
   console.log(e);
@@ -150,9 +120,8 @@ const ReviewHome = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const movieNames = await getBoxOfficeMovieNames();
-      const movies = await searchMovieOnTmdb(movieNames);
-      setMovieList(movies);
+      await getPopularMovieIds(1);
+      setMovieList(popularMovies);
       setIsFetched(true);
     };
     fetchData();
