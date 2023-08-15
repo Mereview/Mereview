@@ -234,7 +234,6 @@ public class MovieQueryRepository{
 
 - **모든 예외 처리는 ApiControllerAdvice 에서 처리**
 - **반환은 controller와 똑같이 ApiResponse 클래스 반환**
-- **에러 종류에따라 어떤 응답번호 부여할지 컨벤션 정해야함**
 
 ---
 
@@ -293,28 +292,14 @@ mereview:
 │                      
 ├─common
 │  ├─config
-│  │      AppConfig.java            // 뭐하는얘인지 적을 예정
-│  │      JpaAuditingConfig.java    //
-│  │      QueryDslConfig.java       //
-│  │      SecurityConfig.java       //
-│  │      WebConfig.java            //
 │  │      
 │  ├─response
-│  │      ApiResponse.java          //
-│  │      ResultPageResponse.java   //
 │  │      
 │  └─util
-│      │  ApiControllerAdvice.java  //
-│      │  SizeConstants.java        //
 │      │  
 │      ├─file
-│      │      FileExtFilter.java    //
-│      │      FileStore.java        //
-│      │      UploadFile.java       //
 │      │      
 │      └─jwt
-│              JwtAuthFilter.java   //
-│              JwtUtils.java        //
 │              
 └─domain
     │  BaseEntity.java
