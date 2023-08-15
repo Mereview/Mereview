@@ -8,10 +8,10 @@ import static com.ssafy.mereview.domain.member.entity.Rank.*;
 
 public class SizeConstants {
     public static final int PAGE_SIZE = 10;
-    public static final int REVIEW_BRONZE_MAX_COUNT = 10;
-    public static final int REVIEW_SILVER_MAX_COUNT = 30;
-    public static final int REVIEW_GOLD_MAX_COUNT = 50;
-    public static final int REVIEW_PLATINUM_MAX_COUNT = 100;
+    public static final int REVIEW_BRONZE_MAX_COUNT = 50;
+    public static final int REVIEW_SILVER_MAX_COUNT = 100;
+    public static final int REVIEW_GOLD_MAX_COUNT = 300;
+    public static final int REVIEW_PLATINUM_MAX_COUNT = 1000;
     public static final int REVIEW_DIAMOND_MAX_COUNT = 10000;
 
     public static final Map<Rank, Integer> REVIEW_ACHIEVEMENT_MAX_COUNT_MAP = Map.of(
@@ -23,10 +23,10 @@ public class SizeConstants {
             DIAMOND, REVIEW_DIAMOND_MAX_COUNT
     );
 
-    public static final int COMMENT_BRONZE_MAX_COUNT = 10;
-    public static final int COMMENT_SILVER_MAX_COUNT = 30;
-    public static final int COMMENT_GOLD_MAX_COUNT = 50;
-    public static final int COMMENT_PLATINUM_MAX_COUNT = 100;
+    public static final int COMMENT_BRONZE_MAX_COUNT = 50;
+    public static final int COMMENT_SILVER_MAX_COUNT = 100;
+    public static final int COMMENT_GOLD_MAX_COUNT = 300;
+    public static final int COMMENT_PLATINUM_MAX_COUNT = 1000;
     public static final int COMMENT_DIAMOND_MAX_COUNT = 10000;
 
     public static final Map<Rank, Integer> COMMENT_ACHIEVEMENT_MAX_COUNT_MAP = Map.of(
