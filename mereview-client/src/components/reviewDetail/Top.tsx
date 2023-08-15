@@ -73,17 +73,21 @@ const Top = ({ review }: any) => {
         <h1>"{review.reviewHighlight}"</h1>
         <div className="movieTitle">
           <h2>{review.movieTitle}</h2>{" "}
-          <Button styles="btn-third" text="정보" onClick={modalHandler} />
+          <Button styles="btn-third" text="영화정보" onClick={modalHandler} />
         </div>
         <p>
           {review.movieReleaseDate} | {review.genre.genreName}
         </p>
         <div className="userInfo">
           <img src={profileImageURL} alt="작성자프로필이미지" />
-          <div>
-            <p className="nickname">{review.nickname}</p>
-            <p>작성글: 여기서</p>
-          </div>
+          <p className="nickname">
+            <a
+              href={`/profile/${review.memberId}`}
+              style={{ textDecoration: "none" }}
+            >
+              {review.nickname}
+            </a>
+          </p>
         </div>
       </div>
       <div className="rightInfo">
