@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class MemberAchievementResponse {
     private String genreName;
 
-    private String achievementName;
-
     private Rank achievementRank;
 
     private double achievementPercent;
@@ -23,20 +21,20 @@ public class MemberAchievementResponse {
     private AchievementType achievementType;
 
     @Builder
-    public MemberAchievementResponse(String genreName, String achievementName, Rank achievementRank, int achievementCount, AchievementType achievementType) {
+    public MemberAchievementResponse(String genreName, Rank achievementRank, double achievementPercent, int achievementCount, AchievementType achievementType) {
         this.genreName = genreName;
-        this.achievementName = achievementName;
         this.achievementRank = achievementRank;
+        this.achievementPercent = achievementPercent;
         this.achievementCount = achievementCount;
         this.achievementType = achievementType;
     }
+
 
 
     public static MemberAchievementResponse of(MemberAchievement memberAchievement) {
         return
                 MemberAchievementResponse.builder()
                         .genreName(memberAchievement.getGenre().getGenreName())
-                        .achievementName(memberAchievement.getAchievement().getAchievementName())
                         .achievementRank(memberAchievement.getAchievementRank())
                         .achievementType(memberAchievement.getAchievementType())
                         .achievementCount(memberAchievement.getAchievementCount())

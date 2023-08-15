@@ -61,7 +61,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
   return (
     <>
       <div>
-        <Col className="sub-title">박스 오피스 순위</Col>
+        <Col className="sub-title">유행하는 영화</Col>
       </div>
       <div className="movie-card-list-wrapper">
         {visibleMovies.map((movie: MovieCardInterface) => (

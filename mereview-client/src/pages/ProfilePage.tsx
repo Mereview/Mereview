@@ -29,6 +29,7 @@ import {
   searchMemberInfo,
   updateMemberIntroduce,
   updateMemberNickname,
+  updateMemberInterest,
   searchMemberFollowInfo,
   searchMemberFollowerInfo,
   updateProfilePic,
@@ -38,6 +39,15 @@ import {
 } from "../api/members";
 import { searchReviews } from "../api/review";
 import "../styles/css/ProfilePage.css";
+
+interface GenreInfo {
+  [id: string]: [string, string];
+}
+
+interface InterestInterface {
+  genreId: string;
+  genreName: string;
+}
 
 /* 유저 더미 데이터 생성 시작 */
 const dummyBadges: AchievedBadge[] = [
@@ -136,6 +146,7 @@ const userInfo: ProfileInfoInterface = {
   profileImageId: null,
   age: null,
   gender: null,
+  interests: [],
   introduction: null,
   reviewCount: 0,
   commentCount: 0,
@@ -151,11 +162,11 @@ const userInfo: ProfileInfoInterface = {
 
 const profileBorderColor = {
   NONE: "rgba(0, 0, 0, 1)",
-  BRONZE: "rgba(148, 97, 61, 1)", // BRONZE
-  SILVER: "rgba(143, 143, 143, 1)", // SILVER
-  GOLD: "rgba(242, 205, 92, 1)", // GOLD
-  PLATINUM: "rgba(80, 200, 120, 1)", // platinum
-  DIAMOND: "rgba(112, 209, 244, 1)", // diamond
+  BRONZE: "rgba(148, 97, 61, 1)",
+  SILVER: "rgba(143, 143, 143, 1)",
+  GOLD: "rgba(242, 205, 92, 1)",
+  PLATINUM: "rgba(80, 200, 120, 1)",
+  DIAMOND: "rgba(112, 209, 244, 1)",
 };
 
 const profileTier = {
@@ -166,9 +177,32 @@ const profileTier = {
   PALTINUM: 4,
   DIAMOND: 5,
 };
-/* 유저 더미 데이터 생성 끝 */
+
+const genre: GenreInfo = {
+  "1": ["액션", "/interest/action"],
+  "2": ["모험", "/interest/adventure"],
+  "3": ["애니메이션", "/interest/animation"],
+  "4": ["코미디", "/interest/comedy"],
+  "5": ["범죄", "/interest/crime"],
+  "6": ["다큐멘터리", "/interest/documentary"],
+  "7": ["드라마", "/interest/drama"],
+  "8": ["가족", "/interest/familly"],
+  "9": ["판타지", "/interest/fantasy"],
+  "10": ["역사", "/interest/history"],
+  "11": ["공포", "/interest/horror"],
+  "12": ["음악", "/interest/music"],
+  "13": ["미스터리", "/interest/mistery"],
+  "14": ["로맨스", "/interest/romance"],
+  "15": ["SF", "/interest/SF"],
+  "16": ["TV 영화", "/interest/TVmovie"],
+  "17": ["스릴러", "/interest/thriller"],
+  "18": ["전쟁", "/interest/war"],
+  "19": ["서부", "/interest/western"],
+};
 
 const userExpData: Experience[] = [];
+const userInterestData: InterestInterface[] = [];
+/* 유저 더미 데이터 생성 끝 */
 
 /* api start */
 let error: AxiosError | null = null;
@@ -180,12 +214,22 @@ const getMemberInfo = async (userId: number) => {
       const birthDate = new Date(response.birthDate);
       const ageDiff = Date.now() - birthDate.getTime();
       const ageDate = new Date(ageDiff);
+      userExpData.length = 0;
+      userInterestData.length = 0;
 
       userInfo.memberId = userId;
       userInfo.nickname = response.nickname;
       userInfo.profileImageId = response.profileImage?.id;
       userInfo.age = Math.abs(ageDate.getUTCFullYear() - 1970);
       userInfo.gender = response.gender;
+      for (const interest of response.interests) {
+        const interestTemp: InterestInterface = {
+          genreId: String(interest.genreId),
+          genreName: interest.genreName,
+        };
+        userInterestData.push(interestTemp);
+      }
+      userInfo.interests = userInterestData;
       userInfo.introduction = response.introduce ? response.introduce : "";
       userInfo.followerCount = response.follower;
       userInfo.followingCount = response.following;
@@ -303,9 +347,14 @@ const ProfilePage = () => {
     useState<boolean>(false);
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
+  const [isInterestModifyModalLoading, setInterestModifyModalLoading] =
+    useState<boolean>(false);
+  const [isInterestModifyModalOpen, setInterestModifyModalOpen] =
+    useState<boolean>(false);
   const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
   const [emptyInput, setEmptyInput] = useState<boolean>(false);
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
+  const [interestModify, setInterestModify] = useState<InterestInterface[]>([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -574,6 +623,10 @@ const ProfilePage = () => {
   };
 
   const handleEditNicknameSaveClick = async () => {
+    if (editedNickname === "") {
+      alert("닉네임을 입력해주세요");
+      return;
+    }
     const nicknameData: Object = {
       id: loginId,
       nickname: editedNickname,
@@ -582,8 +635,10 @@ const ProfilePage = () => {
     await updateMemberNickname(
       nicknameData,
       ({ data }) => {
-        if (data.code === 200) userInfo.nickname = editedNickname;
-        console.log(data);
+        if (data.code === 200) {
+          userInfo.nickname = editedNickname;
+          handleEditNicknameCancelClick();
+        }
       },
       (error) => {
         console.log(error);
@@ -697,7 +752,27 @@ const ProfilePage = () => {
     );
   };
 
+  const verifyOnKeyUp = (e) => {
+    if (e.key === "Enter") {
+      verifyPassword();
+    }
+  };
+
   const openModifyModal = () => {
+    setInterestModify([]);
+    setInterestModifyModalLoading(true);
+    const interestInit = async () => {
+      for (const interest of userInfo.interests) {
+        setInterestModify((prevInterest: InterestInterface[]) => {
+          const genreId: string = interest.genreId;
+          const genreName: string = interest.genreName;
+          return [...prevInterest, { genreId, genreName }];
+        });
+      }
+
+      setInterestModifyModalLoading(false);
+    };
+    interestInit();
     setModifyModalOpen(true);
   };
 
@@ -726,6 +801,52 @@ const ProfilePage = () => {
         }
       );
     }
+  };
+
+  const openInterestModifyModal = () => {
+    setInterestModifyModalOpen(true);
+  };
+
+  const closeInterestModifyModal = () => {
+    setInterestModifyModalOpen(false);
+  };
+
+  const onClickInterest = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const genreId = event.currentTarget.id;
+    const genreName = event.currentTarget.textContent || "";
+
+    setInterestModify((prevInterest: InterestInterface[]) => {
+      const isGenreExist = prevInterest.some(
+        (item) => item.genreId === genreId
+      );
+      if (isGenreExist) {
+        return prevInterest.filter((item) => item.genreId !== genreId);
+      } else {
+        return [...prevInterest, { genreId, genreName }];
+      }
+    });
+  };
+
+  const handelInterestModify = async () => {
+    const interestModifyData = {
+      id: loginId,
+      interests: interestModify,
+    };
+    await updateMemberInterest(
+      interestModifyData,
+      ({ data }) => {
+        if (data.code === 200) {
+          alert("관심장르 변경 성공!");
+          closeInterestModifyModal();
+          closeModifyModal();
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
@@ -825,10 +946,10 @@ const ProfilePage = () => {
                 </Col>
               </>
             )}
-            <Col className="age-gender">
+            <div className="age-gender">
               {userInfo.age && userInfo.age + " "}
               {genderMapping[userInfo.gender] || null}
-            </Col>
+            </div>
           </Row>
           <hr style={{ marginTop: "1px", marginBottom: "10px" }} />
           <Row>
@@ -946,6 +1067,7 @@ const ProfilePage = () => {
       >
         <div>비밀번호를 입력해주세요</div>
         <TextField
+          inputRef={verifyRef}
           id="verify-password"
           className="verify-password"
           placeholder="Password"
@@ -953,6 +1075,7 @@ const ProfilePage = () => {
           value={verifyPasswordInput}
           type="password"
           error={emptyInput || wrongPassword}
+          onKeyUp={verifyOnKeyUp}
         />
         <span className="verify-info">
           {emptyInput
@@ -973,23 +1096,48 @@ const ProfilePage = () => {
         contentLabel="Modify Modal"
         className="modify-modal"
       >
-        <div>
-          <div>비밀번호를 입력해주세요</div>
-          <TextField
-            inputRef={verifyRef}
-            id="verify-password"
-            className="verify-password"
-            placeholder="Password"
-            onChange={onChangeVerfiyPasswordInput}
-            value={verifyPasswordInput}
-            type="password"
-            error={emptyInput || wrongPassword}
-          />
-        </div>
         <div className="modal-button-box">
-          <button onClick={withdrawal}>탈퇴</button>
-          <button onClick={updateMemberInfo}>완료</button>
+          <button onClick={openInterestModifyModal}>관심장르수정</button>
           <button onClick={closeModifyModal}>취소</button>
+        </div>
+        <button onClick={withdrawal}>탈퇴</button>
+      </Modal>
+
+      <Modal
+        isOpen={isInterestModifyModalOpen}
+        onRequestClose={closeInterestModifyModal}
+        contentLabel="Interest Modify Modal"
+        className="interest-modify-modal"
+      >
+        <div>어떤 장르에 관심 있으세요??</div>
+        {isInterestModifyModalLoading ? (
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : (
+          <div className="middle-box">
+            {Object.keys(genre).map((id) => (
+              <div
+                id={id}
+                className={`small-box ${
+                  interestModify.some((item) => item.genreId === id)
+                    ? "selected"
+                    : ""
+                }`}
+                key={id}
+                style={{ backgroundImage: `url(${genre[id][1]}.png)` }}
+                onClick={onClickInterest}
+              >
+                <span id="title">{genre[id][0]}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="interest-modify-finish">
+          <button onClick={handelInterestModify}>
+            {`${interestModify.length} 개 선택, 완료하기!`}
+          </button>
+          <button onClick={closeInterestModifyModal}>취소</button>
         </div>
       </Modal>
     </>

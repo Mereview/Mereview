@@ -86,7 +86,6 @@ public class MemberQueryRepository{
     public List<MemberAchievement> searchMemberAchievementByMemberId(Long memberId) {
         return queryFactory
                 .selectFrom(memberAchievement)
-                .innerJoin(memberAchievement.achievement, achievement)
                 .innerJoin(memberAchievement.genre, genre)
                 .on(genre.id.eq(memberAchievement.genre.id))
                 .fetch();
