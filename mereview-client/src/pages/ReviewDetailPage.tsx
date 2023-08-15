@@ -13,7 +13,6 @@ const ReviewDetail = () => {
   const { id } = useParams();
   const userId = localStorage.getItem("id");
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
   // 스크롤 이벤트 핸들러
   const scrolltoTop = () => {
     window.scrollTo({

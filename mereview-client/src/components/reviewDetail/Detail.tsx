@@ -134,6 +134,7 @@ const Detail = ({ review, setReview }: any) => {
       evaluationsReview(data, success, fail);
     }
   };
+  console.log(review);
   // 동일키워드 추천 리뷰 불러오기
   const [switchToggler, setSwitchToggler] = useState(false);
   const [recommendReview, setRecommendReview] = useState([]);
