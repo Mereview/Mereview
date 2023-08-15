@@ -29,7 +29,7 @@ const genreMapper: Object = {
   음악: "music",
   미스터리: "mistery",
   로맨스: "romance",
-  SF: "SF",
+  SF: "sf",
   "TV 영화": "TVmovie",
   스릴러: "thriller",
   전쟁: "war",
