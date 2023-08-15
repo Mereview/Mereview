@@ -181,10 +181,12 @@ public class MemberService {
         }
     }
 
-    public void updateViewCount(Long id) {
+    public void updateViewCount(Long id, String token) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         log.debug("조회수 : {}", member.getMemberVisit());
-        member.getMemberVisit().updateVisitCount();
+        if(!jwtUtils.getUsernameFromJwt(token).equals(member.getEmail())){
+            member.getMemberVisit().updateVisitCount();
+        }
     }
 
     public MemberFollowResponse createFollow(Long targetId, Long currentMemberId) {
