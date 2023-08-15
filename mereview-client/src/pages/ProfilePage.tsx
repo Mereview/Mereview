@@ -153,7 +153,6 @@ const getMemberInfo = async (userId: number) => {
         };
         userAchievementData.push(achievementTemp);
       }
-      console.log(userAchievementData);
       userAchievementData.sort((a, b) => {
         if (a.rank === b.rank) {
           return b.count - a.count;
@@ -380,6 +379,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (userId === null || loginId === null || userId === undefined || loginId === undefined)
       return;
+    setIsFetched(false);
     const followCheck = async () => {
       await getFollowerCount(userId, loginId);
       await getFollowingCount(userId);
