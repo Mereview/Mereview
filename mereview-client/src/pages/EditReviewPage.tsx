@@ -2,7 +2,7 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import "../styles/css/ReviewWrite.css";
+import "../styles/css/EditReview.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { positions } from "@mui/system";
 import { useParams } from "react-router-dom";
 import { searchReview } from "../api/review";
+import { FormControlLabel, Switch } from "@mui/material";
 const ReviewWrite = () => {
   const url = `${process.env.REACT_APP_API_URL}`;
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ const ReviewWrite = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
   const fileDataRef = useRef<File>(null);
+  const [changeImg, setChangeImg] = useState<boolean>(false);
   //영화이름에 따른 자동완성과 해당 영화의 장르 저장을 위한 변수
   const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
   const movieName = useRef("");
@@ -122,6 +124,13 @@ const ReviewWrite = () => {
     genreId: 0,
     keywordRequests: [],
   });
+
+  //이미지 변경여부 조정 함수
+  const changeImgHandler = () => {
+    setChangeImg(!changeImg);
+    if (changeImg === true) {
+    }
+  };
 
   //배경이미지 첨부 함수
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -279,6 +288,7 @@ const ReviewWrite = () => {
             content: inputData.current.content,
             keywordRequests: inputData.current.keywordRequests,
             type: inputData.current.type,
+            updateBackGround: changeImg,
           }),
         ],
         {
@@ -424,9 +434,18 @@ const ReviewWrite = () => {
                     styles="btn-fourth"
                     btnType="button"
                     text="첨부"
+                    disabled={!changeImg}
                   ></Button>
                 </div>
               </Col>
+              <FormControlLabel
+                className="i-box"
+                control={
+                  <Switch checked={changeImg} onChange={changeImgHandler} />
+                }
+                label="수정하기"
+                labelPlacement="end"
+              />
             </Row>
             <Row className="">
               <Col
