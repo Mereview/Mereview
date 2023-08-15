@@ -5,6 +5,8 @@ import com.ssafy.mereview.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -12,6 +14,7 @@ import static com.ssafy.mereview.domain.review.entity.NotificationStatus.CONFIRM
 import static com.ssafy.mereview.domain.review.entity.NotificationStatus.UNCONFIRMED;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
+import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -28,6 +31,7 @@ public class Notification extends BaseEntity {
     private Member member;
 
     @ManyToOne
+    @OnDelete(action = CASCADE)
     @JoinColumn(name = "review_id")
     private Review review;
 
