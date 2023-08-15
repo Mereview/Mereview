@@ -39,4 +39,10 @@ public class MovieQueryRepository {
                 .fetchOne();
     }
 
+    public Long searchMovieIdByContentId(Integer contentId) {
+        return queryFactory.select(movie.id)
+                .from(movie)
+                .where(movie.movieContentId.eq(contentId))
+                .fetchOne();
+    }
 }

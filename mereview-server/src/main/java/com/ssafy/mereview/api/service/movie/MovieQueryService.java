@@ -30,8 +30,8 @@ import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 @Transactional(readOnly = true)
 @Service
 public class MovieQueryService {
-
     private final MovieQueryRepository movieQueryRepository;
+
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
 
     public MovieDetailResponse searchById(Long movieId) {
@@ -41,6 +41,14 @@ public class MovieQueryService {
         }
 
         return createMovieDetailResponse(movie);
+    }
+
+    public Long searchMovieIdByContentId(Integer contentId) {
+        Long movieId = movieQueryRepository.searchMovieIdByContentId(contentId);
+        if (movieId == null) {
+            throw new NoSuchElementException("존재하지 않는 영화입니다.");
+        }
+        return movieId;
     }
 
     /**
