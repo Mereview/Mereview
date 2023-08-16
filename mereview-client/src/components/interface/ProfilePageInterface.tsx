@@ -10,6 +10,12 @@ interface InterestInterface {
   genreName: string;
 }
 
+export interface FollowUserInfo {
+  memberId: number;
+  profileImageId?: number;
+  nickname: string;
+}
+
 export interface ProfileInfoInterface {
   memberId: number | null;
   nickname: string;
@@ -23,7 +29,14 @@ export interface ProfileInfoInterface {
   followerCount: number;
   followingCount: number;
   followed: boolean;
-  highestTier: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND" | "NONE" | null;
+  highestTier:
+    | "BRONZE"
+    | "SILVER"
+    | "GOLD"
+    | "PLATINUM"
+    | "DIAMOND"
+    | "NONE"
+    | null;
   achievements: AchievedBadge[];
   joinDate: number | Date;
   todayVisitor: number; // 오늘 방문자 수
