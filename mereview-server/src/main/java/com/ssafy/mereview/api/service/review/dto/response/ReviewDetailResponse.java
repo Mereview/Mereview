@@ -26,7 +26,7 @@ public class ReviewDetailResponse {
     private String reviewHighlight;
     private LocalDateTime createdTime;
     private List<KeywordResponse> keywords;
-    private boolean isEvaluated;
+    private boolean isDone;
     private int positiveCount;
     private int funCount;
     private int usefulCount;
@@ -42,7 +42,7 @@ public class ReviewDetailResponse {
     private List<CommentResponse> comments = new ArrayList<>();
 
     @Builder
-    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, String movieEvaluatedType, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime createdTime, List<KeywordResponse> keywords, boolean isEvaluated, int positiveCount, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
+    public ReviewDetailResponse(Long reviewId, String reviewTitle, String reviewContent, String movieEvaluatedType, int hits, BackgroundImageResponse backgroundImage, String reviewHighlight, LocalDateTime createdTime, List<KeywordResponse> keywords, boolean isDone, int positiveCount, int funCount, int usefulCount, int badCount, Long movieId, String movieTitle, GenreResponse genre, String movieReleaseDate, Long memberId, String nickname, ProfileImageResponse profileImage, List<MemberTierResponse> memberTiers, List<CommentResponse> comments) {
         this.reviewId = reviewId;
         this.reviewTitle = reviewTitle;
         this.reviewContent = reviewContent;
@@ -52,7 +52,7 @@ public class ReviewDetailResponse {
         this.reviewHighlight = reviewHighlight;
         this.createdTime = createdTime;
         this.keywords = keywords;
-        this.isEvaluated = isEvaluated;
+        this.isDone = isDone;
         this.positiveCount = positiveCount;
         this.funCount = funCount;
         this.usefulCount = usefulCount;

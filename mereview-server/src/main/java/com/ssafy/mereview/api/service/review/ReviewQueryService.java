@@ -125,7 +125,7 @@ public class ReviewQueryService {
                 .reviewHighlight(review.getHighlight())
                 .createdTime(review.getCreatedTime())
                 .keywords(getKeywordResponses(review.getKeywords()))
-                .isEvaluated(isEvaluated(review.getId(), writeMember.getId()))
+                .isDone(checkIsDone(review.getId(), writeMember.getId()))
                 .positiveCount(getPositiveCount(review.getId()))
                 .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
                 .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
@@ -148,7 +148,7 @@ public class ReviewQueryService {
         }
     }
 
-    private boolean isEvaluated(Long reviewId, Long memberId) {
+    private boolean checkIsDone(Long reviewId, Long memberId) {
         Optional<ReviewEvaluation> reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, memberId);
         return reviewEvaluation.isPresent();
     }
