@@ -64,7 +64,7 @@ public class ReviewQueryService {
             throw new NoSuchElementException("존재하지 않는 리뷰입니다.");
         }
         increaseHits(loginMemberId, review);
-        return createReviewDetailResponse(review);
+        return createReviewDetailResponse(loginMemberId, review);
     }
 
     public List<ReviewResponse> searchNotifiedReviews(Long memberId, String status, Pageable pageable) {
@@ -112,7 +112,7 @@ public class ReviewQueryService {
                 ).collect(Collectors.toList());
     }
 
-    private ReviewDetailResponse createReviewDetailResponse(Review review) {
+    private ReviewDetailResponse createReviewDetailResponse(Long loginMemberId, Review review) {
         Member writeMember = review.getMember();
         Movie movie = review.getMovie();
         return ReviewDetailResponse.builder()
@@ -125,7 +125,8 @@ public class ReviewQueryService {
                 .reviewHighlight(review.getHighlight())
                 .createdTime(review.getCreatedTime())
                 .keywords(getKeywordResponses(review.getKeywords()))
-                .isDone(checkIsDone(review.getId(), writeMember.getId()))
+                .reviewEvaluationType(getReviewEvaluationType(review.getId(), loginMemberId))
+                .isDone(checkIsDone(review.getId(), loginMemberId))
                 .positiveCount(getPositiveCount(review.getId()))
                 .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
                 .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
@@ -148,8 +149,14 @@ public class ReviewQueryService {
         }
     }
 
-    private boolean checkIsDone(Long reviewId, Long memberId) {
-        Optional<ReviewEvaluation> reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, memberId);
+    private ReviewEvaluationType getReviewEvaluationType(Long reviewId, Long loginMemberId) {
+        ReviewEvaluation reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, loginMemberId)
+                .orElseThrow(NoSuchElementException::new);
+        return reviewEvaluation.getType();
+    }
+
+    private boolean checkIsDone(Long reviewId, Long loginMemberId) {
+        Optional<ReviewEvaluation> reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, loginMemberId);
         return reviewEvaluation.isPresent();
     }
 
