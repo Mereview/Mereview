@@ -101,11 +101,6 @@ public class MemberController {
 
         String token = request.getHeader("Authorization");
         log.debug("token : {}", token);
-        if(token == null){
-            return ApiResponse.of(HttpStatus.BAD_REQUEST,"토큰이 없습니다.", null);
-        }
-
-
 
         MemberResponse memberResponse = memberQueryService.searchMemberInfo(memberId);
         memberService.updateViewCount(memberId, token);

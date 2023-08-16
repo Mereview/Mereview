@@ -29,5 +29,6 @@
 
  - [프로젝트 기획](./mereview-docs/ProjectPlan.md)
  - [요구사항 명세](./mereview-docs/Requirement.md)
+ - [API 명세](./mereview-docs/API-Specification.md)
  - [컨벤션](./mereview-docs/Common-Convention.md)
 

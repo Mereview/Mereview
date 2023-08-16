@@ -29,7 +29,7 @@ const genreMapper: Object = {
   음악: "music",
   미스터리: "mistery",
   로맨스: "romance",
-  SF: "SF",
+  SF: "sf",
   "TV 영화": "TVmovie",
   스릴러: "thriller",
   전쟁: "war",
@@ -68,13 +68,27 @@ const BadgeComponent = ({ badgeInfo }: BadgeInfo) => {
   );
 };
 
+const genreValues = Object.values(genreMapper);
+const randomIndex = Math.floor(Math.random() * genreValues.length);
+const randomGenreValue = genreValues[randomIndex];
 const BadgeList = ({ badgeListProps }: BadgeListInterface) => {
-  if (badgeListProps.length === 0)
+  if (badgeListProps.length === 0) {
     return (
       <>
-        <div className="empty-badge-info">획득한 뱃지가 없습니다.</div>
+        <div
+          className="badge-background"
+          style={{ backgroundImage: `url(/Badges/g-${randomGenreValue}.png)` }}
+        >
+          <div className="badge-background-overlay">
+            <div className="empty-badge-info">
+              <div>획득한 뱃지가 없습니다.</div>
+              <div>리뷰 혹은 댓글을 작성해서 뱃지를 수집해보세요!!</div>
+            </div>
+          </div>
+        </div>
       </>
     );
+  }
   return (
     <>
       <div>

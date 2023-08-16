@@ -2,7 +2,6 @@ import "../../styles/css/Detail.css";
 import ReviewCard from "../ReviewCard";
 import { Button } from "../common";
 import { useState, useEffect } from "react";
-import { updateAchievementCount } from "../../api/members";
 import {
   createReviewComment,
   searchReview,
@@ -44,6 +43,7 @@ const Detail = ({ review, setReview }: any) => {
       content: inputComment,
       memberId: userId,
       reviewId: review.reviewId,
+      genreId: review.genre.genreId,
     };
     const success = (res) => {
       setcommentCNT((cur) => ++cur);
@@ -52,18 +52,6 @@ const Detail = ({ review, setReview }: any) => {
         data,
         (res) => {
           setReview(res.data.data);
-          const achievementUpdate = {
-            achievementType: 2,
-            genreId: res.data.data.genre.genreId,
-            memberId: userId,
-          };
-          updateAchievementCount(
-            achievementUpdate,
-            (res) => {},
-            (err) => {
-              console.log(err);
-            }
-          );
         },
         (err) => {
           console.log(err);
@@ -326,12 +314,15 @@ const Detail = ({ review, setReview }: any) => {
                 key={review.reviewId}
                 reviewId={review.reviewId}
                 memberId={review.memberId}
+                movieId={review.movieId}
                 nickname={review.nickname}
-                profileImageId={review.profileImage.id}
+                profileImageId={
+                  review.profileImage ? review.profileImage.id : undefined
+                }
                 backgroundImageId={
                   review.backgroundImageResponse
                     ? review.backgroundImageResponse.id
-                    : null
+                    : undefined
                 }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}

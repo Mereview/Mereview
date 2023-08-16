@@ -2,7 +2,6 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../components/common";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { updateAchievementCount } from "../api/members";
 import "../styles/css/ReviewWrite.css";
 import KeywordSlider from "../components/reviewWrite/KeywordSlider";
 import TextEditor from "../components/reviewWrite/TextEditor";
@@ -101,6 +100,7 @@ const ReviewWrite = () => {
   const [genreList, setGenreList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
   const [selectGenre, setSelectGenre] = useState(null);
+  const [posterImage, setPosterImage] = useState(null);
 
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
@@ -129,6 +129,7 @@ const ReviewWrite = () => {
         const movie = res.data.data;
         inputData.current.movieId = movie.id;
         setGenreList(movie.genres);
+        setPosterImage(movie.posterImg);
       })
       .catch(() => {
         console.log("error");
@@ -202,34 +203,43 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
-    formData.append("file", fileDataRef.current);
-    axios
-      .post(url + "/reviews", formData)
-      .then(() => {
-        console.log("success");
-        const achievementUpdate = {
-          achievementType: 1,
-          genreId: selectGenre,
-          memberId: userid,
-        };
-        updateAchievementCount(
-          achievementUpdate,
-          () => {},
-          (err) => {
-            console.log(err);
-          }
-        );
-        navigate("/review");
-      })
-      .catch(() => {
-        console.log("fail");
-      });
+    if (fileDataRef.current !== null) {
+      formData.append("file", fileDataRef.current);
+
+      axios
+        .post(url + "/reviews", formData)
+        .then(() => {
+          console.log("success");
+          navigate("/review");
+        })
+        .catch(() => {
+          console.log("fail");
+        });
+    } else {
+      fetch(`https://image.tmdb.org/t/p/w300/${posterImage}`)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const imageFile = new File([blob], "image.jpg");
+          console.log("!!", imageFile);
+          formData.append("file", imageFile);
+
+          axios
+            .post(url + "/reviews", formData)
+            .then(() => {
+              console.log("success");
+              navigate("/review");
+            })
+            .catch(() => {
+              console.log("fail");
+            });
+        });
+    }
   };
 
   return (
     <div
       style={{
-        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+         backgroundColor: "rgb(255, 243, 243)",
         // backgroundImage: `url(${topImg})`,
         position: "absolute",
         backgroundSize: "fill",
@@ -260,9 +270,7 @@ const ReviewWrite = () => {
           position: "relative",
           height: "auto",
           flex: "1",
-          backgroundColor: `${
-            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
-          }`,
+          backgroundColor: `${selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"}`,
           // backgroundColor: "rgba(0, 0, 0, 0.5)",
           // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
@@ -275,10 +283,7 @@ const ReviewWrite = () => {
         ></div>
         <Row />
         <Row className="top mx-2">
-          <Col
-            md-lg={7}
-            className="frame me-4 p-4 rounded-3 d-flex flex-column"
-          >
+          <Col md-lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -374,11 +379,7 @@ const ReviewWrite = () => {
               <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <Button
-                    styles="btn-fourth"
-                    btnType="button"
-                    text="첨부"
-                  ></Button>
+                  <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
                 </div>
               </Col>
             </Row>
@@ -401,11 +402,7 @@ const ReviewWrite = () => {
           <TextEditor ref={contentRef}></TextEditor>
         </Row>
         <Row className="align-items-center d-flex justify-content-end mb-3 me-1">
-          <Button
-            styles="btn-primary"
-            text="등록"
-            onClick={reviewCreateHandler}
-          ></Button>
+          <Button styles="btn-primary" text="등록" onClick={reviewCreateHandler}></Button>
         </Row>
         <Row />
       </Container>

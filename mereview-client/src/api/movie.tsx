@@ -14,6 +14,14 @@ export async function searchMovieDetail(movieId: number, success, fail) {
   await api.get(`/${movieId}`).then(success).catch(fail);
 }
 
+export async function searchMovieDetailReview(movieId: number, success, fail) {
+  await api.get(`/detail/${movieId}`).then(success).catch(fail);
+}
+
+export async function searchIdByContentId(contentId: number, success, fail) {
+  await api.get(`/content/${contentId}`).then(success).catch(fail);
+}
+
 export async function getPopularMovies(page: number, success, fail) {
   await tmdb.get(`/movie/popular?language=ko-KR&page=${page}&region=KR`).then(success).catch(fail);
 }

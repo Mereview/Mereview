@@ -1,0 +1,55 @@
+@import "Style";
+
+.movie-info-container {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  .info-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.75);
+
+    .movie-poster {
+      margin-right: 20px;
+    }
+
+    .movie-info {
+      font-family: $BMDoHyeon;
+
+      .movie-title {
+        font-size: $font-size-h1;
+      }
+
+      .movie-release-date-genre {
+        font-size: $font-size-xl;
+      }
+
+      .movie-overview {
+        width: 75%;
+        min-width: 350px;
+      }
+    }
+  }
+}
+
+.sort-container {
+  margin-top: 15px;
+  margin-left: 25px;
+  display: flex;
+
+  .selected {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: $black;
+  }
+
+  button {
+    font-family: $BMDoHyeon;
+    color: $gray-7;
+    border: none;
+    background-color: transparent;
+  }
+}

@@ -10,6 +10,7 @@
   position: relative;
   display: inline-block;
   border: solid 2px $black;
+  border-radius: 10px;
   flex-basis: 31%;
   width: 550px;
   height: 300px;
@@ -28,6 +29,7 @@
     flex-direction: column;
     justify-content: space-between;
     position: absolute;
+    border-radius: 8px;
     top: 0;
     left: 0;
     width: 100%;
@@ -118,10 +120,12 @@
     }
   }
 }
+
 .review-card {
   position: relative;
   display: inline-block;
   border: solid 2px $black;
+  border-radius: 10px;
   flex-basis: 31%;
   width: 30%;
   height: 0;
@@ -140,6 +144,7 @@
     flex-direction: column;
     justify-content: space-between;
     position: absolute;
+    border-radius: 8px;
     top: 0;
     left: 0;
     width: 100%;
@@ -233,4 +238,5 @@
 
 .card-overlay {
   padding: 10px;
+  border-radius: 8px;
 }

@@ -2,6 +2,7 @@ export interface ReviewCardInterface {
   className?: string | null;
   reviewId: number;
   memberId: string;
+  movieId: number;
   nickname: string;
   profileImageId?: number;
   backgroundImageId?: number;

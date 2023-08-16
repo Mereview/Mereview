@@ -1,40 +1,39 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { MovieCardInterface } from "./interface/MovieCardInterface";
+import { searchIdByContentId } from "../api/movie";
 import "../styles/css/MovieCard.css";
 
 const MovieCard = (props: MovieCardInterface) => {
-  const { movieId, posterImagePath, movieTitle, releaseYear, movieGenre } =
-    props;
+  const { movieId, posterImagePath, movieTitle, releaseYear, movieGenre } = props;
+  const navigate = useNavigate();
 
   const genres: string = movieGenre.join(". ");
 
-  const handleMovieCardClick = (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => {
-    console.log("Movie Card Clicked", movieId);
+  const handleMovieCardClick = async (event: React.MouseEvent<HTMLParagraphElement>) => {
+    await searchIdByContentId(
+      Number(movieId),
+      ({ data }) => {
+        navigate(`/movie/${data.data}`);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   return (
-    <>
-      <div className="movie-card" onClick={handleMovieCardClick}>
-        <div className="poster-image">
-          <img src={posterImagePath} alt={movieTitle} />
-        </div>
-        <Row>
-          <Col md={12} className="movie-title">
-            {movieTitle}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <span className="year-genres">
-              {releaseYear} {genres && `| ${genres}`}
-            </span>
-          </Col>
-        </Row>
+    <div className="movie-card" onClick={handleMovieCardClick}>
+      <div className="poster-image">
+        <img src={posterImagePath} alt={movieTitle} />
       </div>
-    </>
+      <div className="movie-info">
+        <div className="movie-title">{movieTitle}</div>
+        <div>
+          {releaseYear} {genres && `| ${genres}`}
+        </div>
+      </div>
+    </div>
   );
 };
 
