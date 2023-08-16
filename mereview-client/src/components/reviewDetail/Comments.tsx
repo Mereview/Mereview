@@ -90,6 +90,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
+  console.log(comment);
   return (
     <div className="comment">
       <div className="writer">
