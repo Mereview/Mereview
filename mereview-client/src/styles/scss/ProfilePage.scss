@@ -80,6 +80,16 @@ $profile-image-size: 450px;
       display: flex;
       justify-content: space-between;
     }
+
+    .follow-list-button {
+      background-color: $magenta-1;
+      z-index: 998;
+      border-bottom: 2px solid $magenta-3;
+
+      &:hover {
+        background-color: $magenta-2;
+      }
+    }
   }
 
   .profile-chart-scroll-div {
