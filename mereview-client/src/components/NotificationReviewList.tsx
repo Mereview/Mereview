@@ -52,8 +52,8 @@ const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
   };
 
   return (
-    <>
-      <Slider {...settings}>
+    <div className="mx-5">
+      <Slider className="notification-slider" {...settings}>
         {reviewList.map((review: ReviewCardInterface) => (
           <NotificationReviewCard
             key={review.reviewId}
@@ -76,7 +76,7 @@ const NotificationReviewList = ({ reviewList }: ReviewListProps) => {
           />
         ))}
       </Slider>
-    </>
+    </div>
   );
 };
 
