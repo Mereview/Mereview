@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import NotificationReviewList from "../components/NotificationReviewList";
 import axios from "axios";
 import Loading from "../components/common/Loading";
+import { NotificationReviewCardInterface } from "../components/interface/NotificationReviewCardInterface";
 import {
   getConfirmedNotifications,
   searchReviews,
@@ -78,7 +79,7 @@ const NotificationHome = () => {
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
   const [confirmedReviewList, setConfirmedReviewList] = useState<Array<ReviewCardInterface>>([]);
-  const [unconfirmedReviewList, setUnonfirmedReviewList] = useState<Array<ReviewCardInterface>>([]);
+  const [unconfirmedReviewList, setUnconfirmedReviewList] = useState<Array<ReviewCardInterface>>([]);
 
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -99,12 +100,13 @@ const NotificationHome = () => {
     const getReviewList = async () => {
       if (loginId != null) {
         await getConfirmedNotifications(
-          loginId,
+           loginId,
           ({ data }) => {
             const response = data.data.data;
-            const confirmedReviewList: ReviewCardInterface[] = [];
+            const confirmedReviewList: NotificationReviewCardInterface[] = [];
             for (const review of response) {
-              const reviewData: ReviewCardInterface = {
+              const reviewData: NotificationReviewCardInterface = {
+                notificationId:review.notificationId,
                 reviewId: review.reviewId,
                 memberId: review.memberId,
                 movieId: review.movieId,
@@ -142,9 +144,10 @@ const NotificationHome = () => {
           loginId,
           ({ data }) => {
             const response = data.data.data;
-            const unconfirmedReviewList: ReviewCardInterface[] = [];
+            const unconfirmedReviewList: NotificationReviewCardInterface[] = [];
             for (const review of response) {
-              const reviewData: ReviewCardInterface = {
+              const reviewData: NotificationReviewCardInterface = {
+                notificationId:review.notificationId,
                 reviewId: review.reviewId,
                 memberId: review.memberId,
                 movieId: review.movieId,
@@ -171,7 +174,7 @@ const NotificationHome = () => {
             }
 
             console.log(unconfirmedReviewList.length);
-            setUnonfirmedReviewList(unconfirmedReviewList);
+            setUnconfirmedReviewList(unconfirmedReviewList);
           },
           (error) => {
             console.log(error);
@@ -219,10 +222,10 @@ const NotificationHome = () => {
       {unconfirmedReviewList.length != 0 && (
         <span className="display-1 fw-bold ms-3">UNCONFIRMED</span>
       )}{" "}
-      <NotificationReviewList reviewList={unconfirmedReviewList} />
+      <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
       <hr />
       {confirmedReviewList.length != 0 && <span className="display-1 fw-bold ms-3">CONFIRMED</span>}
-      <NotificationReviewList reviewList={confirmedReviewList} />
+      <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
     </>
   );
 };

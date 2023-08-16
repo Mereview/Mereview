@@ -6,13 +6,16 @@ import "../styles/css/ReviewCard.css";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "./common";
+import { NotificationReviewCardInterface } from "./interface/NotificationReviewCardInterface";
+import { deleteNotification } from "../api/review";
 
 type Style = {
   [key: string]: string | number;
 };
 
-const NotificationReviewCard = (props: ReviewCardInterface) => {
+const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   const {
+    notificationId,
     className,
     reviewId,
     memberId,
@@ -29,6 +32,11 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
     movieGenre,
     createDate,
     recommend,
+    confirmed,
+    confirmedReviewList,
+    unconfirmedReviewList,
+    setConfirmedReviewList,
+    setUnconfirmedReviewList
   } = props;
   const navigate = useNavigate();
   const [pressStartTime, setPressStartTime] = useState(0);
@@ -59,6 +67,28 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
     console.log("Movie Name Clicked", movieTitle);
   };
 
+  const handlerDeleteNotification = () => {
+    if(confirmed){
+      deleteNotification(notificationId, ()=>{}, ()=>{})
+      setConfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+    }else{
+      deleteNotification(notificationId, ()=>{}, ()=>{})
+      setUnconfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+    }
+  }
+
+  const handlerToggleStatus = () => {
+    if(confirmed){
+      const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
+      setConfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+      setUnconfirmedReviewList(prev => prev.concat(notificationCard));
+      }else{
+      const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
+      setUnconfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+      setConfirmedReviewList(prev => prev.concat(notificationCard));
+    }
+  }
+
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
@@ -84,7 +114,6 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
   );
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
-
   return (
     <div className="me-3">
       <div
@@ -161,9 +190,9 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
           text="확인"
         ></Button>
         <Button
-          onClick={() => {
-            console.log("click");
-          }}
+          onClick={
+            handlerDeleteNotification
+          }
           styles="btn-primary"
           text="삭제"
         ></Button>

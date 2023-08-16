@@ -66,7 +66,7 @@ export async function evaluationsReview(data: Object, success, fail) {
 /** Notification 온 리뷰들 가져오는 API */
 export async function getConfirmedNotifications(memberId, success, fail) {
   const queryParams = {
-    memberId: memberId,
+    loginMemberId: memberId,
     status : "CONFIRMED"
   };
 
@@ -79,7 +79,7 @@ export async function getConfirmedNotifications(memberId, success, fail) {
 
 export async function getUnConfirmedNotifications(memberId, success, fail) {
   const queryParams = {
-    memberId: memberId,
+    loginMemberId: memberId,
     status : "UNCONFIRMED"
   };
 
@@ -96,5 +96,14 @@ export async function toggleNotificationStatus(request, success, fail) {
     success(response.data);
   } catch (error) {
     fail(error);
+  }
+}
+
+export async function deleteNotification(notificationId, success, fail){
+  try{
+    const response = await api.delete(`/notifications/${notificationId}`);
+    success(response.data)
+  } catch(error){
+    fail(error)
   }
 }
