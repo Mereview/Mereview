@@ -67,10 +67,10 @@ public class ReviewQueryService {
         return createReviewDetailResponse(loginMemberId, review);
     }
 
-    public List<ReviewResponse> searchNotifiedReviews(Long memberId, String status, Pageable pageable) {
-        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberIdAndStatus(memberId, status);
+    public List<NotifiedReviewResponse> searchNotifiedReviews(Long loginMemberId, String status, Pageable pageable) {
+        List<Long> reviewIds = notificationQueryRepository.searchReviewIdsByMemberIdAndStatus(loginMemberId, status);
         List<Review> reviews = reviewQueryRepository.searchNotifiedReviews(reviewIds, pageable);
-        return createReviewResponses(reviews);
+        return createNotifiedReviewResponses(reviews, loginMemberId);
     }
 
     public int calculateNotifiedPageCount(Long memberId, String status) {
@@ -110,6 +110,42 @@ public class ReviewQueryService {
                                     .build();
                         }
                 ).collect(Collectors.toList());
+    }
+
+    private List<NotifiedReviewResponse> createNotifiedReviewResponses(List<Review> reviews, Long loginMemberId) {
+        return reviews.stream()
+                .map(review -> {
+                            Movie movie = review.getMovie();
+                            Member writeMember = review.getMember();
+                            return NotifiedReviewResponse.builder()
+                                    .notificationId(searchNotificationId(review.getId(), loginMemberId))
+                                    .reviewId(review.getId())
+                                    .reviewTitle(review.getTitle())
+                                    .hits(review.getHits())
+                                    .highlight(review.getHighlight())
+                                    .movieRecommendType(review.getType())
+                                    .commentCount(review.getComments().size())
+                                    .positiveCount(getPositiveCount(review.getId()))
+                                    .funCount(getTypeCountByReviewAndType(FUN, review.getId()))
+                                    .usefulCount(getTypeCountByReviewAndType(USEFUL, review.getId()))
+                                    .badCount(getTypeCountByReviewAndType(BAD, review.getId()))
+                                    .backgroundImageResponse(createBackgroundImageResponse(review.getBackgroundImage()))
+                                    .createdTime(review.getCreatedTime())
+                                    .memberId(writeMember.getId())
+                                    .nickname(writeMember.getNickname())
+                                    .profileImage(getProfileImageResponse(writeMember.getProfileImage()))
+                                    .movieId(movie.getId())
+                                    .movieTitle(movie.getTitle())
+                                    .movieReleaseDate(movie.getReleaseDate())
+                                    .genreResponse(GenreResponse.of(review.getGenre()))
+                                    .build();
+                        }
+                ).collect(Collectors.toList());
+    }
+
+    private Long searchNotificationId(Long reviewId, Long loginMemberId) {
+        return notificationQueryRepository.searchByReviewIdAndMemberId(reviewId, loginMemberId)
+                .map(Notification::getId).orElse(-1L);
     }
 
     private ReviewDetailResponse createReviewDetailResponse(Long loginMemberId, Review review) {
