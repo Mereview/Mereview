@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "./common";
 import { NotificationReviewCardInterface } from "./interface/NotificationReviewCardInterface";
-import { deleteNotification } from "../api/review";
+import { deleteNotification, toggleNotificationStatus } from "../api/review";
 
 type Style = {
   [key: string]: string | number;
@@ -78,6 +78,7 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   }
 
   const handlerToggleStatus = () => {
+    toggleNotificationStatus({loginMemberId : memberId, reviewId : reviewId}, ()=>{}, ()=>{})
     if(confirmed){
       const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
       setConfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
@@ -184,8 +185,8 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
       <div className="btn-justify">
         <Button
           onClick={() => {
-            console.log("click");
-          }}
+            handlerToggleStatus
+                    }}
           styles="btn-primary"
           text="확인"
         ></Button>
