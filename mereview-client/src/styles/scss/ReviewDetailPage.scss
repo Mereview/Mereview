@@ -3,6 +3,7 @@
 .section {
   position: relative;
   height: auto;
+  min-height: calc(100vh - 74px);
   padding: 3% 20% 3% 20%;
   background-color: red;
 
