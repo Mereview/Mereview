@@ -50,7 +50,7 @@ const ReviewDetail = () => {
   const style = backgroundImageURL
     ? {
         backgroundImage: `url(${backgroundImageURL})`,
-        filter: "blur(15px)",
+        filter: "blur(5px)",
         zIndex: "-1",
       }
     : {

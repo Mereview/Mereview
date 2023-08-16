@@ -6,90 +6,116 @@
   display: flex;
   border-bottom: 2px dashed black;
   margin: 3px 0px;
+  flex-direction: column;
   .writer {
     display: flex;
-    flex-basis: 15%;
-    flex-direction: column;
+
     height: auto;
     align-items: center;
 
     img {
-      flex-basis: 80%;
       border-radius: 9999px;
       width: 50px;
       height: 50px;
       margin: 5px 0px;
     }
-    p {
-      flex-basis: 20%;
-      display: flex;
-      justify-content: center;
-      margin: 5px;
+    a {
+      text-decoration: none;
+      color: black;
+      margin-left: 5px;
       font-weight: bold;
+    }
+    a :hover {
+      color: blue;
+      font-weight: bold;
+    }
+
+    .delete {
+      background-image: url("/public/remove.png");
+      padding: 5px;
+      background-size: cover;
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      margin: 0;
+      margin-top: 1px;
+      margin-left: auto;
+      // display: flex;
+      // justify-content: end;
+    }
+    .delete:disabled {
+      visibility: hidden;
     }
   }
 
   .all {
-    padding: 10px;
-    flex-direction: column;
-    flex-basis: 73%;
-    width: 300px;
+    padding: 30px 0px 30px 0px;
+    width: auto;
     white-space: pre-line;
     word-wrap: break-word;
     justify-content: space-between;
     .content {
-      flex-grow: 11;
-      min-height: 60px;
-    }
-    .createdDate {
-      color: $blue-5;
-      flex-grow: 1;
-      margin-bottom: 0px;
     }
   }
 
   .buttons {
     flex-basis: 12%;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     font-size: 16px;
+    margin-bottom: 5px;
     button {
-      margin-right: 5px;
+      margin-right: 10px;
     }
-
-    #LIKE {
-      background-image: url(/public/thumbUp.png);
-      width: 30px;
-      height: 30px;
-      background-color: blue;
-      border: solid blue 0.5px;
-
-      #LIKE:disabled {
-        opacity: 20%;
+    p {
+      color: $blue-5;
+      margin-bottom: auto;
+      margin-top: auto;
+    }
+    .buttonsWrapper {
+      display: flex;
+      gap: 10px;
+      .likeWrapper {
+        padding: 3px;
+        border-radius: 7px;
+        color: blue;
+        border: solid blue 0.5px;
+        #LIKE {
+          background-image: url(/public/like.png);
+          width: 20px;
+          height: 20px;
+          border: none;
+          background-color: white;
+          padding: 5px;
+          background-size: cover;
+          #LIKE:disabled {
+            opacity: 20%;
+          }
+        }
       }
-    }
-    #DISLIKE {
-      background-image: url(/public//thumbDown.png);
-      width: 30px;
-      height: 30px;
-      background-color: red;
-      border: solid red 0.5px;
-      padding: 5px;
-      #DISLIKE:disabled {
-        opacity: 20%;
+      .dislikeWrapper {
+        padding: 3px;
+        border-radius: 7px;
+        border: solid red 0.5px;
+        color: red;
+        #DISLIKE {
+          background-image: url(/public//unlike.png);
+          border: none;
+
+          width: 20px;
+          height: 20px;
+          background-color: white;
+
+          padding: 5px;
+          background-size: cover;
+
+          #DISLIKE:disabled {
+            opacity: 20%;
+          }
+        }
       }
-    }
-    .delete {
-      background-color: $magenta-6;
-      border: none;
-      color: white;
-      width: 25px;
-      height: 25px;
-      margin-top: 3px;
-    }
-    .delete:disabled {
-      background-color: rgba(128, 128, 128, 0.24);
     }
   }
 }

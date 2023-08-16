@@ -125,6 +125,10 @@
     .lst {
       background-color: white;
       overflow: auto;
+      .cnt {
+        font-size: 25px;
+        font-weight: bold;
+      }
     }
     .lst::-webkit-scrollbar {
       width: 10px;
