@@ -5,7 +5,6 @@ import com.ssafy.mereview.api.service.review.NotificationService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.api.service.review.dto.response.NotifiedReviewResponse;
-import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.common.response.ApiResponse;
 import com.ssafy.mereview.common.response.PageResponse;
 import io.swagger.annotations.Api;
@@ -33,13 +32,13 @@ public class NotificationController {
     @GetMapping
     @ApiOperation(value = "알림 리뷰 조회")
     public ApiResponse<PageResponse<List<NotifiedReviewResponse>>> searchNotifiedReviews(
-            @RequestParam Long memberId,
+            @RequestParam Long loginMemberId,
             @RequestParam String status,
             @RequestParam(defaultValue = "1") Integer pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE);
-        List<NotifiedReviewResponse> responses = reviewQueryService.searchNotifiedReviews(memberId, status, pageRequest);
+        List<NotifiedReviewResponse> responses = reviewQueryService.searchNotifiedReviews(loginMemberId, status, pageRequest);
 
-        int pageCount = reviewQueryService.calculateNotifiedPageCount(memberId, status);
+        int pageCount = reviewQueryService.calculateNotifiedPageCount(loginMemberId, status);
         PageResponse<List<NotifiedReviewResponse>> pageResponse = new PageResponse<>(responses, pageNumber, PAGE_SIZE, pageCount);
 
         return ApiResponse.ok(pageResponse);
