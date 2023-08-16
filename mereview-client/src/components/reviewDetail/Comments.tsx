@@ -96,17 +96,20 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
         <div>
           <img src={profileImageURL} alt="댓글주인" />
         </div>
-        <p>{comment.nickname}</p>
+        <a href={`/profile/${comment.commentId}`}>{comment.nickname}</a>
+        <button
+          className="delete"
+          onClick={onClick}
+          disabled={comment.memberId !== Number(userId)}
+        ></button>
       </div>
-
       <div className="all">
         <p className="content">{comment.content}</p>
-        <p className="createdDate">{presentTime} 전</p>
       </div>
-
       <div className="buttons">
-        <div className="lndl">
-          <div>
+        <p className="createdDate">{presentTime} 전</p>
+        <div className="buttonsWrapper">
+          <div className="likeWrapper">
             <button
               id="LIKE"
               disabled={comment.memberId === Number(userId)}
@@ -114,7 +117,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
             ></button>
             {comment.likeCount}
           </div>
-          <div>
+          <div className="dislikeWrapper">
             <button
               id="DISLIKE"
               disabled={comment.memberId === Number(userId)}
@@ -122,13 +125,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
             ></button>
             {comment.dislikeCount}
           </div>
-          <button
-            className="delete"
-            onClick={onClick}
-            disabled={comment.memberId !== Number(userId)}
-          >
-            X
-          </button>
         </div>
       </div>
     </div>
