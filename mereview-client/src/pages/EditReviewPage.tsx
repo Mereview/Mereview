@@ -80,7 +80,7 @@ const ReviewWrite = () => {
     getEditRiview();
   }, []);
   //리뷰 정보
-  const [reviewName, setReviewName] = useState<string | null>();
+  const [reviewName, setReviewName] = useState<string | null>("");
   const [oneSentance, setOneSentance] = useState<string | null>("");
   //영화에 대한 평가 버튼
   const [badBtn, setBadBtn] = useState<boolean | null>(false);
@@ -154,7 +154,7 @@ const ReviewWrite = () => {
 
   //리뷰 정보를 넘길 데이터들(리뷰 제목, 한줄평) : useState를 사용하지만 input 내에 값을 넣는용도로만 사용
 
-  const onChangeHandler = (event) => {
+  const onInputHandler = (event) => {
     let { id, value } = event.target;
     inputData.current[id] = value;
   };
@@ -172,98 +172,64 @@ const ReviewWrite = () => {
     inputData.current[id] = value;
   };
 
-  //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
-  const movieNameHandler = (input) => {
-    movieName.current = input;
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-    const timeout = setTimeout(() => {
-      const encodedKeyword = encodeURIComponent(movieName.current);
-      axios
-        .get(url + `/movies?keyword=${encodedKeyword}`)
-        .then((res) => {
-          setMovieList(res.data.data);
-        })
-        .catch(() => {
-          console.log("error");
-        });
-    }, 300);
-    setTypingTimeout(timeout);
-  };
-  const selectMovieHandler = (selected) => {
-    setSelectMovie(selected);
-    axios
-      .get(url + `/movies/${selected.value}`)
-      .then((res) => {
-        const movie = res.data.data;
-        inputData.current.movieId = movie.id;
-        setGenreList(movie.genres);
-      })
-      .catch(() => {
-        console.log("error");
-      });
-  };
-
-  //장르 리스트 중 선택한 장르를 inputData에 저장
-  const selectGenreHandler = (selected) => {
-    setSelectGenre(selected);
-    inputData.current.genreId = selected.value;
-  };
-
   //리뷰 정보를 서버에 보내기 위한 함수
   const reviewCreateHandler = () => {
-    if (inputData.current.title === null) {
+    if (inputData.current.title == "") {
       alert("제목을 입력해주세요");
       return;
     }
-    if (inputData.current.movieId === null) {
-      alert("영화 제목을 입려해주세요");
-      return;
-    }
-    if (inputData.current.highlight === null) {
+    if (inputData.current.highlight == "") {
       alert("한줄평을 입력해주세요");
       return;
     }
     const keywordList = [];
-    keywordList.push({
-      keywordId: keywordId1.current,
-      name: childRef1.current.getKeyInfo().name,
-      weight: childRef1.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      keywordId: keywordId2.current,
-      name: childRef2.current.getKeyInfo().name,
-      weight: childRef2.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      keywordId: keywordId3.current,
-      name: childRef3.current.getKeyInfo().name,
-      weight: childRef3.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      keywordId: keywordId4.current,
-      name: childRef4.current.getKeyInfo().name,
-      weight: childRef4.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      keywordId: keywordId5.current,
-      name: childRef5.current.getKeyInfo().name,
-      weight: childRef5.current.getKeyInfo().weight,
-    });
-    console.log(keywordList);
-    if (keywordList == null) {
+    if (childRef1.current.getKeyInfo().name != "") {
+      keywordList.push({
+        keywordId: keywordId1.current,
+        name: childRef1.current.getKeyInfo().name,
+        weight: childRef1.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef2.current.getKeyInfo().name != "") {
+      keywordList.push({
+        keywordId: keywordId2.current,
+        name: childRef2.current.getKeyInfo().name,
+        weight: childRef2.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef3.current.getKeyInfo().name != "") {
+      keywordList.push({
+        keywordId: keywordId3.current,
+        name: childRef3.current.getKeyInfo().name,
+        weight: childRef3.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef4.current.getKeyInfo().name != "") {
+      keywordList.push({
+        keywordId: keywordId4.current,
+        name: childRef4.current.getKeyInfo().name,
+        weight: childRef4.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef5.current.getKeyInfo().name != "") {
+      keywordList.push({
+        keywordId: keywordId5.current,
+        name: childRef5.current.getKeyInfo().name,
+        weight: childRef5.current.getKeyInfo().weight,
+      });
+    }
+    if (keywordList.length < 5) {
       alert("키워드 목록을 입력해주세요");
       return;
     }
     const reviewContent = contentRef.current.getContent();
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
-    inputData.current.content = reviewContent;
-    if (inputData.current.content == null) {
+    if (reviewContent == "<p><br></p>") {
       alert("리뷰 내용을 입력해주세요");
       return;
     }
+    inputData.current.content = reviewContent;
     const formData = new FormData();
     formData.append(
       "request",
@@ -344,7 +310,7 @@ const ReviewWrite = () => {
                 className="rounded-2 text-lg inputBox"
                 size="lg"
                 id="title"
-                onChange={onChangeHandler}
+                onInput={onInputHandler}
                 defaultValue={reviewName}
                 style={{ width: "100%" }}
               ></Form.Control>
@@ -363,7 +329,7 @@ const ReviewWrite = () => {
                   placeholder="한줄평을 입력하세요"
                   className="rounded-2 text-lg inputBox"
                   id="highlight"
-                  onChange={onChangeHandler}
+                  onInput={onInputHandler}
                   defaultValue={oneSentance}
                 ></Form.Control>
               </Col>

@@ -11,13 +11,7 @@ import {
 } from "../../api/review";
 import Comments from "./Comments";
 import { useNavigate } from "react-router-dom";
-import {
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import { FormControlLabel, Switch } from "@mui/material";
 import Loading from "../common/Loading";
 interface evInterface {
   FUN: number;
@@ -65,14 +59,15 @@ const Detail = ({ review, setReview }: any) => {
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
-  const [ev, setEv] = useState<evInterface>({
-    FUN: review.funCount,
-    USEFUL: review.usefulCount,
-    BAD: review.badCount,
-  });
+  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
+  const [funCount, setFunCount] = useState(review.funCount);
+  const [badCount, setBadCount] = useState(review.badCount);
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
+  // 리뷰평가 중복 확인
+  const [evIsDone, setEvIsDone] = useState(review.done);
+  const [evType, setEvType] = useState(review.reviewEvaluationType);
 
   // 모든 버튼 동작함수
   const onClick = (event: any) => {
@@ -90,37 +85,109 @@ const Detail = ({ review, setReview }: any) => {
           console.log(err);
         }
       );
-      // 리뷰 평가 재미, 유용, 별로에요 동작
-    } else {
-      const data = {
-        genreId: review.genre.genreId,
-        memberId: review.memberId,
-        reviewId: review.reviewId,
-        type: event.target.id,
-      };
-      const success = (res) => {
-        const idx = event.target.id;
-        if (res.data.data.done) {
-          setEv((prev) => {
-            const newEv = { ...prev };
-            newEv[idx] += 1;
-            return newEv;
-          });
-        } else if (!res.data.data.done) {
-          setEv((prev) => {
-            const newEv = { ...prev };
-            newEv[idx] -= 1;
-            return newEv;
-          });
-        }
-      };
-      const fail = (err) => {
-        alert("이미 다른 평가를 남겼습니다.");
-      };
-      evaluationsReview(data, success, fail);
     }
   };
-  console.log(review);
+
+  const onClickUseful = (event: any) => {
+    const data = {
+      genreId: review.genre.genreId,
+      memberId: review.memberId,
+      reviewId: review.reviewId,
+      type: event.target.id,
+    };
+    const searchReviewData = {
+      loginMemberId: userId,
+      reviewId: review.reviewId,
+    };
+    evaluationsReview(
+      data,
+      (res) => {
+        if (res.data.data.done) {
+          setUsefulCount((prev) => ++prev);
+        } else {
+          setUsefulCount((prev) => --prev);
+        }
+        searchReview(
+          searchReviewData,
+          (res) => {
+            setReview(res.data.data);
+            setEvIsDone(res.data.data.done);
+            setEvType(res.data.data.reviewEvaluationType);
+          },
+          (err) => {}
+        );
+      },
+      (err) => {}
+    );
+  };
+  const onClickFun = (event: any) => {
+    const data = {
+      genreId: review.genre.genreId,
+      memberId: review.memberId,
+      reviewId: review.reviewId,
+      type: event.target.id,
+    };
+    const searchReviewData = {
+      loginMemberId: userId,
+      reviewId: review.reviewId,
+    };
+    evaluationsReview(
+      data,
+      (res) => {
+        if (res.data.data.done) {
+          setFunCount((prev) => ++prev);
+        } else {
+          setFunCount((prev) => --prev);
+        }
+        searchReview(
+          searchReviewData,
+          (res) => {
+            setReview(res.data.data);
+            setEvIsDone(res.data.data.done);
+            setEvType(res.data.data.reviewEvaluationType);
+          },
+          (err) => {}
+        );
+      },
+      (err) => {
+        console.log("");
+      }
+    );
+  };
+  const onClickBad = (event: any) => {
+    const data = {
+      genreId: review.genre.genreId,
+      memberId: review.memberId,
+      reviewId: review.reviewId,
+      type: event.target.id,
+    };
+    const searchReviewData = {
+      loginMemberId: userId,
+      reviewId: review.reviewId,
+    };
+    evaluationsReview(
+      data,
+      (res) => {
+        if (res.data.data.done) {
+          setBadCount((prev) => ++prev);
+        } else {
+          setBadCount((prev) => --prev);
+        }
+        searchReview(
+          searchReviewData,
+          (res) => {
+            setReview(res.data.data);
+            setEvIsDone(res.data.data.done);
+            setEvType(res.data.data.reviewEvaluationType);
+          },
+          (err) => {}
+        );
+      },
+      (err) => {}
+    );
+  };
+  // 리뷰 평가 재미, 유용, 별로에요 동작
+
   // 동일키워드 추천 리뷰 불러오기
   const [switchToggler, setSwitchToggler] = useState(false);
   const [recommendReview, setRecommendReview] = useState([]);
@@ -182,7 +249,6 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
-  const editHandler = () => {};
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
@@ -190,11 +256,11 @@ const Detail = ({ review, setReview }: any) => {
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
           <img src="/GraduationCap.png" alt="재밌어요" />
-          <span>{ev.USEFUL}</span>
+          <span>{usefulCount}</span>
           <img src="/smile.png" alt="유용해요" />
-          <span>{ev.FUN}</span>
+          <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
-          <span>{ev.BAD}</span>
+          <span>{badCount}</span>
         </div>
       </div>
       <hr />
@@ -206,17 +272,32 @@ const Detail = ({ review, setReview }: any) => {
       <div className="ratingbuttons">
         <button
           id="USEFUL"
-          onClick={onClick}
+          onClick={onClickUseful}
+          style={
+            evIsDone && evType === "USEFUL"
+              ? { backgroundImage: "url(/usefulDisabled.png" }
+              : { backgroundImage: "url(/useful.png)" }
+          }
           disabled={userId === review.reviewId}
         ></button>
         <button
           id="FUN"
-          onClick={onClick}
+          onClick={onClickFun}
+          style={
+            evIsDone && evType === "FUN"
+              ? { backgroundImage: "url(/funnyDisabled.png" }
+              : { backgroundImage: "url(/funny.png)" }
+          }
           disabled={userId === review.reviewId}
         ></button>
         <button
           id="BAD"
-          onClick={onClick}
+          onClick={onClickBad}
+          style={
+            evIsDone && evType === "BAD"
+              ? { backgroundImage: "url(/dislikeDisabled.png)" }
+              : { backgroundImage: "url(/dislike.png)" }
+          }
           disabled={userId === review.reviewId}
         ></button>
       </div>

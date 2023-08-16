@@ -78,14 +78,13 @@ const Top = ({ review }: any) => {
         </p>
         <div className="userInfo">
           <img src={profileImageURL} alt="작성자프로필이미지" />
-          <p className="nickname">
-            <a
-              href={`/profile/${review.memberId}`}
-              style={{ textDecoration: "none" }}
-            >
-              {review.nickname}
-            </a>
-          </p>
+          <a
+            className="nickname"
+            href={`/profile/${review.memberId}`}
+            style={{ textDecoration: "none" }}
+          >
+            {review.nickname}
+          </a>
         </div>
       </div>
       <div className="rightInfo">

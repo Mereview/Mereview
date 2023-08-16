@@ -96,7 +96,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
         <div>
           <img src={profileImageURL} alt="댓글주인" />
         </div>
-        <a href={`/profile/${comment.commentId}`}>{comment.nickname}</a>
+        <a href={`/profile/${comment.memberId}`}>{comment.nickname}</a>
         <button
           className="delete"
           onClick={onClick}
