@@ -5,7 +5,12 @@ import { uiActions } from "../../store/ui-silce";
 
 const Left = () => {
   const style = { padding: "0px", margin: "0px" };
-
+  const leftStyle = {
+    padding: "0px",
+    margin: "0px",
+    backgroundImage: "url(/IndexPictures/dvd.png)",
+    backgroundSize: "cover",
+  };
   const dispatch = useDispatch();
   const tab = useSelector(
     (state: { ui: { tabToggle: string } }) => state.ui.tabToggle
@@ -15,7 +20,7 @@ const Left = () => {
     dispatch(uiActions.tabChange(id));
   };
   return (
-    <Row className="ctn" style={style}>
+    <Row className="ctn" style={leftStyle}>
       <Col style={style}>
         <div></div>
       </Col>

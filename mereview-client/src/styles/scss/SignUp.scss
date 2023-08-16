@@ -15,3 +15,24 @@
     right: 0;
   }
 }
+#step2 {
+  border: white solid 1px;
+  background-color: $blue-5;
+  color: white;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  &:hover {
+    background-color: $blue-8;
+  }
+}
+
+#step1 {
+  border: white solid 1px;
+  background-color: $blue-5;
+  color: white;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); /* 호버 효과 그림자 */
+  &:hover {
+    background-color: $blue-8;
+  }
+}
