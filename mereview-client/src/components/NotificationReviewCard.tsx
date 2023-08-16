@@ -78,6 +78,7 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   }
 
   const handlerToggleStatus = () => {
+    
     toggleNotificationStatus({loginMemberId : memberId, reviewId : reviewId}, ()=>{}, ()=>{})
     if(confirmed){
       const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
