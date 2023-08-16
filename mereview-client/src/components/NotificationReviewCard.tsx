@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 import { ReviewCardInterface } from "./interface/ReviewCardInterface";
 import "../styles/css/ReviewCard.css";
 import { useNavigate } from "react-router-dom";
+
+import { Button } from "./common";
 
 type Style = {
   [key: string]: string | number;
@@ -31,7 +33,7 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
   const navigate = useNavigate();
   const [pressStartTime, setPressStartTime] = useState(0);
   const [isPressing, setIsPressing] = useState(false);
-  const pressThreshold = 100; 
+  const pressThreshold = 100;
   const handlePressStart = (event: React.MouseEvent<HTMLDivElement>) => {
     setPressStartTime(Date.now());
     setIsPressing(true);
@@ -42,9 +44,9 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
 
     // 길게 누르기가 1초 이상인 경우에만 이벤트 처리
     if (Date.now() - pressStartTime < pressThreshold) {
-        navigate(`/review/${reviewId}`);
-}
-}
+      navigate(`/review/${reviewId}`);
+    }
+  };
   const handleClickProfile = (
     event: React.MouseEvent<HTMLParagraphElement>
   ) => {
@@ -84,9 +86,9 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
   const defaultProfileImage = "/testProfile.gif";
 
   return (
-    <>
+    <div className="me-3">
       <div
-        className={`notiification-review-card ${className}`}
+        className={`notification-review-card ${className}`}
         style={cardStyle}
         onMouseDown={handlePressStart}
         onMouseUp={handlePressEnd}
@@ -150,7 +152,23 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
           </div>
         </div>
       </div>
-    </>
+      <div className="btn-justify">
+        <Button
+          onClick={() => {
+            console.log("click");
+          }}
+          styles="btn-primary"
+          text="확인"
+        ></Button>
+        <Button
+          onClick={() => {
+            console.log("click");
+          }}
+          styles="btn-primary"
+          text="삭제"
+        ></Button>
+      </div>
+    </div>
   );
 };
 

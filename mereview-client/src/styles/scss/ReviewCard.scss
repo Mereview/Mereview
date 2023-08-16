@@ -6,19 +6,19 @@
   font-size: $font-size-sm;
   color: $gray-2;
 }
-.notiification-review-card {
+.notification-review-card {
   position: relative;
   display: inline-block;
   border: solid 2px $black;
   border-radius: 10px;
   flex-basis: 31%;
-  width: 550px;
+  width: 100%;
   height: 300px;
   padding: 10px;
   padding-bottom: 17%;
   min-width: 250px;
   min-height: 142px;
-  margin: 10px 10px;
+  // margin: 10px 10px;
   background-size: cover;
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
@@ -239,4 +239,9 @@
 .card-overlay {
   padding: 10px;
   border-radius: 8px;
+}
+
+.btn-justify {
+  display: flex;
+  justify-content: space-between;
 }
