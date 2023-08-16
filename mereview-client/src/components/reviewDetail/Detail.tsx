@@ -46,6 +46,7 @@ const Detail = ({ review, setReview }: any) => {
         data,
         (res) => {
           setReview(res.data.data);
+          setComments(res.data.data.comments);
         },
         (err) => {
           console.log(err);
