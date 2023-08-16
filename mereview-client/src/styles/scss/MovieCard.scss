@@ -3,7 +3,7 @@
 .movie-card {
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
-  width: 18%;
+  width: 19%;
   margin-top: 30px;
   margin-left: 5px;
   margin-right: 5px;
@@ -46,19 +46,16 @@
     color: $gray-8;
   }
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1470px) {
     width: 30%;
-    margin: 10px;
   }
 
   @media (max-width: 1140px) {
     width: 45%;
-    margin: 10px;
   }
 
   @media (max-width: 780px) {
     width: 100%;
-    margin: 10px;
   }
 
   @media (max-width: 576px) {
