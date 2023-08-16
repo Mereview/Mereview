@@ -13,6 +13,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     className,
     reviewId,
     memberId,
+    movieId,
     nickname,
     profileImageId,
     backgroundImageId,
@@ -40,7 +41,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
 
   const handleClickMovie = (event: React.MouseEvent<HTMLParagraphElement>) => {
     event.stopPropagation();
-    console.log("Movie Name Clicked", movieTitle);
+    navigate(`/movie/${movieId}`);
   };
 
   const cardStyle: Style = {};

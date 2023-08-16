@@ -41,7 +41,8 @@ const ReviewSearch = ({
   };
 
   return (
-    <>
+    <div className="reviewSearch-section">
+      <div className="reviewSearch-title"> 리뷰 목록 </div>
       <FormControl className="search-form">
         <div className="search-container">
           <Select
@@ -71,7 +72,7 @@ const ReviewSearch = ({
           </button>
         </div>
       </FormControl>
-    </>
+    </div>
   );
 };
 

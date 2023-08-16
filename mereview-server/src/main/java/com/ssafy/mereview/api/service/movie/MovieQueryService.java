@@ -9,6 +9,8 @@ import com.ssafy.mereview.api.service.review.dto.response.ReviewResponse;
 import com.ssafy.mereview.domain.member.entity.Member;
 import com.ssafy.mereview.domain.member.entity.ProfileImage;
 import com.ssafy.mereview.domain.movie.entity.Movie;
+import com.ssafy.mereview.domain.movie.entity.MovieGenre;
+import com.ssafy.mereview.domain.movie.repository.query.MovieGenreQueryRepository;
 import com.ssafy.mereview.domain.movie.repository.query.MovieQueryRepository;
 import com.ssafy.mereview.domain.review.entity.*;
 import com.ssafy.mereview.domain.review.repository.query.ReviewEvaluationQueryRepository;
@@ -30,9 +32,11 @@ import static com.ssafy.mereview.domain.review.entity.ReviewEvaluationType.*;
 @Transactional(readOnly = true)
 @Service
 public class MovieQueryService {
-
     private final MovieQueryRepository movieQueryRepository;
+
     private final ReviewEvaluationQueryRepository reviewEvaluationQueryRepository;
+
+    private final MovieGenreQueryRepository movieGenreQueryRepository;
 
     public MovieDetailResponse searchById(Long movieId) {
         Movie movie = movieQueryRepository.searchById(movieId);
@@ -43,6 +47,14 @@ public class MovieQueryService {
         return createMovieDetailResponse(movie);
     }
 
+    public Long searchMovieIdByContentId(Integer contentId) {
+        Long movieId = movieQueryRepository.searchMovieIdByContentId(contentId);
+        if (movieId == null) {
+            throw new NoSuchElementException("존재하지 않는 영화입니다.");
+        }
+        return movieId;
+    }
+
     /**
      * private methods
      */
@@ -51,6 +63,8 @@ public class MovieQueryService {
 
         List<Review> reviews = movie.getReviews();
 
+        List<MovieGenre> movieGenres = movieGenreQueryRepository.searchMovieGenreByMovieId(movie.getId());
+        List<GenreResponse> genreResponses = movieGenres.stream().map(MovieGenre::getGenre).map(GenreResponse::of).collect(Collectors.toList());
         Double evaluation = getMovieEvaluation(reviews);
 
         List<ReviewResponse> topReviewResponses = createTopReviewResponse(reviews);
@@ -58,7 +72,7 @@ public class MovieQueryService {
 
         List<MovieKeywordResponse> movieKeywordResponses= createMovieKeywordResponse(reviews);
 
-        return MovieDetailResponse.of(movie, evaluation, movieKeywordResponses, topReviewResponses, recentReviewResponses);
+        return MovieDetailResponse.of(movie, genreResponses, evaluation, movieKeywordResponses, topReviewResponses, recentReviewResponses);
     }
 
     private Double getMovieEvaluation(List<Review> reviews){

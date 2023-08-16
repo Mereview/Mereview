@@ -19,6 +19,7 @@ const ReviewList = ({ reviewList }: ReviewListProps) => {
             key={review.reviewId}
             reviewId={review.reviewId}
             memberId={review.memberId}
+            movieId={review.movieId}
             nickname={review.nickname}
             profileImageId={review.profileImageId}
             backgroundImageId={review.backgroundImageId}

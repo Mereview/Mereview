@@ -11,7 +11,13 @@ import {
 } from "../../api/review";
 import Comments from "./Comments";
 import { useNavigate } from "react-router-dom";
-import { Select, MenuItem, SelectChangeEvent, FormControlLabel, Switch } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import Loading from "../common/Loading";
 interface evInterface {
   FUN: number;
@@ -40,7 +46,6 @@ const Detail = ({ review, setReview }: any) => {
       genreId: review.genre.genreId,
     };
     const success = (res) => {
-      console.log("success");
       setcommentCNT((cur) => ++cur);
       const data = { reviewId: review.reviewId, loginMemberId: userId };
       searchReview(
@@ -57,7 +62,6 @@ const Detail = ({ review, setReview }: any) => {
     const fail = () => {
       console.log("fail");
     };
-    console.log(review);
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
@@ -128,7 +132,6 @@ const Detail = ({ review, setReview }: any) => {
       setRecommendReview(positiveReview);
     } else {
       setRecommendReview(interestReview);
-      console.log("!!", interestReview);
     }
   };
   useEffect(() => {
@@ -142,7 +145,9 @@ const Detail = ({ review, setReview }: any) => {
         (res) => {
           const data = res.data.data.data;
           const filterdReviewList = data.filter((rr) => {
-            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
           });
           setPositiveReview(filterdReviewList);
           setRecommendReview(filterdReviewList);
@@ -162,7 +167,9 @@ const Detail = ({ review, setReview }: any) => {
         (res) => {
           const data = res.data.data.data;
           const filterdReviewList = data.filter((rr) => {
-            return rr.reviewId !== review.reviewId && rr.memberId !== Number(userId);
+            return (
+              rr.reviewId !== review.reviewId && rr.memberId !== Number(userId)
+            );
           });
           setInterestReview(filterdReviewList);
         },
@@ -191,12 +198,27 @@ const Detail = ({ review, setReview }: any) => {
         </div>
       </div>
       <hr />
-      <div className="content" dangerouslySetInnerHTML={{ __html: review.reviewContent }}></div>
+      <div
+        className="content"
+        dangerouslySetInnerHTML={{ __html: review.reviewContent }}
+      ></div>
 
       <div className="ratingbuttons">
-        <button id="USEFUL" onClick={onClick} disabled={userId === review.reviewId}></button>
-        <button id="FUN" onClick={onClick} disabled={userId === review.reviewId}></button>
-        <button id="BAD" onClick={onClick} disabled={userId === review.reviewId}></button>
+        <button
+          id="USEFUL"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="FUN"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
+        <button
+          id="BAD"
+          onClick={onClick}
+          disabled={userId === review.reviewId}
+        ></button>
       </div>
       {Number(userId) === review.memberId ? (
         <div className="edit">
@@ -218,7 +240,9 @@ const Detail = ({ review, setReview }: any) => {
                 onChange={inputCommentHandler}
               ></textarea>
               <label
-                className={`fw-bold ${inputComment.length > 300 && "text-danger"} `}
+                className={`fw-bold ${
+                  inputComment.length > 300 && "text-danger"
+                } `}
                 htmlFor="input"
               >
                 {inputComment.length} / 300bytes
@@ -250,8 +274,11 @@ const Detail = ({ review, setReview }: any) => {
                 />
               ))
             ) : (
-              <div className="nocoment" style={{ width: "100%", height: "auto" }}>
-                No Coments 댓글좀 주세요 ㅋ
+              <div
+                className="nocoment"
+                style={{ width: "100%", height: "auto" }}
+              >
+                첫 댓글을 작성해 보세요!
               </div>
             )}
           </div>
@@ -270,7 +297,11 @@ const Detail = ({ review, setReview }: any) => {
             <FormControlLabel
               className="useful-fun-switch"
               control={
-                <Switch checked={switchToggler} onChange={switchToggleHandler} color="warning" />
+                <Switch
+                  checked={switchToggler}
+                  onChange={switchToggleHandler}
+                  color="warning"
+                />
               }
               label="관심 장르만 보기"
               labelPlacement="end"
@@ -283,10 +314,15 @@ const Detail = ({ review, setReview }: any) => {
                 key={review.reviewId}
                 reviewId={review.reviewId}
                 memberId={review.memberId}
+                movieId={review.movieId}
                 nickname={review.nickname}
-                profileImageId={review.profileImage ? review.profileImage.id : undefined}
+                profileImageId={
+                  review.profileImage ? review.profileImage.id : undefined
+                }
                 backgroundImageId={
-                  review.backgroundImageResponse ? review.backgroundImageResponse.id : undefined
+                  review.backgroundImageResponse
+                    ? review.backgroundImageResponse.id
+                    : undefined
                 }
                 oneLineReview={review.highlight}
                 funnyCount={review.funCount}

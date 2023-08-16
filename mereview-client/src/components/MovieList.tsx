@@ -17,18 +17,16 @@ const MovieList = ({ movieList }: MovieListProps) => {
   const calculateVisibleMovies = () => {
     const screenWidth = window.innerWidth;
     // 반응형, 나중에 카드 크기에 맞춰 좀 더 상세하게 고치기
-    if (screenWidth >= 1370) setNumberOfMoviesToShow(5);
-    else if (screenWidth >= 1120) setNumberOfMoviesToShow(4);
-    else if (screenWidth >= 860) setNumberOfMoviesToShow(3);
-    else setNumberOfMoviesToShow(2);
+    if (screenWidth >= 1860) setNumberOfMoviesToShow(5);
+    else if (screenWidth >= 1500) setNumberOfMoviesToShow(4);
+    else if (screenWidth >= 1140) setNumberOfMoviesToShow(3);
+    else if (screenWidth >= 780) setNumberOfMoviesToShow(2);
+    else setNumberOfMoviesToShow(1);
   };
 
   useEffect(() => {
     calculateVisibleMovies();
-    if (
-      movieList.length != 0 &&
-      startIndex + numberOfMoviesToShow > movieList.length
-    ) {
+    if (movieList.length != 0 && startIndex + numberOfMoviesToShow > movieList.length) {
       setStartIndex(movieList.length - numberOfMoviesToShow);
     }
     const endIndex = startIndex + numberOfMoviesToShow;
@@ -42,9 +40,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
 
   const handleSlideLeft = () => {
     const leftStartIndex =
-      startIndex - numberOfMoviesToShow > 0
-        ? startIndex - numberOfMoviesToShow
-        : 0;
+      startIndex - numberOfMoviesToShow > 0 ? startIndex - numberOfMoviesToShow : 0;
 
     setStartIndex(leftStartIndex);
   };
@@ -60,9 +56,7 @@ const MovieList = ({ movieList }: MovieListProps) => {
 
   return (
     <>
-      <div>
-        <Col className="sub-title">유행하는 영화</Col>
-      </div>
+      <div className="movie-list-sub-title">유행하는 영화</div>
       <div className="movie-card-list-wrapper">
         {visibleMovies.map((movie: MovieCardInterface) => (
           <MovieCard
@@ -75,15 +69,13 @@ const MovieList = ({ movieList }: MovieListProps) => {
           />
         ))}
       </div>
-      <div>
-        <Col className="controls">
-          <button className="slide-button left" onClick={handleSlideLeft}>
-            &lt;
-          </button>
-          <button className="slide-button right" onClick={handleSlideRight}>
-            &gt;
-          </button>
-        </Col>
+      <div className="controls">
+        <button className="slide-button" onClick={handleSlideLeft}>
+          이전
+        </button>
+        <button className="slide-button" onClick={handleSlideRight}>
+          다음
+        </button>
       </div>
     </>
   );

@@ -100,6 +100,7 @@ const ReviewWrite = () => {
   const [genreList, setGenreList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
   const [selectGenre, setSelectGenre] = useState(null);
+  const [posterImage, setPosterImage] = useState(null);
 
   //영화 제목에 따라 자동완성으로 목록을 저장 및 선택한 영화를 inputData에 저장, 해당 영화의 장르 정보를 장르 리스트에 저장
   const movieNameHandler = (input) => {
@@ -128,6 +129,7 @@ const ReviewWrite = () => {
         const movie = res.data.data;
         inputData.current.movieId = movie.id;
         setGenreList(movie.genres);
+        setPosterImage(movie.posterImg);
       })
       .catch(() => {
         console.log("error");
@@ -201,22 +203,43 @@ const ReviewWrite = () => {
         type: "application/json",
       })
     );
-    formData.append("file", fileDataRef.current);
-    axios
-      .post(url + "/reviews", formData)
-      .then(() => {
-        console.log("success");
-        navigate("/review");
-      })
-      .catch(() => {
-        console.log("fail");
-      });
+    if (fileDataRef.current !== null) {
+      formData.append("file", fileDataRef.current);
+
+      axios
+        .post(url + "/reviews", formData)
+        .then(() => {
+          console.log("success");
+          navigate("/review");
+        })
+        .catch(() => {
+          console.log("fail");
+        });
+    } else {
+      fetch(`https://image.tmdb.org/t/p/w300/${posterImage}`)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const imageFile = new File([blob], "image.jpg");
+          console.log("!!", imageFile);
+          formData.append("file", imageFile);
+
+          axios
+            .post(url + "/reviews", formData)
+            .then(() => {
+              console.log("success");
+              navigate("/review");
+            })
+            .catch(() => {
+              console.log("fail");
+            });
+        });
+    }
   };
 
   return (
     <div
       style={{
-        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+         backgroundColor: "rgb(255, 243, 243)",
         // backgroundImage: `url(${topImg})`,
         position: "absolute",
         backgroundSize: "fill",

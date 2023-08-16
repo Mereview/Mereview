@@ -55,7 +55,6 @@ const Top = ({ review }: any) => {
       searchMovieDetail(
         movieId,
         (res) => {
-          console.log(res);
           setMovie(res.data.data);
           setLoading(true);
         },
@@ -66,7 +65,6 @@ const Top = ({ review }: any) => {
     };
     getMovieDetail();
   }, []);
-  console.log(review);
   return (
     <div className="total">
       <div className="leftInfo">
@@ -113,15 +111,9 @@ const Top = ({ review }: any) => {
           padding={5}
           random={Math.random}
           fill={() => "white"}
-          onWordClick={(event, d) => {
-            console.log(`onWordClick: ${d.text}`);
-          }}
-          onWordMouseOver={(event, d) => {
-            console.log(`onWordMouseOver: ${d.text}`);
-          }}
-          onWordMouseOut={(event, d) => {
-            console.log(`onWordMouseOut: ${d.text}`);
-          }}
+          onWordClick={(event, d) => {}}
+          onWordMouseOver={(event, d) => {}}
+          onWordMouseOut={(event, d) => {}}
         />
       </div>
       {loading && (
