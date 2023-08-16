@@ -46,7 +46,6 @@ const Detail = ({ review, setReview }: any) => {
       reviewId: review.reviewId,
     };
     const success = (res) => {
-      console.log("success");
       setcommentCNT((cur) => ++cur);
       const data = { reviewId: review.reviewId, loginMemberId: userId };
       searchReview(
@@ -75,7 +74,6 @@ const Detail = ({ review, setReview }: any) => {
     const fail = () => {
       console.log("fail");
     };
-    console.log(review);
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
@@ -146,7 +144,6 @@ const Detail = ({ review, setReview }: any) => {
       setRecommendReview(positiveReview);
     } else {
       setRecommendReview(interestReview);
-      console.log("!!", interestReview);
     }
   };
   useEffect(() => {
@@ -293,7 +290,7 @@ const Detail = ({ review, setReview }: any) => {
                 className="nocoment"
                 style={{ width: "100%", height: "auto" }}
               >
-                No Coments 댓글좀 주세요 ㅋ
+                첫 댓글을 작성해 보세요!
               </div>
             )}
           </div>

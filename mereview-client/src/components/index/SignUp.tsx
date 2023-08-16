@@ -112,13 +112,11 @@ const SignUp = () => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
-      console.log(file);
       const objectURL = URL.createObjectURL(file);
       setSelectedImage(objectURL);
       setFileData(file);
     }
   }, []);
-  console.log(fileData);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
