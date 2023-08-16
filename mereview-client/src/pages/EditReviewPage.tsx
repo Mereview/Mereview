@@ -22,7 +22,8 @@ const ReviewWrite = () => {
   const { id } = useParams();
   const reviewId = Number(id);
   const data = { loginMemberId: userid, reviewId: reviewId };
-  // const [reviewData, setReviewData] = useState(null);
+
+  //기존 리뷰 정보 받아오기
   useEffect(() => {
     const getEditRiview = () => {
       console.log(userid, reviewId);
