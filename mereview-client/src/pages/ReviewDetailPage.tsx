@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { searchReview, toggleNotificationStatus } from "../api/review";
 import Loading from "../components/common/Loading";
-
+//디테일 페이지 렌더링
 const ReviewDetail = () => {
   const [review, setReview] = useState({ backgroundImage: { id: null } });
   const [loading, setLoading] = useState(false);
