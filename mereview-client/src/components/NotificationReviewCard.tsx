@@ -184,9 +184,7 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
       </div>
       <div className="btn-justify">
         <Button
-          onClick={() => {
-            handlerToggleStatus
-                    }}
+          onClick={handlerToggleStatus}
           styles="btn-primary"
           text="확인"
         ></Button>
