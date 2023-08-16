@@ -158,7 +158,7 @@ const ReviewWrite = () => {
       alert("한줄평을 입력해주세요");
       return;
     }
-    if(inputData.current.type == null){
+    if (inputData.current.type == null) {
       alert("영화 평가를 선택해주세요");
       return;
     }
@@ -198,8 +198,8 @@ const ReviewWrite = () => {
         weight: childRef5.current.getKeyInfo().weight,
       });
     }
-    if (keywordList.length < 5) {
-      alert("키워드 목록을 입력해주세요");
+    if (keywordList.length < 1) {
+      alert("키워드 목록을 1개 이상 입력해주세요");
       return;
     }
     const reviewContent = contentRef.current.getContent();
