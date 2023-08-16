@@ -78,16 +78,25 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   }
 
   const handlerToggleStatus = () => {
-    
-    toggleNotificationStatus({loginMemberId : memberId, reviewId : reviewId}, ()=>{}, ()=>{})
+    const data = {
+        loginMemberId: parseInt(memberId),
+        reviewId: reviewId      
+    }
+    console.log(data)
+    toggleNotificationStatus(data, ()=>{}, ()=>{})
+
     if(confirmed){
-      const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
-      setConfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+    
+      const notificationCard = confirmedReviewList.filter((e)=>e.notificationId===notificationId)      
+      console.log(notificationCard)
+
       setUnconfirmedReviewList(prev => prev.concat(notificationCard));
+      setConfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
       }else{
-      const notificationCard = confirmedReviewList.filter((e)=>e.notificationId == notificationId)
-      setUnconfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
+        const notificationCard = unconfirmedReviewList.filter((e)=>e.notificationId===notificationId)      
+        console.log(notificationCard)
       setConfirmedReviewList(prev => prev.concat(notificationCard));
+      setUnconfirmedReviewList(prev => prev.filter((e)=> e.notificationId != notificationId))
     }
   }
 
@@ -186,15 +195,15 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
       <div className="btn-justify">
         <Button
           onClick={handlerToggleStatus}
-          styles="btn-primary"
-          text="확인"
+          styles="btn-primary w-50"
+          text="알림 확인"
         ></Button>
         <Button
           onClick={
             handlerDeleteNotification
           }
-          styles="btn-primary"
-          text="삭제"
+          styles="btn-primary w-50"
+          text="알림 제거"
         ></Button>
       </div>
     </div>

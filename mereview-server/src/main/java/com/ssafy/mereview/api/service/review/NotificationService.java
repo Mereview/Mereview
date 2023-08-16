@@ -22,6 +22,7 @@ public class NotificationService {
     private final NotificationQueryRepository notificationQueryRepository;
 
     public NotificationResponse toggleStatus(NotificationUpdateServiceRequest request) {
+        log.debug("NotificationService.toggleStatus : request = {}, {}", request.getMemberId(), request.getReviewId());
         Notification notification = notificationQueryRepository.searchByReviewIdAndMemberId(request.getMemberId(), request.getReviewId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림입니다."));
 
