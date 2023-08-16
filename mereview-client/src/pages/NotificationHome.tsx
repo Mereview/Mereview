@@ -220,11 +220,11 @@ const NotificationHome = () => {
   return (
     <>
       {unconfirmedReviewList.length != 0 && (
-        <span className="display-1 fw-bold ms-3">UNCONFIRMED</span>
+        <span className="display-1 fw-bold ms-3">새로 온 알람</span>
       )}{" "}
       <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
       <hr />
-      {confirmedReviewList.length != 0 && <span className="display-1 fw-bold ms-3">CONFIRMED</span>}
+      {confirmedReviewList.length != 0 && <span className="display-1 fw-bold ms-3">확인된 알람</span>}
       <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
     </>
   );

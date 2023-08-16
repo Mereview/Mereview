@@ -47,6 +47,7 @@ public class NotificationController {
     @PutMapping
     @ApiOperation(value = "알림 여부 토글")
     public ApiResponse<NotificationResponse> toggleStatus(@Valid @RequestBody NotificationUpdateRequest request) {
+        log.debug("request: {}", request);
         NotificationResponse response = notificationService.toggleStatus(request.toServiceRequest());
         return ApiResponse.ok(response);
     }
