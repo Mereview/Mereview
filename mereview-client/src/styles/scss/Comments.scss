@@ -24,10 +24,9 @@
       color: black;
       margin-left: 5px;
       font-weight: bold;
-    }
-    a :hover {
-      color: blue;
-      font-weight: bold;
+      &:hover {
+        color: blue;
+      }
     }
 
     .delete {
