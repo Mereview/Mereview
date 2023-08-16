@@ -150,9 +150,8 @@ public class ReviewQueryService {
     }
 
     private ReviewEvaluationType getReviewEvaluationType(Long reviewId, Long loginMemberId) {
-        ReviewEvaluation reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, loginMemberId)
-                .orElseThrow(NoSuchElementException::new);
-        return reviewEvaluation.getType();
+        Optional<ReviewEvaluation> reviewEvaluation = reviewEvaluationQueryRepository.searchByReviewAndMember(reviewId, loginMemberId);
+        return reviewEvaluation.map(ReviewEvaluation::getType).orElse(null);
     }
 
     private boolean checkIsDone(Long reviewId, Long loginMemberId) {
