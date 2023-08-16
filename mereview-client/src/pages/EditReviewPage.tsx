@@ -31,7 +31,6 @@ const ReviewWrite = () => {
         data,
         (res) => {
           const review = res.data.data;
-          console.log(review);
           const image = review.backgroundImage;
           if (image !== null) {
             setImgName(image.fileName);
@@ -198,9 +197,7 @@ const ReviewWrite = () => {
       .then((res) => {
         const movie = res.data.data;
         inputData.current.movieId = movie.id;
-        console.log(movie.genres);
         setGenreList(movie.genres);
-        console.log(genreList);
       })
       .catch(() => {
         console.log("error");
@@ -209,7 +206,6 @@ const ReviewWrite = () => {
 
   //장르 리스트 중 선택한 장르를 inputData에 저장
   const selectGenreHandler = (selected) => {
-    console.log(selected.value);
     setSelectGenre(selected);
     inputData.current.genreId = selected.value;
   };
@@ -260,7 +256,6 @@ const ReviewWrite = () => {
       return;
     }
     const reviewContent = contentRef.current.getContent();
-    console.log(reviewContent);
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
     inputData.current.content = reviewContent;
@@ -269,17 +264,6 @@ const ReviewWrite = () => {
       return;
     }
     const formData = new FormData();
-    // formData.append(
-    //   "reviewId",
-    //   new Blob([JSON.stringify(reviewId)], {
-    //     type: "application/json",
-    //   })
-    // );
-    console.log(inputData.current.title);
-    console.log(inputData.current.highlight);
-    console.log(inputData.current.content);
-    console.log(inputData.current.keywordRequests);
-    console.log(inputData.current.type);
     formData.append(
       "request",
       new Blob(
@@ -298,14 +282,12 @@ const ReviewWrite = () => {
         }
       )
     );
-    console.log(fileDataRef.current);
     if (fileDataRef.current != null) {
       formData.append("file", fileDataRef.current);
     }
     axios
       .put(url + `/reviews/${reviewId}`, formData)
       .then(() => {
-        console.log("success");
         navigate("/review");
       })
       .catch(() => {
@@ -316,8 +298,6 @@ const ReviewWrite = () => {
   return (
     <div
       style={{
-        // backgroundColor: "rgba(0, 0, 0, 0.3)",
-        // backgroundImage: `url(${topImg})`,
         position: "absolute",
         backgroundSize: "fill",
         height: "auto",
@@ -343,8 +323,6 @@ const ReviewWrite = () => {
           backgroundColor: `${
             selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
           }`,
-          // backgroundColor: "rgba(0, 0, 0, 0.5)",
-          // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
         }}
       >
         <div
