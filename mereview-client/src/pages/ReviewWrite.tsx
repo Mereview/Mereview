@@ -43,8 +43,6 @@ const ReviewWrite = () => {
     const file = acceptedFiles[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      console.log("file: " + file);
-      console.log("objectURL : " + objectURL);
       setSelectedImage(objectURL);
       setImgName(file.name);
       fileDataRef.current = file;
@@ -138,7 +136,6 @@ const ReviewWrite = () => {
 
   //장르 리스트 중 선택한 장르를 inputData에 저장
   const selectGenreHandler = (selected) => {
-    console.log(selected);
     setSelectGenre(selected);
     inputData.current.genreId = selected.value;
   };
@@ -220,13 +217,11 @@ const ReviewWrite = () => {
         .then((response) => response.blob())
         .then((blob) => {
           const imageFile = new File([blob], "image.jpg");
-          console.log("!!", imageFile);
           formData.append("file", imageFile);
 
           axios
             .post(url + "/reviews", formData)
             .then(() => {
-              console.log("success");
               navigate("/review");
             })
             .catch(() => {
@@ -239,8 +234,6 @@ const ReviewWrite = () => {
   return (
     <div
       style={{
-         backgroundColor: "rgb(255, 243, 243)",
-        // backgroundImage: `url(${topImg})`,
         position: "absolute",
         backgroundSize: "fill",
         height: "auto",
@@ -256,23 +249,16 @@ const ReviewWrite = () => {
           objectFit: "fill",
         }}
       />
-      {/* <div
-        style={{
-          width: "100%",
-          backgroundImage: `url(${topImg})`,
-        }}
-      ></div> */}
       <Container
-        // className="mx-auto border border-5 border-dark rounded-5"
         id="reviewContainer"
         className="mx-auto"
         style={{
           position: "relative",
           height: "auto",
           flex: "1",
-          backgroundColor: `${selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"}`,
-          // backgroundColor: "rgba(0, 0, 0, 0.5)",
-          // boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+          backgroundColor: `${
+            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
+          }`,
         }}
       >
         <div
@@ -283,7 +269,10 @@ const ReviewWrite = () => {
         ></div>
         <Row />
         <Row className="top mx-2">
-          <Col md-lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
+          <Col
+            md-lg={7}
+            className="frame me-4 p-4 rounded-3 d-flex flex-column"
+          >
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -379,7 +368,11 @@ const ReviewWrite = () => {
               <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
+                  <Button
+                    styles="btn-fourth"
+                    btnType="button"
+                    text="첨부"
+                  ></Button>
                 </div>
               </Col>
             </Row>
@@ -402,7 +395,11 @@ const ReviewWrite = () => {
           <TextEditor ref={contentRef}></TextEditor>
         </Row>
         <Row className="align-items-center d-flex justify-content-end mb-3 me-1">
-          <Button styles="btn-primary" text="등록" onClick={reviewCreateHandler}></Button>
+          <Button
+            styles="btn-primary"
+            text="등록"
+            onClick={reviewCreateHandler}
+          ></Button>
         </Row>
         <Row />
       </Container>
