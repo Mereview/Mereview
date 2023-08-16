@@ -28,8 +28,8 @@ const ReviewWrite = () => {
     highlight: null,
     type: null,
     memberId: null,
-    movieId: 0,
-    genreId: 0,
+    movieId: null,
+    genreId: null,
     keywordRequests: [],
   });
 
@@ -150,43 +150,63 @@ const ReviewWrite = () => {
       alert("영화 제목을 입려해주세요");
       return;
     }
+    if (inputData.current.genreId == null) {
+      alert("장르를 선택해주세요");
+      return;
+    }
     if (inputData.current.highlight == null) {
       alert("한줄평을 입력해주세요");
       return;
     }
+    if(inputData.current.type == null){
+      alert("영화 평가를 선택해주세요");
+      return;
+    }
     const keywordList = [];
-    keywordList.push({
-      movieId: inputData.current.movieId,
-      name: childRef1.current.getKeyInfo().name,
-      weight: childRef1.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      movieId: inputData.current.movieId,
-      name: childRef2.current.getKeyInfo().name,
-      weight: childRef2.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      movieId: inputData.current.movieId,
-      name: childRef3.current.getKeyInfo().name,
-      weight: childRef3.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      movieId: inputData.current.movieId,
-      name: childRef4.current.getKeyInfo().name,
-      weight: childRef4.current.getKeyInfo().weight,
-    });
-    keywordList.push({
-      movieId: inputData.current.movieId,
-      name: childRef5.current.getKeyInfo().name,
-      weight: childRef5.current.getKeyInfo().weight,
-    });
-    if (keywordList == null) {
+    if (childRef1.current.getKeyInfo().name != "") {
+      keywordList.push({
+        movieId: inputData.current.movieId,
+        name: childRef1.current.getKeyInfo().name,
+        weight: childRef1.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef2.current.getKeyInfo().name != "") {
+      keywordList.push({
+        movieId: inputData.current.movieId,
+        name: childRef2.current.getKeyInfo().name,
+        weight: childRef2.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef3.current.getKeyInfo().name != "") {
+      keywordList.push({
+        movieId: inputData.current.movieId,
+        name: childRef3.current.getKeyInfo().name,
+        weight: childRef3.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef4.current.getKeyInfo().name != "") {
+      keywordList.push({
+        movieId: inputData.current.movieId,
+        name: childRef4.current.getKeyInfo().name,
+        weight: childRef4.current.getKeyInfo().weight,
+      });
+    }
+    if (childRef5.current.getKeyInfo().name != "") {
+      keywordList.push({
+        movieId: inputData.current.movieId,
+        name: childRef5.current.getKeyInfo().name,
+        weight: childRef5.current.getKeyInfo().weight,
+      });
+    }
+    if (keywordList.length < 5) {
       alert("키워드 목록을 입력해주세요");
       return;
     }
     const reviewContent = contentRef.current.getContent();
     inputData.current.memberId = userid;
     inputData.current.keywordRequests = keywordList;
+    console.log(inputData.current.keywordRequests);
+
     inputData.current.content = reviewContent;
     if (inputData.current.content == null) {
       alert("리뷰 내용을 입력해주세요");
