@@ -278,7 +278,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/usefulDisabled.png" }
               : { backgroundImage: "url(/useful.png)" }
           }
-          disabled={userId === review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
         <button
           id="FUN"
@@ -288,7 +288,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/funnyDisabled.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
-          disabled={userId === review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
         <button
           id="BAD"
@@ -298,7 +298,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/dislikeDisabled.png)" }
               : { backgroundImage: "url(/dislike.png)" }
           }
-          disabled={userId === review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
       </div>
       {Number(userId) === review.memberId ? (
