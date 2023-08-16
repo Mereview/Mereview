@@ -37,7 +37,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
   }
 
-  console.log(presentTime);
   const onClick = () => {
     deleteReviewComment(
       comment.commentId,
@@ -50,7 +49,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
         searchReview(
           data,
           (res) => {
-            console.log("comment:", res.data.data.comments);
             setComments(res.data.data.comments);
             setcommentCNT((cur) => --cur);
           },
@@ -73,7 +71,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     updateCommentLike(
       data,
       (res) => {
-        console.log(res);
         const data = {
           reviewId: id,
           loginMemberId: Number(userId),
@@ -93,7 +90,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-  console.log(comment);
   return (
     <div className="comment">
       <div className="writer">

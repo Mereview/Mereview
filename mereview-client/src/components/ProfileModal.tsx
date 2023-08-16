@@ -21,7 +21,7 @@ const ProfileModal = () => {
     <div className="toplevel mt-3">
       <div className={`arrow ${animate ? "animate" : ""}`}></div>
       <div className={`first ${animate ? "animate" : ""}`}>
-        반갑다 {userNickname}
+        Hello, {userNickname}
       </div>
       <div className={`second ${animate ? "animate" : ""}`}>
         <Link to={"/profile"} style={{ color: "white" }}>
