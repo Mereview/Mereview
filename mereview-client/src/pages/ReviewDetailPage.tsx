@@ -123,27 +123,25 @@ const ReviewDetail = () => {
             <div className="Modal">
               <div className="blank"></div>
 
-              <div className="smallInfo">
-                <div className="image">
-                  <img
-                    src={`https://image.tmdb.org/t/p/w300/${movie.posterImg}`}
-                    alt="포스터이미지"
-                  />
-                </div>
+              <div className="image">
+                <img
+                  src={`https://image.tmdb.org/t/p/w300/${movie.posterImg}`}
+                  alt="포스터이미지"
+                />
+              </div>
 
-                <div className="modalTitle">
-                  <h2>{movie.title}</h2>
-                  <h5>영화평점: {movie.voteAverage}</h5>
-                </div>
+              <div className="modalTitle">
+                <h2>{movie.title}</h2>
+                <h5>영화평점: {movie.voteAverage}</h5>
+              </div>
 
-                <div className="modalSubTitle">
-                  <div>
-                    {movie.genres.map((item) => (
-                      <span key={item.genreId}>{item.genreName}, </span>
-                    ))}
-                  </div>
-                  <h5>개봉일: {movie.releaseDate}</h5>
+              <div className="modalSubTitle">
+                <div>
+                  {movie.genres.map((item) => (
+                    <span key={item.genreId}>{item.genreName}, </span>
+                  ))}
                 </div>
+                <h5>개봉일: {movie.releaseDate}</h5>
               </div>
 
               <div className="overview">
