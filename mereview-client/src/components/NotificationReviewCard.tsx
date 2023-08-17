@@ -46,7 +46,8 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
     setPressStartTime(Date.now());
     setIsPressing(true);
   };
-
+console.log(confirmedReviewList)
+console.log(unconfirmedReviewList)
   const handlePressEnd = (event: React.MouseEvent<HTMLDivElement>) => {
     setIsPressing(false);
 
@@ -84,13 +85,9 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   };
 
   const handlerToggleStatus = () => {
-    const data = {
-      loginMemberId: parseInt(memberId),
-      reviewId: reviewId,
-    };
-    console.log(data);
+    
     toggleNotificationStatus(
-      data,
+      notificationId,
       () => {},
       () => {}
     );
