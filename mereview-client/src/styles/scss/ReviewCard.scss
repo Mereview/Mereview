@@ -47,10 +47,25 @@
     @include gray-info;
   }
 
-  .evaluation {
-    text-align: right;
-    // font-size 나중에 지울것
-    font-size: $font-size-xs;
+  .evaluation-counts {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: right;
+
+    div {
+      margin-right: 5px;
+      margin-left: 5px;
+
+      img {
+        max-width: 100%;
+        margin-bottom: 5px;
+
+        @media (max-width: 1300px) {
+          width: 80%;
+        }
+      }
+    }
   }
 
   .one-line-review {
@@ -139,6 +154,17 @@
   font-size: $font-size-md;
   color: $white;
 
+  @media (max-width: 1300px) {
+    flex-basis: 46%;
+    width: 45%;
+    padding-bottom: 25.5%;
+  }
+  @media (max-width: 600px) {
+    flex-basis: 95%;
+    width: 94%;
+    padding-bottom: 53.2%;
+  }
+
   .card-overlay {
     display: flex;
     flex-direction: column;
@@ -162,10 +188,25 @@
     @include gray-info;
   }
 
-  .evaluation {
-    text-align: right;
-    // font-size 나중에 지울것
-    font-size: $font-size-xs;
+  .evaluation-counts {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: right;
+
+    div {
+      margin-right: 5px;
+      margin-left: 5px;
+
+      img {
+        max-width: 100%;
+        margin-bottom: 5px;
+
+        @media (max-width: 1300px) {
+          width: 80%;
+        }
+      }
+    }
   }
 
   .one-line-review {
