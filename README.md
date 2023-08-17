@@ -1,41 +1,58 @@
 # 🎬 미리뷰
 
- 1. 프로젝트 로고
- 2. 프로젝트 기간 & 팀 소개
- 3. 기획 배경 -> 프로젝트 기획 링크 걸어줌
- 4. 주요 기능
- 5. 외부 기술 ex) tmdb, springemail
- 6. gif 움짤 촬영후 설명
- 7. 팀 소개
- 8. 참조 문서
+![](./mereview-docs/img/mereview-logo.png)
 
----
 
-### ✨팀 소개
+## ⌛️ 프로젝트 진행 기간
+### 2023-07-04 ~ 2023-08-18 (7주)
 
-#### 🧑 김웅서
+
+## 👪팀원 소개
+멋쟁이 팀원들을 소개할게요. 😊
+
+### 🧑 김웅서
+- FrontEnd
 - GitHub : [ungseo](https://github.com/ungseo)
-#### 👦 민정인
+### 👦 민정인
+- FrontEnd
 - GitHub : [chati97](https://github.com/chati97)
-#### 🧒 유승민
-- GitHub : [byuri1356](https://github.com/byuri1356)
-#### 👨 양진형
+### 👨 양진형
+- FrontEnd
 - GitHub : [yangJin-H](https://github.com/yangJin-H)
-#### 👨‍🦱 이정현
+### 🧒 유승민
+- 팀장, BackEnd
+- GitHub : [byuri1356](https://github.com/byuri1356)
+### 👨‍🦱 이정현
+- BackEnd
 - GitHub : [duljji](https://github.com/duljji)
-#### 🤠 최영환
+### 🤠 최영환
+- BackEnd
 - GitHub : [longBright](https://github.com/longBright)
-#### 📕 팀 노션
-- Notion : [MeReview](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4)
-  
-<br>
-
----
+### 📑 [팀 노션](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4)
 
 
-### 참조 문서
+## 📚 기획 배경
+### 📖 [프로젝트 기획](./mereview-docs/ProjectPlan.md)
 
- - [프로젝트 기획](./mereview-docs/ProjectPlan.md)
- - [요구사항 명세](./mereview-docs/Requirement.md)
- - [API 명세](./mereview-docs/API-Specification.md)
- - [컨벤션](./mereview-docs/Common-Convention.md)
+
+## 기능 소개
+주요 기능 글로 설명
+
+
+## 📺 서비스 화면
+페이지 이름 + gif
+
+
+## 📂 시스템 아키텍처
+![](./mereview-docs/img/system-architecture.png)
+
+
+## 📁 ERD
+![](./mereview-docs/img/mereview-erd.png)
+
+
+## 📔 참조 문서
+### [프로젝트 기획](./mereview-docs/ProjectPlan.md)
+### [요구사항 명세](./mereview-docs/Requirement.md)
+### [API 명세](./mereview-docs/API-Specification.md)
+### [컨벤션](./mereview-docs/Common-Convention.md)
