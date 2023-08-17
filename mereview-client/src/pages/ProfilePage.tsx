@@ -5,14 +5,7 @@ import { userActions } from "../store/user-slice";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
-import {
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  createTheme,
-} from "@mui/material";
+import { TextField, List, ListItemButton } from "@mui/material";
 import {
   BsHeart,
   BsHeartFill,
@@ -197,14 +190,16 @@ const getMemberInfo = async (userId: number) => {
           genre: expData.genreName,
           typeName: "유용해요",
           exp: expData.usefulExperience,
-          expPercent: expData.usefulExperiencePercent,
+          expPercent:
+            expData.usefulExperiencePercent + Math.floor(Math.random() * 50),
           tier: expData.usefulTier,
         };
         const funExp: Experience = {
           genre: expData.genreName,
           typeName: "재밌어요",
           exp: expData.funExperience,
-          expPercent: expData.funExperiencePercent,
+          expPercent:
+            expData.funExperiencePercent + Math.floor(Math.random() * 50),
           tier: expData.funTier,
         };
         userExpData.push(usefulExp);
@@ -924,8 +919,12 @@ const ProfilePage = () => {
             <></>
           )}
           <div className="follow-info">
-            <span onClick={followingListClicked}>팔로잉: {followingCount}</span>
-            <span onClick={followerListClicked}>팔로워: {followerCount}</span>
+            <span className="f-user-span" onClick={followingListClicked}>
+              팔로잉: {followingCount}
+            </span>
+            <span className="f-user-span" onClick={followerListClicked}>
+              팔로워: {followerCount}
+            </span>
             <span
               className="follow"
               onClick={isSelf ? followClicked : null}
