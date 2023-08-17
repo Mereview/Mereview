@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/members";
+import { getConfirmedNotifications } from "../../api/review";
+import { notificationActions } from "../../store/notification-slice";
 const LoginForm = () => {
   const [animate, setAnimate] = useState<boolean>(false);
   useEffect(() => {
@@ -43,6 +45,17 @@ const LoginForm = () => {
 
         dispatch(userActions.authorization(data.data));
         dispatch(userActions.authToggler());
+
+        //notification 쏴주기
+        const notifiData = { loginMemberId: data.data.id, status: null };
+        const success = (res) => {
+          dispatch(notificationActions.getNotification(res.data.data));
+          console.log("리덕스저장성공");
+        };
+        const fail = (err) => {
+          console.log(err);
+        };
+        getConfirmedNotifications(notifiData, success, fail);
         navigate("/review");
       },
       (err) => {
