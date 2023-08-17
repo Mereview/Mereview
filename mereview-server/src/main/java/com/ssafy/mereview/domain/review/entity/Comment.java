@@ -29,10 +29,12 @@ public class Comment extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = LAZY)
-    Review review;
+    @JoinColumn(name = "review_id")
+    private Review review;
 
     @ManyToOne(fetch = LAZY)
-    Member member;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "comment", cascade = ALL, orphanRemoval = true)
     private List<CommentLike> likes = new ArrayList<>();
