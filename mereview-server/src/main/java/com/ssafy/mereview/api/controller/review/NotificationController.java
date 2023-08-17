@@ -1,6 +1,5 @@
 package com.ssafy.mereview.api.controller.review;
 
-import com.ssafy.mereview.api.controller.review.dto.request.NotificationUpdateRequest;
 import com.ssafy.mereview.api.service.review.NotificationService;
 import com.ssafy.mereview.api.service.review.ReviewQueryService;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static com.ssafy.mereview.common.util.SizeConstants.PAGE_SIZE;
@@ -44,11 +42,10 @@ public class NotificationController {
         return ApiResponse.ok(pageResponse);
     }
 
-    @PutMapping
+    @PutMapping("/{notificationId}")
     @ApiOperation(value = "알림 여부 토글")
-    public ApiResponse<NotificationResponse> toggleStatus(@Valid @RequestBody NotificationUpdateRequest request) {
-        log.debug("request: {}", request);
-        NotificationResponse response = notificationService.toggleStatus(request.toServiceRequest());
+    public ApiResponse<NotificationResponse> toggleStatus(@PathVariable Long notificationId) {
+        NotificationResponse response = notificationService.toggleStatus(notificationId);
         return ApiResponse.ok(response);
     }
 
