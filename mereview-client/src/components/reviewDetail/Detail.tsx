@@ -226,9 +226,9 @@ const Detail = ({ review, setReview }: any) => {
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
           <img src="/GraduationCap.png" alt="재밌어요" />
-          <span>{usefulCount}</span>
-          <img src="/smile.png" alt="유용해요" />
           <span>{funCount}</span>
+          <img src="/smile.png" alt="유용해요" />
+          <span>{usefulCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
           <span>{badCount}</span>
           <img src="/hitcount.png" alt="조회수" />
