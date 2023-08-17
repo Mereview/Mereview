@@ -158,7 +158,7 @@ const ReviewWrite = () => {
       alert("한줄평을 입력해주세요");
       return;
     }
-    if(inputData.current.type == null){
+    if (inputData.current.type == null) {
       alert("영화 평가를 선택해주세요");
       return;
     }
@@ -198,8 +198,8 @@ const ReviewWrite = () => {
         weight: childRef5.current.getKeyInfo().weight,
       });
     }
-    if (keywordList.length < 5) {
-      alert("키워드 목록을 입력해주세요");
+    if (keywordList.length < 1) {
+      alert("키워드 목록을 1개 이상 입력해주세요");
       return;
     }
     const reviewContent = contentRef.current.getContent();
@@ -222,18 +222,16 @@ const ReviewWrite = () => {
     );
     if (fileDataRef.current !== null) {
       formData.append("file", fileDataRef.current);
-
       axios
         .post(url + "/reviews", formData)
         .then(() => {
-          console.log("success");
           navigate("/review");
         })
         .catch(() => {
           console.log("fail");
         });
-    } else {
-      fetch(`https://image.tmdb.org/t/p/w300/${posterImage}`)
+    } else if (posterImage != "null") {
+      fetch(`https://image.tmdb.org/t/p/w300${posterImage}`)
         .then((response) => response.blob())
         .then((blob) => {
           const imageFile = new File([blob], "image.jpg");
@@ -247,6 +245,28 @@ const ReviewWrite = () => {
             .catch(() => {
               console.log("fail");
             });
+        });
+    } else {
+      const randomIndex = Math.floor(Math.random() * 16 + 1);
+      fetch(`/RandomBackground/random-${randomIndex}.jpg`)
+        .then((response) => response.blob())
+        .then((blobData) => {
+          const imageFile = new File([blobData], `random-${randomIndex}.jpg`, {
+            type: blobData.type,
+          });
+          formData.append("file", imageFile);
+
+          axios
+            .post(url + "/reviews", formData)
+            .then(() => {
+              navigate("/review");
+            })
+            .catch(() => {
+              console.log("fail");
+            });
+        })
+        .catch((error) => {
+          console.error(error);
         });
     }
   };
@@ -276,9 +296,7 @@ const ReviewWrite = () => {
           position: "relative",
           height: "auto",
           flex: "1",
-          backgroundColor: `${
-            selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"
-          }`,
+          backgroundColor: `${selectedImage != "" ? "rgba(0, 0, 0, 0.5)" : "rgb(255, 255, 255)"}`,
         }}
       >
         <div
@@ -289,10 +307,7 @@ const ReviewWrite = () => {
         ></div>
         <Row />
         <Row className="top mx-2">
-          <Col
-            md-lg={7}
-            className="frame me-4 p-4 rounded-3 d-flex flex-column"
-          >
+          <Col md-lg={7} className="frame me-4 p-4 rounded-3 d-flex flex-column">
             <Row className="mb-3">
               <Form.Control
                 placeholder="리뷰 제목을 입력하세요"
@@ -388,11 +403,7 @@ const ReviewWrite = () => {
               <Col lg={4}>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <Button
-                    styles="btn-fourth"
-                    btnType="button"
-                    text="첨부"
-                  ></Button>
+                  <Button styles="btn-fourth" btnType="button" text="첨부"></Button>
                 </div>
               </Col>
             </Row>
@@ -415,11 +426,7 @@ const ReviewWrite = () => {
           <TextEditor ref={contentRef}></TextEditor>
         </Row>
         <Row className="align-items-center d-flex justify-content-end mb-3 me-1">
-          <Button
-            styles="btn-primary"
-            text="등록"
-            onClick={reviewCreateHandler}
-          ></Button>
+          <Button styles="btn-primary" text="등록" onClick={reviewCreateHandler}></Button>
         </Row>
         <Row />
       </Container>

@@ -6,13 +6,16 @@ import "../styles/css/ReviewCard.css";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "./common";
+import { NotificationReviewCardInterface } from "./interface/NotificationReviewCardInterface";
+import { deleteNotification, toggleNotificationStatus } from "../api/review";
 
 type Style = {
   [key: string]: string | number;
 };
 
-const NotificationReviewCard = (props: ReviewCardInterface) => {
+const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
   const {
+    notificationId,
     className,
     reviewId,
     memberId,
@@ -29,6 +32,11 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
     movieGenre,
     createDate,
     recommend,
+    confirmed,
+    confirmedReviewList,
+    unconfirmedReviewList,
+    setConfirmedReviewList,
+    setUnconfirmedReviewList,
   } = props;
   const navigate = useNavigate();
   const [pressStartTime, setPressStartTime] = useState(0);
@@ -47,9 +55,7 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
       navigate(`/review/${reviewId}`);
     }
   };
-  const handleClickProfile = (
-    event: React.MouseEvent<HTMLParagraphElement>
-  ) => {
+  const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
     event.stopPropagation();
     navigate(`/profile/${memberId}`);
   };
@@ -59,6 +65,54 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
     console.log("Movie Name Clicked", movieTitle);
   };
 
+  const handlerDeleteNotification = () => {
+    if (confirmed) {
+      deleteNotification(
+        notificationId,
+        () => {},
+        () => {}
+      );
+      setConfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+    } else {
+      deleteNotification(
+        notificationId,
+        () => {},
+        () => {}
+      );
+      setUnconfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+    }
+  };
+
+  const handlerToggleStatus = () => {
+    const data = {
+      loginMemberId: parseInt(memberId),
+      reviewId: reviewId,
+    };
+    console.log(data);
+    toggleNotificationStatus(
+      data,
+      () => {},
+      () => {}
+    );
+
+    if (confirmed) {
+      const notificationCard = confirmedReviewList.filter(
+        (e) => e.notificationId === notificationId
+      );
+      console.log(notificationCard);
+
+      setUnconfirmedReviewList((prev) => prev.concat(notificationCard));
+      setConfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+    } else {
+      const notificationCard = unconfirmedReviewList.filter(
+        (e) => e.notificationId === notificationId
+      );
+      console.log(notificationCard);
+      setConfirmedReviewList((prev) => prev.concat(notificationCard));
+      setUnconfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+    }
+  };
+
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
@@ -66,25 +120,18 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
-    recommendStyle.opacity =
-      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    recommendStyle.opacity = (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
   }
 
   const formattedCreateDate: Date = new Date(createDate);
+  formattedCreateDate.setHours(formattedCreateDate.getHours() + 9);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
-    2,
-    "0"
-  );
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
   const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
-  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
-    2,
-    "0"
-  );
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(2, "0");
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
-
   return (
     <div className="me-3">
       <div
@@ -95,14 +142,26 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
       >
         <div className="card-overlay">
           <Row>
-            <Col md={"auto"} className="date">
+            <Col className="date">
               {year}-{month}-{day} {hour}:{minute}
             </Col>
-            <Col className="evaluation">
-              <span>재밌어요: {funnyCount}</span> |{" "}
-              <span>유용해요: {usefulCount}</span> |{" "}
-              <span>별로에요: {dislikeCount}</span> |{" "}
-              <span>Comment: {commentCount}</span>
+            <Col className="evaluation-counts">
+              <div>
+                <img src="/ReviewCard/laugh.png" alt="재밌어요" />
+                <p>{funnyCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/book.png" alt="유용해요" />
+                <p>{usefulCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/dislike.png" alt="별로에요" />
+                <p>{dislikeCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/comment.png" alt="댓글수" />
+                <p>{commentCount}</p>
+              </div>
             </Col>
           </Row>
           <Row>
@@ -144,28 +203,20 @@ const NotificationReviewCard = (props: ReviewCardInterface) => {
             </Row>
             <div className="recommend" style={recommendStyle}>
               {recommend ? (
-                <img src="/ReviewCardDummy/thumbsup.png" alt="추천!!" />
+                <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
               ) : (
-                <img src="/ReviewCardDummy/thumbsdown.png" alt="비추!!" />
+                <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
               )}
             </div>
           </div>
         </div>
       </div>
       <div className="btn-justify">
+        <Button onClick={handlerToggleStatus} styles="btn-primary w-50" text="알림 확인"></Button>
         <Button
-          onClick={() => {
-            console.log("click");
-          }}
-          styles="btn-primary"
-          text="확인"
-        ></Button>
-        <Button
-          onClick={() => {
-            console.log("click");
-          }}
-          styles="btn-primary"
-          text="삭제"
+          onClick={handlerDeleteNotification}
+          styles="btn-primary w-50"
+          text="알림 제거"
         ></Button>
       </div>
     </div>

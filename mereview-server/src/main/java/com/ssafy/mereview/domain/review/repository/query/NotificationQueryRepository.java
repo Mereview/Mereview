@@ -1,6 +1,5 @@
 package com.ssafy.mereview.domain.review.repository.query;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,7 +8,6 @@ import com.ssafy.mereview.domain.review.entity.Notification;
 import com.ssafy.mereview.domain.review.entity.NotificationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +74,7 @@ public class NotificationQueryRepository {
                 .fetch();
     }
 
-    public Optional<Notification> searchByReviewIdAndMemberId(Long reviewId, Long memberId) {
+    public Optional<Notification> searchByReviewIdAndMemberId(Long memberId, Long reviewId) {
         return Optional.ofNullable(queryFactory
                 .select(notification)
                 .from(notification)
