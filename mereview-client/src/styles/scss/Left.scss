@@ -2,6 +2,8 @@
 
 .ctn {
   height: 100vh;
+  animation: changeImg 5s ease-in-out infinite;
+  animation-duration: 5s;
   .btn {
     font-weight: bold;
     font-size: 1.5em;
@@ -21,4 +23,24 @@
 }
 .blank {
   height: 30vh;
+}
+
+@keyframes changeImg {
+  33% {
+    background-image: url("/public/IndexPictures/old.png");
+  }
+  65% {
+    background-image: url("/public/IndexPictures/old.png");
+  }
+  66% {
+    opacity: 100%;
+    background-image: url("/public//IndexPictures/posters.png");
+  }
+  99% {
+    background-image: url("/public//IndexPictures/posters.png");
+  }
+  100% {
+    opacity: 100%;
+    background-image: url("/public/IndexPictures/dvd.png");
+  }
 }
