@@ -100,11 +100,12 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
+          setEvType(res.data.data.reviewEvaluationType);
           alert("추천되었습니다.");
         } else {
+          setEvType(null);
           alert("추천을 취소하였습니다.");
         }
-        setEvType(res.data.data.type);
 
         setUsefulCount(res.data.data.usefulCount);
       },
@@ -124,12 +125,12 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
+          setEvType(res.data.data.reviewEvaluationType);
           alert("추천되었습니다.");
         } else {
+          setEvType(null);
           alert("추천을 취소하였습니다.");
         }
-        setEvType(res.data.data.type);
-
         setFunCount(res.data.data.funCount);
       },
       (err) => {
@@ -148,11 +149,12 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
+          setEvType(res.data.data.reviewEvaluationType);
           alert("비추천되었습니다.");
         } else {
+          setEvType(null);
           alert("비추천을 취소하였습니다.");
         }
-        setEvType(res.data.data.type);
 
         setBadCount(res.data.data.badCount);
       },
@@ -224,6 +226,7 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
+  console.log(evType);
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
