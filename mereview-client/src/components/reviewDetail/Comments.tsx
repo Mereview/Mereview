@@ -35,7 +35,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)) + "분";
   } // 1초이상 지났을 때
   else {
-    presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
+    if (Math.floor((diffTime % (1000 * 60)) / 1000) < 0) {
+      presentTime = "방금전";
+    } else {
+      presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
+    }
   }
 
   const onClick = () => {
