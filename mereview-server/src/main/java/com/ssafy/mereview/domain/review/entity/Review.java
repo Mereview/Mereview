@@ -1,5 +1,6 @@
 package com.ssafy.mereview.domain.review.entity;
 
+import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
 import com.ssafy.mereview.domain.BaseEntity;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -86,6 +88,7 @@ public class Review extends BaseEntity {
         this.content = request.getContent();
         this.highlight = request.getHighlight();
         this.type = request.getType();
+        updateKeywords(request.getKeywordServiceRequests(), request.getReviewId());
         updateBackGround(request);
     }
 
@@ -100,6 +103,13 @@ public class Review extends BaseEntity {
                 .review(Review.builder().id(id).build())
                 .uploadFile(uploadFile)
                 .build();
+    }
+
+    private void updateKeywords(List<KeywordUpdateServiceRequest> keywordServiceRequests, Long reviewId) {
+        this.keywords.clear();
+        this.keywords = keywordServiceRequests.stream()
+                .map(keyword -> keyword.toEntity(reviewId))
+                .collect(Collectors.toList());
     }
 
     public void increaseHits() {

@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeywordCreateServiceRequest {
     private String name;
-    private int weight;
+    private Integer weight;
     private Long movieId;
 
     @Builder
-    public KeywordCreateServiceRequest(String name, int weight, Long movieId) {
+    public KeywordCreateServiceRequest(String name, Integer weight, Long movieId) {
         this.name = name;
         this.weight = weight;
         this.movieId = movieId;
