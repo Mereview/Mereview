@@ -8,3 +8,8 @@ export interface ReviewDataInterface {
   genreId?: number | null;
   keywordRequests: any[];
 }
+
+export interface KeywordDataInterface {
+  name: string | null;
+  weight: number | null;
+}
