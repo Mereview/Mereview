@@ -18,7 +18,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
   const now = new Date();
   const createdTime = new Date(comment.createdTime);
   createdTime.setHours(createdTime.getHours() + 9);
-  const diffTime = now.getTime() - createdTime.getTime();
+  const diffTime = Math.abs(now.getTime() - createdTime.getTime());
   let presentTime = null;
 
   // 하루지났을때
@@ -35,7 +35,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)) + "분";
   } // 1초이상 지났을 때
   else {
-    presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
+    if (Math.floor((diffTime % (1000 * 60)) / 1000) <= 0) {
+      presentTime = "방금";
+    } else {
+      presentTime = Math.floor((diffTime % (1000 * 60)) / 1000) + "초";
+    }
   }
 
   const onClick = () => {
@@ -63,11 +67,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-  const likeDislike = (event: any) => {
+  const likeHandler = () => {
     const data = {
       commentId: comment.commentId,
-      memberId: userId,
-      type: event.target.id,
+      memberId: Number(userId),
+      type: "LIKE",
     };
     updateCommentLike(
       data,
@@ -91,7 +95,34 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-  console.log(comment);
+  const dislikeHandler = () => {
+    const data = {
+      commentId: comment.commentId,
+      memberId: Number(userId),
+      type: "DISLIKE",
+    };
+    updateCommentLike(
+      data,
+      (res) => {
+        const data = {
+          reviewId: id,
+          loginMemberId: Number(userId),
+        };
+        searchReview(
+          data,
+          (res) => {
+            setComments(res.data.data.comments);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      },
+      (err) => {
+        alert("이미 추천/비추천을 눌렀습니다.");
+      }
+    );
+  };
   return (
     <div className="comment">
       <div className="writer">
@@ -111,19 +142,25 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       <div className="buttons">
         <p className="createdDate">{presentTime} 전</p>
         <div className="buttonsWrapper">
-          <div className="likeWrapper">
+          <div
+            className="likeWrapper"
+            onClick={likeHandler}
+            aria-disabled={comment.memberId === Number(userId)}
+          >
             <button
               id="LIKE"
               disabled={comment.memberId === Number(userId)}
-              onClick={likeDislike}
             ></button>
             {comment.likeCount}
           </div>
-          <div className="dislikeWrapper">
+          <div
+            className="dislikeWrapper"
+            onClick={dislikeHandler}
+            aria-disabled={comment.memberId === Number(userId)}
+          >
             <button
               id="DISLIKE"
               disabled={comment.memberId === Number(userId)}
-              onClick={likeDislike}
             ></button>
             {comment.dislikeCount}
           </div>

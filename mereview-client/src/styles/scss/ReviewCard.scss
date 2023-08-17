@@ -18,7 +18,6 @@
   padding-bottom: 17%;
   min-width: 250px;
   min-height: 142px;
-  // margin: 10px 10px;
   background-size: cover;
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
@@ -54,15 +53,18 @@
     justify-content: right;
 
     div {
-      margin-right: 5px;
-      margin-left: 5px;
+      margin-right: 1px;
+
+      p {
+        font-size: $font-size-sm;
+      }
 
       img {
-        max-width: 100%;
-        margin-bottom: 5px;
+        max-width: 80%;
+        margin-bottom: 3px;
 
         @media (max-width: 1300px) {
-          width: 80%;
+          width: 60%;
         }
       }
     }
@@ -77,6 +79,8 @@
     justify-content: center;
     text-align: center;
     text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 10px black;
   }
 
   .profile-container {
@@ -141,28 +145,40 @@
   display: inline-block;
   border: solid 2px $black;
   border-radius: 10px;
-  flex-basis: 31%;
-  width: 30%;
+  flex-basis: 31.2%;
+  width: 31%;
   height: 0;
-  padding: 10px;
-  padding-bottom: 17%;
+  padding-bottom: 18%;
   min-width: 250px;
   min-height: 142px;
-  margin: 10px 10px;
+  margin: 10px 1% 10px 1%;
   background-size: cover;
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
   color: $white;
+  transform-origin: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 6px 6px 10px #000000;
+    transform: scale(1.03);
+  }
+
+  &:active {
+    box-shadow: 2px 2px 4px #000000;
+    transform: scale(0.98);
+  }
 
   @media (max-width: 1300px) {
-    flex-basis: 46%;
-    width: 45%;
-    padding-bottom: 25.5%;
+    flex-basis: 46.8%;
+    width: 46.5%;
+    padding-bottom: 27%;
   }
-  @media (max-width: 600px) {
-    flex-basis: 95%;
+
+  @media (max-width: 770px) {
+    flex-basis: 94.6%;
     width: 94%;
-    padding-bottom: 53.2%;
+    height: 60vw;
   }
 
   .card-overlay {
@@ -181,6 +197,10 @@
     &:hover {
       background-color: rgba(0, 0, 0, 0.3);
       cursor: pointer;
+
+      .recommend-text {
+        opacity: 1;
+      }
     }
   }
 
@@ -195,15 +215,18 @@
     justify-content: right;
 
     div {
-      margin-right: 5px;
-      margin-left: 5px;
+      margin-right: 1px;
+
+      p {
+        font-size: $font-size-sm;
+      }
 
       img {
-        max-width: 100%;
-        margin-bottom: 5px;
+        max-width: 80%;
+        margin-bottom: 3px;
 
         @media (max-width: 1300px) {
-          width: 80%;
+          width: 60%;
         }
       }
     }
@@ -218,6 +241,8 @@
     justify-content: center;
     text-align: center;
     text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 15px black;
   }
 
   .profile-container {
@@ -263,11 +288,24 @@
   }
 
   .recommend {
+    display: flex;
     position: absolute;
-    width: 40px;
-    height: 40px;
     right: 10px;
     bottom: 10px;
+
+    .recommend-text {
+      font-size: $font-size-sm;
+      color: rgba(255, 255, 255, 0.7);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+
+    .recommend-icon-container {
+      width: 40px;
+      height: 40px;
+    }
 
     img {
       width: 100%;

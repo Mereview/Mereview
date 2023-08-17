@@ -6,29 +6,29 @@ import "../styles/css/ExperienceBar.css";
 
 const tierBackgroundColor = {
   NONE: "rgba(0, 0, 0, 0)",
-  BRONZE: "rgba(148, 97, 61, 0.2)", // bronze
-  SILVER: "rgba(143, 143, 143, 0.2)", // silver
-  GOLD: "rgba(242, 205, 92, 0.2)", // gold
-  PLATINUM: "rgba(80, 200, 120, 0.2)", // platinum
-  DIAMOND: "rgba(112, 209, 244, 0.2)", // diamond
+  BRONZE: "rgba(148, 97, 61, 0.2)",
+  SILVER: "rgba(143, 143, 143, 0.2)",
+  GOLD: "rgba(242, 205, 92, 0.2)",
+  PLATINUM: "rgba(80, 200, 120, 0.2)",
+  DIAMOND: "rgba(112, 209, 244, 0.2)",
 };
 
 const tierColor = {
   NONE: "rgba(0, 0, 0, 0.35)",
-  BRONZE: "rgba(148, 97, 61, 0.5)", // bronze
-  SILVER: "rgba(143, 143, 143, 0.5)", // silver
-  GOLD: "rgba(242, 205, 92, 0.5)", // gold
-  PLATINUM: "rgba(80, 200, 120, 0.5)", // platinum
-  DIAMOND: "rgba(112, 209, 244, 0.5)", // diamond
+  BRONZE: "rgba(148, 97, 61, 0.5)",
+  SILVER: "rgba(143, 143, 143, 0.5)",
+  GOLD: "rgba(242, 205, 92, 0.5)",
+  PLATINUM: "rgba(80, 200, 120, 0.5)",
+  DIAMOND: "rgba(112, 209, 244, 0.5)",
 };
 
 const tierBorderColor = {
   NONE: "rgba(0, 0, 0, 1)",
-  BRONZE: "rgba(148, 97, 61, 1)", // bronze
-  SILVER: "rgba(143, 143, 143, 1)", // silver
-  GOLD: "rgba(242, 205, 92, 1)", // gold
-  PLATINUM: "rgba(80, 200, 120, 1)", // platinum
-  DIAMOND: "rgba(112, 209, 244, 1)", // diamond
+  BRONZE: "rgba(148, 97, 61, 1)",
+  SILVER: "rgba(143, 143, 143, 1)",
+  GOLD: "rgba(242, 205, 92, 1)",
+  PLATINUM: "rgba(80, 200, 120, 1)",
+  DIAMOND: "rgba(112, 209, 244, 1)",
 };
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -93,9 +93,15 @@ const ExperienceBar = React.memo((experienceProps: { userExpData: Experience[] }
 
   for (const data of userData) {
     labels.push([data.genre, data.typeName]);
-    expData.data.push(data.expPercent);
-    expData.backgroundColor.push(tierColor[data.tier]);
-    expData.borderColor.push(tierBorderColor[data.tier]);
+    if (data.expPercent <= 0 && data.exp <= 0) {
+      expData.data.push(null);
+      expData.backgroundColor.push(null);
+      expData.borderColor.push(null);
+    } else {
+      expData.data.push(data.expPercent);
+      expData.backgroundColor.push(tierColor[data.tier]);
+      expData.borderColor.push(tierBorderColor[data.tier]);
+    }
     backgournd.data.push(100);
     backgournd.backgroundColor.push(tierBackgroundColor[data.tier]);
     if (data.expPercent < 2.5 && data.tier !== "NONE") {

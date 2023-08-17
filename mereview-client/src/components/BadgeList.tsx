@@ -16,18 +16,19 @@ const genreMapper: Object = {
   범죄: "crime",
   다큐멘터리: "documentary",
   드라마: "drama",
-  가족: "familly",
+  가족: "family",
   판타지: "fantasy",
   역사: "history",
   공포: "horror",
   음악: "music",
-  미스터리: "mistery",
+  미스터리: "mystery",
   로맨스: "romance",
   SF: "sf",
-  "TV 영화": "TVmovie",
+  "TV 영화": "tvmovie",
   스릴러: "thriller",
   전쟁: "war",
   서부: "western",
+  기타: "etc",
 };
 
 const genreColor: Object = {
@@ -49,11 +50,16 @@ const BadgeComponent = ({ badgeInfo }: BadgeInfo) => {
   return (
     <div className="achieved-badge">
       <img
-        src={`/Badges/${rankMapper[badgeInfo.rank]}-${genreMapper[badgeInfo.genreName]}.png`}
+        src={`/Badges/${rankMapper[badgeInfo.rank]}-${
+          genreMapper[badgeInfo.genreName]
+        }.png`}
         alt="Badge"
       />
       <div className={`badge-info ${rankMapper[badgeInfo.rank]}`}>
-        <div className="badge-genre" style={{ color: genreColor[badgeInfo.rank] }}>
+        <div
+          className="badge-genre"
+          style={{ color: genreColor[badgeInfo.rank] }}
+        >
           {badgeInfo.genreName}
         </div>
         <div className="badge-type">{badgeInfo.type}</div>

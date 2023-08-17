@@ -17,10 +17,11 @@ const MovieList = ({ movieList }: MovieListProps) => {
   const calculateVisibleMovies = () => {
     const screenWidth = window.innerWidth;
     // 반응형, 나중에 카드 크기에 맞춰 좀 더 상세하게 고치기
-    if (screenWidth >= 1860) setNumberOfMoviesToShow(5);
-    else if (screenWidth >= 1470) setNumberOfMoviesToShow(4);
-    else if (screenWidth >= 1140) setNumberOfMoviesToShow(3);
-    else if (screenWidth >= 780) setNumberOfMoviesToShow(2);
+    if (screenWidth >= 1860) setNumberOfMoviesToShow(6);
+    else if (screenWidth >= 1470) setNumberOfMoviesToShow(5);
+    else if (screenWidth >= 1140) setNumberOfMoviesToShow(4);
+    else if (screenWidth >= 780) setNumberOfMoviesToShow(3);
+    else if (screenWidth >= 576) setNumberOfMoviesToShow(2);
     else setNumberOfMoviesToShow(1);
   };
 
@@ -57,17 +58,19 @@ const MovieList = ({ movieList }: MovieListProps) => {
   return (
     <>
       <div className="movie-list-sub-title">유행하는 영화</div>
-      <div className="movie-card-list-wrapper">
-        {visibleMovies.map((movie: MovieCardInterface) => (
-          <MovieCard
-            key={movie.movieId}
-            movieId={movie.movieId}
-            posterImagePath={movie.posterImagePath}
-            movieTitle={movie.movieTitle}
-            releaseYear={movie.releaseYear}
-            movieGenre={movie.movieGenre}
-          />
-        ))}
+      <div className="movie-card-list-wrapper-container">
+        <div className="movie-card-list-wrapper">
+          {visibleMovies.map((movie: MovieCardInterface) => (
+            <MovieCard
+              key={movie.movieId}
+              movieId={movie.movieId}
+              posterImagePath={movie.posterImagePath}
+              movieTitle={movie.movieTitle}
+              releaseYear={movie.releaseYear}
+              movieGenre={movie.movieGenre}
+            />
+          ))}
+        </div>
       </div>
       <div className="controls">
         <button className="slide-button" onClick={handleSlideLeft}>

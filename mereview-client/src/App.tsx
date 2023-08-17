@@ -35,6 +35,7 @@ function App() {
       }
     };
     getUserInfo();
+    window.scrollTo(0, 0);
   }, []);
   const isAuthenticated = useSelector(
     (state: any) => state.user.isAthenticated

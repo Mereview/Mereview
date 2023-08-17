@@ -42,16 +42,25 @@ const ReviewWrite = () => {
           setOneSentance(review.reviewHighlight);
           movieName.current = review.movieTitle;
           genreName.current = review.genre.genreName;
-          keywordId1.current = review.keywords[0].keywordId;
-          keywordId2.current = review.keywords[1].keywordId;
-          keywordId3.current = review.keywords[2].keywordId;
-          keywordId4.current = review.keywords[3].keywordId;
-          keywordId5.current = review.keywords[4].keywordId;
-          childRef1.current.setKey(review.keywords[0]);
-          childRef2.current.setKey(review.keywords[1]);
-          childRef3.current.setKey(review.keywords[2]);
-          childRef4.current.setKey(review.keywords[3]);
-          childRef5.current.setKey(review.keywords[4]);
+          const keyLen = review.keywords.length;
+          for (let i = 0; i < keyLen; i++) {
+            keywordIdList[i] = review.keywords[i].keywordId;
+          }
+          if (keywordIdList[0] != null) {
+            childRef1.current.setKey(review.keywords[0]);
+          }
+          if (keywordIdList[1] != null) {
+            childRef2.current.setKey(review.keywords[1]);
+          }
+          if (keywordIdList[2] != null) {
+            childRef3.current.setKey(review.keywords[2]);
+          }
+          if (keywordIdList[3] != null) {
+            childRef4.current.setKey(review.keywords[3]);
+          }
+          if (keywordIdList[4] != null) {
+            childRef5.current.setKey(review.keywords[4]);
+          }
           contentRef.current.setCont(review.reviewContent);
           if (review.movieEvaluatedType === "YES") {
             setGoodBtn(true);
@@ -96,6 +105,7 @@ const ReviewWrite = () => {
   const keywordId3 = useRef(null);
   const keywordId4 = useRef(null);
   const keywordId5 = useRef(null);
+  const keywordIdList = [5];
   //리뷰의 배경이미지 정보(선택한 이미지 url, 이미지 이름, 서버로 보낼 이미지 파일)
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
@@ -171,7 +181,6 @@ const ReviewWrite = () => {
     let { id, value } = e.target;
     inputData.current[id] = value;
   };
-
   //리뷰 정보를 서버에 보내기 위한 함수
   const reviewCreateHandler = () => {
     if (inputData.current.title == "") {

@@ -21,6 +21,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     funnyCount,
     usefulCount,
     dislikeCount,
+    hitsCount,
     commentCount,
     movieTitle,
     releaseYear,
@@ -30,11 +31,15 @@ const ReviewCard = (props: ReviewCardInterface) => {
   } = props;
   const navigate = useNavigate();
 
-  const handleClickReviewCard = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  const handleClickReviewCard = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
     navigate(`/review/${reviewId}`);
   };
 
-  const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  const handleClickProfile = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
     event.stopPropagation();
     navigate(`/profile/${memberId}`);
   };
@@ -47,26 +52,39 @@ const ReviewCard = (props: ReviewCardInterface) => {
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
+    cardStyle.backgroundPosition = "center center";
   }
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
-    recommendStyle.opacity = (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    recommendStyle.opacity =
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    if (recommendStyle.opacity < 0.5) recommendStyle.opacity = 0.5;
   }
 
   const formattedCreateDate: Date = new Date(createDate);
   formattedCreateDate.setHours(formattedCreateDate.getHours() + 9);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  );
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
   const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
-  const minute: string = String(formattedCreateDate.getMinutes()).padStart(2, "0");
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
+    2,
+    "0"
+  );
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
 
   return (
     <>
-      <div className={`review-card ${className}`} style={cardStyle} onClick={handleClickReviewCard}>
+      <div
+        className={`review-card ${className}`}
+        style={cardStyle}
+        onClick={handleClickReviewCard}
+      >
         <div className="card-overlay">
           <Row>
             <Col className="date">
@@ -74,11 +92,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
             </Col>
             <Col className="evaluation-counts">
               <div>
-                <img src="/ReviewCard/laugh.png" alt="재밌어요" />
+                <img src="/ReviewCard/laughing.png" alt="재밌어요" />
                 <p>{funnyCount}</p>
               </div>
               <div>
-                <img src="/ReviewCard/book.png" alt="유용해요" />
+                <img src="/ReviewCard/scholar.png" alt="유용해요" />
                 <p>{usefulCount}</p>
               </div>
               <div>
@@ -88,6 +106,10 @@ const ReviewCard = (props: ReviewCardInterface) => {
               <div>
                 <img src="/ReviewCard/comment.png" alt="댓글수" />
                 <p>{commentCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/hitcount.png" alt="댓글수" />
+                <p>{hitsCount > 1000 ? "999+" : hitsCount}</p>
               </div>
             </Col>
           </Row>
@@ -129,11 +151,18 @@ const ReviewCard = (props: ReviewCardInterface) => {
               </Col>
             </Row>
             <div className="recommend" style={recommendStyle}>
-              {recommend ? (
-                <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
-              ) : (
-                <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
-              )}
+              <div className="recommend-text">
+                {recommend
+                  ? "이 영화를 추천합니다."
+                  : "이 영화를 추천하지 않습니다."}
+              </div>
+              <div className="recommend-icon-container">
+                {recommend ? (
+                  <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
+                ) : (
+                  <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
+                )}
+              </div>
             </div>
           </div>
         </div>

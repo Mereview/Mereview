@@ -18,6 +18,7 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
     notificationId,
     className,
     reviewId,
+    movieId,
     memberId,
     nickname,
     profileImageId,
@@ -26,6 +27,7 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
     funnyCount,
     usefulCount,
     dislikeCount,
+    hitsCount,
     commentCount,
     movieTitle,
     releaseYear,
@@ -46,7 +48,8 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
     setPressStartTime(Date.now());
     setIsPressing(true);
   };
-
+  console.log(confirmedReviewList);
+  console.log(unconfirmedReviewList);
   const handlePressEnd = (event: React.MouseEvent<HTMLDivElement>) => {
     setIsPressing(false);
 
@@ -55,14 +58,16 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
       navigate(`/review/${reviewId}`);
     }
   };
-  const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  const handleClickProfile = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
     event.stopPropagation();
     navigate(`/profile/${memberId}`);
   };
 
   const handleClickMovie = (event: React.MouseEvent<HTMLParagraphElement>) => {
     event.stopPropagation();
-    console.log("Movie Name Clicked", movieTitle);
+    navigate(`/movie/${movieId}`);
   };
 
   const handlerDeleteNotification = () => {
@@ -72,25 +77,24 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
         () => {},
         () => {}
       );
-      setConfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+      setConfirmedReviewList((prev) =>
+        prev.filter((e) => e.notificationId != notificationId)
+      );
     } else {
       deleteNotification(
         notificationId,
         () => {},
         () => {}
       );
-      setUnconfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+      setUnconfirmedReviewList((prev) =>
+        prev.filter((e) => e.notificationId != notificationId)
+      );
     }
   };
 
   const handlerToggleStatus = () => {
-    const data = {
-      loginMemberId: parseInt(memberId),
-      reviewId: reviewId,
-    };
-    console.log(data);
     toggleNotificationStatus(
-      data,
+      notificationId,
       () => {},
       () => {}
     );
@@ -102,34 +106,46 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
       console.log(notificationCard);
 
       setUnconfirmedReviewList((prev) => prev.concat(notificationCard));
-      setConfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+      setConfirmedReviewList((prev) =>
+        prev.filter((e) => e.notificationId != notificationId)
+      );
     } else {
       const notificationCard = unconfirmedReviewList.filter(
         (e) => e.notificationId === notificationId
       );
       console.log(notificationCard);
       setConfirmedReviewList((prev) => prev.concat(notificationCard));
-      setUnconfirmedReviewList((prev) => prev.filter((e) => e.notificationId != notificationId));
+      setUnconfirmedReviewList((prev) =>
+        prev.filter((e) => e.notificationId != notificationId)
+      );
     }
   };
 
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
+    cardStyle.backgroundPosition = "center center";
   }
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
-    recommendStyle.opacity = (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    recommendStyle.opacity =
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
   }
 
   const formattedCreateDate: Date = new Date(createDate);
   formattedCreateDate.setHours(formattedCreateDate.getHours() + 9);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  );
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
   const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
-  const minute: string = String(formattedCreateDate.getMinutes()).padStart(2, "0");
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
+    2,
+    "0"
+  );
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
   return (
@@ -147,11 +163,11 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
             </Col>
             <Col className="evaluation-counts">
               <div>
-                <img src="/ReviewCard/laugh.png" alt="재밌어요" />
+                <img src="/ReviewCard/laughing.png" alt="재밌어요" />
                 <p>{funnyCount}</p>
               </div>
               <div>
-                <img src="/ReviewCard/book.png" alt="유용해요" />
+                <img src="/ReviewCard/scholar.png" alt="유용해요" />
                 <p>{usefulCount}</p>
               </div>
               <div>
@@ -161,6 +177,10 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
               <div>
                 <img src="/ReviewCard/comment.png" alt="댓글수" />
                 <p>{commentCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/hitcount.png" alt="댓글수" />
+                <p>{hitsCount > 1000 ? "999+" : hitsCount}</p>
               </div>
             </Col>
           </Row>
@@ -212,7 +232,11 @@ const NotificationReviewCard = (props: NotificationReviewCardInterface) => {
         </div>
       </div>
       <div className="btn-justify">
-        <Button onClick={handlerToggleStatus} styles="btn-primary w-50" text="알림 확인"></Button>
+        <Button
+          onClick={handlerToggleStatus}
+          styles="btn-primary w-50"
+          text="알림 확인"
+        ></Button>
         <Button
           onClick={handlerDeleteNotification}
           styles="btn-primary w-50"
