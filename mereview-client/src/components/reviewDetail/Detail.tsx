@@ -104,6 +104,8 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
+        setEvType(res.data.data.type);
+
         setUsefulCount(res.data.data.usefulCount);
       },
       (err) => {
@@ -126,6 +128,7 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
+        setEvType(res.data.data.type);
 
         setFunCount(res.data.data.funCount);
       },
@@ -149,6 +152,8 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("비추천을 취소하였습니다.");
         }
+        setEvType(res.data.data.type);
+
         setBadCount(res.data.data.badCount);
       },
       (err) => {
@@ -225,10 +230,10 @@ const Detail = ({ review, setReview }: any) => {
       <div className="first-line">
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
-          <img src="/GraduationCap.png" alt="재밌어요" />
-          <span>{funCount}</span>
-          <img src="/smile.png" alt="유용해요" />
+          <img src="/GraduationCap.png" alt="유용해요" />
           <span>{usefulCount}</span>
+          <img src="/smile.png" alt="재밌어요" />
+          <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
           <span>{badCount}</span>
           <img src="/hitcount.png" alt="조회수" />
@@ -246,7 +251,7 @@ const Detail = ({ review, setReview }: any) => {
           id="USEFUL"
           onClick={onClickUseful}
           style={
-            evIsDone && evType === "USEFUL"
+            evType === "USEFUL"
               ? { backgroundImage: "url(/usefulDisabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
@@ -257,7 +262,7 @@ const Detail = ({ review, setReview }: any) => {
           onClick={onClickFun}
           style={
             evType === "FUN"
-              ? { backgroundImage: "url(/funnyDisabled.png" }
+              ? { backgroundImage: "url(/funnyDisabled1.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
           disabled={Number(userId) === review.memberId}
