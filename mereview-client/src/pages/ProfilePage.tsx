@@ -190,16 +190,14 @@ const getMemberInfo = async (userId: number) => {
           genre: expData.genreName,
           typeName: "유용해요",
           exp: expData.usefulExperience,
-          expPercent:
-            expData.usefulExperiencePercent + Math.floor(Math.random() * 50),
+          expPercent: expData.usefulExperiencePercent,
           tier: expData.usefulTier,
         };
         const funExp: Experience = {
           genre: expData.genreName,
           typeName: "재밌어요",
           exp: expData.funExperience,
-          expPercent:
-            expData.funExperiencePercent + Math.floor(Math.random() * 50),
+          expPercent: expData.funExperiencePercent,
           tier: expData.funTier,
         };
         userExpData.push(usefulExp);
