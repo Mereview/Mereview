@@ -92,13 +92,9 @@ const Detail = ({ review, setReview }: any) => {
   const onClickUseful = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
@@ -108,15 +104,6 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
-        // searchReview(
-        //   searchReviewData,
-        //   (res) => {
-        //     setReview(res.data.data);
-        //     setEvIsDone(res.data.data.done);
-        //     setEvType(res.data.data.reviewEvaluationType);
-        //   },
-        //   (err) => {}
-        // );
         setUsefulCount(res.data.data.usefulCount);
       },
       (err) => {
@@ -127,13 +114,9 @@ const Detail = ({ review, setReview }: any) => {
   const onClickFun = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
@@ -143,15 +126,7 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
-        // searchReview(
-        //   searchReviewData,
-        //   (res) => {
-        //     setReview(res.data.data);
-        //     setEvIsDone(res.data.data.done);
-        //     setEvType(res.data.data.reviewEvaluationType);
-        //   },
-        //   (err) => {}
-        // );
+
         setFunCount(res.data.data.funCount);
       },
       (err) => {
@@ -162,13 +137,9 @@ const Detail = ({ review, setReview }: any) => {
   const onClickBad = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
@@ -178,15 +149,6 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("비추천을 취소하였습니다.");
         }
-        // searchReview(
-        //   searchReviewData,
-        //   (res) => {
-        //     setReview(res.data.data);
-        //     setEvIsDone(res.data.data.done);
-        //     setEvType(res.data.data.reviewEvaluationType);
-        //   },
-        //   (err) => {}
-        // );
         setBadCount(res.data.data.badCount);
       },
       (err) => {
