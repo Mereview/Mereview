@@ -167,7 +167,10 @@ const MovieDetail = () => {
       >
         <div className="info-container">
           <div className="movie-poster">
-            <img src={movieDetail.posterImagePath} alt={movieDetail.title} />
+            <div
+              className="movie-poster-container"
+              style={{ backgroundImage: `url(${movieDetail.posterImagePath})` }}
+            />
           </div>
           <div className="movie-info">
             <div className="movie-title">{movieDetail.title}</div>
