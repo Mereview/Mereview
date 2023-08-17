@@ -224,17 +224,17 @@ const NotificationHome = () => {
     <>
     <div className="mt-3">
 
-    <span className="title ms-5">새로 온 알림</span>
+    <span className="notification-title ms-5">새로 온 알림</span>
     </div>
     <hr />
 
-  {unconfirmedReviewList.length === 0 ?  <div className="title ms-5 mb-5 mt-5 text-center text-secondary">새로 온 알림이 없습니다</div>:
+  {unconfirmedReviewList.length === 0 ?  <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">새로 온 알림이 없습니다</div>:
         <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
 }
-      <span className="title ms-5">확인 된 알림</span>
+      <span className="notification-title ms-5">확인 된 알림</span>
       <hr />
 {
-  confirmedReviewList.length === 0 ?  <div className="title ms-5 mb-5 mt-5 text-center text-secondary">알림이 없습니다</div> :
+  confirmedReviewList.length === 0 ?  <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">알림이 없습니다</div> :
   <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
 }
     </>
