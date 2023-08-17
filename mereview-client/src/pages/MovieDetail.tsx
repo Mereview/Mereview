@@ -39,14 +39,17 @@ const MovieDetail = () => {
   const movieId: number = Number(id);
 
   const [isFetched, setFetched] = useState<boolean>(false);
-  const [movieDetail, setMovieDetail] = useState<MovieDetailInterface | null>(null);
+  const [movieDetail, setMovieDetail] = useState<MovieDetailInterface | null>(
+    null
+  );
 
   const [sortBy, setSortBy] = useState<string>("date");
   const [recentReviews, setRecentReviews] = useState<ReviewCardInterface[]>([]);
   const [topReviews, setTopReviews] = useState<ReviewCardInterface[]>([]);
 
   useEffect(() => {
-    if (movieId === null || movieId === undefined || Number.isNaN(movieId)) return;
+    if (movieId === null || movieId === undefined || Number.isNaN(movieId))
+      return;
     const featchData = async () => {
       await searchMovieDetailReview(
         movieId,
@@ -81,8 +84,11 @@ const MovieDetail = () => {
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
               commentCount: review.commentCount,
+              hitsCount: review.hits,
               movieTitle: review.movieTitle,
-              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+              releaseYear: Number(
+                String(review.movieReleaseDate).substring(0, 4)
+              ),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -108,8 +114,11 @@ const MovieDetail = () => {
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
               commentCount: review.commentCount,
+              hitsCount: review.hits,
               movieTitle: review.movieTitle,
-              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+              releaseYear: Number(
+                String(review.movieReleaseDate).substring(0, 4)
+              ),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -171,10 +180,15 @@ const MovieDetail = () => {
       </div>
       <hr style={{ marginTop: "0px" }} />
       <div>
-        <Col className="movie-detail-sub-title">이 영화의 리뷰 (총 {recentReviews.length}개)</Col>
+        <Col className="movie-detail-sub-title">
+          이 영화의 리뷰 (총 {recentReviews.length}개)
+        </Col>
       </div>
       <div className="sort-container">
-        <button className={sortBy === "date" ? "selected" : ""} onClick={() => handleSortByDate()}>
+        <button
+          className={sortBy === "date" ? "selected" : ""}
+          onClick={() => handleSortByDate()}
+        >
           최신순
         </button>
         <button

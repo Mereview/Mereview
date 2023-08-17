@@ -89,7 +89,9 @@ const ReviewHome = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
   const [emptySearchKeyword, setEmptySearchKeyword] = useState<boolean>(false);
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
+    []
+  );
   // 무한 스크롤
   const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
@@ -97,7 +99,7 @@ const ReviewHome = () => {
 
   const infScrollTargetRef = useRef(null);
 
-  const observerOptions = {   
+  const observerOptions = {
     root: null,
     rootMargin: "5px",
     threshold: 0.8,
@@ -122,7 +124,8 @@ const ReviewHome = () => {
     };
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자")
+      searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -156,9 +159,12 @@ const ReviewHome = () => {
             funnyCount: review.funCount,
             usefulCount: review.usefulCount,
             dislikeCount: review.badCount,
+            hitsCount: review.hits,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
-            releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+            releaseYear: Number(
+              String(review.movieReleaseDate).substring(0, 4)
+            ),
             movieGenre: [review.genreResponse.genreName],
             createDate: new Date(review.createdTime),
             recommend: review.movieRecommendType === "YES",
@@ -171,7 +177,10 @@ const ReviewHome = () => {
           }
           newReviewList.push(reviewData);
         }
-        setReviewListState((prevReviewList) => [...prevReviewList, ...newReviewList]);
+        setReviewListState((prevReviewList) => [
+          ...prevReviewList,
+          ...newReviewList,
+        ]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -191,7 +200,10 @@ const ReviewHome = () => {
       }
     };
 
-    const infScrollObserver = new IntersectionObserver(infScrollReloadCallback, observerOptions);
+    const infScrollObserver = new IntersectionObserver(
+      infScrollReloadCallback,
+      observerOptions
+    );
 
     infScrollObserver.observe(infScrollTargetRef.current);
 
@@ -214,7 +226,8 @@ const ReviewHome = () => {
     const searchCondition: ReviewHomePageSearchParamInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자")
+      searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -242,9 +255,12 @@ const ReviewHome = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+              releaseYear: Number(
+                String(review.movieReleaseDate).substring(0, 4)
+              ),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -277,7 +293,8 @@ const ReviewHome = () => {
     const searchCondition: SearchConditionInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자")
+      searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -308,9 +325,12 @@ const ReviewHome = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+              releaseYear: Number(
+                String(review.movieReleaseDate).substring(0, 4)
+              ),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -372,7 +392,10 @@ const ReviewHome = () => {
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
-        <div style={{ height: "200px", backgroundColor: "white" }} ref={infScrollTargetRef}></div>
+        <div
+          style={{ height: "200px", backgroundColor: "white" }}
+          ref={infScrollTargetRef}
+        ></div>
       ) : (
         <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}

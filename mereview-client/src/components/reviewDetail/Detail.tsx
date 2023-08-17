@@ -86,7 +86,9 @@ const Detail = ({ review, setReview }: any) => {
       );
     }
   };
-
+  const [funCount, setFunCount] = useState(review.funCount);
+  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
+  const [badCount, setBadCount] = useState(review.badCount);
   const onClickUseful = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
@@ -106,15 +108,16 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setUsefulCount(res.data.data.usefulCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
@@ -140,15 +143,16 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setFunCount(res.data.data.funCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
@@ -174,15 +178,16 @@ const Detail = ({ review, setReview }: any) => {
         } else {
           alert("비추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setBadCount(res.data.data.badCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
@@ -259,11 +264,13 @@ const Detail = ({ review, setReview }: any) => {
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
           <img src="/GraduationCap.png" alt="재밌어요" />
-          <span>{review.usefulCount}</span>
+          <span>{usefulCount}</span>
           <img src="/smile.png" alt="유용해요" />
-          <span>{review.funCount}</span>
+          <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
-          <span>{review.badCount}</span>
+          <span>{badCount}</span>
+          <img src="/hitcount.png" alt="조회수" />
+          <span>{review.hits}</span>
         </div>
       </div>
       <hr />
@@ -413,6 +420,7 @@ const Detail = ({ review, setReview }: any) => {
                 usefulCount={review.usefulCount}
                 dislikeCount={review.badCount}
                 commentCount={review.commentCount}
+                hitsCount={review.hits}
                 movieTitle={review.movieTitle}
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}
