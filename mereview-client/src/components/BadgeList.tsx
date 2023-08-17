@@ -28,6 +28,7 @@ const genreMapper: Object = {
   스릴러: "thriller",
   전쟁: "war",
   서부: "western",
+  기타: "etc",
 };
 
 const genreColor: Object = {
@@ -49,11 +50,16 @@ const BadgeComponent = ({ badgeInfo }: BadgeInfo) => {
   return (
     <div className="achieved-badge">
       <img
-        src={`/Badges/${rankMapper[badgeInfo.rank]}-${genreMapper[badgeInfo.genreName]}.png`}
+        src={`/Badges/${rankMapper[badgeInfo.rank]}-${
+          genreMapper[badgeInfo.genreName]
+        }.png`}
         alt="Badge"
       />
       <div className={`badge-info ${rankMapper[badgeInfo.rank]}`}>
-        <div className="badge-genre" style={{ color: genreColor[badgeInfo.rank] }}>
+        <div
+          className="badge-genre"
+          style={{ color: genreColor[badgeInfo.rank] }}
+        >
           {badgeInfo.genreName}
         </div>
         <div className="badge-type">{badgeInfo.type}</div>
