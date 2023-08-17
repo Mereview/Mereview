@@ -44,21 +44,21 @@ const ReviewWrite = () => {
           genreName.current = review.genre.genreName;
           const keyLen = review.keywords.length;
           for (let i = 0; i < keyLen; i++) {
-            keywordIdList[i] = review.keywords[i].keywordId;
+            keywordData[i] = review.keywords[i].keywordName;
           }
-          if (keywordIdList[0] != null) {
+          if (keywordData[0] != null) {
             childRef1.current.setKey(review.keywords[0]);
           }
-          if (keywordIdList[1] != null) {
+          if (keywordData[1] != null) {
             childRef2.current.setKey(review.keywords[1]);
           }
-          if (keywordIdList[2] != null) {
+          if (keywordData[2] != null) {
             childRef3.current.setKey(review.keywords[2]);
           }
-          if (keywordIdList[3] != null) {
+          if (keywordData[3] != null) {
             childRef4.current.setKey(review.keywords[3]);
           }
-          if (keywordIdList[4] != null) {
+          if (keywordData[4] != null) {
             childRef5.current.setKey(review.keywords[4]);
           }
           contentRef.current.setCont(review.reviewContent);
@@ -80,6 +80,9 @@ const ReviewWrite = () => {
           inputData.current.highlight = review.reviewHighlight;
           inputData.current.movieId = review.movieId;
           inputData.current.genreId = review.genreId;
+          console.log(childRef1.current.getKeyInfo());
+          console.log(childRef2.current.getKeyInfo());
+          console.log(childRef3.current.getKeyInfo());
         },
         (err) => {
           console.log("err: ", err);
@@ -100,12 +103,7 @@ const ReviewWrite = () => {
   const childRef3 = useRef(null);
   const childRef4 = useRef(null);
   const childRef5 = useRef(null);
-  const keywordId1 = useRef(null);
-  const keywordId2 = useRef(null);
-  const keywordId3 = useRef(null);
-  const keywordId4 = useRef(null);
-  const keywordId5 = useRef(null);
-  const keywordIdList = [5];
+  const keywordData = [5];
   //리뷰의 배경이미지 정보(선택한 이미지 url, 이미지 이름, 서버로 보낼 이미지 파일)
   const [selectedImage, setSelectedImage] = useState<string | null>("");
   const [imgName, setImgName] = useState<string>("");
@@ -115,8 +113,6 @@ const ReviewWrite = () => {
   const [typingTimeout, setTypingTimeout] = useState(null); //자동완성을 위한 딜레이용 변수
   const movieName = useRef("");
   const genreName = useRef("");
-  const [movieList, setMovieList] = useState([]);
-  const [genreList, setGenreList] = useState([]);
   const [selectMovie, setSelectMovie] = useState(null);
   const [selectGenre, setSelectGenre] = useState(null);
   //상세리뷰 저장 변수
@@ -192,41 +188,43 @@ const ReviewWrite = () => {
       return;
     }
     const keywordList = [];
+    console.log(childRef1.current.getKeyInfo());
     if (childRef1.current.getKeyInfo().name != "") {
       keywordList.push({
-        keywordId: keywordId1.current,
+        movieId: selectMovie.value,
         name: childRef1.current.getKeyInfo().name,
         weight: childRef1.current.getKeyInfo().weight,
       });
     }
     if (childRef2.current.getKeyInfo().name != "") {
       keywordList.push({
-        keywordId: keywordId2.current,
+        movieId: selectMovie.value,
         name: childRef2.current.getKeyInfo().name,
         weight: childRef2.current.getKeyInfo().weight,
       });
     }
     if (childRef3.current.getKeyInfo().name != "") {
       keywordList.push({
-        keywordId: keywordId3.current,
+        movieId: selectMovie.value,
         name: childRef3.current.getKeyInfo().name,
         weight: childRef3.current.getKeyInfo().weight,
       });
     }
     if (childRef4.current.getKeyInfo().name != "") {
       keywordList.push({
-        keywordId: keywordId4.current,
+        movieId: selectMovie.value,
         name: childRef4.current.getKeyInfo().name,
         weight: childRef4.current.getKeyInfo().weight,
       });
     }
     if (childRef5.current.getKeyInfo().name != "") {
       keywordList.push({
-        keywordId: keywordId5.current,
+        movieId: selectMovie.value,
         name: childRef5.current.getKeyInfo().name,
         weight: childRef5.current.getKeyInfo().weight,
       });
     }
+    console.log(keywordList);
     if (keywordList.length < 1) {
       alert("키워드 목록을 1개 이상 입력해주세요");
       return;
@@ -239,6 +237,7 @@ const ReviewWrite = () => {
       return;
     }
     inputData.current.content = reviewContent;
+    console.log(reviewId);
     const formData = new FormData();
     formData.append(
       "request",
@@ -258,7 +257,7 @@ const ReviewWrite = () => {
         }
       )
     );
-    if (fileDataRef.current != null) {
+    if (changeImg && fileDataRef.current != null) {
       formData.append("file", fileDataRef.current);
     }
     axios
@@ -266,8 +265,8 @@ const ReviewWrite = () => {
       .then(() => {
         navigate("/review");
       })
-      .catch(() => {
-        console.log("fail");
+      .catch((e) => {
+        console.log(e);
       });
   };
 
