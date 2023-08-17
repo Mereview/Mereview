@@ -67,12 +67,14 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-  const likeDislike = (event: any) => {
+  const likeHandler = () => {
+    console.log("시작");
     const data = {
       commentId: comment.commentId,
-      memberId: userId,
-      type: event.target.id,
+      memberId: Number(userId),
+      type: "LIKE",
     };
+    console.log(data);
     updateCommentLike(
       data,
       (res) => {
@@ -80,6 +82,38 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
           reviewId: id,
           loginMemberId: Number(userId),
         };
+        console.log(res.data.data);
+        searchReview(
+          data,
+          (res) => {
+            setComments(res.data.data.comments);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      },
+      (err) => {
+        alert("이미 추천/비추천을 눌렀습니다.");
+      }
+    );
+  };
+  const dislikeHandler = () => {
+    console.log("시작");
+    const data = {
+      commentId: comment.commentId,
+      memberId: Number(userId),
+      type: "DISLIKE",
+    };
+    console.log(data);
+    updateCommentLike(
+      data,
+      (res) => {
+        const data = {
+          reviewId: id,
+          loginMemberId: Number(userId),
+        };
+        console.log(res.data.data);
         searchReview(
           data,
           (res) => {
@@ -115,14 +149,22 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       <div className="buttons">
         <p className="createdDate">{presentTime} 전</p>
         <div className="buttonsWrapper">
-          <div className="likeWrapper" onClick={likeDislike}>
+          <div
+            className="likeWrapper"
+            onClick={likeHandler}
+            aria-disabled={comment.memberId === Number(userId)}
+          >
             <button
               id="LIKE"
               disabled={comment.memberId === Number(userId)}
             ></button>
             {comment.likeCount}
           </div>
-          <div className="dislikeWrapper" onClick={likeDislike}>
+          <div
+            className="dislikeWrapper"
+            onClick={dislikeHandler}
+            aria-disabled={comment.memberId === Number(userId)}
+          >
             <button
               id="DISLIKE"
               disabled={comment.memberId === Number(userId)}
