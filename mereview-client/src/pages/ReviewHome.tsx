@@ -97,7 +97,7 @@ const ReviewHome = () => {
 
   const infScrollTargetRef = useRef(null);
 
-  const observerOptions = {
+  const observerOptions = {   
     root: null,
     rootMargin: "5px",
     threshold: 0.8,

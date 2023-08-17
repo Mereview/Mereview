@@ -52,7 +52,7 @@ const NotificationReviewList = ({ unconfirmedReviewList, confirmedReviewList, se
   };
 
   return (
-    <div className="mx-5">
+    <div className="mx-5 mb-5 mt-5">
       <Slider className="notification-slider" {...settings}>
         {confirmed ? confirmedReviewList.map((review: NotificationReviewCardInterface) => (
           <NotificationReviewCard
