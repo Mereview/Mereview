@@ -1,3 +1,5 @@
+@import "Style";
+
 /* ReviewDetailPage.css */
 
 .section {
@@ -33,5 +35,132 @@
     background-size: cover;
     border: solid white;
     border-radius: 9999px;
+  }
+}
+.openModal {
+  position: fixed;
+  top: 0;
+  right: calc(-30vw + 35px);
+  z-index: 90;
+  display: flex;
+  height: 100vh;
+  width: 30vw;
+  max-width: 30vw;
+
+  .closebutton {
+    display: flex;
+    width: 35px !important;
+    max-width: 35px;
+
+    flex-direction: column;
+    // width: 590px;
+    background-color: transparent;
+    justify-content: center;
+    button {
+      height: 100px;
+      border-right: none;
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+      background-color: rgba(3, 3, 48, 0.849);
+      color: red;
+    }
+  }
+  .Modal {
+    font-family: $BMDoHyeon;
+    background-color: rgba(3, 3, 48, 0.849);
+    color: white;
+    width: 100%;
+    .blank {
+      height: 90px;
+    }
+    .modalTitle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      h5 {
+        margin-right: 10px;
+      }
+    }
+    .modalSubTitle {
+      display: flex;
+      justify-content: space-between;
+      h5 {
+        margin-right: 10px;
+      }
+    }
+
+    h2 {
+      margin: 15px;
+    }
+    span {
+      margin: 15px;
+    }
+
+    .image {
+      width: 250px;
+      height: auto;
+      margin: auto;
+    }
+    .overview {
+      overflow-y: scroll;
+      height: 300px;
+      margin: 15px 15px 15px 0px;
+    }
+    .overview::-webkit-scrollbar {
+      width: 5px;
+      margin: 0px;
+      padding: 0px;
+    }
+    .overview::-webkit-scrollbar-track {
+      background: transparent; /* 스크롤바 트랙 배경색 */
+    }
+
+    .overview::-webkit-scrollbar-thumb {
+      height: 3px;
+      background: -webkit-linear-gradient(
+        75deg,
+        rgb(124, 124, 124),
+        rgba(6, 7, 116, 0.5)
+      );
+      border-radius: 10px;
+    }
+  }
+}
+.open {
+  animation-name: slideIn;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+.close {
+  animation-name: slideOut;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+@keyframes slideIn {
+  0% {
+    transform: translateX(0%);
+  }
+  15% {
+    transform: translateX(-94%);
+  }
+  20% {
+    transform: translateX(-94%);
+  }
+  100% {
+    transform: translateX(-94%);
+  }
+}
+@keyframes slideOut {
+  0% {
+    transform: translateX(-94%);
+  }
+  15% {
+    transform: translateX(0%);
+  }
+  20% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(0%);
   }
 }
