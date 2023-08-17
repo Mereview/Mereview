@@ -21,6 +21,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
     funnyCount,
     usefulCount,
     dislikeCount,
+    hitsCount,
     commentCount,
     movieTitle,
     releaseYear,
@@ -91,11 +92,11 @@ const ReviewCard = (props: ReviewCardInterface) => {
             </Col>
             <Col className="evaluation-counts">
               <div>
-                <img src="/ReviewCard/laugh.png" alt="재밌어요" />
+                <img src="/ReviewCard/laughing.png" alt="재밌어요" />
                 <p>{funnyCount}</p>
               </div>
               <div>
-                <img src="/ReviewCard/book.png" alt="유용해요" />
+                <img src="/ReviewCard/scholar.png" alt="유용해요" />
                 <p>{usefulCount}</p>
               </div>
               <div>
@@ -105,6 +106,10 @@ const ReviewCard = (props: ReviewCardInterface) => {
               <div>
                 <img src="/ReviewCard/comment.png" alt="댓글수" />
                 <p>{commentCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/hitcount.png" alt="댓글수" />
+                <p>{hitsCount > 1000 ? "999+" : hitsCount}</p>
               </div>
             </Col>
           </Row>

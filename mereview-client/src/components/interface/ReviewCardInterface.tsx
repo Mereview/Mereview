@@ -11,6 +11,7 @@ export interface ReviewCardInterface {
   usefulCount: number;
   dislikeCount: number;
   commentCount: number;
+  hitsCount: number;
   movieTitle: string;
   releaseYear: number;
   movieGenre: string[];

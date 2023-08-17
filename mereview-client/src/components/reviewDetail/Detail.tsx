@@ -423,6 +423,7 @@ const Detail = ({ review, setReview }: any) => {
                 usefulCount={review.usefulCount}
                 dislikeCount={review.badCount}
                 commentCount={review.commentCount}
+                hitsCount={review.hits}
                 movieTitle={review.movieTitle}
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}

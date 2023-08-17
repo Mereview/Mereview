@@ -401,6 +401,7 @@ const ProfilePage = () => {
             funnyCount: review.funCount,
             usefulCount: review.usefulCount,
             dislikeCount: review.badCount,
+            hitsCount: review.hits,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
             releaseYear: Number(
@@ -530,6 +531,7 @@ const ProfilePage = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
               releaseYear: Number(

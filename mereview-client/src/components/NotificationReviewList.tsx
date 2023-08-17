@@ -10,11 +10,16 @@ import "slick-carousel/slick/slick-theme.css";
 import "../styles/css/ReviewList.css";
 import { NotificationReviewCardInterface } from "./interface/NotificationReviewCardInterface";
 
-
-
 /* 정렬 방식에 따라 받는 reviewList가 달라질 것 */
-const NotificationReviewList = ({ unconfirmedReviewList, confirmedReviewList, setConfirmedReviewList, setUnconfirmedReviewList, confirmed }: NotificationReviewListProps) => {
-  if (unconfirmedReviewList === null || confirmedReviewList === undefined) return <Loading />;
+const NotificationReviewList = ({
+  unconfirmedReviewList,
+  confirmedReviewList,
+  setConfirmedReviewList,
+  setUnconfirmedReviewList,
+  confirmed,
+}: NotificationReviewListProps) => {
+  if (unconfirmedReviewList === null || confirmedReviewList === undefined)
+    return <Loading />;
 
   const settings = {
     dots: false,
@@ -54,60 +59,67 @@ const NotificationReviewList = ({ unconfirmedReviewList, confirmedReviewList, se
   return (
     <div className="mx-5 mb-5 mt-5">
       <Slider className="notification-slider" {...settings}>
-        {confirmed ? confirmedReviewList.map((review: NotificationReviewCardInterface) => (
-          <NotificationReviewCard
-          notificationId={review.notificationId}  
-          key={review.reviewId}
-            reviewId={review.reviewId}
-            memberId={review.memberId}
-            movieId={review.movieId}
-            nickname={review.nickname}
-            profileImageId={review.profileImageId}
-            backgroundImageId={review.backgroundImageId}
-            oneLineReview={review.oneLineReview}
-            funnyCount={review.funnyCount}
-            usefulCount={review.usefulCount}
-            dislikeCount={review.dislikeCount}
-            commentCount={review.commentCount}
-            movieTitle={review.movieTitle}
-            releaseYear={review.releaseYear}
-            movieGenre={review.movieGenre}
-            createDate={review.createDate}
-            recommend={review.recommend}
-            confirmed={true} 
-            confirmedReviewList={confirmedReviewList} 
-            unconfirmedReviewList={unconfirmedReviewList} 
-            setConfirmedReviewList={setConfirmedReviewList} 
-            setUnconfirmedReviewList={setUnconfirmedReviewList}
-          />
-        )) : unconfirmedReviewList.map((review: NotificationReviewCardInterface) => (
-          <NotificationReviewCard
-          notificationId={review.notificationId}  
-  
-          key={review.reviewId}
-            reviewId={review.reviewId}
-            memberId={review.memberId}
-            movieId={review.movieId}
-            nickname={review.nickname}
-            profileImageId={review.profileImageId}
-            backgroundImageId={review.backgroundImageId}
-            oneLineReview={review.oneLineReview}
-            funnyCount={review.funnyCount}
-            usefulCount={review.usefulCount}
-            dislikeCount={review.dislikeCount}
-            commentCount={review.commentCount}
-            movieTitle={review.movieTitle}
-            releaseYear={review.releaseYear}
-            movieGenre={review.movieGenre}
-            createDate={review.createDate}
-            recommend={review.recommend}
-            confirmed={false} 
-            confirmedReviewList={confirmedReviewList} 
-            unconfirmedReviewList={unconfirmedReviewList} 
-            setConfirmedReviewList={setConfirmedReviewList} 
-            setUnconfirmedReviewList={setUnconfirmedReviewList}
-          />
-        ))}
+        {confirmed
+          ? confirmedReviewList.map(
+              (review: NotificationReviewCardInterface) => (
+                <NotificationReviewCard
+                  notificationId={review.notificationId}
+                  key={review.reviewId}
+                  reviewId={review.reviewId}
+                  memberId={review.memberId}
+                  movieId={review.movieId}
+                  nickname={review.nickname}
+                  profileImageId={review.profileImageId}
+                  backgroundImageId={review.backgroundImageId}
+                  oneLineReview={review.oneLineReview}
+                  funnyCount={review.funnyCount}
+                  usefulCount={review.usefulCount}
+                  dislikeCount={review.dislikeCount}
+                  hitsCount={review.hitsCount}
+                  commentCount={review.commentCount}
+                  movieTitle={review.movieTitle}
+                  releaseYear={review.releaseYear}
+                  movieGenre={review.movieGenre}
+                  createDate={review.createDate}
+                  recommend={review.recommend}
+                  confirmed={true}
+                  confirmedReviewList={confirmedReviewList}
+                  unconfirmedReviewList={unconfirmedReviewList}
+                  setConfirmedReviewList={setConfirmedReviewList}
+                  setUnconfirmedReviewList={setUnconfirmedReviewList}
+                />
+              )
+            )
+          : unconfirmedReviewList.map(
+              (review: NotificationReviewCardInterface) => (
+                <NotificationReviewCard
+                  notificationId={review.notificationId}
+                  key={review.reviewId}
+                  reviewId={review.reviewId}
+                  memberId={review.memberId}
+                  movieId={review.movieId}
+                  nickname={review.nickname}
+                  profileImageId={review.profileImageId}
+                  backgroundImageId={review.backgroundImageId}
+                  oneLineReview={review.oneLineReview}
+                  funnyCount={review.funnyCount}
+                  usefulCount={review.usefulCount}
+                  dislikeCount={review.dislikeCount}
+                  hitsCount={review.hitsCount}
+                  commentCount={review.commentCount}
+                  movieTitle={review.movieTitle}
+                  releaseYear={review.releaseYear}
+                  movieGenre={review.movieGenre}
+                  createDate={review.createDate}
+                  recommend={review.recommend}
+                  confirmed={false}
+                  confirmedReviewList={confirmedReviewList}
+                  unconfirmedReviewList={unconfirmedReviewList}
+                  setConfirmedReviewList={setConfirmedReviewList}
+                  setUnconfirmedReviewList={setUnconfirmedReviewList}
+                />
+              )
+            )}
       </Slider>
     </div>
   );
