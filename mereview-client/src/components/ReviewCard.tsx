@@ -30,11 +30,15 @@ const ReviewCard = (props: ReviewCardInterface) => {
   } = props;
   const navigate = useNavigate();
 
-  const handleClickReviewCard = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  const handleClickReviewCard = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
     navigate(`/review/${reviewId}`);
   };
 
-  const handleClickProfile = (event: React.MouseEvent<HTMLParagraphElement>) => {
+  const handleClickProfile = (
+    event: React.MouseEvent<HTMLParagraphElement>
+  ) => {
     event.stopPropagation();
     navigate(`/profile/${memberId}`);
   };
@@ -51,22 +55,33 @@ const ReviewCard = (props: ReviewCardInterface) => {
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
-    recommendStyle.opacity = (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    recommendStyle.opacity =
+      (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
   }
 
   const formattedCreateDate: Date = new Date(createDate);
   formattedCreateDate.setHours(formattedCreateDate.getHours() + 9);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  );
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
   const hour: string = String(formattedCreateDate.getHours()).padStart(2, "0");
-  const minute: string = String(formattedCreateDate.getMinutes()).padStart(2, "0");
+  const minute: string = String(formattedCreateDate.getMinutes()).padStart(
+    2,
+    "0"
+  );
   const genres: string = movieGenre.join(". ");
   const defaultProfileImage = "/testProfile.gif";
 
   return (
     <>
-      <div className={`review-card ${className}`} style={cardStyle} onClick={handleClickReviewCard}>
+      <div
+        className={`review-card ${className}`}
+        style={cardStyle}
+        onClick={handleClickReviewCard}
+      >
         <div className="card-overlay">
           <Row>
             <Col className="date">
@@ -129,11 +144,18 @@ const ReviewCard = (props: ReviewCardInterface) => {
               </Col>
             </Row>
             <div className="recommend" style={recommendStyle}>
-              {recommend ? (
-                <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
-              ) : (
-                <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
-              )}
+              <div className="recommend-text">
+                {recommend
+                  ? "이 영화를 추천합니다."
+                  : "이 영화를 추천하지 않습니다."}
+              </div>
+              <div className="recommend-icon-container">
+                {recommend ? (
+                  <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
+                ) : (
+                  <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
+                )}
+              </div>
             </div>
           </div>
         </div>
