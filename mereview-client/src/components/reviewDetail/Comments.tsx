@@ -68,13 +68,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     );
   };
   const likeHandler = () => {
-    console.log("시작");
     const data = {
       commentId: comment.commentId,
       memberId: Number(userId),
       type: "LIKE",
     };
-    console.log(data);
     updateCommentLike(
       data,
       (res) => {
@@ -82,7 +80,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
           reviewId: id,
           loginMemberId: Number(userId),
         };
-        console.log(res.data.data);
         searchReview(
           data,
           (res) => {
@@ -99,13 +96,11 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
     );
   };
   const dislikeHandler = () => {
-    console.log("시작");
     const data = {
       commentId: comment.commentId,
       memberId: Number(userId),
       type: "DISLIKE",
     };
-    console.log(data);
     updateCommentLike(
       data,
       (res) => {
@@ -113,7 +108,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
           reviewId: id,
           loginMemberId: Number(userId),
         };
-        console.log(res.data.data);
         searchReview(
           data,
           (res) => {
@@ -129,7 +123,6 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       }
     );
   };
-  console.log(comment);
   return (
     <div className="comment">
       <div className="writer">
