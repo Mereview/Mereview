@@ -107,9 +107,9 @@ public class Review extends BaseEntity {
 
     private void updateKeywords(List<KeywordUpdateServiceRequest> keywordServiceRequests, Long reviewId) {
         this.keywords.clear();
-        this.keywords = keywordServiceRequests.stream()
+        this.keywords.addAll(keywordServiceRequests.stream()
                 .map(keyword -> keyword.toEntity(reviewId))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public void increaseHits() {
