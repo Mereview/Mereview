@@ -464,6 +464,8 @@ const ProfilePage = () => {
       return;
     setIsFetched(false);
     const followCheck = async () => {
+      setFollowingDropdown(false);
+      setFollowerDropdown(false);
       await getFollowerCount(userId, loginId);
       await getFollowingCount(userId);
     };
