@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { FormControl, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
 import { BsSearch } from "react-icons/bs";
 import { ReviewSearchInterface } from "./interface/ReviewSearchInterface";
 import "../styles/css/ReviewSearch.css";
@@ -52,7 +46,7 @@ const ReviewSearch = ({
             onChange={handleCriteria}
             sx={{ height: "34.25px" }}
           >
-            <MenuItem value="제목">제목</MenuItem>
+            <MenuItem value="제목">영화제목</MenuItem>
             {/* <MenuItem value="장르">장르</MenuItem> */}
             <MenuItem value="작성자">작성자</MenuItem>
           </Select>
@@ -63,11 +57,7 @@ const ReviewSearch = ({
             onChange={handleSearchParam}
             error={emptySearchKeyword && searchKeyword === ""}
           />
-          <button
-            type="submit"
-            className="search-button"
-            onClick={searchSubmit}
-          >
+          <button type="submit" className="search-button" onClick={searchSubmit}>
             <BsSearch className="search-icon" />
           </button>
         </div>

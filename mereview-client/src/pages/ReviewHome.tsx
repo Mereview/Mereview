@@ -85,13 +85,12 @@ const ReviewHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [isSearchConditionChanging, setSearchConditionChanging] = useState<boolean>(false);
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
   const [emptySearchKeyword, setEmptySearchKeyword] = useState<boolean>(false);
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
-    []
-  );
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
   // 무한 스크롤
   const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
@@ -124,8 +123,7 @@ const ReviewHome = () => {
     };
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -162,9 +160,7 @@ const ReviewHome = () => {
             hitsCount: review.hits,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
-            releaseYear: Number(
-              String(review.movieReleaseDate).substring(0, 4)
-            ),
+            releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
             movieGenre: [review.genreResponse.genreName],
             createDate: new Date(review.createdTime),
             recommend: review.movieRecommendType === "YES",
@@ -177,10 +173,7 @@ const ReviewHome = () => {
           }
           newReviewList.push(reviewData);
         }
-        setReviewListState((prevReviewList) => [
-          ...prevReviewList,
-          ...newReviewList,
-        ]);
+        setReviewListState((prevReviewList) => [...prevReviewList, ...newReviewList]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -200,17 +193,14 @@ const ReviewHome = () => {
       }
     };
 
-    const infScrollObserver = new IntersectionObserver(
-      infScrollReloadCallback,
-      observerOptions
-    );
+    const infScrollObserver = new IntersectionObserver(infScrollReloadCallback, observerOptions);
 
     infScrollObserver.observe(infScrollTargetRef.current);
 
     return () => {
       infScrollObserver.disconnect();
     };
-  }, [isFetched, infScrollLoading]);
+  }, [isFetched, infScrollLoading, isSearchConditionChanging]);
 
   const searchSubmit = () => {
     if (searchKeyword === "") {
@@ -226,8 +216,7 @@ const ReviewHome = () => {
     const searchCondition: ReviewHomePageSearchParamInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -258,9 +247,7 @@ const ReviewHome = () => {
               hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -290,11 +277,12 @@ const ReviewHome = () => {
   };
 
   useEffect(() => {
+    if (isSearchConditionChanging) return;
+    setSearchConditionChanging(true);
     const searchCondition: SearchConditionInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
-    else if (searchCriteria === "작성자")
-      searchCondition.nickname = searchKeyword;
+    else if (searchCriteria === "작성자") searchCondition.nickname = searchKeyword;
     else {
       console.log("검색 기준 에러!!");
       return;
@@ -328,9 +316,7 @@ const ReviewHome = () => {
               hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -349,9 +335,11 @@ const ReviewHome = () => {
           setInfScrollDone(false);
           setInfScrollLoading(false);
           setInfScrollPage(2);
+          setSearchConditionChanging(false);
         },
         (error) => {
           console.log(error);
+          setSearchConditionChanging(false);
         }
       );
     };
@@ -392,10 +380,7 @@ const ReviewHome = () => {
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
-        <div
-          style={{ height: "200px", backgroundColor: "white" }}
-          ref={infScrollTargetRef}
-        ></div>
+        <div style={{ height: "200px", backgroundColor: "white" }} ref={infScrollTargetRef}></div>
       ) : (
         <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}

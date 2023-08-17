@@ -18,7 +18,6 @@
   padding-bottom: 17%;
   min-width: 250px;
   min-height: 142px;
-  // margin: 10px 10px;
   background-size: cover;
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
@@ -153,6 +152,18 @@
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
   color: $white;
+  transform-origin: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 6px 6px 10px #000000;
+    transform: scale(1.03);
+  }
+
+  &:active {
+    box-shadow: 2px 2px 4px #000000;
+    transform: scale(0.98);
+  }
 
   @media (max-width: 1300px) {
     flex-basis: 46%;
