@@ -272,6 +272,8 @@ const Detail = ({ review, setReview }: any) => {
           <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
           <span>{badCount}</span>
+          <img src="/hitcount.png" alt="조회수" />
+          <span>{review.hits}</span>
         </div>
       </div>
       <hr />
