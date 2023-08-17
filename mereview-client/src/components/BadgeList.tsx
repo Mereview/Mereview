@@ -1,12 +1,6 @@
 import { AchievedBadge } from "./interface/ProfilePageInterface";
 import "../styles/css/BadgeList.css";
 
-const goldBadge = "https://www.badgesplus.co.uk/uploads/images/products/D31_Achievement_Gold.png";
-const silverBadge =
-  "https://www.badgesplus.co.uk/uploads/images/products/D31_Achievement_Silver.png";
-const bronzeBadge =
-  "https://www.badgesplus.co.uk/uploads/images/products/D31_Achievement_Bronze.png";
-
 const rankMapper: Object = {
   NONE: null,
   BRONZE: "b",

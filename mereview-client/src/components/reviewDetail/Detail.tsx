@@ -286,11 +286,11 @@ const Detail = ({ review, setReview }: any) => {
           id="USEFUL"
           onClick={onClickUseful}
           style={
-            evType === "USEFUL"
-              ? { backgroundImage: "url(/usefulDisabled.png" }
+            evIsDone && evType === "USEFUL"
+              ? { backgroundImage: "url(/usefulDIsabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
-          disabled={Number(userId) !== review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
         <button
           id="FUN"
@@ -300,7 +300,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/funnyDisabled.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
-          disabled={Number(userId) !== review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
         <button
           id="BAD"
@@ -310,7 +310,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/dislikeDIsabled.png)" }
               : { backgroundImage: "url(/dislike.png)" }
           }
-          disabled={Number(userId) !== review.reviewId}
+          disabled={Number(userId) === review.reviewId}
         ></button>
       </div>
       {Number(userId) === review.memberId ? (

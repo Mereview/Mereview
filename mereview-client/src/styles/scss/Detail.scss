@@ -71,18 +71,30 @@
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/usefulDisabled.png");
+        opacity: 100% !important;
+      }
     }
     #FUN {
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/funDisabled.png");
+        opacity: 100% !important;
+      }
     }
     #BAD {
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/dislikeDIsabled.png");
+        opacity: 100% !important;
+      }
     }
   }
 
