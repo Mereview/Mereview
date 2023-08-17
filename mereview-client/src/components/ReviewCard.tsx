@@ -57,6 +57,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   if (funnyCount + usefulCount + dislikeCount > 0) {
     recommendStyle.opacity =
       (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    if (recommendStyle.opacity < 0.5) recommendStyle.opacity = 0.5;
   }
 
   const formattedCreateDate: Date = new Date(createDate);
