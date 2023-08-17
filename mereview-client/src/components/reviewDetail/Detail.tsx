@@ -260,7 +260,6 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
-  console.log("reviewID=", review.reviewId, "userID=", userId);
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
