@@ -272,6 +272,8 @@ const Detail = ({ review, setReview }: any) => {
           <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
           <span>{badCount}</span>
+          <img src="/hitcount.png" alt="조회수" />
+          <span>{review.hits}</span>
         </div>
       </div>
       <hr />
@@ -421,6 +423,7 @@ const Detail = ({ review, setReview }: any) => {
                 usefulCount={review.usefulCount}
                 dislikeCount={review.badCount}
                 commentCount={review.commentCount}
+                hitsCount={review.hits}
                 movieTitle={review.movieTitle}
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}

@@ -19,7 +19,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
-import '../styles/css/NotificationHome.css';
+import "../styles/css/NotificationHome.css";
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
 /* BoxOffice 데이터 생성 시작 */
@@ -79,14 +79,20 @@ const NotificationHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
-  const [confirmedReviewList, setConfirmedReviewList] = useState<Array<ReviewCardInterface>>([]);
-  const [unconfirmedReviewList, setUnconfirmedReviewList] = useState<Array<ReviewCardInterface>>([]);
+  const [confirmedReviewList, setConfirmedReviewList] = useState<
+    Array<ReviewCardInterface>
+  >([]);
+  const [unconfirmedReviewList, setUnconfirmedReviewList] = useState<
+    Array<ReviewCardInterface>
+  >([]);
 
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
   const [emptySearchKeyword, setEmptySearchKeyword] = useState<boolean>(false);
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
+    []
+  );
   const [loginId, setLoginId] = useState<number | null>(null);
 
   // useSelector를 통해 loginId 값을 가져오기 위한 코드
@@ -101,13 +107,13 @@ const NotificationHome = () => {
     const getReviewList = async () => {
       if (loginId != null) {
         await getConfirmedNotifications(
-           loginId,
+          loginId,
           ({ data }) => {
             const response = data.data.data;
             const confirmedReviewList: NotificationReviewCardInterface[] = [];
             for (const review of response) {
               const reviewData: NotificationReviewCardInterface = {
-                notificationId:review.notificationId,
+                notificationId: review.notificationId,
                 reviewId: review.reviewId,
                 memberId: review.memberId,
                 movieId: review.movieId,
@@ -116,9 +122,12 @@ const NotificationHome = () => {
                 funnyCount: review.funCount,
                 usefulCount: review.usefulCount,
                 dislikeCount: review.badCount,
+                hitsCount: review.hits,
                 commentCount: review.commentCount,
                 movieTitle: review.movieTitle,
-                releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+                releaseYear: Number(
+                  String(review.movieReleaseDate).substring(0, 4)
+                ),
                 movieGenre: [review.genreResponse.genreName],
                 createDate: new Date(review.createdTime),
                 recommend: review.movieRecommendType === "YES",
@@ -127,7 +136,8 @@ const NotificationHome = () => {
                 reviewData.profileImageId = review.profileImage?.id;
               }
               if (review.backgroundImageResponse?.id) {
-                reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+                reviewData.backgroundImageId =
+                  review.backgroundImageResponse?.id;
               }
 
               confirmedReviewList.push(reviewData);
@@ -148,7 +158,7 @@ const NotificationHome = () => {
             const unconfirmedReviewList: NotificationReviewCardInterface[] = [];
             for (const review of response) {
               const reviewData: NotificationReviewCardInterface = {
-                notificationId:review.notificationId,
+                notificationId: review.notificationId,
                 reviewId: review.reviewId,
                 memberId: review.memberId,
                 movieId: review.movieId,
@@ -157,9 +167,12 @@ const NotificationHome = () => {
                 funnyCount: review.funCount,
                 usefulCount: review.usefulCount,
                 dislikeCount: review.badCount,
+                hitsCount: review.hits,
                 commentCount: review.commentCount,
                 movieTitle: review.movieTitle,
-                releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
+                releaseYear: Number(
+                  String(review.movieReleaseDate).substring(0, 4)
+                ),
                 movieGenre: [review.genreResponse.genreName],
                 createDate: new Date(review.createdTime),
                 recommend: review.movieRecommendType === "YES",
@@ -168,7 +181,8 @@ const NotificationHome = () => {
                 reviewData.profileImageId = review.profileImage?.id;
               }
               if (review.backgroundImageResponse?.id) {
-                reviewData.backgroundImageId = review.backgroundImageResponse?.id;
+                reviewData.backgroundImageId =
+                  review.backgroundImageResponse?.id;
               }
 
               unconfirmedReviewList.push(reviewData);
@@ -185,7 +199,14 @@ const NotificationHome = () => {
     };
 
     getReviewList();
-  }, [loginId, sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
+  }, [
+    loginId,
+    sortBy,
+    dateDescend,
+    recommendDescend,
+    onlyInterest,
+    searchTerm,
+  ]);
 
   const searchProps: ReviewSearchInterface = {
     searchKeyword: searchKeyword,
@@ -217,26 +238,44 @@ const NotificationHome = () => {
 
     setOnlyInterest: setOnlyInterest,
   };
-  console.log(confirmedReviewList)
-  console.log(unconfirmedReviewList)
+  console.log(confirmedReviewList);
+  console.log(unconfirmedReviewList);
 
   return (
     <>
-    <div className="mt-3">
+      <div className="mt-3">
+        <span className="notification-title ms-5">새로 온 알림</span>
+      </div>
+      <hr />
 
-    <span className="notification-title ms-5">새로 온 알림</span>
-    </div>
-    <hr />
-
-  {unconfirmedReviewList.length === 0 ?  <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">새로 온 알림이 없습니다</div>:
-        <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
-}
+      {unconfirmedReviewList.length === 0 ? (
+        <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">
+          새로 온 알림이 없습니다
+        </div>
+      ) : (
+        <NotificationReviewList
+          confirmed={false}
+          confirmedReviewList={confirmedReviewList}
+          unconfirmedReviewList={unconfirmedReviewList}
+          setConfirmedReviewList={setConfirmedReviewList}
+          setUnconfirmedReviewList={setUnconfirmedReviewList}
+        />
+      )}
       <span className="notification-title ms-5">확인 된 알림</span>
       <hr />
-{
-  confirmedReviewList.length === 0 ?  <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">알림이 없습니다</div> :
-  <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
-}
+      {confirmedReviewList.length === 0 ? (
+        <div className="notification-title ms-5 mb-5 mt-5 text-center text-secondary">
+          알림이 없습니다
+        </div>
+      ) : (
+        <NotificationReviewList
+          confirmed={true}
+          confirmedReviewList={confirmedReviewList}
+          unconfirmedReviewList={unconfirmedReviewList}
+          setConfirmedReviewList={setConfirmedReviewList}
+          setUnconfirmedReviewList={setUnconfirmedReviewList}
+        />
+      )}
     </>
   );
 };

@@ -28,6 +28,7 @@ const ReviewList = ({ reviewList }: ReviewListProps) => {
             usefulCount={review.usefulCount}
             dislikeCount={review.dislikeCount}
             commentCount={review.commentCount}
+            hitsCount={review.hitsCount}
             movieTitle={review.movieTitle}
             releaseYear={review.releaseYear}
             movieGenre={review.movieGenre}
