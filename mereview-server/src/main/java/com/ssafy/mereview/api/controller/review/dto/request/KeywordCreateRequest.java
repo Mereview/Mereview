@@ -14,12 +14,13 @@ public class KeywordCreateRequest {
 
     @NotBlank
     private String name;
-    private int weight;
+    @NotNull
+    private Integer weight;
     @NotNull
     private Long movieId;
 
     @Builder
-    public KeywordCreateRequest(String name, int weight, Long movieId) {
+    public KeywordCreateRequest(String name, Integer weight, Long movieId) {
         this.name = name;
         this.weight = weight;
         this.movieId = movieId;

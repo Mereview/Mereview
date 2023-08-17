@@ -101,7 +101,7 @@ class ReviewServiceTest {
         assertThat(saveId).isGreaterThan(0);
         assertThat(keywordRepository.findAll()).hasSize(1);
         assertThat(backgroundImageRepository.findAll()).isNotEmpty();
-        assertThat(interestQueryRepository.searchRandomMember(review.getGenre().getId(), 100))
+        assertThat(interestQueryRepository.searchRandomMember(review.getGenre().getId(), request.getMemberId(), 100))
                 .hasSize(1);
 
     }
