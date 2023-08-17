@@ -55,6 +55,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   }
 
   const formattedCreateDate: Date = new Date(createDate);
+  formattedCreateDate.setHours(formattedCreateDate.getHours() + 9);
   const year: number = formattedCreateDate.getFullYear();
   const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
@@ -68,12 +69,26 @@ const ReviewCard = (props: ReviewCardInterface) => {
       <div className={`review-card ${className}`} style={cardStyle} onClick={handleClickReviewCard}>
         <div className="card-overlay">
           <Row>
-            <Col md={"auto"} className="date">
+            <Col className="date">
               {year}-{month}-{day} {hour}:{minute}
             </Col>
-            <Col className="evaluation">
-              <span>재밌어요: {funnyCount}</span> | <span>유용해요: {usefulCount}</span> |{" "}
-              <span>별로에요: {dislikeCount}</span> | <span>Comment: {commentCount}</span>
+            <Col className="evaluation-counts">
+              <div>
+                <img src="/ReviewCard/laugh.png" alt="재밌어요" />
+                <p>{funnyCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/book.png" alt="유용해요" />
+                <p>{usefulCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/dislike.png" alt="별로에요" />
+                <p>{dislikeCount}</p>
+              </div>
+              <div>
+                <img src="/ReviewCard/comment.png" alt="댓글수" />
+                <p>{commentCount}</p>
+              </div>
             </Col>
           </Row>
           <Row>
@@ -115,9 +130,9 @@ const ReviewCard = (props: ReviewCardInterface) => {
             </Row>
             <div className="recommend" style={recommendStyle}>
               {recommend ? (
-                <img src="/ReviewCardDummy/thumbsup.png" alt="추천!!" />
+                <img src="/ReviewCard/thumbsup.png" alt="추천!!" />
               ) : (
-                <img src="/ReviewCardDummy/thumbsdown.png" alt="비추!!" />
+                <img src="/ReviewCard/thumbsdown.png" alt="비추!!" />
               )}
             </div>
           </div>
