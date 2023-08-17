@@ -74,7 +74,7 @@ public class NotificationQueryRepository {
                 .fetch();
     }
 
-    public Optional<Notification> searchByReviewIdAndMemberId(Long memberId, Long reviewId) {
+    public Optional<Notification> searchByReviewIdAndMemberId(Long reviewId, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(notification)
                 .from(notification)

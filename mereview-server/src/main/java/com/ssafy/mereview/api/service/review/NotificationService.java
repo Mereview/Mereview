@@ -1,6 +1,5 @@
 package com.ssafy.mereview.api.service.review;
 
-import com.ssafy.mereview.api.service.review.dto.request.NotificationUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.response.NotificationResponse;
 import com.ssafy.mereview.domain.review.entity.Notification;
 import com.ssafy.mereview.domain.review.repository.command.NotificationRepository;
@@ -19,12 +18,10 @@ import java.util.NoSuchElementException;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final NotificationQueryRepository notificationQueryRepository;
 
-    public NotificationResponse toggleStatus(NotificationUpdateServiceRequest request) {
-        log.debug("NotificationService.toggleStatus : request = {}, {}", request.getMemberId(), request.getReviewId());
-        Notification notification = notificationQueryRepository.searchByReviewIdAndMemberId(request.getMemberId(), request.getReviewId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림입니다."));
+    public NotificationResponse toggleStatus(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(NoSuchElementException::new);
 
         notification.toggleStatus();
 
