@@ -60,9 +60,7 @@ const Detail = ({ review, setReview }: any) => {
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
-  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
-  const [funCount, setFunCount] = useState(review.funCount);
-  const [badCount, setBadCount] = useState(review.badCount);
+
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
@@ -88,7 +86,9 @@ const Detail = ({ review, setReview }: any) => {
       );
     }
   };
-
+  const [funCount, setFunCount] = useState(review.funCount);
+  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
+  const [badCount, setBadCount] = useState(review.badCount);
   const onClickUseful = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
@@ -104,21 +104,20 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setUsefulCount((prev) => ++prev);
           alert("추천되었습니다.");
         } else {
-          setUsefulCount((prev) => --prev);
           alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setUsefulCount(res.data.data.usefulCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
@@ -140,21 +139,20 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setFunCount((prev) => ++prev);
           alert("추천되었습니다.");
         } else {
-          setFunCount((prev) => --prev);
           alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setFunCount(res.data.data.funCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
@@ -176,21 +174,20 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setBadCount((prev) => ++prev);
           alert("비추천되었습니다.");
         } else {
-          setBadCount((prev) => --prev);
           alert("비추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        // searchReview(
+        //   searchReviewData,
+        //   (res) => {
+        //     setReview(res.data.data);
+        //     setEvIsDone(res.data.data.done);
+        //     setEvType(res.data.data.reviewEvaluationType);
+        //   },
+        //   (err) => {}
+        // );
+        setBadCount(res.data.data.badCount);
       },
       (err) => {
         alert("이미 평가를 남겼습니다.");
