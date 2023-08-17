@@ -181,6 +181,10 @@
     &:hover {
       background-color: rgba(0, 0, 0, 0.3);
       cursor: pointer;
+
+      .recommend-text {
+        opacity: 1;
+      }
     }
   }
 
@@ -263,11 +267,24 @@
   }
 
   .recommend {
+    display: flex;
     position: absolute;
-    width: 40px;
-    height: 40px;
     right: 10px;
     bottom: 10px;
+
+    .recommend-text {
+      font-size: $font-size-sm;
+      color: rgba(255, 255, 255, 0.7);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+
+    .recommend-icon-container {
+      width: 40px;
+      height: 40px;
+    }
 
     img {
       width: 100%;
