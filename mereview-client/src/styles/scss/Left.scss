@@ -26,21 +26,22 @@
 }
 
 @keyframes changeImg {
-  33% {
-    background-image: url("/public/IndexPictures/old.png");
+  28% {
+    background-image: url("/public/IndexPictures/dvd45.png");
   }
-  65% {
-    background-image: url("/public/IndexPictures/old.png");
+  33% {
+    background-image: url("/public/IndexPictures/old45.png");
+  }
+  51% {
+    background-image: url("/public/IndexPictures/old45.png");
   }
   66% {
-    opacity: 100%;
-    background-image: url("/public//IndexPictures/posters.png");
+    background-image: url("/public//IndexPictures/posters45.png");
   }
-  99% {
-    background-image: url("/public//IndexPictures/posters.png");
+  94% {
+    background-image: url("/public//IndexPictures/posters45.png");
   }
   100% {
-    opacity: 100%;
-    background-image: url("/public/IndexPictures/dvd.png");
+    background-image: url("/public/IndexPictures/dvd45.png");
   }
 }
