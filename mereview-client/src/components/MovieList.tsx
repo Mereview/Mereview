@@ -17,10 +17,11 @@ const MovieList = ({ movieList }: MovieListProps) => {
   const calculateVisibleMovies = () => {
     const screenWidth = window.innerWidth;
     // 반응형, 나중에 카드 크기에 맞춰 좀 더 상세하게 고치기
-    if (screenWidth >= 1860) setNumberOfMoviesToShow(5);
-    else if (screenWidth >= 1470) setNumberOfMoviesToShow(4);
-    else if (screenWidth >= 1140) setNumberOfMoviesToShow(3);
-    else if (screenWidth >= 780) setNumberOfMoviesToShow(2);
+    if (screenWidth >= 1860) setNumberOfMoviesToShow(6);
+    else if (screenWidth >= 1470) setNumberOfMoviesToShow(5);
+    else if (screenWidth >= 1140) setNumberOfMoviesToShow(4);
+    else if (screenWidth >= 780) setNumberOfMoviesToShow(3);
+    else if (screenWidth >= 576) setNumberOfMoviesToShow(2);
     else setNumberOfMoviesToShow(1);
   };
 
