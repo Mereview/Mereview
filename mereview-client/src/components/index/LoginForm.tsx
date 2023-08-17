@@ -5,7 +5,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../api/members";
+import { login, searchMemberInfoSimple } from "../../api/members";
 import { getConfirmedNotifications } from "../../api/review";
 import { notificationActions } from "../../store/notification-slice";
 const LoginForm = () => {
@@ -26,6 +26,17 @@ const LoginForm = () => {
       [id]: value,
     }));
   };
+  const getUserInfo = () => {
+    const id = localStorage.getItem("id");
+    if (id) {
+      dispatch(userActions.authToggler());
+      searchMemberInfoSimple(
+        Number(id),
+        (res) => dispatch(userActions.authorization(res.data.data)),
+        (err) => console.log("사용자 인증 오류 발생")
+      );
+    }
+  };
 
   ///로그인 로직
 
@@ -45,11 +56,11 @@ const LoginForm = () => {
 
         dispatch(userActions.authorization(data.data));
         dispatch(userActions.authToggler());
-
         //notification 쏴주기
-        const notifiData = { loginMemberId: data.data.id, status: null };
+        const notifiData = { loginMemberId: data.data.id, status: 'UNCONFIRMED' };
         const success = (res) => {
           dispatch(notificationActions.getNotification(res.data.data));
+          console.log(res.data.data)
           console.log("리덕스저장성공");
         };
         const fail = (err) => {
@@ -62,6 +73,8 @@ const LoginForm = () => {
         alert("이메일과 비밀번호를 확인해주세요.");
       }
     );
+    await getUserInfo();
+    
   };
 
   return (

@@ -8,6 +8,9 @@ const NavigationBar = ({ user }) => {
   const [isModal, setIsModal] = useState(false);
   
   const [notification, setNotification] = useState(false);
+  const notifications = useSelector((state: any) => state.notification.notification.notification);
+
+  console.log(notifications)
 
   const profilURL = user.profileImage?.id
     ? `${process.env.REACT_APP_API_URL}/image/download/profiles/${user.profileImage.id}`

@@ -1,3 +1,5 @@
+@import "Style";
+
 /* Styling for the whole container */
 .notification-container {
     margin: 20px;
@@ -24,7 +26,10 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+  .title{
+    font-family: $BMDoHyeon;
+    font-size: 2.5rem;
+  }
   .review-card-title {
     font-size: 1.2rem;
     font-weight: bold;

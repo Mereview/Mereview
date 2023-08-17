@@ -4,6 +4,7 @@ import NotificationReviewList from "../components/NotificationReviewList";
 import axios from "axios";
 import Loading from "../components/common/Loading";
 import { NotificationReviewCardInterface } from "../components/interface/NotificationReviewCardInterface";
+
 import {
   getConfirmedNotifications,
   searchReviews,
@@ -18,7 +19,7 @@ import ReviewSearch from "../components/ReviewSearch";
 import { ReviewSortInterface } from "../components/interface/ReviewSortInterface";
 import ReviewSort from "../components/ReviewSort";
 import { SearchConditionInterface } from "../components/interface/SearchConditionInterface";
-
+import '../styles/css/NotificationHome.css';
 //import { IconName } from "react-icons/bs"; // 나중에 install 해서 사용할것
 
 /* BoxOffice 데이터 생성 시작 */
@@ -216,16 +217,26 @@ const NotificationHome = () => {
 
     setOnlyInterest: setOnlyInterest,
   };
+  console.log(confirmedReviewList)
+  console.log(unconfirmedReviewList)
 
   return (
     <>
-      {unconfirmedReviewList.length != 0 && (
-        <span className="display-1 fw-bold ms-3">새로 온 알람</span>
-      )}{" "}
-      <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
+    <div className="mt-3">
+
+    <span className="title ms-5">새로 온 알림</span>
+    </div>
+    <hr />
+
+  {unconfirmedReviewList.length === 0 ?  <div className="title ms-5 mb-5 mt-5 text-center text-secondary">새로 온 알림이 없습니다</div>:
+        <NotificationReviewList confirmed={false} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
+}
+      <span className="title ms-5">확인 된 알림</span>
       <hr />
-      {confirmedReviewList.length != 0 && <span className="display-1 fw-bold ms-3">확인된 알람</span>}
-      <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
+{
+  confirmedReviewList.length === 0 ?  <div className="title ms-5 mb-5 mt-5 text-center text-secondary">알림이 없습니다</div> :
+  <NotificationReviewList confirmed={true} confirmedReviewList={confirmedReviewList} unconfirmedReviewList={unconfirmedReviewList} setConfirmedReviewList={setConfirmedReviewList} setUnconfirmedReviewList={setUnconfirmedReviewList} />
+}
     </>
   );
 };
