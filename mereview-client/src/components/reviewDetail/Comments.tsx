@@ -17,6 +17,7 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
   // 댓글작성 시간 계산
   const now = new Date();
   const createdTime = new Date(comment.createdTime);
+  createdTime.setHours(createdTime.getHours() + 9);
   const diffTime = now.getTime() - createdTime.getTime();
   let presentTime = null;
 
