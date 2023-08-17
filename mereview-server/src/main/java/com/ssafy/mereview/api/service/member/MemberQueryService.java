@@ -318,6 +318,7 @@ public class MemberQueryService {
 
     private static void checkTiers(Member member) {
         member.getMemberTiers().forEach(memberTier -> {
+            memberTier.checkExpAndDemote();
             memberTier.checkAndPromoteUsefulTier();
             memberTier.checkAndPromoteFunTier();
         });
