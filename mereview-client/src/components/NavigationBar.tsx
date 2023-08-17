@@ -29,10 +29,10 @@ const NavigationBar = ({ user }) => {
 
   return (
     <div>
-      <Navbar bg="dark" className="p-2" expand="lg">
+      <Navbar bg="dark" expand="md">
         {/* 로고 */}
         <Navbar.Brand href="/review" className="ms-4">
-          <img src={"/logo1.png"} height="60"></img>
+          <img src={"/logo1.png"} height="50"></img>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -40,13 +40,13 @@ const NavigationBar = ({ user }) => {
         {/* 버튼리스트 */}
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto me-4">
-            <Nav.Link href="/review" className="text-white fs-4">
+            <Nav.Link href="/review" className="text-white fs-5">
               리뷰 전체보기
             </Nav.Link>
-            <Nav.Link href="/review/write" className="text-white fs-4">
+            <Nav.Link href="/review/write" className="text-white fs-5">
               리뷰 작성하기
             </Nav.Link>
-            <Nav.Link href="/notification" className="text-white fs-4">
+            <Nav.Link href="/notification" className="text-white fs-5">
               <div className="notification-container" style={{ position: "relative" }}>
                 <span className="material-symbols-outlined">notifications</span>
                 <div

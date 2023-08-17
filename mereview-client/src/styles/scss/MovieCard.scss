@@ -4,10 +4,10 @@
   font-family: $BMDoHyeon;
   font-size: $font-size-md;
   width: 15.5%;
-  margin-top: 30px;
+  margin-top: 5px;
   margin-left: 5px;
   margin-right: 5px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   transition: all 0.3s ease;
   transform-origin: center;
 
@@ -23,7 +23,7 @@
   }
 
   .poster-image {
-    height: 80%;
+    height: auto;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     overflow: hidden;
@@ -36,14 +36,21 @@
   }
 
   .movie-info {
-    padding: 20px 10px;
+    padding: 5px 10px 5px 10px;
     background-color: $white;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 
     .movie-title {
-      margin-bottom: 15px;
-      font-size: 28px;
+      margin-bottom: 10px;
+      font-size: $font-size-xl;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .movie-rel-genre {
+      font-size: $font-size-sm;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

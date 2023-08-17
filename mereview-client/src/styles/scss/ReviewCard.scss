@@ -53,15 +53,18 @@
     justify-content: right;
 
     div {
-      margin-right: 5px;
-      margin-left: 5px;
+      margin-right: 1px;
+
+      p {
+        font-size: $font-size-sm;
+      }
 
       img {
-        max-width: 100%;
-        margin-bottom: 5px;
+        max-width: 80%;
+        margin-bottom: 3px;
 
         @media (max-width: 1300px) {
-          width: 80%;
+          width: 60%;
         }
       }
     }
@@ -76,6 +79,8 @@
     justify-content: center;
     text-align: center;
     text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 10px black;
   }
 
   .profile-container {
@@ -236,6 +241,8 @@
     justify-content: center;
     text-align: center;
     text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 10px black;
   }
 
   .profile-container {
