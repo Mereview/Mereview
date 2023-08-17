@@ -2,8 +2,8 @@
 
 .ctn {
   height: 100vh;
-  animation: changeImg 5s ease-in-out infinite;
-  animation-duration: 5s;
+  animation: changeImg 10s infinite;
+  animation-duration: 10s;
   .btn {
     font-weight: bold;
     font-size: 1.5em;
@@ -32,7 +32,7 @@
   33% {
     background-image: url("/public/IndexPictures/old45.png");
   }
-  51% {
+  61% {
     background-image: url("/public/IndexPictures/old45.png");
   }
   66% {
@@ -41,7 +41,7 @@
   94% {
     background-image: url("/public//IndexPictures/posters45.png");
   }
-  100% {
+  99% {
     background-image: url("/public/IndexPictures/dvd45.png");
   }
 }
