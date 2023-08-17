@@ -90,10 +90,10 @@ export async function getUnConfirmedNotifications(memberId, success, fail) {
     .catch(fail);
 }
 
-export async function toggleNotificationStatus(request, success, fail) {
+export async function toggleNotificationStatus(notificationId, success, fail) {
   try {
     
-    const response = await api.put("/notifications", request);
+    const response = await api.put(`/notifications/${notificationId}`);
     success(response.data);
   } catch (error) {
     fail(error);
