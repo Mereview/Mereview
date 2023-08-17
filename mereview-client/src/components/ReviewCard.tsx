@@ -51,12 +51,14 @@ const ReviewCard = (props: ReviewCardInterface) => {
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
+    cardStyle.backgroundPosition = "center center";
   }
 
   const recommendStyle: Style = {};
   if (funnyCount + usefulCount + dislikeCount > 0) {
     recommendStyle.opacity =
       (funnyCount + usefulCount) / (funnyCount + usefulCount + dislikeCount);
+    if (recommendStyle.opacity < 0.5) recommendStyle.opacity = 0.5;
   }
 
   const formattedCreateDate: Date = new Date(createDate);
