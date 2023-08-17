@@ -276,7 +276,7 @@ const Detail = ({ review, setReview }: any) => {
           onClick={onClickUseful}
           style={
             evIsDone && evType === "USEFUL"
-              ? { backgroundImage: "url(/usefulDisabled.png" }
+              ? { backgroundImage: "url(/usefulDIsabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
           disabled={Number(userId) === review.reviewId}
