@@ -105,8 +105,10 @@ const Detail = ({ review, setReview }: any) => {
       (res) => {
         if (res.data.data.done) {
           setUsefulCount((prev) => ++prev);
+          alert("추천되었습니다.");
         } else {
           setUsefulCount((prev) => --prev);
+          alert("추천을 취소하였습니다.");
         }
         searchReview(
           searchReviewData,
@@ -118,7 +120,9 @@ const Detail = ({ review, setReview }: any) => {
           (err) => {}
         );
       },
-      (err) => {}
+      (err) => {
+        alert("이미 평가를 남겼습니다.");
+      }
     );
   };
   const onClickFun = (event: any) => {
@@ -137,8 +141,10 @@ const Detail = ({ review, setReview }: any) => {
       (res) => {
         if (res.data.data.done) {
           setFunCount((prev) => ++prev);
+          alert("추천되었습니다.");
         } else {
           setFunCount((prev) => --prev);
+          alert("추천을 취소하였습니다.");
         }
         searchReview(
           searchReviewData,
@@ -151,7 +157,7 @@ const Detail = ({ review, setReview }: any) => {
         );
       },
       (err) => {
-        console.log("");
+        alert("이미 평가를 남겼습니다.");
       }
     );
   };
@@ -171,8 +177,10 @@ const Detail = ({ review, setReview }: any) => {
       (res) => {
         if (res.data.data.done) {
           setBadCount((prev) => ++prev);
+          alert("비추천되었습니다.");
         } else {
           setBadCount((prev) => --prev);
+          alert("비추천을 취소하였습니다.");
         }
         searchReview(
           searchReviewData,
@@ -181,7 +189,9 @@ const Detail = ({ review, setReview }: any) => {
             setEvIsDone(res.data.data.done);
             setEvType(res.data.data.reviewEvaluationType);
           },
-          (err) => {}
+          (err) => {
+            alert("이미 평가를 남겼습니다.");
+          }
         );
       },
       (err) => {}
@@ -250,6 +260,7 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
+  console.log(review);
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
@@ -279,27 +290,27 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/usefulDIsabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) !== review.reviewId}
         ></button>
         <button
           id="FUN"
           onClick={onClickFun}
           style={
-            evIsDone && evType === "FUN"
+            evType === "FUN"
               ? { backgroundImage: "url(/funnyDisabled.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) !== review.reviewId}
         ></button>
         <button
           id="BAD"
           onClick={onClickBad}
           style={
-            evIsDone && evType === "BAD"
-              ? { backgroundImage: "url(/dislikeDisabled.png)" }
+            evType === "BAD"
+              ? { backgroundImage: "url(/dislikeDIsabled.png)" }
               : { backgroundImage: "url(/dislike.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) !== review.reviewId}
         ></button>
       </div>
       {Number(userId) === review.memberId ? (
