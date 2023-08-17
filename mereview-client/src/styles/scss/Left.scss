@@ -4,6 +4,7 @@
   height: 100vh;
   animation: changeImg 10s infinite;
   animation-duration: 10s;
+
   .btn {
     font-weight: bold;
     font-size: 1.5em;
@@ -23,6 +24,20 @@
 }
 .blank {
   height: 30vh;
+}
+
+@media (max-width: "770px") {
+  .ctn {
+    height: 40vw;
+
+    .btn {
+      height: 50px;
+      font-size: 1em;
+    }
+  }
+  .blank {
+    height: 10vw;
+  }
 }
 
 @keyframes changeImg {
