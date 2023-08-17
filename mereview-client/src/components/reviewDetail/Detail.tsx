@@ -189,12 +189,12 @@ const Detail = ({ review, setReview }: any) => {
             setEvIsDone(res.data.data.done);
             setEvType(res.data.data.reviewEvaluationType);
           },
-          (err) => {
-            alert("이미 평가를 남겼습니다.");
-          }
+          (err) => {}
         );
       },
-      (err) => {}
+      (err) => {
+        alert("이미 평가를 남겼습니다.");
+      }
     );
   };
   // 리뷰 평가 재미, 유용, 별로에요 동작
@@ -260,7 +260,7 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
-  console.log(review);
+  console.log("reviewID=", review.reviewId, "userID=", userId);
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
@@ -290,7 +290,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/usefulDIsabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
         <button
           id="FUN"
@@ -300,7 +300,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/funnyDisabled.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
         <button
           id="BAD"
@@ -310,7 +310,7 @@ const Detail = ({ review, setReview }: any) => {
               ? { backgroundImage: "url(/dislikeDIsabled.png)" }
               : { backgroundImage: "url(/dislike.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
       </div>
       {Number(userId) === review.memberId ? (
