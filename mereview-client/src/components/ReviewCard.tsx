@@ -51,6 +51,7 @@ const ReviewCard = (props: ReviewCardInterface) => {
   const cardStyle: Style = {};
   if (backgroundImageId) {
     cardStyle.backgroundImage = `url(${process.env.REACT_APP_API_URL}/image/download/backgrounds/${backgroundImageId})`;
+    cardStyle.backgroundPosition = "center center";
   }
 
   const recommendStyle: Style = {};
