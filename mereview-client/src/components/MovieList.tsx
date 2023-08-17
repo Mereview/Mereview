@@ -58,17 +58,19 @@ const MovieList = ({ movieList }: MovieListProps) => {
   return (
     <>
       <div className="movie-list-sub-title">유행하는 영화</div>
-      <div className="movie-card-list-wrapper">
-        {visibleMovies.map((movie: MovieCardInterface) => (
-          <MovieCard
-            key={movie.movieId}
-            movieId={movie.movieId}
-            posterImagePath={movie.posterImagePath}
-            movieTitle={movie.movieTitle}
-            releaseYear={movie.releaseYear}
-            movieGenre={movie.movieGenre}
-          />
-        ))}
+      <div className="movie-card-list-wrapper-container">
+        <div className="movie-card-list-wrapper">
+          {visibleMovies.map((movie: MovieCardInterface) => (
+            <MovieCard
+              key={movie.movieId}
+              movieId={movie.movieId}
+              posterImagePath={movie.posterImagePath}
+              movieTitle={movie.movieTitle}
+              releaseYear={movie.releaseYear}
+              movieGenre={movie.movieGenre}
+            />
+          ))}
+        </div>
       </div>
       <div className="controls">
         <button className="slide-button" onClick={handleSlideLeft}>

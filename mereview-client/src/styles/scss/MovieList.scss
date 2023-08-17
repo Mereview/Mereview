@@ -3,22 +3,27 @@
 
 .movie-list-sub-title {
   font-family: $BMDoHyeon;
-  font-size: 40px;
-  margin-left: 30px;
+  font-size: $font-size-h2;
+  margin-left: 3%;
 }
 
-.movie-card-list-wrapper {
+.movie-card-list-wrapper-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-right: 30px;
-  margin-left: 30px;
-  overflow: hidden;
+  justify-content: center;
+
+  .movie-card-list-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-right: 5%;
+    margin-left: 5%;
+    overflow: hidden;
+  }
 }
 
 .controls {
   text-align: center;
-  margin-bottom: 40px;
+  padding-bottom: 20px;
 
   .slide-button {
     width: 130px;

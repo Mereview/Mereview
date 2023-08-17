@@ -4,13 +4,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 30px 0 30px;
+  margin: 0 3% 0 3%;
   padding: 10px;
   border-bottom: 2px solid;
 
   .reviewSearch-title {
-    font-size: 48px;
-    font-weight: 900;
+    font-size: $font-size-h1;
+    font-family: $BMDoHyeon;
   }
 }
 
