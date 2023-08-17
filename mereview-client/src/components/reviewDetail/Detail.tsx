@@ -60,9 +60,7 @@ const Detail = ({ review, setReview }: any) => {
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
-  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
-  const [funCount, setFunCount] = useState(review.funCount);
-  const [badCount, setBadCount] = useState(review.badCount);
+
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
@@ -104,10 +102,8 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setUsefulCount((prev) => ++prev);
           alert("추천되었습니다.");
         } else {
-          setUsefulCount((prev) => --prev);
           alert("추천을 취소하였습니다.");
         }
         searchReview(
@@ -140,10 +136,8 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setFunCount((prev) => ++prev);
           alert("추천되었습니다.");
         } else {
-          setFunCount((prev) => --prev);
           alert("추천을 취소하였습니다.");
         }
         searchReview(
@@ -176,10 +170,8 @@ const Detail = ({ review, setReview }: any) => {
       data,
       (res) => {
         if (res.data.data.done) {
-          setBadCount((prev) => ++prev);
           alert("비추천되었습니다.");
         } else {
-          setBadCount((prev) => --prev);
           alert("비추천을 취소하였습니다.");
         }
         searchReview(
@@ -267,11 +259,11 @@ const Detail = ({ review, setReview }: any) => {
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
           <img src="/GraduationCap.png" alt="재밌어요" />
-          <span>{usefulCount}</span>
+          <span>{review.usefulCount}</span>
           <img src="/smile.png" alt="유용해요" />
-          <span>{funCount}</span>
+          <span>{review.funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
-          <span>{badCount}</span>
+          <span>{review.badCount}</span>
         </div>
       </div>
       <hr />
