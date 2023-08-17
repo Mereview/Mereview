@@ -97,14 +97,17 @@
     }
 
     .image {
-      width: 250px;
-      height: auto;
       margin: auto;
+      width: 250px;
+      img {
+        width: 250px;
+        height: auto;
+      }
     }
     .overview {
       overflow-y: scroll;
       height: 300px;
-      margin: 15px 15px 15px 0px;
+      margin: 15px 15px 15px 15px;
     }
     .overview::-webkit-scrollbar {
       width: 5px;
