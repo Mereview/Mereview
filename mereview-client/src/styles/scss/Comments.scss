@@ -77,6 +77,8 @@
       display: flex;
       gap: 10px;
       .likeWrapper {
+        cursor: pointer;
+
         padding: 3px;
         border-radius: 7px;
         color: blue;
@@ -95,6 +97,8 @@
         }
       }
       .dislikeWrapper {
+        cursor: pointer;
+
         padding: 3px;
         border-radius: 7px;
         border: solid red 0.5px;

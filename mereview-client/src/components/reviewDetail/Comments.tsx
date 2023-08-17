@@ -110,19 +110,17 @@ const Comments = ({ comment, setComments, setcommentCNT }) => {
       <div className="buttons">
         <p className="createdDate">{presentTime} 전</p>
         <div className="buttonsWrapper">
-          <div className="likeWrapper">
+          <div className="likeWrapper" onClick={likeDislike}>
             <button
               id="LIKE"
               disabled={comment.memberId === Number(userId)}
-              onClick={likeDislike}
             ></button>
             {comment.likeCount}
           </div>
-          <div className="dislikeWrapper">
+          <div className="dislikeWrapper" onClick={likeDislike}>
             <button
               id="DISLIKE"
               disabled={comment.memberId === Number(userId)}
-              onClick={likeDislike}
             ></button>
             {comment.dislikeCount}
           </div>
