@@ -21,16 +21,14 @@ const NotificationReviewList = ({ unconfirmedReviewList, confirmedReviewList, se
     infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     initialSlide: 0,
     responsive: [
       {
         breakpoint: 1600,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
+          slidesToScroll: 2,
         },
       },
       {

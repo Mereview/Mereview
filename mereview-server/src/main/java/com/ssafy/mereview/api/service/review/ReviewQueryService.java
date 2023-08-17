@@ -58,6 +58,7 @@ public class ReviewQueryService {
         return ((reviewQueryRepository.getTotalPages(condition) - 1) / PAGE_SIZE) + 1;
     }
 
+    @Transactional
     public ReviewDetailResponse searchById(Long reviewId, Long loginMemberId) {
         Review review = reviewQueryRepository.searchById(reviewId);
         if (review == null) {
