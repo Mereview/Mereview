@@ -8,7 +8,7 @@ const NavigationBar = ({ user }) => {
   const [isModal, setIsModal] = useState(false);
   
   const [notification, setNotification] = useState(false);
-  const notifications = useSelector((state: any) => state.notification.notification.notification);
+  const notifications = useSelector((state: any) => state.notification.notific);
 
   console.log(notifications)
 
