@@ -29,7 +29,7 @@ const MovieCard = (props: MovieCardInterface) => {
       </div>
       <div className="movie-info">
         <div className="movie-title">{movieTitle}</div>
-        <div>
+        <div className="movie-rel-genre">
           {releaseYear} {genres && `| ${genres}`}
         </div>
       </div>

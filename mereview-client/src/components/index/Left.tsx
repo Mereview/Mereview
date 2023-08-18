@@ -8,7 +8,7 @@ const Left = () => {
   const leftStyle = {
     padding: "0px",
     margin: "0px",
-    backgroundImage: "url(/IndexPictures/dvd.png)",
+    backgroundImage: "url(/IndexPictures/dvd45.png)",
     backgroundSize: "cover",
   };
   const dispatch = useDispatch();

@@ -6,28 +6,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
 public class KeywordUpdateRequest {
     @NotBlank
-    private Long keywordId;
-    @NotBlank
     private String name;
-    private int weight;
+    @NotNull
+    private Integer weight;
+    @NotNull
+    private Long movieId;
 
     @Builder
-    public KeywordUpdateRequest(Long keywordId, String name, int weight) {
-        this.keywordId = keywordId;
+    public KeywordUpdateRequest(String name, Integer weight, Long movieId) {
         this.name = name;
         this.weight = weight;
+        this.movieId = movieId;
     }
 
     public KeywordUpdateServiceRequest toServiceRequest() {
         return KeywordUpdateServiceRequest.builder()
-                .keywordId(keywordId)
                 .name(name)
                 .weight(weight)
+                .movieId(movieId)
                 .build();
     }
+
 }

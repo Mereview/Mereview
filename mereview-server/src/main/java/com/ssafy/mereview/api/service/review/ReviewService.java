@@ -1,7 +1,6 @@
 package com.ssafy.mereview.api.service.review;
 
 import com.ssafy.mereview.api.service.review.dto.request.KeywordCreateServiceRequest;
-import com.ssafy.mereview.api.service.review.dto.request.KeywordUpdateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewCreateServiceRequest;
 import com.ssafy.mereview.api.service.review.dto.request.ReviewUpdateServiceRequest;
 import com.ssafy.mereview.common.util.file.UploadFile;
@@ -62,7 +61,6 @@ public class ReviewService {
                 .orElseThrow(NoSuchElementException::new);
 
         review.update(request);
-        updateKeywords(request.getKeywordServiceRequests());
 
         return request.getReviewId();
     }
@@ -88,14 +86,6 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    private void updateKeywords(List<KeywordUpdateServiceRequest> keywordRequests) {
-        keywordRequests.forEach(keywordRequest ->
-                keywordRepository.findById(keywordRequest.getKeywordId())
-                        .orElseThrow(NoSuchElementException::new)
-                        .update(keywordRequest.getName(), keywordRequest.getWeight())
-        );
-    }
-
     private void createBackgroundImage(Long reviewId, UploadFile uploadFile) {
         BackgroundImage backgroundImage = BackgroundImage.builder()
                 .review(Review.builder().id(reviewId).build())
@@ -105,7 +95,7 @@ public class ReviewService {
     }
 
     private List<Notification> createNotifications(ReviewCreateServiceRequest request, Long saveId) {
-        List<Long> memberIds = interestQueryRepository.searchRandomMember(request.getGenreId(), MEMBER_LIMIT_COUNT);
+        List<Long> memberIds = interestQueryRepository.searchRandomMember(request.getGenreId(), request.getMemberId(), MEMBER_LIMIT_COUNT);
         if (memberIds.isEmpty()) {
             return new ArrayList<>();
         }

@@ -1,16 +1,16 @@
 @import "Style";
 
-.reviewSearch-section{
-  display:flex;
+.reviewSearch-section {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 100px 0 30px;
+  margin: 0 3% 0 3%;
   padding: 10px;
   border-bottom: 2px solid;
 
-  .reviewSearch-title{
-    font-size: 48px;
-    font-weight: 900;
+  .reviewSearch-title {
+    font-size: $font-size-h1;
+    font-family: $BMDoHyeon;
   }
 }
 
@@ -18,13 +18,14 @@
   $form-size: 34.25px;
 
   .search-container {
+    margin-right: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
 
     .criteria-select {
       font-family: $NanumGothic;
-      width: 95px;
+      width: 120px;
       height: 48px;
       border-radius: 0;
       border-top-left-radius: 10px;

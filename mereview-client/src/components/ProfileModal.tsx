@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userActions } from "../store/user-slice";
 
-const ProfileModal = () => {
+const ProfileModal = ({
+  setIsModal,
+}: {
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [animate, setAnimate] = useState(false);
   useEffect(() => {
     setAnimate(true);
@@ -17,13 +21,16 @@ const ProfileModal = () => {
     dispatch(userActions.logout());
     navigate("/");
   };
+  const closeModal = () => {
+    setIsModal(false);
+  };
   return (
     <div className="toplevel mt-3">
       <div className={`arrow ${animate ? "animate" : ""}`}></div>
-      <div className={`first ${animate ? "animate" : ""}`}>
+      <div className={`first ${animate ? "animate" : ""}`} style={{ cursor: "default" }}>
         Hello, {userNickname}
       </div>
-      <div className={`second ${animate ? "animate" : ""}`}>
+      <div className={`second ${animate ? "animate" : ""}`} onClick={closeModal}>
         <Link to={"/profile"} style={{ color: "white" }}>
           MY PAGE
         </Link>

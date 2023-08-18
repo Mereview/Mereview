@@ -59,6 +59,10 @@
       font-family: $GowunDodum;
       font-size: $font-size-h3;
     }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
   }
   .ratingbuttons {
     height: 100px;
@@ -71,18 +75,30 @@
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/usefulDisabled.png");
+        opacity: 100% !important;
+      }
     }
     #FUN {
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/funnyDisabled.png");
+        opacity: 100% !important;
+      }
     }
     #BAD {
       background-size: cover;
       height: 100px;
       width: 100px;
       border-radius: 15px;
+      &:disabled {
+        background-image: url("/public/dislikeDIsabled.png");
+        opacity: 100% !important;
+      }
     }
   }
 

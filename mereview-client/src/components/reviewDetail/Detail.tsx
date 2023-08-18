@@ -60,9 +60,7 @@ const Detail = ({ review, setReview }: any) => {
     createReviewComment(data, success, fail);
   };
   // 리뷰 평가 받아오기
-  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
-  const [funCount, setFunCount] = useState(review.funCount);
-  const [badCount, setBadCount] = useState(review.badCount);
+
   useEffect(() => {
     setComments(review.comments);
   }, [review]);
@@ -88,103 +86,81 @@ const Detail = ({ review, setReview }: any) => {
       );
     }
   };
-
+  const [funCount, setFunCount] = useState(review.funCount);
+  const [usefulCount, setUsefulCount] = useState(review.usefulCount);
+  const [badCount, setBadCount] = useState(review.badCount);
   const onClickUseful = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
       (res) => {
         if (res.data.data.done) {
-          setUsefulCount((prev) => ++prev);
+          setEvType(res.data.data.reviewEvaluationType);
+          alert("추천되었습니다.");
         } else {
-          setUsefulCount((prev) => --prev);
+          setEvType(null);
+          alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+
+        setUsefulCount(res.data.data.usefulCount);
       },
-      (err) => {}
+      (err) => {
+        alert("이미 평가를 남겼습니다.");
+      }
     );
   };
   const onClickFun = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
       (res) => {
         if (res.data.data.done) {
-          setFunCount((prev) => ++prev);
+          setEvType(res.data.data.reviewEvaluationType);
+          alert("추천되었습니다.");
         } else {
-          setFunCount((prev) => --prev);
+          setEvType(null);
+          alert("추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+        setFunCount(res.data.data.funCount);
       },
       (err) => {
-        console.log("");
+        alert("이미 평가를 남겼습니다.");
       }
     );
   };
   const onClickBad = (event: any) => {
     const data = {
       genreId: review.genre.genreId,
-      memberId: review.memberId,
+      memberId: Number(userId),
       reviewId: review.reviewId,
       type: event.target.id,
-    };
-    const searchReviewData = {
-      loginMemberId: userId,
-      reviewId: review.reviewId,
     };
     evaluationsReview(
       data,
       (res) => {
         if (res.data.data.done) {
-          setBadCount((prev) => ++prev);
+          setEvType(res.data.data.reviewEvaluationType);
+          alert("비추천되었습니다.");
         } else {
-          setBadCount((prev) => --prev);
+          setEvType(null);
+          alert("비추천을 취소하였습니다.");
         }
-        searchReview(
-          searchReviewData,
-          (res) => {
-            setReview(res.data.data);
-            setEvIsDone(res.data.data.done);
-            setEvType(res.data.data.reviewEvaluationType);
-          },
-          (err) => {}
-        );
+
+        setBadCount(res.data.data.badCount);
       },
-      (err) => {}
+      (err) => {
+        alert("이미 평가를 남겼습니다.");
+      }
     );
   };
   // 리뷰 평가 재미, 유용, 별로에요 동작
@@ -250,18 +226,21 @@ const Detail = ({ review, setReview }: any) => {
     getInterestReview();
     setFetched(true);
   }, []);
+  console.log(evType);
   if (!isFetched) return <Loading />;
   return (
     <div className="detail">
       <div className="first-line">
         <h1>{review.reviewTitle}</h1>
         <div className="emotionbox">
-          <img src="/GraduationCap.png" alt="재밌어요" />
+          <img src="/GraduationCap.png" alt="유용해요" />
           <span>{usefulCount}</span>
-          <img src="/smile.png" alt="유용해요" />
+          <img src="/smile.png" alt="재밌어요" />
           <span>{funCount}</span>
           <img src="/thumbDown.png" alt="싫어요" />
           <span>{badCount}</span>
+          <img src="/hitcount.png" alt="조회수" />
+          <span>{review.hits}</span>
         </div>
       </div>
       <hr />
@@ -275,31 +254,31 @@ const Detail = ({ review, setReview }: any) => {
           id="USEFUL"
           onClick={onClickUseful}
           style={
-            evIsDone && evType === "USEFUL"
-              ? { backgroundImage: "url(/usefulDIsabled.png)" }
+            evType === "USEFUL"
+              ? { backgroundImage: "url(/usefulDisabled.png)" }
               : { backgroundImage: "url(/useful.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
         <button
           id="FUN"
           onClick={onClickFun}
           style={
-            evIsDone && evType === "FUN"
-              ? { backgroundImage: "url(/funnyDisabled.png" }
+            evType === "FUN"
+              ? { backgroundImage: "url(/funnyDisabled1.png" }
               : { backgroundImage: "url(/funny.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
         <button
           id="BAD"
           onClick={onClickBad}
           style={
-            evIsDone && evType === "BAD"
-              ? { backgroundImage: "url(/dislikeDisabled.png)" }
+            evType === "BAD"
+              ? { backgroundImage: "url(/dislikeDIsabled.png)" }
               : { backgroundImage: "url(/dislike.png)" }
           }
-          disabled={Number(userId) === review.reviewId}
+          disabled={Number(userId) === review.memberId}
         ></button>
       </div>
       {Number(userId) === review.memberId ? (
@@ -327,7 +306,7 @@ const Detail = ({ review, setReview }: any) => {
                 } `}
                 htmlFor="input"
               >
-                {inputComment.length} / 300bytes
+                {inputComment.length} / 250bytes
               </label>
             </div>
 
@@ -411,6 +390,7 @@ const Detail = ({ review, setReview }: any) => {
                 usefulCount={review.usefulCount}
                 dislikeCount={review.badCount}
                 commentCount={review.commentCount}
+                hitsCount={review.hits}
                 movieTitle={review.movieTitle}
                 releaseYear={review.releaseYear}
                 movieGenre={[review.genreResponse.genreName]}

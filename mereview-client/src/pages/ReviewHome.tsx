@@ -85,6 +85,7 @@ const ReviewHome = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [isSearchConditionChanging, setSearchConditionChanging] = useState<boolean>(false);
   // 검색
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [searchCriteria, setSearchCriteria] = useState<string>("제목");
@@ -156,6 +157,7 @@ const ReviewHome = () => {
             funnyCount: review.funCount,
             usefulCount: review.usefulCount,
             dislikeCount: review.badCount,
+            hitsCount: review.hits,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
             releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
@@ -198,7 +200,7 @@ const ReviewHome = () => {
     return () => {
       infScrollObserver.disconnect();
     };
-  }, [isFetched, infScrollLoading]);
+  }, [isFetched, infScrollLoading, isSearchConditionChanging]);
 
   const searchSubmit = () => {
     if (searchKeyword === "") {
@@ -242,6 +244,7 @@ const ReviewHome = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
               releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
@@ -274,6 +277,8 @@ const ReviewHome = () => {
   };
 
   useEffect(() => {
+    if (isSearchConditionChanging) return;
+    setSearchConditionChanging(true);
     const searchCondition: SearchConditionInterface = {};
 
     if (searchCriteria === "제목") searchCondition.title = searchKeyword;
@@ -308,6 +313,7 @@ const ReviewHome = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
               releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
@@ -329,9 +335,11 @@ const ReviewHome = () => {
           setInfScrollDone(false);
           setInfScrollLoading(false);
           setInfScrollPage(2);
+          setSearchConditionChanging(false);
         },
         (error) => {
           console.log(error);
+          setSearchConditionChanging(false);
         }
       );
     };

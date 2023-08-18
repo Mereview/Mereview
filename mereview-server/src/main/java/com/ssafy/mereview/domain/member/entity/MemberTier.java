@@ -112,13 +112,15 @@ public class MemberTier extends BaseEntity {
         }
     }
 
-    private void checkExpAndDemote() {
+    public void checkExpAndDemote() {
         if (checkDemotionEligibility(funExperience)) {
             funTier = demote(funTier);
-            funExperience = 0;
+            funExperience = TIER_MAX_EXP_MAP.get(funTier) -5;
+            if(funExperience < 0) funExperience = 0;
         } else if (checkDemotionEligibility(usefulExperience)) {
             usefulTier = demote(usefulTier);
-            usefulExperience = 0;
+            usefulExperience = TIER_MAX_EXP_MAP.get(usefulTier) -5;
+            if(usefulExperience < 0) usefulExperience = 0;
         }
     }
 

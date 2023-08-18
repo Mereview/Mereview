@@ -5,20 +5,8 @@ import { userActions } from "../store/user-slice";
 import { AxiosError } from "axios";
 import { Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
-import {
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  createTheme,
-} from "@mui/material";
-import {
-  BsHeart,
-  BsHeartFill,
-  BsPencilSquare,
-  BsPersonFillGear,
-} from "react-icons/bs";
+import { TextField, List, ListItemButton } from "@mui/material";
+import { BsHeart, BsHeartFill, BsPencilSquare, BsPersonFillGear } from "react-icons/bs";
 import ExperienceBar from "../components/ExperienceBar";
 import BadgeList from "../components/BadgeList";
 import ReviewList from "../components/ReviewList";
@@ -232,6 +220,7 @@ let followFlag: boolean = false;
 let followerCountUpdater: number = 0;
 const followerListUpdater: FollowUserInfo[] = [];
 const getFollowerCount = async (userId: number, loginId: number) => {
+  if (userId === loginId) followFlag = true;
   await searchMemberFollowerInfo(
     userId,
     async ({ data }) => {
@@ -245,9 +234,7 @@ const getFollowerCount = async (userId: number, loginId: number) => {
             const response = data.data;
             followerListUpdater.push({
               memberId: response.id,
-              profileImageId: response.profileImage
-                ? response.profileImage.id
-                : undefined,
+              profileImageId: response.profileImage ? response.profileImage.id : undefined,
               nickname: response.nickname,
             });
           },
@@ -278,9 +265,7 @@ const getFollowingCount = async (userId: number) => {
             const response = data.data;
             followingListUpdater.push({
               memberId: response.id,
-              profileImageId: response.profileImage
-                ? response.profileImage.id
-                : undefined,
+              profileImageId: response.profileImage ? response.profileImage.id : undefined,
               nickname: response.nickname,
             });
           },
@@ -309,6 +294,7 @@ const ProfilePage = () => {
   const [recommendDescend, setRecommendDescend] = useState<boolean>(true);
   const [onlyInterest, setOnlyInterest] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("all");
+  const [isSearchConditionChanging, setSearchConditionChanging] = useState<boolean>(false);
   // 팔로우 팔로잉
   const [followed, setFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
@@ -317,33 +303,27 @@ const ProfilePage = () => {
   const [isFollowingDropdown, setFollowingDropdown] = useState<boolean>(false);
   const [followerList, setFollowerList] = useState<FollowUserInfo[]>([]);
   const [followingList, setFollowingList] = useState<FollowUserInfo[]>([]);
+  const [followIcon, setFollowIcon] = useState<any>("");
   // 리뷰리스트
-  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>(
-    []
-  );
+  const [reviewListState, setReviewListState] = useState<ReviewCardInterface[]>([]);
   // 자기소개, 프로필 이미지
-  const [profileImageHovered, setProfileImageHovered] =
-    useState<boolean>(false);
+  const [profileImageHovered, setProfileImageHovered] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<File>(null);
   const [nicknameEditing, setNicknameEditing] = useState<boolean>(false);
   const [editedNickname, setEditedNickname] = useState<string>("");
-  const [introductionEditing, setIntroductionEditing] =
-    useState<boolean>(false);
+  const [introductionEditing, setIntroductionEditing] = useState<boolean>(false);
   const [editedIntroduction, setEditedIntroduction] = useState<string>("");
   // 무한 스크롤
   const [infScrollPage, setInfScrollPage] = useState<number>(2);
   const [infScrollLoading, setInfScrollLoading] = useState<boolean>(false);
   const [infScrollDone, setInfScrollDone] = useState<boolean>(false);
   // 회원 정보 수정, 탈퇴 모달
-  const [isProfileImageModalOpen, setProfileImageModalOpen] =
-    useState<boolean>(false);
+  const [isProfileImageModalOpen, setProfileImageModalOpen] = useState<boolean>(false);
   const [isVerifyModalOpen, setVerifyModalOpen] = useState<boolean>(false);
   const [isModifyModalOpen, setModifyModalOpen] = useState<boolean>(false);
-  const [isInterestModifyModalLoading, setInterestModifyModalLoading] =
-    useState<boolean>(false);
-  const [isInterestModifyModalOpen, setInterestModifyModalOpen] =
-    useState<boolean>(false);
+  const [isInterestModifyModalLoading, setInterestModifyModalLoading] = useState<boolean>(false);
+  const [isInterestModifyModalOpen, setInterestModifyModalOpen] = useState<boolean>(false);
   const [verifyPasswordInput, setVerifyPasswordInput] = useState<string>("");
   const [emptyInput, setEmptyInput] = useState<boolean>(false);
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
@@ -353,8 +333,6 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
 
   const isSelf = userId !== loginId;
-  const followIcon =
-    followed || userId === loginId ? <BsHeartFill /> : <BsHeart />;
   const verifyRef = useRef(null);
   const infScrollTargetRef = useRef(null);
 
@@ -401,11 +379,10 @@ const ProfilePage = () => {
             funnyCount: review.funCount,
             usefulCount: review.usefulCount,
             dislikeCount: review.badCount,
+            hitsCount: review.hits,
             commentCount: review.commentCount,
             movieTitle: review.movieTitle,
-            releaseYear: Number(
-              String(review.movieReleaseDate).substring(0, 4)
-            ),
+            releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
             movieGenre: [review.genreResponse.genreName],
             createDate: new Date(review.createdTime),
             recommend: review.movieRecommendType === "YES",
@@ -418,10 +395,7 @@ const ProfilePage = () => {
           }
           newReviewList.push(reviewData);
         }
-        setReviewListState((prevReviewList) => [
-          ...prevReviewList,
-          ...newReviewList,
-        ]);
+        setReviewListState((prevReviewList) => [...prevReviewList, ...newReviewList]);
         setInfScrollLoading(false);
       },
       (error) => {
@@ -441,29 +415,23 @@ const ProfilePage = () => {
       }
     };
 
-    const infScrollObserver = new IntersectionObserver(
-      infScrollReloadCallback,
-      observerOptions
-    );
+    const infScrollObserver = new IntersectionObserver(infScrollReloadCallback, observerOptions);
 
     infScrollObserver.observe(infScrollTargetRef.current);
 
     return () => {
       infScrollObserver.disconnect();
     };
-  }, [isFetched, infScrollLoading]);
+  }, [isFetched, infScrollLoading, isSearchConditionChanging]);
 
   // useEffect
   useEffect(() => {
-    if (
-      userId === null ||
-      loginId === null ||
-      userId === undefined ||
-      loginId === undefined
-    )
+    if (userId === null || loginId === null || userId === undefined || loginId === undefined)
       return;
     setIsFetched(false);
     const followCheck = async () => {
+      setFollowingDropdown(false);
+      setFollowerDropdown(false);
       await getFollowerCount(userId, loginId);
       await getFollowingCount(userId);
     };
@@ -480,6 +448,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     setFollowed(followFlag);
+    if (followFlag) setFollowIcon(<BsHeartFill color="lightpink" />);
+    else setFollowIcon(<BsHeart color="lightpink" />);
   }, [followFlag]);
 
   useEffect(() => {
@@ -499,7 +469,8 @@ const ProfilePage = () => {
   }, [followingListUpdater]);
 
   useEffect(() => {
-    if (!isFetched) return;
+    if (!isFetched || isSearchConditionChanging) return;
+    setSearchConditionChanging(true);
     const searchCondition: SearchConditionInterface = {
       memberId: userId,
     };
@@ -528,11 +499,10 @@ const ProfilePage = () => {
               funnyCount: review.funCount,
               usefulCount: review.usefulCount,
               dislikeCount: review.badCount,
+              hitsCount: review.hits,
               commentCount: review.commentCount,
               movieTitle: review.movieTitle,
-              releaseYear: Number(
-                String(review.movieReleaseDate).substring(0, 4)
-              ),
+              releaseYear: Number(String(review.movieReleaseDate).substring(0, 4)),
               movieGenre: [review.genreResponse.genreName],
               createDate: new Date(review.createdTime),
               recommend: review.movieRecommendType === "YES",
@@ -549,22 +519,17 @@ const ProfilePage = () => {
 
           setReviewListState(reviewList);
           setInfScrollPage(2);
+          setSearchConditionChanging(false);
         },
         (error) => {
           console.log(error);
+          setSearchConditionChanging(false);
         }
       );
     };
 
     getReviewList();
-  }, [
-    isFetched,
-    sortBy,
-    dateDescend,
-    recommendDescend,
-    onlyInterest,
-    searchTerm,
-  ]);
+  }, [isFetched, sortBy, dateDescend, recommendDescend, onlyInterest, searchTerm]);
 
   useEffect(() => {
     if (emptyInput || wrongPassword) {
@@ -597,10 +562,10 @@ const ProfilePage = () => {
     await follow(
       data,
       ({ data }) => {
-        if (data.status === "unfollow") {
-          setFollowed(false);
-        } else if (data.status === "follow") {
-          setFollowed(true);
+        if (data.data.status === "unfollow") {
+          followFlag = false;
+        } else if (data.data.status === "follow") {
+          followFlag = true;
         }
       },
       (error) => {
@@ -729,9 +694,7 @@ const ProfilePage = () => {
     setVerifyModalOpen(true);
   };
 
-  const onChangeVerfiyPasswordInput = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
+  const onChangeVerfiyPasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
     setEmptyInput(false);
     setWrongPassword(false);
     setVerifyPasswordInput(event.target.value);
@@ -831,16 +794,12 @@ const ProfilePage = () => {
     setInterestModifyModalOpen(false);
   };
 
-  const onClickInterest = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const onClickInterest = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const genreId = event.currentTarget.id;
     const genreName = event.currentTarget.textContent || "";
 
     setInterestModify((prevInterest: InterestInterface[]) => {
-      const isGenreExist = prevInterest.some(
-        (item) => item.genreId === genreId
-      );
+      const isGenreExist = prevInterest.some((item) => item.genreId === genreId);
       if (isGenreExist) {
         return prevInterest.filter((item) => item.genreId !== genreId);
       } else {
@@ -871,10 +830,7 @@ const ProfilePage = () => {
 
   const formattedCreateDate: Date = new Date(userInfo.joinDate);
   const year: number = formattedCreateDate.getFullYear();
-  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(
-    2,
-    "0"
-  );
+  const month: string = String(formattedCreateDate.getMonth() + 1).padStart(2, "0");
   const day: string = String(formattedCreateDate.getDate()).padStart(2, "0");
 
   const joinDateText = `${year}-${month}-${day}`;
@@ -910,18 +866,19 @@ const ProfilePage = () => {
             />
           )}
           {userId === loginId ? (
-            <div
-              className="profile-modify-icon-container"
-              onClick={openVerifyModal}
-            >
+            <div className="profile-modify-icon-container" onClick={openVerifyModal}>
               <BsPersonFillGear className="modify-icon" />
             </div>
           ) : (
             <></>
           )}
           <div className="follow-info">
-            <span onClick={followingListClicked}>팔로잉: {followingCount}</span>
-            <span onClick={followerListClicked}>팔로워: {followerCount}</span>
+            <span className="f-user-span" onClick={followingListClicked}>
+              팔로잉: {followingCount}
+            </span>
+            <span className="f-user-span" onClick={followerListClicked}>
+              팔로워: {followerCount}
+            </span>
             <span
               className="follow"
               onClick={isSelf ? followClicked : null}
@@ -934,10 +891,7 @@ const ProfilePage = () => {
           {isFollowerDropdown ? (
             <List sx={followListStyle} aria-label="mailbox folders">
               {followerList.map((user: FollowUserInfo, index: number) => (
-                <ListItemButton
-                  className="follow-list-button"
-                  key={`follower-${index}`}
-                >
+                <ListItemButton className="follow-list-button" key={`follower-${index}`}>
                   <FollowUser
                     memberId={user.memberId}
                     profileImageId={user.profileImageId}
@@ -949,10 +903,7 @@ const ProfilePage = () => {
           ) : isFollowingDropdown ? (
             <List sx={followListStyle} aria-label="mailbox folders">
               {followingList.map((user: FollowUserInfo, index: number) => (
-                <ListItemButton
-                  className="follow-list-button"
-                  key={`following-${index}`}
-                >
+                <ListItemButton className="follow-list-button" key={`following-${index}`}>
                   <FollowUser
                     memberId={user.memberId}
                     profileImageId={user.profileImageId}
@@ -992,10 +943,7 @@ const ProfilePage = () => {
                 <Col className="nickname">
                   <span className="nickname-text">{userInfo.nickname}</span>
                   {userId === loginId ? (
-                    <BsPencilSquare
-                      className="edit-icon"
-                      onClick={handleEditNicknameClick}
-                    />
+                    <BsPencilSquare className="edit-icon" onClick={handleEditNicknameClick} />
                   ) : null}
                 </Col>
               </>
@@ -1016,26 +964,17 @@ const ProfilePage = () => {
                     onChange={(e) => setEditedIntroduction(e.target.value)}
                   />
                   <div className="edit-button">
-                    <button onClick={handleEditIntroductionSaveClick}>
-                      수정
-                    </button>
-                    <button onClick={handleEditIntroductionCancelClick}>
-                      취소
-                    </button>
+                    <button onClick={handleEditIntroductionSaveClick}>수정</button>
+                    <button onClick={handleEditIntroductionCancelClick}>취소</button>
                   </div>
                 </div>
               </>
             ) : (
               <>
                 <Col className="introduction">
-                  {userInfo.introduction
-                    ? userInfo.introduction
-                    : "자기소개가 없습니다."}
+                  {userInfo.introduction ? userInfo.introduction : "자기소개가 없습니다."}
                   {userId === loginId ? (
-                    <BsPencilSquare
-                      className="edit-icon"
-                      onClick={handleEditIntroductionClick}
-                    />
+                    <BsPencilSquare className="edit-icon" onClick={handleEditIntroductionClick} />
                   ) : null}
                 </Col>
               </>
@@ -1063,10 +1002,7 @@ const ProfilePage = () => {
       <ReviewSort sortProps={sortProps} />
       <ReviewList reviewList={reviewListState} />
       {!infScrollDone ? (
-        <div
-          style={{ height: "100px", backgroundColor: "white" }}
-          ref={infScrollTargetRef}
-        ></div>
+        <div style={{ height: "100px", backgroundColor: "white" }} ref={infScrollTargetRef}></div>
       ) : (
         <div className="empty-review-list-info">리뷰가 없습니다.</div>
       )}
@@ -1126,11 +1062,7 @@ const ProfilePage = () => {
           onKeyUp={verifyOnKeyUp}
         />
         <span className="verify-info">
-          {emptyInput
-            ? "비밀번호를 입력하세요"
-            : wrongPassword
-            ? "비밀번호가 틀렸습니다."
-            : ""}
+          {emptyInput ? "비밀번호를 입력하세요" : wrongPassword ? "비밀번호가 틀렸습니다." : ""}
         </span>
         <div className="modal-button-box">
           <button onClick={verifyPassword}>확인</button>
@@ -1170,9 +1102,7 @@ const ProfilePage = () => {
               <div
                 id={id}
                 className={`small-box ${
-                  interestModify.some((item) => item.genreId === id)
-                    ? "selected"
-                    : ""
+                  interestModify.some((item) => item.genreId === id) ? "selected" : ""
                 }`}
                 key={id}
                 style={{ backgroundImage: `url(${genre[id][1]}.png)` }}

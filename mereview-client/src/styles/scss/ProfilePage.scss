@@ -79,6 +79,10 @@ $profile-image-size: 450px;
       padding-right: 20px;
       display: flex;
       justify-content: space-between;
+
+      .f-user-span:hover {
+        cursor: pointer;
+      }
     }
 
     .follow-list-button {
@@ -213,7 +217,7 @@ $profile-image-size: 450px;
       pointer-events: none;
       border-radius: 5px;
       background-color: $magenta-2;
-      padding-top: 3px;
+      padding-top: 8px;
       padding-bottom: 3px;
 
       .post-counter {
