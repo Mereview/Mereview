@@ -1,5 +1,5 @@
 # 🎬 미리뷰
-### 🎡 미리 보는 리뷰, 내 맘대로 쓰는 리뷰, 미리뷰 🎡
+### 🎡 [미리 보는 리뷰, 내 맘대로 쓰는 리뷰, 미리뷰](./mereview-docs/file/홍보용%20UCC.mp4) 🎡
 ![](./mereview-docs/img/mereview-logo.png)
 
 
@@ -32,7 +32,7 @@
 ### 🤠 최영환
 - BackEnd
 - GitHub : [longBright](https://github.com/longBright)
-### 📑 [팀 노션](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4)
+<!-- ### 📑 [팀 노션](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4) -->
 
 <br/>
 
