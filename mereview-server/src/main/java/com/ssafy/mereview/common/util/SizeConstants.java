@@ -7,7 +7,7 @@ import java.util.Map;
 import static com.ssafy.mereview.domain.member.entity.Rank.*;
 
 public class SizeConstants {
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 100;
     public static final int MOVIE_SIZE = 50;
 
     public static final int REVIEW_NONE_MAX_COUNT = 1;
