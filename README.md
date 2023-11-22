@@ -81,32 +81,32 @@
 ### [기능설명](./mereview-docs/file/기능설명%20UCC.mp4)
 
 ### 회원가입 & 로그인
-[](./mereview-docs/img/회원가입&로그인.gif)
+![](./mereview-docs/img/회원가입&로그인.gif)
 
 <br>
 
 ### 홈
-[](./mereview-docs/img/홈.gif)
+![](./mereview-docs/img/홈.gif)
 
 <br>
 
 ### 영화 정보
-[](./mereview-docs/img/영화정보.gif)
+![](./mereview-docs/img/영화정보.gif)
 
 <br>
 
 ### 영화 상세정보
-[](./mereview-docs/img/영화상세보기.gif)
+![](./mereview-docs/img/영화상세보기.gif)
 
 <br>
 
 ### 리뷰 작성
-[](./mereview-docs/img/리뷰작성.gif)
+![](./mereview-docs/img/리뷰작성.gif)
 
 <br> 
 
 ### 알림
-[](./mereview-docs/img/알림.gif)
+![](./mereview-docs/img/알림.gif)
 
 
 <br>
