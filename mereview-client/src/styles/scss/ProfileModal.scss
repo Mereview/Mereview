@@ -1,0 +1,116 @@
+@import "Style";
+
+.toplevel {
+  position: absolute;
+  top: 74px;
+  left: calc(100% - 200px);
+  width: 200px;
+  background-color: rgba(255, 255, 255, 0);
+  text-align: center;
+  line-height: 100%;
+  z-index: 10;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  user-select: none;
+  cursor: pointer;
+  .arrow {
+    &:before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      right: 50px;
+      border-style: solid;
+      border-width: 0px 10px 10px 10px;
+      border-color: transparent transparent $blue-5 transparent;
+    }
+  }
+  .first {
+    background-color: #212529;
+    border: solid white 1px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: solid white 1px;
+    border-top-style: solid;
+    opacity: 0%;
+    &:hover {
+      background-color: #5f5e6e;
+    }
+  }
+  .last {
+    background-color: #212529;
+    border: solid white 1px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: solid 1px white;
+    opacity: 0%;
+    &:hover {
+      background-color: #5f5e6e;
+    }
+  }
+  .second {
+    background-color: #212529;
+    border: solid white 1px;
+    border-bottom: none;
+    border-top: none;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0%;
+    &:hover {
+      background-color: #5f5e6e;
+    }
+  }
+}
+.arrow.animate {
+  opacity: 100%;
+  animation-name: slideInY;
+  animation-duration: 10s;
+}
+.first.animate {
+  opacity: 100%;
+  animation-name: slideInY;
+  animation-duration: 2s;
+  animation-delay: 0s;
+}
+.second.animate {
+  opacity: 100%;
+  animation-name: slideInY;
+  animation-duration: 2s;
+  animation-delay: 0.12s;
+  animation-fill-mode: backwards;
+}
+.last.animate {
+  color: red;
+  opacity: 100%;
+  animation-name: slideInY;
+  animation-duration: 2s;
+  animation-delay: 0.24s;
+  animation-fill-mode: backwards;
+}
+@keyframes slideInY {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0%;
+    background-color: $blue-10;
+  }
+  10% {
+    transform: translateY(10%);
+    opacity: 100%;
+  }
+  20% {
+    transform: translateY(0%);
+    opacity: 100%;
+    background-color: $blue-5;
+  }
+}

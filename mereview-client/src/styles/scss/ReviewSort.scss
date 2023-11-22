@@ -1,0 +1,42 @@
+@import "Style";
+
+.sort-container {
+  margin: 15px 3% 0 3% !important;
+  display: flex;
+
+  .selected {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: $black;
+  }
+
+  button {
+    font-family: $BMDoHyeon;
+    color: $gray-7;
+    border: none;
+    background-color: transparent;
+
+    .sort-icon {
+      $icon-size: 20px;
+      svg {
+        width: $icon-size;
+        height: $icon-size;
+        margin-right: 2px;
+      }
+    }
+  }
+
+  .term-select {
+    margin-left: 10px;
+  }
+
+  .only-interest-switch {
+    margin-left: 10px;
+
+    .MuiTypography-root {
+      font-family: $BMDoHyeon;
+      font-size: $font-size-sm;
+      margin-top: 2px;
+    }
+  }
+}

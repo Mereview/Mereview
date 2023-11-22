@@ -1,0 +1,90 @@
+@import "./Style.scss";
+
+.t-right {
+  text-align: right;
+}
+.c-img {
+  margin-left: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid rgb(209, 240, 122);
+}
+.i-box {
+  height: 40%;
+}
+.f-in {
+  color: $blue-10;
+}
+.fixed-container {
+  max-width: 1200px; /* 원하는 최대 너비를 설정합니다 */
+  margin: 0 auto; /* 가운데 정렬을 위해 margin을 auto로 설정합니다 */
+}
+
+.fixed-row {
+  display: flex; /* Flexbox 레이아웃 사용 */
+  flex-wrap: wrap; /* 내용이 컬럼 너비를 초과하면 줄바꿈 */
+}
+
+.fixed-col {
+  flex: 0 0 50%; /* 컬럼 너비를 50%로 고정합니다 */
+  overflow: hidden; /* 내용이 컬럼을 넘어가면 잘리도록 합니다 */
+  padding: 10px; /* 선택적으로 패딩을 추가할 수 있습니다 */
+}
+
+.img-preview {
+  background-color: black;
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+
+.feed-btn {
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 35px;
+  width: 35px;
+  border: 5px solid #00000000;
+  border-radius: 5px;
+  padding: 20px;
+  transition: transform 0.2s ease;
+}
+
+.scrollable-content {
+  overflow: hidden; /* 스크롤바를 숨김 */
+  flex: 1;
+  padding: 10px;
+}
+
+.top {
+  margin-top: 60px;
+}
+
+#reviewForm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  // filter: blur(10px); /* 배경용 div에만 블러 처리 */
+  filter: blur(5px);
+  z-index: -1;
+}
+
+.inputBox {
+  text-decoration-color: white;
+  border-bottom: 3px solid black;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.frame {
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#reviewContainer {
+  border-left: 40px solid black;
+  border-right: 40px solid black;
+}

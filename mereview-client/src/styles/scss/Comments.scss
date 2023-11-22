@@ -1,0 +1,124 @@
+@import "Style";
+
+.comment {
+  width: 600px;
+  height: auto;
+  display: flex;
+  border-bottom: 2px dashed black;
+  margin: 3px 0px;
+  flex-direction: column;
+  .writer {
+    display: flex;
+
+    height: auto;
+    align-items: center;
+
+    img {
+      border-radius: 9999px;
+      width: 50px;
+      height: 50px;
+      margin: 5px 0px;
+    }
+    a {
+      text-decoration: none;
+      color: black;
+      margin-left: 5px;
+      font-weight: bold;
+      &:hover {
+        color: blue;
+      }
+    }
+
+    .delete {
+      background-image: url("/public/remove.png");
+      padding: 5px;
+      background-size: cover;
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      margin: 0;
+      margin-top: 1px;
+      margin-left: auto;
+      // display: flex;
+      // justify-content: end;
+    }
+    .delete:disabled {
+      visibility: hidden;
+    }
+  }
+
+  .all {
+    padding: 30px 0px 30px 0px;
+    width: auto;
+    white-space: pre-line;
+    word-wrap: break-word;
+    justify-content: space-between;
+    .content {
+    }
+  }
+
+  .buttons {
+    flex-basis: 12%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 5px;
+    button {
+      margin-right: 10px;
+    }
+    p {
+      color: $blue-5;
+      margin-bottom: auto;
+      margin-top: auto;
+    }
+    .buttonsWrapper {
+      display: flex;
+      gap: 10px;
+      .likeWrapper {
+        cursor: pointer;
+
+        padding: 3px;
+        border-radius: 7px;
+        color: blue;
+        border: solid blue 0.5px;
+        #LIKE {
+          background-image: url(/public/like.png);
+          width: 20px;
+          height: 20px;
+          border: none;
+          background-color: white;
+          padding: 5px;
+          background-size: cover;
+          #LIKE:disabled {
+            opacity: 20%;
+          }
+        }
+      }
+      .dislikeWrapper {
+        cursor: pointer;
+
+        padding: 3px;
+        border-radius: 7px;
+        border: solid red 0.5px;
+        color: red;
+        #DISLIKE {
+          background-image: url(/public//unlike.png);
+          border: none;
+
+          width: 20px;
+          height: 20px;
+          background-color: white;
+
+          padding: 5px;
+          background-size: cover;
+
+          #DISLIKE:disabled {
+            opacity: 20%;
+          }
+        }
+      }
+    }
+  }
+}

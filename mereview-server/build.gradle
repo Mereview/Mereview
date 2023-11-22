@@ -8,7 +8,7 @@ group = 'com.ssafy'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '1.8'
+	sourceCompatibility = '11'
 }
 
 configurations {
@@ -23,18 +23,70 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+	// querydsl
+	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+	implementation 'com.querydsl:querydsl-core:5.0.0'
+	implementation 'com.querydsl:querydsl-collections:5.0.0'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// db
+	runtimeOnly 'com.h2database:h2:1.4.199'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	//spring-email
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.3'
+	implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.15'
+
+	//swagger
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+test {
+	exclude '**/*'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Querydsl 설정부
+def generated = 'src/main/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
 }

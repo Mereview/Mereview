@@ -1,0 +1,102 @@
+@import "Style";
+
+.big-box {
+  display: flex; /* Flex 컨테이너로 설정 */
+  flex-direction: column; /* 세로 방향으로 아이템 배치 */
+  position: absolute;
+  width: 50%;
+  height: 70%;
+  top: 100px;
+  left: 50%;
+  background-color: white;
+  border: solid 1px black;
+  border-radius: 30px;
+  transform: translateX(-50%);
+  justify-content: center;
+  padding: 0px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+  .title {
+    display: flex;
+    justify-content: center;
+    button {
+      width: 70px;
+      height: 70px;
+      border: none;
+      border-radius: 999px;
+    }
+    h1 {
+      width: 75%;
+      text-align: center;
+      margin: 5px 5px;
+    }
+  }
+
+  .middle-box {
+    display: flex;
+    flex-wrap: wrap; /* 줄바꿈 설정 */
+    align-items: flex-start; /* 맨 위로 정렬 */
+    justify-content: center;
+    width: 100%;
+    height: 75%;
+    background-color: white;
+    overflow-y: auto; /* 세로 스크롤 생성 */
+  }
+  .small-box {
+    width: 150px;
+    height: 150px;
+    border: 0.5px solid gray;
+    border-radius: 12px;
+    margin: 10px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+    &.selected {
+      // .selected 클래스 추가
+      border: 7px solid green;
+    }
+    #title {
+      background-color: beige;
+      color: black;
+      font-weight: bold;
+      border-radius: 7px;
+    }
+  }
+
+  .finish {
+    display: flex;
+    justify-content: center;
+    Button {
+      width: 75%;
+    }
+  }
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

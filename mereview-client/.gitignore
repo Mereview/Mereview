@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# TestPage
+src/pages/TestPage.tsx
+src/styles/css/
+
+.vs/

@@ -1,0 +1,31 @@
+@import "Style";
+
+.follow-user-container {
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: static;
+
+  $profile-img-size: 40px;
+  .follow-profile-img {
+    position: relative;
+    height: $profile-img-size;
+    width: $profile-img-size;
+    border: 1px solid gold;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .follow-user-nickname {
+    font-family: $BMDoHyeon;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,15 @@
+@import "Style";
+
+.selectImg {
+  border-radius: 9999px;
+  width: 10rem;
+  height: 10rem;
+  border: solid black 0.5px;
+
+  &:hover {
+    // 호버 효과 스타일 추가
+    background-color: lightgray;
+    border-color: gray;
+    cursor: pointer;
+  }
+}

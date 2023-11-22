@@ -1,0 +1,326 @@
+@import "Style";
+
+// 나중에 Style.scss에 합칠것
+@mixin gray-info {
+  font-family: $NanumGothic;
+  font-size: $font-size-sm;
+  color: $gray-2;
+}
+.notification-review-card {
+  position: relative;
+  display: inline-block;
+  border: solid 2px $black;
+  border-radius: 10px;
+  flex-basis: 31%;
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  padding-bottom: 17%;
+  min-width: 250px;
+  min-height: 142px;
+  background-size: cover;
+  font-family: $BMDoHyeon;
+  font-size: $font-size-md;
+  color: $white;
+
+  .card-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    border-radius: 8px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+  }
+
+  .date {
+    @include gray-info;
+  }
+
+  .evaluation-counts {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: right;
+
+    div {
+      margin-right: 1px;
+
+      p {
+        font-size: $font-size-sm;
+      }
+
+      img {
+        max-width: 80%;
+        margin-bottom: 3px;
+
+        @media (max-width: 1300px) {
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  .one-line-review {
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 10px black;
+  }
+
+  .profile-container {
+    display: flex;
+    align-items: center;
+
+    $profile-img-size: 28px;
+    .profile-img {
+      width: $profile-img-size;
+      height: $profile-img-size;
+      border: solid 2px gold; // 가장 높은 티어의 색깔 표시
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      margin-right: 8px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .nickname {
+      @include gray-info;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    }
+  }
+
+  .movie-title {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  .year-genres {
+    @include gray-info;
+  }
+
+  .recommend {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 10px;
+    bottom: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.review-card {
+  position: relative;
+  display: inline-block;
+  border: solid 2px $black;
+  border-radius: 10px;
+  flex-basis: 31.2%;
+  width: 31%;
+  height: 0;
+  padding-bottom: 18%;
+  min-width: 250px;
+  min-height: 142px;
+  margin: 10px 1% 10px 1%;
+  background-size: cover;
+  font-family: $BMDoHyeon;
+  font-size: $font-size-md;
+  color: $white;
+  transform-origin: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 6px 6px 10px #000000;
+    transform: scale(1.03);
+  }
+
+  &:active {
+    box-shadow: 2px 2px 4px #000000;
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 1300px) {
+    flex-basis: 46.8%;
+    width: 46.5%;
+    padding-bottom: 27%;
+  }
+
+  @media (max-width: 770px) {
+    flex-basis: 94.6%;
+    width: 94%;
+    height: 60vw;
+  }
+
+  .card-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    border-radius: 8px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+
+      .recommend-text {
+        opacity: 1;
+      }
+    }
+  }
+
+  .date {
+    @include gray-info;
+  }
+
+  .evaluation-counts {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: right;
+
+    div {
+      margin-right: 1px;
+
+      p {
+        font-size: $font-size-sm;
+      }
+
+      img {
+        max-width: 80%;
+        margin-bottom: 3px;
+
+        @media (max-width: 1300px) {
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  .one-line-review {
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-justify: center;
+    font-size: $font-size-xl;
+    text-shadow: 1px 1px 15px black;
+  }
+
+  .profile-container {
+    display: flex;
+    align-items: center;
+
+    $profile-img-size: 28px;
+    .profile-img {
+      width: $profile-img-size;
+      height: $profile-img-size;
+      border: solid 2px gold; // 가장 높은 티어의 색깔 표시
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      margin-right: 8px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .nickname {
+      @include gray-info;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    }
+  }
+
+  .movie-title {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  .year-genres {
+    @include gray-info;
+  }
+
+  .recommend {
+    display: flex;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    .recommend-text {
+      font-size: $font-size-sm;
+      color: rgba(255, 255, 255, 0.7);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+
+    .recommend-icon-container {
+      width: 40px;
+      height: 40px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.card-overlay {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.btn-justify {
+  display: flex;
+  justify-content: space-between;
+}
