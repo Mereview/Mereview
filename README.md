@@ -34,11 +34,6 @@
 - GitHub : [longBright](https://github.com/longBright)
 <!-- ### 📑 [팀 노션](https://spark-band-571.notion.site/41934e8ca4b447dda013fbf903684423?pvs=4) -->
 
-<br/>
-
-
-## 📚 기획 배경
-### 📖 [프로젝트 기획](./mereview-docs/ProjectPlan.md)
 
 <br/>
 
