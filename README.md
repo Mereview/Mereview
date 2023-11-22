@@ -78,7 +78,7 @@
 <br/>
 
 ## 📺 서비스 화면
-### [기능설명](./mereview-docs/file/기능설명%20UCC.mp4)
+### [기능설명](./mereview-docs/file/미리뷰시연.mp4)
 
 ### 회원가입 & 로그인
 ![](./mereview-docs/img/회원가입&로그인.gif)
