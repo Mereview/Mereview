@@ -64,7 +64,7 @@
 ### 1) TMDB API
   - 영화 데이터를 저장하는데 사용
 ### 2) Quill
-  - text additor 로 사용
+  - text editor 로 사용
 ### 3) Word Cloud
   - 리뷰 키워드를 word cloud로 보여줌
 ### 4) Material-UI
