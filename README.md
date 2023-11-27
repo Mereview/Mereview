@@ -95,15 +95,21 @@
 
 <br>
 
-### 영화 상세정보
-![](./mereview-docs/img/영화상세보기.gif)
+### 리뷰 상세정보
+![](./mereview-docs/img/리뷰상세보기.gif)
 
 <br>
 
 ### 리뷰 작성
 ![](./mereview-docs/img/리뷰작성.gif)
 
+<br>
+
+### 리뷰 검색
+![](./mereview-docs/img/리뷰검색.gif)
+
 <br> 
+
 
 ### 알림
 ![](./mereview-docs/img/알림.gif)
@@ -111,8 +117,8 @@
 
 <br>
 
-### 회원 정보
-[](./mereview-docs/img/마이페이지.gif)
+### 마이페이지
+![](./mereview-docs/img/마이페이지.gif)
 
 
 <br/>
