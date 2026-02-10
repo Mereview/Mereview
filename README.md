@@ -22,7 +22,7 @@
 - GitHub : [chati97](https://github.com/chati97)
 ### 👨 양진형
 - FrontEnd
-- GitHub : [yangJin-H](https://github.com/yangJin-H)
+- GitHub : [yjh910](https://github.com/yjh910)
 ### 🧒 유승민
 - 팀장, BackEnd
 - GitHub : [byuri1356](https://github.com/byuri1356)
